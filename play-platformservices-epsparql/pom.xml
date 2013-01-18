@@ -3,14 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
+		<groupId>org.ow2.play</groupId>
 		<artifactId>play-platformservices-parent</artifactId>
-		<groupId>eu.play-project</groupId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>../play-platformservices-parent/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>play-platformservices-epsparql</artifactId>
-	<groupId>eu.play-project</groupId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
