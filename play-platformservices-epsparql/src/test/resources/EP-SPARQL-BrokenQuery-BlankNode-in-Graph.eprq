@@ -1,0 +1,4 @@
+# abc @expectedException<Was expecting one of: \n <IRIref> ...\>
+PREFIX pl: <http://play-project.eu/ep-sparql> 
+CONSTRUCT { ?a pl:name ?name } 
+WHERE {    GRAPH ?a { [] pl:name ?name }}

@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>play-dcep-parent</artifactId>
+		<groupId>eu.play-project</groupId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../play-dcep-parent/pom.xml</relativePath>
+	</parent>
+
+	<groupId>eu.play-project</groupId>
+	<artifactId>play-dcep-api</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>play-dcep-api</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>fr.inria.eventcloud</groupId>
+			<artifactId>eventcloud-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.play-project</groupId>
+			<artifactId>play-platformservices-api</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+</project>

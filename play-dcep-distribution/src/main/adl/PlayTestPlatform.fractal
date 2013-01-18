@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/proactive/core/component/adl/xml/proactive.dtd">
+<definition name="PlayTestPlatform">
+  <interface name="DcepSubscribeApi" signature="eu.play_project.dcep.api.DcepSubscribeApi" role="server"/>
+  <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
+  
+
+  <component name="Dcep">
+    <interface name="PublishApi" signature="fr.inria.eventcloud.api.PublishApi" role="server"/>
+    <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
+    <interface name="DcepSubscribeApi" signature="eu.play_project.dcep.api.DcepSubscribeApi" role="server"/>
+    <content class="eu.play_project.dcep.Dcep"/>
+    <virtual-node name="dcep-node"/>
+    
+  </component>
+  <binding client="this.DcepSubscribeApi" server="DCEP.DcepSubscribeApi"/>
+  <binding client="this.DcepManagmentApi" server="DCEP.DcepManagmentApi"/>
+  <controller desc="composite"/>
+</definition>

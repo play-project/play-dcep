@@ -1,0 +1,72 @@
+package eu.play_project.dcep.distributedetalis.measurement.fsm;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
+import fr.inria.eventcloud.api.CompoundEvent;
+
+public class MeasuremnetFinished implements MeasurementState {
+	private MeasurementUnit context;
+	private Logger logger;
+	
+	public MeasuremnetFinished(MeasurementUnit context) {
+		this.context = context;
+		this.logger = LoggerFactory.getLogger(MeasuremnetFinished.class);
+	}
+
+	@Override
+	public void eventReceived() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public NodeMeasuringResult getMeasuringResults() {
+		logger.debug("Get measured data. Finish");
+		NodeMeasuringResult  measuredValues = context.getMeasurementData();
+
+		logger.info(measuredValues.getName());
+		logger.info("\n\n\nffffffffffffffffff\n");
+		context.setState(context.create("Start"));
+
+		return measuredValues;
+	}
+
+	@Override
+	public void startMeasurement(int time) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void eventProduced(CompoundEvent event, String patternId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getName() {
+		return "MeasurementFinshed";
+	}
+
+	@Override
+	public void sendMeasuringEvent() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void measuringPeriodIsUp() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

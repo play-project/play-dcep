@@ -1,0 +1,11 @@
+# Prefix dc and df is not defined. @expectedException<Unresolved prefixed name\>
+CONSTRUCT { ?a ?b ?c}
+	 WHERE {
+	 	EVENT ?a{?x dc:title ?title}  
+	 	SEQ
+	 	EVENT ?b{?x dc:title ?title} 
+	 	SEQ 
+	 	EVENT ?c{?x df:title ?title} 
+	 	SEQ 
+	 	EVENT ?d{?x dc:title ?title} 
+	}

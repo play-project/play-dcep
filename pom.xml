@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>play-parent</artifactId>
+		<groupId>eu.play-project</groupId>
+		<version>1.3-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>play-dcep-builder</artifactId>
+	<groupId>eu.play-project</groupId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>play-dcep-builder</name>
+	<description></description>
+	
+	<modules>
+		<module>play-platformservices-parent</module>
+		<module>play-platformservices</module>
+		<module>play-platformservices-api</module>
+		<module>play-platformservices-cepdeployer</module>
+		<module>play-platformservices-epsparql</module>
+		<module>play-platformservices-querydispatcher</module>
+		<module>play-platformservices-eventvalidation</module>
+		<module>play-dcep-parent</module>
+		<module>play-dcep-api</module>
+		<module>play-dcep</module>
+		<module>play-dcep-distributedetalis</module>
+		<module>play-dcep-dcepmanager</module>
+		<module>play-dcep-distribution</module>
+		<!-- I removed this from the build because it takes so much time... please enter this directory manually :stuehmer -->
+		<!--<module>play-dcep-distribution-eventcloud-remote-tests</module>-->
+	</modules>
+	
+
+</project>

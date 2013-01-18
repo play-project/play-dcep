@@ -1,0 +1,15 @@
+# Simple CONSTRUCT query.
+PREFIX pl: 		<http://play-project.eu/ep-sparql> 
+PREFIX rdf:		<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX :       <http://events.event-processing.org/types/>
+
+CONSTRUCT{
+?x pl:nice ?name .
+:e rdf:type :Temperature .
+}
+ WHERE {
+	EVENT ?id{ ?x pl:nice ?name} 
+	SEQ
+	EVENT ?id{ ?x pl:nice ?name}
+}
+	

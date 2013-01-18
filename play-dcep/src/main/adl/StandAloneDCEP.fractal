@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/proactive/core/component/adl/xml/proactive.dtd">
+  <definition name="StandAloneDCEP">
+	 <interface name="DcepManagmentApi"  role="server" signature="eu.play_project.dcep.api.DcepManagmentApi"/>
+	 <interface name="DistributedEtalisTestApi"  role="server" signature="eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi"/>
+	 <interface name="SimplePublishApi"  role="server" signature="eu.play_project.dcep.distributedetalis.api.SimplePublishApi"/>
+	 <content class="eu.play_project.dcep.Dcep"/>
+     <controller desc="primitive"/>
+</definition>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>play-platformservices-parent</artifactId>
+		<groupId>eu.play-project</groupId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../play-platformservices-parent/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>play-platformservices-eventvalidation</artifactId>
+	<groupId>eu.play-project</groupId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>play-platformservices-eventvalidation</name>
+	<description>This artefact contains standard code to check RDF events for validity in terms of minimum number of properties, etc.</description>
+	
+	<dependencies>
+		<dependency>
+			<groupId>eu.play-project</groupId>
+			<artifactId>play-commons-eventtypes</artifactId>
+		</dependency>
+	</dependencies>
+</project>

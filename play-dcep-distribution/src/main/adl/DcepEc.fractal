@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/proactive/core/component/adl/xml/proactive.dtd">
+<definition name="DcepEc">
+
+  <interface name="PublishApi" signature="fr.inria.eventcloud.api.PublishApi" role="server"/>
+  <interface name="SubscribeApi" signature="fr.inria.eventcloud.api.SubscribeApi" role="server"/>
+
+  <component name="EC" definition="EC"/>
+  <component name="Dcep" definition="Dcep"/>
+
+  <binding client="Dcep.SubscribeApi" server="EC.SubscribeApi"/>
+  <binding client="Dcep.PublishApi" server="EC.PublishApi"/>
+  
+  <binding client="this.SubscribeApi" server="EC.SubscribeApi"/>
+  <binding client="this.PublishApi" server="EC.PublishApi"/>
+	
+   	<controller desc="composite"/>
+</definition>

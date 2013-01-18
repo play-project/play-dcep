@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/proactive/core/component/adl/xml/proactive.dtd">
+<definition name="PlayTestPlatform">
+  <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
+  
+  <component name="PlatformServices">
+    <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
+    <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="client"/>
+    <content class="eu.play_project.play_platformservices.PlayPlatformservices"/>
+    <virtual-node name="platformServices-node"/>
+  </component>
+  <component name="Dcep">
+    <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
+    <content class="eu.play_project.dcep.Dcep"/>
+    <virtual-node name="dcep-node"/>
+  </component>
+  <binding client="this.QueryDispatchApi" server="PlatformServices.QueryDispatchApi"/>
+  <binding client="PlatformServices.DcepManagmentApi" server="Dcep.DcepManagmentApi"/>
+  <controller desc="composite"/>
+</definition>

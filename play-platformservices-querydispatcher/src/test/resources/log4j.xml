@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<!-- Print the date in ISO 8601 format -->
+			<param name="ConversionPattern" value="%d [%t] %-5p %c - %m%n" />
+		</layout>
+	</appender>
+
+	<logger name="com.hp">
+		<level value="info" />
+	</logger>
+	
+	<logger name="eu.play_project">
+		<level value="info" />
+	</logger>
+	
+	<logger name="eu.play_project.querydispatcher.epsparql.tests">
+		<level value="info" />
+	</logger>
+
+	<logger name="proactive">
+		<level value="info" />
+	</logger>
+
+	<!-- used to detect what are the stubs to pre-generate -->
+	<!-- <logger name="proactive.mop.stubgeneration"> -->
+	<!-- <level value="debug" /> -->
+	<!-- </logger> -->
+
+	<root>
+		<priority value="debug" />
+		<appender-ref ref="console" />
+	</root>
+</log4j:configuration>

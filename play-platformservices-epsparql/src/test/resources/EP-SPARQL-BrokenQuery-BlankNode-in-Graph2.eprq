@@ -1,0 +1,4 @@
+# abc @expectedException< ff>
+PREFIX : <http://play-project.eu/ep-sparql> 
+CONSTRUCT   { ?a ?b ?c }
+WHERE    { GRAPH ?a { :a :b [ :c :d ] }}
