@@ -23,8 +23,10 @@ import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.EcConnectionManager;
+import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.distributedetalis.configurations.DEtalisLocalConfig;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -44,6 +46,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 	private DistributedEtalisTestApi dEtalisTest;
 	private DcepMonitoringApi dEtalisMonitoring;
 	private DcepManagmentApi dEtalisManagment;
+	private ConfigApi configApi;
 	private Component dEtalis;
 	private Logger logger;
 	private boolean init = false; // Shows if variables for other components are
@@ -159,6 +162,8 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 						.getFcInterface("DcepManagmentApi"));
 				dEtalisMonitoring = ((DcepMonitoringApi) dEtalis
 						.getFcInterface("DcepMonitoringApi"));
+				configApi = ((ConfigApi)dEtalis);
+				configApi.setConfig(new DEtalisLocalConfig());
 			} catch (NoSuchInterfaceException e) {
 				logger.error("Error: ", e);
 			} catch (ADLException e) {
