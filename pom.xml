@@ -35,5 +35,12 @@
 		<!--<module>play-dcep-distribution-eventcloud-remote-tests</module>-->
 	</modules>
 	
+	<repositories>
+		<repository>
+			<id>org.ow2.play</id>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+	
 
 </project>

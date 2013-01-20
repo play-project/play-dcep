@@ -6,6 +6,7 @@
 		<groupId>org.ow2.play</groupId>
 		<artifactId>play-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
+		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>play-dcep-parent</artifactId>
@@ -15,4 +16,10 @@
 	<name>play-dcep-parent</name>
 	<description></description>
 
+	<repositories>
+		<repository>
+			<id>org.ow2.play</id>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
 </project>

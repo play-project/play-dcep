@@ -14,6 +14,12 @@
 	<packaging>pom</packaging>
 	
 	<name>play-platformservices-parent</name>
+	
 	<description></description>
-
+	<repositories>
+		<repository>
+			<id>org.ow2.play</id>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
 </project>
