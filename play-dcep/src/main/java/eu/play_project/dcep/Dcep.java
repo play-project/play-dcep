@@ -22,9 +22,8 @@ import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
-import eu.play_project.dcep.distributedetalis.EcConnectionManagerNet;
+import eu.play_project.dcep.distributedetalis.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -133,11 +132,6 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 	public void detach(SimplePublishApi subscriber) {
 		if(!init); init();
 		dEtalisTest.detach(subscriber);
-	}
-
-	@Override
-	public void setEcConnectionManager(EcConnectionManager ecConnectionManager) {
-		dEtalisTest.setEcConnectionManager(ecConnectionManager);
 	}
 
 	/**

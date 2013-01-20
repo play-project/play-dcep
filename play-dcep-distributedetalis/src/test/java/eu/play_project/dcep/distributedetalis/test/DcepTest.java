@@ -26,8 +26,10 @@ import org.objectweb.proactive.core.node.NodeException;
 import com.hp.hpl.jena.graph.Node;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.test.dummyClasses.LocalEcConnectionManager;
+import eu.play_project.dcep.distributedetalis.configurations.DEtalisLocalConfig;
+import eu.play_project.dcep.distributedetalis.test.mockUp.classes.LocalEcConnectionManager;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -40,6 +42,7 @@ public class DcepTest implements Serializable {
 	private static DistributedEtalisTestApi distributedEtalisTestApi;
 	private static DcepManagmentApi dcepManagmentApi = null;
 	private static PublishApiSubscriber subscriber = null;
+	private static ConfigApi configApi = null;
 	static Component root;
 
 	/**
@@ -118,7 +121,6 @@ public class DcepTest implements Serializable {
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Quadruple expectedResults = new Quadruple(
@@ -159,8 +161,8 @@ public class DcepTest implements Serializable {
 
 		distributedEtalisTestApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
 		
-		//ConnectionManger without network connection to EventCloud. 
-		distributedEtalisTestApi.setEcConnectionManager(new LocalEcConnectionManager());
+		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi)root.getFcInterface("ConfigApi"));
+		configApi.setConfig(new DEtalisLocalConfig());
 		
 		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
 

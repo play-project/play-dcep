@@ -123,7 +123,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 		// Generate CEP-language
 		eleGenerator.setPatternId("'" + queryId + "'"); // TODO sobermeier: Remove in the future, ETALIS will do this
-		eleGenerator.generateQuery(q);
+		eleGenerator.generateAll(q);
 
 		logger.info("Registering query " + q);
 

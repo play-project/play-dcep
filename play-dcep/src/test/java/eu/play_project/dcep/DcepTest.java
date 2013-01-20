@@ -16,7 +16,6 @@ import org.junit.Test;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.*; // Because of Maven, to find fractal file
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
@@ -105,7 +104,7 @@ public class DcepTest implements Serializable {
 		//Subscribe for new events.
 		dcepTestApi.attach(subscriber);
 		
-		dcepTestApi.setEcConnectionManager(new EcConnectionMangerLocal());
+		//dcepTestApi.setEcConnectionManager(new EcConnectionMangerLocal());
 
 		//Register pattern
 		dcepManagmentApi.registerEventPattern(new EpSparqlQuery(
@@ -204,71 +203,5 @@ public class DcepTest implements Serializable {
 		System.out.println("OK i got an event :=) " +  event.getGraph());
 	}
 
-	class EcConnectionMangerLocal implements EcConnectionManager, Serializable{
-
-		@Override
-		public SparqlSelectResponse getDataFromCloud(String query,
-				String cloudId) throws EventCloudIdNotManaged {
-			
-			return null;
-		}
-
-		@Override
-		public PutGetApi getHistoricCloud(String cloudId)
-				throws EventCloudIdNotManaged {
-			
-			return null;
-		}
-
-		@Override
-		public SubscribeApi getInputCloud(String cloudId)
-				throws EventCloudIdNotManaged {
-			
-			return null;
-		}
-
-		@Override
-		public PublishApi getOutputCloud(String cloudId)
-				throws EventCloudIdNotManaged {
-			
-			return null;
-		}
-
-		@Override
-		public void publish(CompoundEvent event) {
-			
-			
-		}
-
-		@Override
-		public void registerEventPattern(EpSparqlQuery epSparqlQuery) {
-			
-			
-		}
-
-		@Override
-		public void unregisterEventPattern(EpSparqlQuery epSparqlQuery) {
-			
-			
-		}
-
-		@Override
-		public Subscription subscribe(String cloudId) {
-			
-			return null;
-		}
-
-		@Override
-		public void unsubscribe(String cloudId, Subscription sub) {
-			
-			
-		}
-
-		@Override
-		public void destroy() {
-			
-			
-		}
-		
-	}
+	
 }

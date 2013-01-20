@@ -4,6 +4,7 @@
 	 <interface name="DcepManagmentApi"  role="server" signature="eu.play_project.dcep.api.DcepManagmentApi"/>
 	 <interface name="DcepMonitoringApi"  role="server" signature="eu.play_project.dcep.api.DcepMonitoringApi"/>
 	 <interface name="DistributedEtalisTestApi"  role="server" signature="eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi"/>
+	 <interface name="ConfigApi"  role="server" signature="eu.play_project.dcep.distributedetalis.api.ConfigApi"/>
      <content class="eu.play_project.dcep.distributedetalis.DistributedEtalis"/>
      <controller desc="primitive"/>
 </definition>
