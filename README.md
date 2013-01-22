@@ -22,3 +22,7 @@ elastic CEP service which dynamically adapts to fluctuating event frequencies.
 
 DCEP is a native RDF event processor, which means RDF can be used directly for
 events and there is no need to model mappings to binary formats.
+
+Issues
+------
+For issues and bug reporting, please go to https://github.com/play-project/play/issues?labels=dcep&amp;page=1&amp;state=open

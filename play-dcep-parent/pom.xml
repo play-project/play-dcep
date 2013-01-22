@@ -6,7 +6,6 @@
 		<groupId>org.ow2.play</groupId>
 		<artifactId>play-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath></relativePath>
 	</parent>
 
 	<artifactId>play-dcep-parent</artifactId>
@@ -15,11 +14,25 @@
 
 	<name>play-dcep-parent</name>
 	<description></description>
+	<inceptionYear>2011</inceptionYear>
+	
+	<scm>
+		<url>https://github.com/play-project/play-dcep/tree/master/play-dcep-parent</url>
+		<connection>scm:git:git://github.com/play-project/play-dcep.git</connection>
+		<developerConnection>scm:git:https://github.com/play-project/play-dcep.git</developerConnection>
+	</scm>
+	
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/play-project/play/issues?labels=dcep&amp;page=1&amp;state=open</url>
+	</issueManagement>
 
-	<repositories>
-		<repository>
-			<id>org.ow2.play</id>
-			<url>http://repository.ow2.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License version 3.0</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
 </project>
