@@ -6,11 +6,11 @@ import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
+import eu.play_project.dcep.distributedetalis.LocalEcConnectionManager;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
-import eu.play_project.dcep.distributedetalis.test.mockUp.classes.LocalEcConnectionManager;
 
 
 

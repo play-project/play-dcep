@@ -26,10 +26,10 @@ import org.objectweb.proactive.core.node.NodeException;
 import com.hp.hpl.jena.graph.Node;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.distributedetalis.LocalEcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DEtalisLocalConfig;
-import eu.play_project.dcep.distributedetalis.test.mockUp.classes.LocalEcConnectionManager;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;

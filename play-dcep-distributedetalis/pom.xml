@@ -80,9 +80,6 @@
 				<configuration>
 					<argLine>-Djava.security.manager
 						-Djava.security.policy=src/main/resources/proactive.java.policy</argLine>
-					<additionalClasspathElements>
-						<additionalClasspathElement>src/test/java/eu/play_project/dcep/distributedetalis/test/mockUp/classes/</additionalClasspathElement>
-					</additionalClasspathElements>
 				</configuration>
 			</plugin>
 		</plugins>
