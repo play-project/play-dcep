@@ -97,7 +97,7 @@ public class PerformanceTestListener implements PublishApi, Serializable{
 	}
 
 	@Override
-	public void publish(InputStream arg0, SerializationFormat arg1) {
+	public void publish(URL arg0, SerializationFormat arg1) {
 		// TODO Auto-generated method stub
 		
 	}

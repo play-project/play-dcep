@@ -19,6 +19,7 @@ import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
+import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 import fr.inria.eventcloud.factories.ProxyFactory;
@@ -74,7 +75,11 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		SparqlSelectResponse response = null;
 		try {
 			putGetCloud = getHistoricCloud(cloudId);
-			response = putGetCloud.executeSparqlSelect(query);
+			try {
+				response = putGetCloud.executeSparqlSelect(query);
+			} catch (MalformedSparqlQueryException e) {
+				e.printStackTrace();
+			}
 		} catch (EventCloudIdNotManaged e) {
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
