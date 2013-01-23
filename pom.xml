@@ -16,7 +16,7 @@
 
 	<name>play-dcep-builder</name>
 	<description></description>
-	<inceptionYear>2011</inceptionYear>
+	<inceptionYear>2010</inceptionYear>
 	
 	<modules>
 		<module>play-platformservices-parent</module>
