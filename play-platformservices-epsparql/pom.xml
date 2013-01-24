@@ -22,7 +22,7 @@
 			<artifactId>jena-arq</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>eu.play-project</groupId>
+			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-constants</artifactId>
 		</dependency>
 	</dependencies>

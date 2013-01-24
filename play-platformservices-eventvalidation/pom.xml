@@ -19,7 +19,7 @@
 	
 	<dependencies>
 		<dependency>
-			<groupId>eu.play-project</groupId>
+			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-eventtypes</artifactId>
 		</dependency>
 	</dependencies>
