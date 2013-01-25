@@ -1,6 +1,6 @@
 PREFIX : <http://play-project.eu/M12/>
 PREFIX rdf:		<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	CONSTRUCT{ ?friend1 ?friend2 ?friend3 
+	CONSTRUCT{ ?friend1 ?friend2 ?friend3 .
 				:e rdf:type :ComplexFackebookEvent}
 		WHERE{
 			WINDOW{

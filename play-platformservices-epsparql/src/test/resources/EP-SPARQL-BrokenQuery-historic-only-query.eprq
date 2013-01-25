@@ -1,3 +1,5 @@
+# real-time part is Missing @expectedException<Encountered " "graph" "GRAPH "" at line 10, column 9.\nWas expecting one of:\n    "event" ...\>.
+
 PREFIX  dc:   <http://purl.org/dc/elements/1.1/>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :       <http://events.event-processing.org/types/>
