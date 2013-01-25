@@ -6,13 +6,14 @@ import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
+import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 public interface EcConnectionManager extends SimplePublishApi{
 
 	public abstract SparqlSelectResponse getDataFromCloud(String query,
-			String cloudId) throws EventCloudIdNotManaged;
+			String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException;
 
 	/**
 	 * Reuses or initiates an event cloud proxy.

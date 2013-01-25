@@ -19,6 +19,7 @@ import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
+import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 import fr.inria.eventcloud.factories.ProxyFactory;
@@ -63,7 +64,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#getDataFromCloud(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public synchronized SparqlSelectResponse getDataFromCloud(String query, String cloudId) throws EventCloudIdNotManaged {
+	public synchronized SparqlSelectResponse getDataFromCloud(String query, String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}

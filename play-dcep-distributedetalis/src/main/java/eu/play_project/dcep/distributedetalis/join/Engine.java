@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
+import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
@@ -87,6 +88,9 @@ public class Engine implements HistoricalData {
 			result = ecConnection.getDataFromCloud(hquery, stream);
 		} catch (EventCloudIdNotManaged e) {
 			logger.error("Unknown event cloud in historic query.", e);
+			return false;
+		} catch (MalformedSparqlQueryException e) {
+			logger.error("Malformed historic query.", e);
 			return false;
 		} 
 		
