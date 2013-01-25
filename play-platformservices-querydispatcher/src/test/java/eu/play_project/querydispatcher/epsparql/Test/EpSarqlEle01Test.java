@@ -32,7 +32,7 @@ public class EpSarqlEle01Test {
 	@Test
 	public void manualParserUsage(){
 
-		String queryString = "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?s ?p 1234}FILTER (?value5 > ?value4 && ?value5 < (?value1 + 10)) }";
+		String queryString = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ <a> rdf:type <b> . ?x ?nice ?name } WHERE {EVENT ?id{?s ?p 1234}FILTER (?value5 > ?value4 && ?value5 < (?value1 + 10)) }";
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		
 		// Use custom visitor
@@ -117,7 +117,7 @@ public class EpSarqlEle01Test {
 
 	@Test
 	public void evaluateFilterExpression(){
-		String queryString = "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
+		String queryString = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ <a> rdf:type <b> . ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
 
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		
@@ -135,7 +135,7 @@ public class EpSarqlEle01Test {
 	}
 	@Test
 	public void dispatchQuery(){
-		String queryString = "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
+		String queryString = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ <a> rdf:type <b> . ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		
 		VariableVisitor visitor = new VariableVisitor();

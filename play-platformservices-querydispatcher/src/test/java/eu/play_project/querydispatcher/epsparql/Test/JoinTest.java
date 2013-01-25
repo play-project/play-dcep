@@ -26,8 +26,10 @@ public class JoinTest {
 	
 	@Test
 	public void generateHistoricalQuery(){
-		String  queryString = "PREFIX : <http://example.com/> " +
-				"				CONSTRUCT{:e :type :FacebookCepResult." +
+		String  queryString =
+				"               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+				"               PREFIX : <http://example.com/> " +
+				"				CONSTRUCT{:e rdf:type :FacebookCepResult." +
 				"							?s ?p ?o }" +
 				"				WHERE{ " +
 				"						EVENT ?id1{?s1 ?p ?o} " +
@@ -45,8 +47,10 @@ public class JoinTest {
 	 */
 	@Test
 	public void getVariablesFromConstruct(){
-		String  queryString = "PREFIX : <http://example.com/> " +
-				"				CONSTRUCT{:e :type :FacebookCepResult." +
+		String  queryString = 
+				"               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+				"               PREFIX : <http://example.com/> " +
+				"				CONSTRUCT{  :e rdf:type :FacebookCepResult." +
 				"							?s ?p ?o }" +
 				"				WHERE{ " +
 				"						EVENT ?id{?s ?p ?o} " +
@@ -74,8 +78,10 @@ public class JoinTest {
 	
 	@Test
 	public void getVariablesWithHistoricAndRealtimeType(){
-		String  queryString = "PREFIX : <http://example.com/> " +
-				"				CONSTRUCT{:e :type :FacebookCepResult." +
+		String  queryString =
+				"               PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+				"               PREFIX : <http://example.com/> " +
+				"				CONSTRUCT{:e rdf:type :FacebookCepResult." +
 				"							?s ?p ?o}" +
 				"				WHERE{ " +
 				"						EVENT ?id{?s ?p ?f} " +
