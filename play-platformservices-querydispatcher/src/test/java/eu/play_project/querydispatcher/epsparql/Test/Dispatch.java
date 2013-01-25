@@ -158,8 +158,8 @@ public class Dispatch {
 		QueryDetails qd = new QueryDetails();
 		streamIdCollector.getStreamIds(query, qd);
 
-		assertTrue(qd.getOutputStream().equals("http://streams.event-processing.org/ids/TaxiUCClic2Call#stream"));
-		assertTrue(qd.getInputStreams().get(0).equals("http://streams.event-processing.org/ids/TaxiUCCall#stream"));
+		assertTrue(qd.getOutputStream().equals("http://streams.event-processing.org/ids/TaxiUCClic2Call"));
+		assertTrue(qd.getInputStreams().get(0).equals("http://streams.event-processing.org/ids/TaxiUCCall"));
 
 		
 	}
