@@ -931,7 +931,7 @@ void PropertyListPathNotEmpty(Node s, TripleCollector acc) :
       ( path = VerbPath()
       | p = VerbSimple()
       )
-      ObjectList(s, p, path, acc)
+      ObjectListPath(s, p, path, acc)
     )?
   )*
 }
@@ -1935,7 +1935,6 @@ Element EventGraphPattern() :
  	ElementEventGraph tmp = new ElementEventGraph(n, elg);
     getQuery().addEventElement(tmp);
     return tmp;
-  
   }
 }
 

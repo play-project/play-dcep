@@ -102,7 +102,6 @@
 					<groupId>org.apache.jena</groupId>
 				</exclusion>
 			</exclusions>
-			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.play-project</groupId>

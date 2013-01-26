@@ -161,7 +161,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 						.getFcInterface("DcepManagmentApi"));
 				dEtalisMonitoring = ((DcepMonitoringApi) dEtalis
 						.getFcInterface("DcepMonitoringApi"));
-				configApi = ((ConfigApi)dEtalis);
+				configApi = ((ConfigApi)dEtalis.getFcInterface("ConfigApi"));
 				configApi.setConfig(new DefaultConfiguration());
 			} catch (NoSuchInterfaceException e) {
 				logger.error("Error: ", e);

@@ -91,7 +91,8 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	
 			// Provide PublishApi as Webservice
 			try {
-				soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this); 
+				// FIXME Add it if when it is working.
+				//soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this); 
 			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch Web Service endpoint", e);
 			}

@@ -79,6 +79,9 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		} catch (EventCloudIdNotManaged e) {
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
+		} catch (MalformedSparqlQueryException e) {
+			logger.error("Mallformed sparql query. " + e.getMessage());
+			e.printStackTrace();
 		}
 		return response;
 	}
