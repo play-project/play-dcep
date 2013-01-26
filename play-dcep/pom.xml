@@ -108,6 +108,10 @@
 					<artifactId>play-commons-eventformat</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>jena-core</artifactId>
+					<groupId>org.apache.jena</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>

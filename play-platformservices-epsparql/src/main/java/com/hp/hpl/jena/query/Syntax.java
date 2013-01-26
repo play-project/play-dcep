@@ -35,7 +35,7 @@ public class Syntax extends Symbol
 	
 	 /** The syntax defined in PLAY Project */
     public static final Syntax syntaxEPSPARQL_20
-                = new Syntax("http://play-project.eu/2011/03/query/syntaxEPSPARQL_20"); // TODO sobermeier Name OK?
+                = new Syntax("http://play-project.eu/2011/03/query/syntaxEPSPARQL_20"); 
     
     
     
