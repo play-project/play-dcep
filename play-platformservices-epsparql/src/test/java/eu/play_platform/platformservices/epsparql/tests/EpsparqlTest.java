@@ -32,21 +32,21 @@ public class EpsparqlTest {
 		
 	@Test
 	public void testPositiveTests() {
-		
-		for (String fileName : getFilenames(new File("src/test/resources/"), TestType.EP_SPARQL_Query)) {
-			System.out.println("Testing queryfile: " + fileName);
-			try {
-				System.out.println(getQuery(fileName)[0]);
-				QueryFactory.create(getQuery(fileName)[0], Syntax.syntaxEPSPARQL_20);
-				System.out.println(getQuery(fileName)[0]);
-			} catch (IOException e) {
-				fail("Could not read query file: " + fileName);
-			} catch (QueryException e) {
-				fail("Malformed query file: " + fileName + " with error: " + e.getMessage());
-			}
-		}
-		
+				
 		for (String fileName : new String[] {
+				"EP-SPARQL-Query-CONSTRUCT-Query.eprq",
+				"EP-SPARQL-Query-Event-and-GRAPH.eprq",
+				"EP-SPARQL-Query-FILTER-contains-possition.eprq",
+				"EP-SPARQL-Query-FILTER-contains.eprq",
+				"EP-SPARQL-Query-Historic-followed-by-Realtime.eprq",
+				"EP-SPARQL-Query-M12-Construct-Query.eprq",
+				"EP-SPARQL-Query-more-than-one-FILTER.eprq",
+				"EP-SPARQL-Query-New-Infix-Opators.eprq",
+				"EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq",
+				"EP-SPARQL-Query-Realtime-Historical-shared-Variables.eprq",
+				"EP-SPARQL-Query-SEQ-Parenthesis.eprq",
+				"EP-SPARQL-Query-Type.eprq",
+				"EP-SPARQL-Query-WIN.eprq",
 				"play-bdpl-crisis-01a-radiation.eprq",
 				"play-bdpl-crisis-01b-radiationincrease.eprq",
 				"play-bdpl-crisis-02a-winddirection.eprq",
@@ -113,8 +113,7 @@ public class EpsparqlTest {
 	 */
 	public String[] getQuery(String queryFile) throws IOException {
 		System.out.println(queryFile );
-		InputStream is = (InputStream) getClass().getClassLoader()
-				.getResource(queryFile).getContent();
+		InputStream is = (InputStream) getClass().getClassLoader().getResource(queryFile).getContent();
 		
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);

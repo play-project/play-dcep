@@ -52,6 +52,7 @@ PARSER_BEGIN(SPARQLParserEPSPARQL_20)
  * limitations under the License.
  */
 
+// Basic grammar from: http://svn.apache.org/repos/asf/jena/tags/jena-2.7.4/jena-arq/Grammar/sparql_11.jj
 package com.hp.hpl.jena.sparql.lang.EPSPARQL_20 ;
 import java.util.Stack;
 import com.hp.hpl.jena.graph.* ;
@@ -931,7 +932,7 @@ void PropertyListPathNotEmpty(Node s, TripleCollector acc) :
       ( path = VerbPath()
       | p = VerbSimple()
       )
-      ObjectListPath(s, p, path, acc)
+      ObjectList(s, p, path, acc)
     )?
   )*
 }

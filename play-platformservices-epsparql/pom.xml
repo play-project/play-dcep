@@ -25,6 +25,11 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-constants</artifactId>
 		</dependency>
+		<dependency>
+        <groupId>org.apache.maven.doxia</groupId>
+        <artifactId>doxia-converter</artifactId>
+        <version>1.0</version>
+      </dependency>
 	</dependencies>
 
 	<build>
@@ -42,7 +47,7 @@
 						<configuration>
 							<sourceDirectory>${basedir}/Grammar/</sourceDirectory>
 							<includes>
-								<include>**/*sparql_11_PLAY_construct-jena-arq-2.9.4-SNAPSHOT.jj</include>
+								<include>**/*sparql_11_PLAY_construct-jena-arq-2.9.4.jj</include>
 							</includes>
 						</configuration>
 					</execution>
