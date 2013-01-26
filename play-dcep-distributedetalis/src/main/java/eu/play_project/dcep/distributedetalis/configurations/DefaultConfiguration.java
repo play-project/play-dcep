@@ -1,5 +1,7 @@
 package eu.play_project.dcep.distributedetalis.configurations;
 
+import java.io.Serializable;
+
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerNet;
@@ -12,7 +14,7 @@ import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.play_commons.constants.Constants;
 
-public class DefaultConfiguration implements Configuration{
+public class DefaultConfiguration implements Configuration, Serializable{
 
 
 	@Override
@@ -45,14 +47,14 @@ public class DefaultConfiguration implements Configuration{
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
-		engine.consult(System.getProperty("user.dir")
-				+ "/src/main/resources/PrologMethods/constructQueryImp.pl");
-		engine.consult(System.getProperty("user.dir")
-				+ "/src/main/resources/PrologMethods/ReferenceCounting.pl");
-		engine.consult(System.getProperty("user.dir")
-				+ "/src/main/resources/PrologMethods/Measurement.pl");
-		engine.consult(System.getProperty("user.dir")
-				+ "/src/main/resources/PrologMethods/Math.pl");
+//		engine.consult(System.getProperty("user.dir")
+//				+ "/src/main/resources/PrologMethods/constructQueryImp.pl");
+//		engine.consult(System.getProperty("user.dir")
+//				+ "/src/main/resources/PrologMethods/ReferenceCounting.pl");
+//		engine.consult(System.getProperty("user.dir")
+//				+ "/src/main/resources/PrologMethods/Measurement.pl");
+//		engine.consult(System.getProperty("user.dir")
+//				+ "/src/main/resources/PrologMethods/Math.pl");
 
 		// engine.consult("/opt/play-platform-src/play-dcep/play-dcep-distributedetalis/src/main/resources/PrologMethods/constructQueryImp.pl");
 		// engine.consult("/opt/play-platform-src/play-dcep/play-dcep-distributedetalis/src/main/resources/PrologMethods/ReferenceCounting.pl");
