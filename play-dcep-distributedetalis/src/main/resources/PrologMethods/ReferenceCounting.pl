@@ -1,8 +1,8 @@
 % Increment counter for given ID.
-incrementReferenceCounter(ID):- id(ID,X), X2 is X + 1,retractall(id(ID,X)), assert(id(ID,X2)).
+incrementReferenceCounter(ID):- (id(ID,X), X2 is X + 1,retractall(id(ID,X)), assert(id(ID,X2))).
 
 % Decrement counter for given ID.
-decrementReferenceCounter(ID):- id(ID,X), X2 is X - 1,retractall(id(ID,X)), assert(id(ID,X2)).
+decrementReferenceCounter(ID):- (id(ID,X), X2 is X - 1,retractall(id(ID,X)), assert(id(ID,X2))).
 
 % Remove elements if counter == 0
 collectGarbage(ID) :- (id(ID,X), X<2, rdf_retractall(_S,_P,_O,ID), retractall(id(ID,X)); true).

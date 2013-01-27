@@ -6,6 +6,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -17,9 +20,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 
 import jpl.Query;
 import jpl.Term;
+import jpl.fli.engine_t;
 
 import org.event_processing.events.types.AvgTempEvent;
 import org.junit.After;
@@ -127,6 +132,7 @@ public class PrologJtalisTest {
 		System.out.println(result);
 		assertFalse(result.equals(new EtalisEvent("complex2", 1)));
 	}
+	
 //	@Test
 //	public void loadSemWebLibTest(){
 //		try{
@@ -136,12 +142,14 @@ public class PrologJtalisTest {
 //			e.printStackTrace();
 //			fail("It was not possible to load the semweb/rdf_db library ");
 //		}
+//
 //		
 //		delay();
 //	}
 	
 	@Test
 	public void instantiatePrologSemWebLib(){
+
 		prologSemWebLib = new PrologSemWebLib();
 		prologSemWebLib.init(ctx);
 		
@@ -234,16 +242,6 @@ public class PrologJtalisTest {
 	}
 	
 	
-	/**
-	 * Load prolog programm
-	 */
-	@Test
-	public void loadPrologProgramm(){
-		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
-		// TODO use zipped files like Vesko
-		engine.consult(System.getProperty("user.dir") + "/src/main/resources/PrologMethods/constructQueryImp.pl");
-		
-	}
 	
 	// @Test TODO activate test.
 	public void generateCartesinProductOfTriples(){
@@ -307,6 +305,44 @@ public class PrologJtalisTest {
 		assertFalse(result.getQuadruples().get(4).equals(original.getQuadruples().get(4)));
 		
 		delay();
+	}
+	
+	/**
+	 * Load methods from file and add it to prolog.
+	 * @throws InterruptedException 
+	 */
+	@Test
+	public void loadPrologMethods() throws InterruptedException{
+		if(ctx == null) instantiateJtalis();
+		
+		String[] methods = getPrologMethods("constructQueryImp.pl");
+		
+		for (int i = 0; i < methods.length; i++) {
+			System.out.println( methods[i]);
+			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
+		}
+		
+		methods = getPrologMethods("ReferenceCounting.pl");
+		
+		for (int i = 0; i < methods.length; i++) {
+			System.out.println( methods[i]);
+			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
+		}
+		
+		methods = getPrologMethods("Measurement.pl");
+		
+		for (int i = 0; i < methods.length; i++) {
+			System.out.println( methods[i]);
+			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
+		}
+		
+		methods = getPrologMethods("Math.pl");
+		
+		for (int i = 0; i < methods.length; i++) {
+			System.out.println( methods[i]);
+			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
+		}
+		
 	}
 	
 //	@Test
@@ -460,5 +496,34 @@ public class PrologJtalisTest {
 		engine.consult(System.getProperty("user.dir") + "/src/main/resources/PrologMethods/ReferenceCounting.pl");
 		engine.consult(System.getProperty("user.dir") + "/src/main/resources/PrologMethods/Measurement.pl");
 	}
+	
+	private String[] getPrologMethods(String methodFile){
+		try {
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(methodFile);
+			BufferedReader br =new BufferedReader(new InputStreamReader(is));
+			StringBuffer sb = new StringBuffer();
+			String line;
+			
+			while (null != (line = br.readLine())) {
+				if (!(line.equals(" "))) {
+					if (!line.startsWith("%")) { // Ignore comments
+						sb.append(line);
+					}
+				}
+			}
+			//System.out.println(sb.toString());
+			br.close();
+			is.close();
+			
+			String[] methods = sb.toString().split(Pattern.quote( "." ) ); 
+			return methods;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	
+	}
+
 
 }

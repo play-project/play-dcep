@@ -16,4 +16,4 @@ transformToNumber(A, B):- catch(atom_number(A, B), _Exception, B is A).
 
 %Get abs value
 abs(InputValue,AbsValue):- (InputValue>=0, AbsValue is InputValue).
-abs(InputValue,AbsValue):- (InputValue<0, AbsValue is (InputValue*(-1))). 
+abs(InputValue,AbsValue):- (InputValue<0, AbsValue is (InputValue*(-1))).
