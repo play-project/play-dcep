@@ -60,7 +60,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		this.recipients = recipients;
 		this.registeredQueries = registeredQueries;
 		this.historicData = new Engine(ecConnectionManager);
-		
 	}
 	
 	@Override
