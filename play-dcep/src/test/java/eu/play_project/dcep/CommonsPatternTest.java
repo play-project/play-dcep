@@ -69,7 +69,7 @@ public class CommonsPatternTest {
 		testApi.attach(subscriber);
 	
 		logger.info("Publish evetns");
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 5; i++) {
 			CompoundEvent event = createTaxiUCCallEvent("http://example1.com/" + Math.random());
 			System.out.println(i);
 			//logger.fine("Publish event" +  event);
