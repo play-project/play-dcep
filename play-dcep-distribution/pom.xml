@@ -105,6 +105,10 @@
 					<artifactId>play-commons-eventformat</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>play-commons-constants</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -127,7 +131,12 @@
 					<artifactId>play-commons-eventformat</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>play-commons-constants</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
 			</exclusions>
+
 		</dependency>
 		<!-- in order to be able to use filters in the logback configuration side:   -->
 		<dependency>
@@ -157,6 +166,16 @@
 		<dependency>
 			<groupId>fr.inria.eventcloud</groupId>
 			<artifactId>eventcloud-adapters-rdf2go</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>play-commons-eventformat</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>play-commons-constants</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
