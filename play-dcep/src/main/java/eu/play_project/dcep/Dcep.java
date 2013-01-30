@@ -23,6 +23,7 @@ import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
+import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.configurations.DEtalisLocalConfig;
@@ -163,7 +164,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 				dEtalisMonitoring = ((DcepMonitoringApi) dEtalis
 						.getFcInterface("DcepMonitoringApi"));
 				configApi = ((ConfigApi)dEtalis.getFcInterface("ConfigApi"));
-				configApi.setConfig(new DEtalisLocalConfig());
+				configDEtalisInstance(configApi);
 			} catch (NoSuchInterfaceException e) {
 				logger.error("Error: ", e);
 			} catch (ADLException e) {
@@ -174,5 +175,12 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 			init = true;
 		}
 		return init;
+	}
+	
+	public void configDEtalisInstance(ConfigApi configApi){
+		
+		//if(start without ec connection) configApi.setConfig( new DEtalisLocalConfig());
+		//if(start with ec connection)
+		configApi.setConfig(new DefaultConfiguration());
 	}
 }
