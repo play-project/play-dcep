@@ -98,6 +98,9 @@
 				<directory>src/main/resources</directory>
 			</resource>
 			<resource>
+				<directory>src/main/resources/PrologMethods</directory>
+			</resource>
+			<resource>
 				<filtering>false</filtering>
 				<directory>src/main/adl</directory>
 			</resource>
