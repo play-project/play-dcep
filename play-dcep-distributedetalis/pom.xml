@@ -21,6 +21,12 @@
 			<artifactId>jtalis-core</artifactId>
 			<version>1.0</version>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>play-dcep-distributedetalis</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fr.inria.eventcloud</groupId>
