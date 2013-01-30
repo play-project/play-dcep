@@ -10,7 +10,7 @@ import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
-import eu.play_project.dcep.distributedetalis.LocalEcConnectionManager;
+import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
@@ -42,7 +42,7 @@ public class DEtalisLocalConfig implements Configuration, Serializable{
 		semWebLib.init(etalis);
 		
 		dEtalisConfigApi.setEventInputProvider(new JtalisInputProvider(semWebLib));
-		dEtalisConfigApi.setEcConnectionManager(new LocalEcConnectionManager());
+		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocal());
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 		dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
 				dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQuerys(),

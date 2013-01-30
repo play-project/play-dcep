@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.objectweb.proactive.ActiveObjectCreationException;
-import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.node.NodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +78,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 			throw e;
 		} catch (MalformedSparqlQueryException e) {
 			logger.error("Mallformed sparql query. " + e.getMessage());
-			e.printStackTrace();
+			throw e;
 		}
 		return response;
 	}
