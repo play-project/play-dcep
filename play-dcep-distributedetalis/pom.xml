@@ -64,6 +64,11 @@
 			<artifactId>play-platformservices-api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.openlinksw</groupId>
+			<artifactId>virtjdbc4</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -80,6 +85,12 @@
 			<name>dspace releases repository</name>
 			<url>http://dspace.gforge.inria.fr/maven2/repository/releases</url>
 		</repository>
+		<!-- For Virtuoso: -->
+		<repository>
+			<id>mysema-source</id>
+			<url>http://source.mysema.com/maven2/releases</url>
+			<layout>default</layout>
+		</repository>		
 	</repositories>
 
 	<build>
