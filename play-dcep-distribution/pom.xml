@@ -12,6 +12,7 @@
 
 	<artifactId>play-dcep-distribution</artifactId>
 	<packaging>jar</packaging>
+	
 	<name>play-dcep-distribution</name>
 
 	<build>
@@ -67,7 +68,7 @@
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-dcep</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>proactive</artifactId>
@@ -136,8 +137,8 @@
 					<groupId>eu.play-project</groupId>
 				</exclusion>
 			</exclusions>
-
 		</dependency>
+		
 		<!-- in order to be able to use filters in the logback configuration side:   -->
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
@@ -147,7 +148,7 @@
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-platformservices-eventvalidation</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -180,6 +181,7 @@
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-constants</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -189,7 +191,7 @@
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-platformservices</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-log4j12</artifactId>
