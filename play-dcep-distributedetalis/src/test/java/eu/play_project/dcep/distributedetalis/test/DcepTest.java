@@ -28,7 +28,7 @@ import com.hp.hpl.jena.graph.Node;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DEtalisLocalConfig;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -44,7 +44,8 @@ public class DcepTest implements Serializable {
 	static Component root;
 
 	/**
-	 * Instantiate DCEP component and check if you get a reference to PublishApi and ManagementApi.
+	 * Instantiate DCEP component and check if you get a reference to PublishApi
+	 * and ManagementApi.
 	 */
 	@Test
 	public void testInstantiateDcepComponent() {
@@ -79,10 +80,11 @@ public class DcepTest implements Serializable {
 		if (distributedEtalisTestApi == null) {
 			fail("No DCEP component instantiated");
 		} else {
-			dcepManagmentApi.registerEventPattern(new EpSparqlQuery(
+			dcepManagmentApi
+					.registerEventPattern(new EpSparqlQuery(
 							new QueryDetails("queryId42"),
 							"complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1), (xpath(element(sparqlFilter, [keyWord=O], []), //sparqlFilter(contains(@keyWord,'42')), _)))"));
-					        //  "complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))"));
+			// "complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))"));
 		}
 	}
 
@@ -93,10 +95,9 @@ public class DcepTest implements Serializable {
 		} else {
 			for (int i = 0; i < 2; i++) {
 				ArrayList<Quadruple> list = new ArrayList<Quadruple>();
-				Quadruple event = new Quadruple(
-						Node.createURI("id4710"), 
+				Quadruple event = new Quadruple(Node.createURI("id4710"),
 						Node.createURI("http://play-project.eu/Karlsruhe"),
-						Node.createURI("http://play-project.eu/is/CepResult"), 
+						Node.createURI("http://play-project.eu/is/CepResult"),
 						Node.createURI("http://play-project.eu/42"));
 				list.add(event);
 				try {
@@ -105,11 +106,12 @@ public class DcepTest implements Serializable {
 					e.printStackTrace();
 				}
 
-				 try {
-				 Thread.sleep(1000);
-				 } catch (InterruptedException e) {
-				 e.printStackTrace();
-				 }
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				dcepManagmentApi.unregisterEventPattern("queryId42");
 			}
 		}
 	}
@@ -122,25 +124,55 @@ public class DcepTest implements Serializable {
 			e.printStackTrace();
 		}
 		Quadruple expectedResults = new Quadruple(
-				Node.createURI("http://events.event-processing.org/ids/id4710"), 
-				Node.createURI("http://play-project.eu/Karlsruhe"),
-				Node.createURI("http://play-project.eu/is/CepResult"), 
-				Node.createURI("http://play-project.eu/42"));
-		
+				Node.createURI("http://events.event-processing.org/ids/id4710"),
+				Node.createURI("http://play-project.eu/Karlsruhe"), Node
+						.createURI("http://play-project.eu/is/CepResult"), Node
+						.createURI("http://play-project.eu/42"));
+
 		if (subscriber.getComplexEvents() != null) {
-			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples().get(4).equals(expectedResults));
+			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples()
+					.get(4).equals(expectedResults));
 		} else {
-			System.out.println("ERROR: No complex events in test 'checkComplexEvents()'.");
+			System.out
+					.println("ERROR: No complex events in test 'checkComplexEvents()'.");
 			fail();
 		}
-		
+
 	}
 
-	public static void InstantiateDcepComponent() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException {
+	//@Test
+	public void shutDownComponents() {
+		
+		// Stop is rcursive...
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate is not recursive:
 
-		//CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue("proactive.java.policy");
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue(System.getProperty("user.dir")+"\\src\\main\\resources\\proactive.java.policy");
-		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
+			GCM.getGCMLifeCycleController(root).terminateGCMComponent();
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void InstantiateDcepComponent()
+			throws IllegalLifeCycleException, NoSuchInterfaceException,
+			ADLException {
+
+		// CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue("proactive.java.policy");
+		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue(System
+				.getProperty("user.dir")
+				+ "\\src\\main\\resources\\proactive.java.policy");
+		CentralPAPropertyRepository.GCM_PROVIDER
+				.setValue("org.objectweb.proactive.core.component.Fractive");
 		// setProAktiveHome();
 
 		Factory factory = FactoryFactory.getFactory();
@@ -157,16 +189,20 @@ public class DcepTest implements Serializable {
 		root = (Component) factory.newComponent("DistributedEtalis", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 
-		distributedEtalisTestApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
-		
-		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi)root.getFcInterface("ConfigApi"));
-		configApi.setConfig(new DEtalisLocalConfig());
-		
-		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
+		distributedEtalisTestApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
+				.getFcInterface("DistributedEtalisTestApi"));
+
+		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root
+				.getFcInterface("ConfigApi"));
+		configApi.setConfig(new DetalisLocalConfig());
+
+		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
+				.getFcInterface("DcepManagmentApi"));
 
 		// Subscribe to get complex events.
 		try {
-			subscriber = PAActiveObject.newActive(PublishApiSubscriber.class, new Object[] {});
+			subscriber = PAActiveObject.newActive(PublishApiSubscriber.class,
+					new Object[] {});
 		} catch (ActiveObjectCreationException e) {
 			e.printStackTrace();
 		} catch (NodeException e) {
@@ -179,12 +215,15 @@ public class DcepTest implements Serializable {
 
 	/**
 	 * Sets the value of proactive.home if not already set Hack from:
-	 * http://kickjava.com/src/org/objectweb/proactive/core/config/ProActiveConfiguration.java.htm
+	 * http://kickjava
+	 * .com/src/org/objectweb/proactive/core/config/ProActiveConfiguration
+	 * .java.htm
 	 */
 	private void setProAktiveHome() {
 		File file = null;
 		if (System.getProperty("proactive.home") == null) {
-			String location = ProActiveConfiguration.class.getResource("ProActiveConfiguration.class").getPath();
+			String location = ProActiveConfiguration.class.getResource(
+					"ProActiveConfiguration.class").getPath();
 			location = location.split("/proactive-")[0].toString();
 
 			try {

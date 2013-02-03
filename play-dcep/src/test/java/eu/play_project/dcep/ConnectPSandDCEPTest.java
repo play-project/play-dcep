@@ -41,12 +41,12 @@ public class ConnectPSandDCEPTest implements Serializable {
 	static Component root;
 	public static boolean test;
 
-	@Test
+//	@Test
 	public void readQueryFromFileTest(){
 		System.out.println(getSparqlQuerys("play-epsparql-m12-jeans-example-query.eprq"));
 	}
 	
-	@Test
+	//@Test
 	public void instantiatePlayPlatformTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException {
 

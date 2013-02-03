@@ -26,7 +26,7 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
-import eu.play_project.dcep.distributedetalis.configurations.DEtalisLocalConfig;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
 import eu.play_project.dcep.distributedetalis.configurations.DefaultConfiguration;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -181,6 +181,6 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 		
 		//if(start without ec connection) configApi.setConfig( new DEtalisLocalConfig());
 		//if(start with ec connection)
-		configApi.setConfig(new DefaultConfiguration());
+		configApi.setConfig(new DetalisLocalConfig());
 	}
 }

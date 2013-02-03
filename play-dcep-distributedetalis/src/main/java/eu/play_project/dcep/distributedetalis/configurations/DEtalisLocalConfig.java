@@ -18,7 +18,7 @@ import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 
 
 
-public class DEtalisLocalConfig implements Configuration, Serializable{
+public class DetalisLocalConfig implements Configuration, Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,8 +45,8 @@ public class DEtalisLocalConfig implements Configuration, Serializable{
 		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocal());
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 		dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
-				dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQuerys(),
-				dEtalisConfigApi.getEcConnectionManager()));
+		dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQuerys(),
+		dEtalisConfigApi.getEcConnectionManager()));
 
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());

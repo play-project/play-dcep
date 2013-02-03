@@ -47,20 +47,6 @@ public class DefaultConfiguration implements Configuration, Serializable{
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
-//		engine.consult(System.getProperty("user.dir")
-//				+ "/src/main/resources/PrologMethods/constructQueryImp.pl");
-//		engine.consult(System.getProperty("user.dir")
-//				+ "/src/main/resources/PrologMethods/ReferenceCounting.pl");
-//		engine.consult(System.getProperty("user.dir")
-//				+ "/src/main/resources/PrologMethods/Measurement.pl");
-//		engine.consult(System.getProperty("user.dir")
-//				+ "/src/main/resources/PrologMethods/Math.pl");
-
-		// engine.consult("/opt/play-platform-src/play-dcep/play-dcep-distributedetalis/src/main/resources/PrologMethods/constructQueryImp.pl");
-		// engine.consult("/opt/play-platform-src/play-dcep/play-dcep-distributedetalis/src/main/resources/PrologMethods/ReferenceCounting.pl");
-		// engine.consult("/opt/play-platform-src/play-dcep/play-dcep-distributedetalis/src/main/resources/PrologMethods/Measurement.pl");
-		// engine.consult("/opt/play-platform-src/play-dcep/play-dcep-distributedetalis/src/main/resources/PrologMethods/Math.pl");
-
 		// Set ETALIS properties.
 		etalis.setEtalisFlags("save_ruleId", "on");
 		etalis.addEventTrigger("complex/_");

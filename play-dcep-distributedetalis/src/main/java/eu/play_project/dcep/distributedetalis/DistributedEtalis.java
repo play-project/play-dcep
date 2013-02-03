@@ -81,7 +81,8 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.info("Terminating {} component.", this.getClass()
 				.getSimpleName());
 		if (init) {
-			this.ecConnectionManager.destroy();
+			this.etalis.shutdown();
+			if(ecConnectionManager!=null) this.ecConnectionManager.destroy();
 			this.eventSinks.clear();
 			this.init = false;
 		}
@@ -99,6 +100,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.info("New event pattern registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), epSparqlQuery
 						.getQueryDetails().getQueryId());
+		logger.debug("ELE: " + epSparqlQuery.getEleQuery());
 
 		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(),
 				epSparqlQuery);

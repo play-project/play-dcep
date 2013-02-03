@@ -81,6 +81,11 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	@Override
 	public void shutdown() {
 		engine.shutdown();
+		
+		//It is not possible to shutdown completly. We will clean up the database.
+		//this.executeGoal("retractall(_)");
+		this.executeGoal("rdf_retractall(_S,_P,_O,_DB)");
+		this.executeGoal("reset_etalis");
 	}
 
 	@Override
