@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+ <rdf:RDF
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:PLAY="http://www.play-project.eu/#">
+   <rdf:Description about="http://www.play-project.eu/">
+     <PLAY:DemoPage>
+       <rdf:Description about="http://demo.play-project.eu/">
+        <PLAY:Examples>Clic2Call</PLAY:Examples>
+		<PLAY:Examples>VesselInformation</PLAY:Examples>
+       </rdf:Description>
+     </PLAY:DemoPage>
+   </rdf:Description>
+ </rdf:RDF>

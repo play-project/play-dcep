@@ -2,6 +2,7 @@ package eu.play_project.dcep.distributedetalis.test;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,7 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.Binding1;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
@@ -83,6 +85,40 @@ public class EcConnectinManagerLocalTest {
 //			}
 //		}
 
+	}
+	
+	@Test
+	public void readModelFromFile(){
+		// create an empty model
+		 Model model = ModelFactory.createDefaultModel();
+		 
+		 String inputFileName = "Example-historical-RDF-model.rdf";
+		 // use the FileManager to find the input file
+		 InputStream in = FileManager.get().open( inputFileName );
+		if (in == null) {
+		    throw new IllegalArgumentException("File: " + inputFileName + " not found");
+		}
+
+		model.read(in, null);
+
+		// Query data from model
+		Query query = QueryFactory.create("SELECT ?O WHERE {?S ?P ?O}");
+		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+
+		SparqlSelectResponse result;
+		try {
+			ResultSet results = qexec.execSelect();
+
+			// Put result in PLAY result wrapper.
+			ResultSetWrapper dataIn = new ResultSetWrapper(results);
+			result = new SparqlSelectResponse(1, 1, 1, 1, dataIn);
+		} finally {
+			qexec.close();
+		}
+
+		assertTrue(result.getResult().next().get("O").toString().equals("http://demo.play-project.eu/"));
+		assertTrue(result.getResult().next().get("O").toString().equals("VesselInformation"));
+		assertTrue(result.getResult().next().get("O").toString().equals("Clic2Call"));
 	}
 
 }
