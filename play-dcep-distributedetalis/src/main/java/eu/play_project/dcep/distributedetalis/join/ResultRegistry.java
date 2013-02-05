@@ -1,6 +1,3 @@
-/**
- * 
- */
 package eu.play_project.dcep.distributedetalis.join;
 
 import java.util.ArrayList;
@@ -15,60 +12,58 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
 /**
+ * This is a data structure that is used to represent a query result.
+ * 
  * @author Ningyuan Pan
  *
  */
-public class ResultRegistry {
-	//for test
-	private int num;
+public class ResultRegistry implements SelectResults {
 	
 	// number of row in result
 	private int size;
-	// variables in select
+	// variables in select (column names)
 	private List<String> variables;
+	// result data
 	private List<List> result = new ArrayList<List>();
 	
 	private Logger logger = LoggerFactory.getLogger(ResultRegistry.class);
 	
-	//for test
-	public ResultRegistry(int i, List<String> v){
-		variables = v;
-		num = i;
-	}
-	
-	public ResultRegistry(int i, ResultSetWrapper rw){
-		makeResult(rw);
-		num = i;
-	}
-	
 	public ResultRegistry(ResultSetWrapper rw){
 		makeResult(rw);
+	}
+	
+	public ResultRegistry(){
 	}
 	
 	public int getSize(){
 		return size;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.play_project.dcep.distributedetalis.join.SelectResults#getVariables()
+	 */
+	@Override
 	public List<String> getVariables(){
-		return variables;
+		return this.variables;
 	}
 	
+	@Override
+	public void setVariables(List<String> variables){
+		this.variables = variables;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.play_project.dcep.distributedetalis.join.SelectResults#getResult()
+	 */
+	@Override
 	public List<List> getResult(){
 		return result;
 	}
 	
-	// for test
-	public int getNum(){
-		return num;
-	}
-	// for test
-	public void setSize(int i){
-		size = i;
-	}
-	// for test	
-	public void setResult(List<List> r){
-		result = r;
-		size = r.size();
+	@Override
+	public void setResult(List<List> result){
+		this.result = result;
+		this.size = result.size();
 	}
 	
 	/*
@@ -76,27 +71,19 @@ public class ResultRegistry {
 	 */
 	private void makeResult(ResultSetWrapper rw){
 		if(rw == null){
-			variables = new ArrayList<String>(0);
-			size = 0;
+			this.variables = new ArrayList<String>(0);
+			this.size = 0;
 			return;
 		}
-		
-		System.out.println("Result from Event cloud:");
-		variables = rw.getResultVars();
-		if(variables != null){
-			for(int i = 0; i < variables.size(); i++){
-				System.out.print(variables.get(i)+" ");
-			}
-			System.out.println();
-		}
+		this.variables = rw.getResultVars();
 		
 		//TODO size = 0??
 		// result has duplicated entries ???
 		//size = rw.getRowNumber();
 			//logger.info("size: "+size);
 		
-		int colNum = variables.size();
-		size = 0;
+		int colNum = this.variables.size();
+		this.size = 0;
 		QuerySolution qs;
 		while(rw.hasNext()){
 			qs = rw.next();
@@ -107,16 +94,6 @@ public class ResultRegistry {
 			}
 			result.add(data);
 			size++;
-		}
-		
-		//for test
-		System.out.println();
-		for(int i=0; i < result.size(); i++){
-			List<String> ls = result.get(i);
-			for(int j=0; j < ls.size(); j++){
-				System.out.print(ls.get(j)+" ");
-			}
-			System.out.println();
 		}
 	}
 }

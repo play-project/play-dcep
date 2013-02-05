@@ -1,6 +1,7 @@
 package eu.play_project.dcep.distributedetalis;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
+import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.EventCloudId;
@@ -18,6 +21,7 @@ import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
+import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 import fr.inria.eventcloud.factories.ProxyFactory;
 
@@ -61,7 +65,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#getDataFromCloud(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public synchronized SparqlSelectResponse getDataFromCloud(String query, String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException {
+	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -77,10 +81,11 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
 		} catch (MalformedSparqlQueryException e) {
-			logger.error("Mallformed sparql query. " + e.getMessage());
+			logger.error("Malformed sparql query. " + e.getMessage());
 			throw e;
 		}
-		return response;
+		ResultSetWrapper rw = response.getResult();
+		return new ResultRegistry(rw);
 	}
 	
 	/* (non-Javadoc)

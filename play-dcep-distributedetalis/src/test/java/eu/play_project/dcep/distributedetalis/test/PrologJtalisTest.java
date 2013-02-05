@@ -67,9 +67,10 @@ public class PrologJtalisTest {
 	@Test
 	public void instantiateJtalis() throws InterruptedException{
 
-		PrologEngineWrapper<?> engine = eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper.getPlayJplEngineWrapper();
+		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);
 		
+		ctx.getEngineWrapper().executeGoal("reset_ETALIS");
 		Thread.sleep(3000);
 		
 	}
@@ -90,16 +91,17 @@ public class PrologJtalisTest {
 				result = event;
 			}
 		});
-
-		ctx.addEventTrigger("_"); // Which events are printed (_ means all)
-		ctx.addDynamicRule("complex(X) <- a(X) seq b(X)");
+		//ctx.addEventTrigger("complex"); // Which events are printed (_ means all)
+		ctx.addDynamicRule("complex(X,'id') <- a(X) seq b(X)");
 		
-		ctx.pushEvent(new EtalisEvent("a", 1));
-		ctx.pushEvent(new EtalisEvent("b", 1));
+		//ctx.pushEvent(new EtalisEvent("a", 1));
+		//ctx.pushEvent(new EtalisEvent("b", 1));
 	
 		delay();
+System.out.println("fffffffffffffffffff" + result);
+System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 
-		assertTrue(result.equals(new EtalisEvent("complex", 1)));
+		assertTrue(result.equals(new EtalisEvent("complexExample", 1,"id")));
 	}
 	
 	/**

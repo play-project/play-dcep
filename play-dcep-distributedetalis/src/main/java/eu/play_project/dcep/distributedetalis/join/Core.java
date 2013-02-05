@@ -27,7 +27,7 @@ public class Core {
 		
 		while(minp.size() > 1){
 			ResultRegistry min1 = minp.get(0);
-			ResultRegistry min2 = minp.get(1);
+			SelectResults min2 = minp.get(1);
 				//System.out.println("\nCross Chosen: ( "+min1.getNum()+" "+min2.getNum()+" ) ");
 			min1.setResult(cross.naturalJoin(min1.getResult(), min1.getVariables(), min2.getResult(), min2.getVariables()));
 			
@@ -53,7 +53,7 @@ public class Core {
 		ResultRegistry ret = results.get(0);
 		if(results.size() > 1){
 			for(int i = 1; i < results.size(); i++){
-				ResultRegistry ir = results.get(i);
+				SelectResults ir = results.get(i);
 					//System.out.println("\nIndepCross Chosen: ( "+ret.getNum()+" "+ir.getNum()+" ) ");
 				ret.setResult(cross.naturalJoin(ret.getResult(), ret.getVariables(), ir.getResult(), ir.getVariables()));
 			}

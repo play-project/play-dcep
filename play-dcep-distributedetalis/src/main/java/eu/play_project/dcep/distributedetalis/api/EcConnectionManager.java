@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis.api;
 
+import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishApi;
@@ -12,7 +13,7 @@ import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 public interface EcConnectionManager extends SimplePublishApi{
 
-	public abstract SparqlSelectResponse getDataFromCloud(String query,
+	public abstract SelectResults getDataFromCloud(String query,
 			String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException;
 
 	/**

@@ -10,6 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is a data structure that is used to represent a selected variable in queries. It's attribute
+ * relIndex indicates how many queries have selected this variable and in relRes all these relevant 
+ * queries are stored in decreased oder on size of query result.
+ * 
+ * 
  * @author Ningyuan Pan
  *
  */
@@ -47,7 +52,7 @@ public class SelectVariable <T>{
 		return done;
 	}
 	
-	public boolean removeRelResult(ResultRegistry r){
+	public boolean removeRelResult(SelectResults r){
 		boolean done = relRes.remove(r);
 		if(done){
 			relIndex--;
