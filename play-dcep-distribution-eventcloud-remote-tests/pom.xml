@@ -12,6 +12,7 @@
 
 	<artifactId>play-dcep-distribution-eventcloud-remote-tests</artifactId>
 	<packaging>jar</packaging>
+	
 	<name>play-dcep-distribution-eventcloud-remote-tests</name>
 
 	<build>
