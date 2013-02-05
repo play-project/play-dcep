@@ -12,4 +12,6 @@ public interface SelectResults {
 
 	void setResult(List<List> result);
 
+	int getSize();
+
 }

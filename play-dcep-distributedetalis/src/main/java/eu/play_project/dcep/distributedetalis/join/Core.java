@@ -4,12 +4,8 @@
 package eu.play_project.dcep.distributedetalis.join;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
@@ -20,7 +16,7 @@ public class Core {
 	
 	//private ResultComparator comp = new ResultComparator();
 	
-	public static void make(Map<String, SelectVariable> variables, List<ResultRegistry> results){
+	public static void make(Map<String, SelectVariable> variables, List<SelectResults> results){
 		NaturalJoiner cross = new NaturalJoiner();
 		List<ResultRegistry> minp = new ArrayList<ResultRegistry>(2);
 		getMinProduct(minp, variables);
@@ -50,7 +46,7 @@ public class Core {
 		}
 		
 		// nature product with all independent results
-		ResultRegistry ret = results.get(0);
+		SelectResults ret = results.get(0);
 		if(results.size() > 1){
 			for(int i = 1; i < results.size(); i++){
 				SelectResults ir = results.get(i);

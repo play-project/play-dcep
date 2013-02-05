@@ -15,7 +15,6 @@ import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
-import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 /**
@@ -54,7 +53,7 @@ public class Engine implements HistoricalData {
 		Map<String, List<String>> ret = new HashMap<String, List<String>>();
 
 		// data structures used by core
-		List<ResultRegistry> rrs = new ArrayList<ResultRegistry>();
+		List<SelectResults> rrs = new ArrayList<SelectResults>();
 		Map<String, SelectVariable> svs = new HashMap<String, SelectVariable>();
 
 		// init data structures used by core
@@ -80,13 +79,11 @@ public class Engine implements HistoricalData {
 		return ret;
 	}
 
-	private boolean addResultRegistry(String stream, String hquery, List<ResultRegistry> rrs, Map<String, SelectVariable> svs, Map<String, List<String>> variableNames) {
+	private boolean addResultRegistry(String stream, String hquery, List<SelectResults> rrs, Map<String, SelectVariable> svs, Map<String, List<String>> variableNames) {
 
-		// connect event cloud
-		// TODO change interface SparqlSelectResponse
-		SparqlSelectResponse result;
+		SelectResults rr;
 		try {
-			result = ecConnection.getDataFromCloud(hquery, stream);
+			rr = ecConnection.getDataFromCloud(hquery, stream);
 		} catch (EventCloudIdNotManaged e) {
 			logger.error("Unknown event cloud in historic query.", e);
 			return false;
@@ -95,7 +92,6 @@ public class Engine implements HistoricalData {
 			return false;
 		} 
 
-		ResultRegistry rr = new ResultRegistry(result.getResult());
 		if(rr.getSize() == 0)
 			return false;
 		else{

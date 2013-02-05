@@ -3,7 +3,6 @@ package eu.play_project.dcep.distributedetalis.join;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -26,9 +25,9 @@ public class SelectVariable <T>{
 	private List<T> values;
 	
 	// queries that select this variable
-	private TreeSet<ResultRegistry> relRes = new TreeSet<ResultRegistry>(new Comparator<ResultRegistry>(){
+	private TreeSet<SelectResults> relRes = new TreeSet<SelectResults>(new Comparator<SelectResults>(){
 		@Override
-		public int compare(ResultRegistry o1, ResultRegistry o2) {
+		public int compare(SelectResults o1, SelectResults o2) {
 			return o1.getSize() - o2.getSize();
 		}
 	});
@@ -43,7 +42,7 @@ public class SelectVariable <T>{
 		return values;
 	}
 	
-	public boolean addRelResult(ResultRegistry r){
+	public boolean addRelResult(SelectResults r){
 		boolean done = relRes.add(r);
 		if(done){
 			relIndex++;
@@ -61,7 +60,7 @@ public class SelectVariable <T>{
 		return done;
 	}
 	
-	public TreeSet<ResultRegistry> getRelResult(){
+	public TreeSet<SelectResults> getRelResult(){
 		return relRes;
 	}
 	

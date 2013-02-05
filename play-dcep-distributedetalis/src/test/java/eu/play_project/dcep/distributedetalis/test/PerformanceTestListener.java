@@ -1,7 +1,6 @@
 package eu.play_project.dcep.distributedetalis.test;
 
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;

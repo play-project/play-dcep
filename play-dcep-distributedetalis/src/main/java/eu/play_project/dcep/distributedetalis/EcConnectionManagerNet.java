@@ -1,7 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

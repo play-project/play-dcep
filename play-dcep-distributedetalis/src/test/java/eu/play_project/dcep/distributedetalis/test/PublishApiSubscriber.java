@@ -1,17 +1,11 @@
 package eu.play_project.dcep.distributedetalis.test;
 
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.PublishApi;
-import fr.inria.eventcloud.api.Quadruple;
-import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class PublishApiSubscriber implements SimplePublishApi, Serializable {
 

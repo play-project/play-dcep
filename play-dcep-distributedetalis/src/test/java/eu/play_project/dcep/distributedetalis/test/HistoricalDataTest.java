@@ -7,17 +7,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.Syntax;
-
-import eu.play_project.dcep.distributedetalis.EcConnectionManagerNet;
-import eu.play_project.dcep.distributedetalis.api.HistoricalData;
-import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.join.HistoricalQueryContainer;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
-import eu.play_project.play_platformservices.api.HistoricalQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
 
 public class HistoricalDataTest {
 	

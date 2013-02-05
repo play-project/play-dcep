@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
@@ -35,6 +34,7 @@ public class ResultRegistry implements SelectResults {
 	public ResultRegistry(){
 	}
 	
+	@Override
 	public int getSize(){
 		return size;
 	}
