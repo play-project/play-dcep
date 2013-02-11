@@ -1,0 +1,51 @@
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix : <http://events.event-processing.org/types/> .
+@prefix uctelco: <http://events.event-processing.org/uc/telco/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix e: <http://events.event-processing.org/ids/> .
+@prefix s: <http://streams.event-processing.org/ids/> .
+@prefix esr: <http://imu.ntua.gr/play/esr/mcm/2#> .
+@prefix uccrisis: <http://www.mines-albi.fr/nuclearcrisisevent/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix src: <http://sources.event-processing.org/ids/> .
+@prefix user: <http://graph.facebook.com/schema/user#> .
+{
+}
+
+e:e5917518587088559184  {
+    <http://events.event-processing.org/ids/e5917518587088559184#event>
+            :stream  <http://streams.event-processing.org/ids/FacebookCepResults#stream> ;
+            :discussionTopic  "JEANS was mentioned" ;
+            :friend  "another person" ;
+            :friend  "a person" ;
+            :endTime  "2013-02-11T10:40:44.405Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+            :startTime  "2011-08-24T12:42:01.011Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+            rdf:type  :FacebookCepResult .
+    
+}
+
+e:e5835398754304260183  {
+    <urn:rnd:-78bccd5a:13cc8e1b0ed:-8000>
+            geo:long  "345.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+            geo:lat  "123.0"^^<http://www.w3.org/2001/XMLSchema#double> ;
+            rdf:type  geo:Point .
+    
+    <http://events.event-processing.org/ids/e5835398754304260183#event>
+            rdf:type  :TwitterEvent ;
+            :location  <urn:rnd:-78bccd5a:13cc8e1b0ed:-8000> ;
+            sioc:content  "some Tweet" ;
+            :screenName  "roland.stuehmer" ;
+            :endTime  "2013-02-11T10:51:39.614Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+            :stream  <http://streams.event-processing.org/ids/TwitterFeed#stream> ;
+            :hashTag  "dog" ;
+            :isRetweet  "false"^^<http://www.w3.org/2001/XMLSchema#boolean> ;
+            :hashTag  "ace" ;
+            :followersCount  "4"^^<http://www.w3.org/2001/XMLSchema#int> ;
+            :hashTag  "crew" ;
+            :twitterName  "Roland St\u00FChmer" ;
+            :friendsCount  "2"^^<http://www.w3.org/2001/XMLSchema#int> ;
+            :hashTag  "boom" ;
+            :hashTag  "eon" .
+    
+}
