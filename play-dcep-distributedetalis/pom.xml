@@ -77,6 +77,11 @@
 			<artifactId>virtjdbc4</artifactId>
 			<version>1.0</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>de.fuberlin.wiwss.ng4j</groupId> -->
+<!-- 			<artifactId>ng4j</artifactId> -->
+<!-- 			<version>ng4j-0.9.3</version> -->
+<!-- 		</dependency> -->
 	</dependencies>
 
 	<repositories>
@@ -98,7 +103,7 @@
 			<id>mysema-source</id>
 			<url>http://source.mysema.com/maven2/releases</url>
 			<layout>default</layout>
-		</repository>		
+		</repository>	
 	</repositories>
 
 	<build>

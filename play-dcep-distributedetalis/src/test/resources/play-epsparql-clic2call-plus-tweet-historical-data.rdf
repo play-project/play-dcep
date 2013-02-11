@@ -1,0 +1,13 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix uctelco: <http://events.event-processing.org/uc/telco/>.
+@prefix geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix sioc:   <http://rdfs.org/sioc/ns#>.
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#>.
+@prefix :       <http://events.event-processing.org/types/>.
+@prefix foaf:       <http://events.event-processing.org/types/>.
+
+# Graph: http://example.org/alice
+_:a foaf:name "Alice" .
+_:a foaf:mbox <mailto:alice@work.example.org> .
+
+ 
