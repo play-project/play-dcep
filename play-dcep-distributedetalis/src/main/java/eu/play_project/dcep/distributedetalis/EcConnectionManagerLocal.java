@@ -1,18 +1,25 @@
 package eu.play_project.dcep.distributedetalis;
 
+import java.io.IOException;
 import java.io.InputStream;
 
+import org.ontoware.rdf2go.exception.ModelRuntimeException;
+import org.ontoware.rdf2go.exception.SyntaxNotSupportedException;
+import org.ontoware.rdf2go.model.ModelSet;
+import org.ontoware.rdf2go.model.Syntax;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.util.FileManager;
 
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
+import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
@@ -21,11 +28,17 @@ import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 public class EcConnectionManagerLocal extends EcConnectionManagerNet{
-	
-	String rdfModelinputFileName = "Example-historical-RDF-model.rdf";
 
 	private static final long serialVersionUID = -9212054663979899431L;
+	private Logger logger = LoggerFactory.getLogger(EcConnectionManagerLocal.class);
+	private String inputRdfModelFileName;
 
+	public EcConnectionManagerLocal(String inputRdfModelFileName){
+		this.inputRdfModelFileName = inputRdfModelFileName;
+	}
+	
+	public EcConnectionManagerLocal(){}
+	
 	@Override
 	public void registerEventPattern(EpSparqlQuery epSparqlQuery) {}
 	
@@ -37,37 +50,50 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 	
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException {
-		 
-		 
-		 Model model = ModelFactory.createDefaultModel();
-		 // use the FileManager to find the input file
-		 InputStream in = FileManager.get().open(rdfModelinputFileName);
+		// Create an empty model.
+		ModelSet rdf = EventHelpers.createEmptyModelSet();
+
+		if(inputRdfModelFileName==null){
+			throw new RuntimeException("No data in jena model.");
+		}
+		
+	
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(inputRdfModelFileName);
 		if (in == null) {
-		    throw new IllegalArgumentException("File: " + rdfModelinputFileName + " not found");
+			throw new IllegalArgumentException("File: " + inputRdfModelFileName + " not found");
 		}
 
+		// Read data from file.
+		try {
+			rdf.readFrom(in, Syntax.Trig);
+		} catch (SyntaxNotSupportedException e) {
+			logger.error("Syntax " + Syntax.Trig + " is not supported." );
+			e.printStackTrace();
+		} catch (ModelRuntimeException e) {
+			logger.error("ModelRuntimeException: " + e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.error("IO-Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
 
 		// Query data from model
-		Query query1 = QueryFactory.create(query);
-		QueryExecution qexec = QueryExecutionFactory.create(query, model);
+		Query jenaQuery = QueryFactory.create(query);
+		Dataset jena = (Dataset) rdf.getUnderlyingModelSetImplementation();
+		
+		QueryExecution qexec = QueryExecutionFactory.create(jenaQuery, jena);
 
-		SparqlSelectResponse result;
+		ResultRegistry results = null;
 		try {
-			ResultSet results = qexec.execSelect();
-
-			// Put result in PLAY result wrapper.
-			ResultSetWrapper dataIn = new ResultSetWrapper(results);
-			result = new SparqlSelectResponse(1, 1, 1, 1, dataIn);
+			results = new ResultRegistry(new ResultSetWrapper(qexec.execSelect()));
 		} finally {
 			qexec.close();
 		}
-		
-		ResultSetWrapper rw = result.getResult();
-		return new ResultRegistry(rw);
+
+		return (results);
 	}
 
-	public void setRdfModelinputFileName(String rdfModelinputFileName) {
-		this.rdfModelinputFileName = rdfModelinputFileName;
+	public void setInputRdfModelFileName(String inputRdfModelFileName) {
+		this.inputRdfModelFileName = inputRdfModelFileName;
 	}
-
 }

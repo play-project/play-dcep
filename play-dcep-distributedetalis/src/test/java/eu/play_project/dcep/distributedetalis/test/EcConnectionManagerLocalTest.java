@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis.test;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
@@ -33,13 +34,17 @@ import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
+import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
+import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 
 
 import fr.inria.eventcloud.api.Quadruple;
+import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
+import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 /**
  * Tests of the local version of EcConnectionManager.
@@ -47,14 +52,14 @@ import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
  * @author Stefan Obermeier
  * 
  */
-public class EcConnectinManagerLocalTest {
+public class EcConnectionManagerLocalTest {
 
 	/**
 	 * Read Model from file and test basic graph query.
 	 */
 	@Test
 	public void readModelFromFile() throws SyntaxNotSupportedException, ModelRuntimeException, IOException {
-		// create an empty model
+		// Create an empty model.
 		ModelSet rdf = EventHelpers.createEmptyModelSet();
 
 		String inputFileName = "Example-historical-RDF-model.trig";
@@ -63,6 +68,7 @@ public class EcConnectinManagerLocalTest {
 			throw new IllegalArgumentException("File: " + inputFileName+ " not found");
 		}
 
+		// Read data from file.
 		rdf.readFrom(in, Syntax.Trig);
 
 		// Query data from model
@@ -85,6 +91,18 @@ public class EcConnectinManagerLocalTest {
 
 		assertTrue(result.getResult().next().get("O").toString()
 				.equals("Roland St\u00FChmer"));
+	}
+	
+	@Test
+	public void queryEcConnectinManagerLocal() throws EventCloudIdNotManaged, MalformedSparqlQueryException{
+		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("Example-historical-RDF-model.trig");
+		
+		String query = "SELECT ?O WHERE { GRAPH ?id {?S <http://events.event-processing.org/types/screenName> \"roland.stuehmer\"." +
+				"?S <http://events.event-processing.org/types/twitterName> ?O}}";
+
+		SelectResults sr = ecm.getDataFromCloud(query, "local");
+		
+		assertEquals(sr.getResult().get(0).get(0).toString(), "Roland Stühmer");
 	}
 
 }
