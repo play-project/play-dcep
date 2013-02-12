@@ -94,7 +94,7 @@ public class EcConnectionManagerLocalTest {
 	}
 	
 	@Test
-	public void queryEcConnectinManagerLocal() throws EventCloudIdNotManaged, MalformedSparqlQueryException{
+	public void queryEcConnectionManagerLocal() throws EventCloudIdNotManaged, MalformedSparqlQueryException{
 		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("Example-historical-RDF-model.trig");
 		
 		String query = "SELECT ?O WHERE { GRAPH ?id {?S <http://events.event-processing.org/types/screenName> \"roland.stuehmer\"." +

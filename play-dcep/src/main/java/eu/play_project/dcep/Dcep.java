@@ -3,6 +3,7 @@ package eu.play_project.dcep;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.objectweb.fractal.adl.ADLException;
@@ -28,6 +29,7 @@ import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
 import eu.play_project.dcep.distributedetalis.configurations.DefaultConfiguration;
+import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -178,9 +180,11 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 	}
 	
 	public void configDEtalisInstance(ConfigApi configApi){
+		Properties constants = Constants.getProperties("play-dcep-distribution.properties");
 		
-		//if(start without ec connection) configApi.setConfig( new DEtalisLocalConfig());
-		//if(start with ec connection)
-		configApi.setConfig(new DetalisLocalConfig());
+		if(constants.getProperty("dcep.middleware").equals("local"))configApi.setConfig(new DetalisLocalConfig());
+		if(constants.getProperty("dcep.middleware").equals("eventcloud"))configApi.setConfig(new DefaultConfiguration());
+		// if(constants.getProperty("dcep.middleware").equals("virtuoso"))configApi.setConfig(new DetalisLocalConfig()); TODO generate virtuoso configuration.
+
 	}
 }

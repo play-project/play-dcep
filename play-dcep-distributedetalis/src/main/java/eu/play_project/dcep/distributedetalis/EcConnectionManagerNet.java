@@ -163,7 +163,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 			subscribe(cloudId);
 		}
 
-		// Treat output streams lazily: don't connect before a compex event is detected.
+		// Treat output streams lazily: don't connect before a complex event is detected.
 	}
 	
 	
