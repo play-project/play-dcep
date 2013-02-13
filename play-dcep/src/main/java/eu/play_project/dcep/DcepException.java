@@ -1,0 +1,22 @@
+package eu.play_project.dcep;
+
+public class DcepException extends Exception {
+
+	private static final long serialVersionUID = 8999118584899535074L;
+
+	public DcepException() {
+	}
+
+	public DcepException(String message) {
+		super(message);
+	}
+
+	public DcepException(Throwable cause) {
+		super(cause);
+	}
+
+	public DcepException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+}

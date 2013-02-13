@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.distributedetalis.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerNet;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
@@ -16,9 +17,10 @@ import eu.play_project.play_commons.constants.Constants;
 
 public class DefaultConfiguration implements Configuration, Serializable{
 
+	private static final long serialVersionUID = 2565049949514271475L;
 
 	@Override
-	public void configure(DEtalisConfigApi dEtalisConfigApi) {
+	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
 		// Init ETALIS
 		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -29,6 +31,7 @@ public class DefaultConfiguration implements Configuration, Serializable{
 			dEtalisConfigApi.setEtalis(etalis);
 		} catch (Exception e) {
 			dEtalisConfigApi.getLogger().error("Error initializing ETALIS", e);
+			throw new DistributedEtalisException("Error initializing ETALIS", e);
 		}
 		
 		// Load Semantic Web Library

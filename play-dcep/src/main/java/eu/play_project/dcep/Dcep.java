@@ -3,7 +3,6 @@ package eu.play_project.dcep;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.objectweb.fractal.adl.ADLException;
@@ -23,12 +22,13 @@ import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
+import eu.play_project.dcep.distributedetalis.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
-import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
 import eu.play_project.dcep.distributedetalis.configurations.DefaultConfiguration;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisVirtuosoConfig;
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -142,8 +142,6 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 
 	/**
 	 * Init connections to dEtalis components.
-	 * 
-	 * @return
 	 */
 	private boolean init() {
 
@@ -168,23 +166,38 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 				configApi = ((ConfigApi)dEtalis.getFcInterface("ConfigApi"));
 				configDEtalisInstance(configApi);
 			} catch (NoSuchInterfaceException e) {
-				logger.error("Error: ", e);
+				logger.error("Error initialising DCEP: ", e);
+				//throw new DcepException("Error initialising DCEP: ", e);
 			} catch (ADLException e) {
-				logger.error("Error: ", e);
+				logger.error("Error initialising DCEP: ", e);
+				//throw new DcepException("Error initialising DCEP: ", e);
 			} catch (IllegalLifeCycleException e) {
-				logger.error("Error: ", e);
+				logger.error("Error initialising DCEP: ", e);
+				//throw new DcepException("Error initialising DCEP: ", e);
+			} catch (DistributedEtalisException e) {
+				logger.error("Error initialising DCEP: ", e);
+				//throw new DcepException("Error initialising DCEP: ", e);
 			}
 			init = true;
 		}
 		return init;
 	}
 	
-	public void configDEtalisInstance(ConfigApi configApi){
-		Properties constants = Constants.getProperties("play-dcep-distribution.properties");
+	public void configDEtalisInstance(ConfigApi configApi) throws DistributedEtalisException{
+		String middleware = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.middleware");
+		middleware = (middleware == null) ? "local" : middleware; // set default
 		
-		if(constants.getProperty("dcep.middleware").equals("local"))configApi.setConfig(new DetalisLocalConfig());
-		if(constants.getProperty("dcep.middleware").equals("eventcloud"))configApi.setConfig(new DefaultConfiguration());
-		// if(constants.getProperty("dcep.middleware").equals("virtuoso"))configApi.setConfig(new DetalisLocalConfig()); TODO generate virtuoso configuration.
-
+		if(middleware.equals("local")) {
+			configApi.setConfig(new DetalisLocalConfig());
+		}
+		else if(middleware.equals("eventcloud")) {
+			configApi.setConfig(new DefaultConfiguration());
+		}
+		else if(middleware.equals("virtuoso")) {
+			configApi.setConfig(new DetalisVirtuosoConfig());
+		}
+		else {
+			logger.error("Specified middleware is not implemented: {}.", middleware);
+		}
 	}
 }

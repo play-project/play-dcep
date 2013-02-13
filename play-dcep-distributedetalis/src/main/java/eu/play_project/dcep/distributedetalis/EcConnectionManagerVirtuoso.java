@@ -31,9 +31,9 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 	private VirtuosoDataSource ds;
 	private Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
 	
-	public EcConnectionManagerVirtuoso() throws NamingException{
+	public EcConnectionManagerVirtuoso() throws NamingException {
 		Properties constants = Constants.getProperties("play-dcep-distribution.properties");
-				
+
 		ds = new VirtuosoDataSource();
 		ds.setServerName(constants.getProperty("dcep.virtuoso.servername"));
 		ds.setPortNumber(Integer.parseInt(constants.getProperty("dcep.virtuoso.port")));

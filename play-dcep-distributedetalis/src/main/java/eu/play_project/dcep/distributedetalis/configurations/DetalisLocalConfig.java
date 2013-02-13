@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.distributedetalis.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
@@ -23,7 +24,7 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void configure(DEtalisConfigApi dEtalisConfigApi) {
+	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
 		// Init ETALIS
 		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -34,6 +35,7 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 			dEtalisConfigApi.setEtalis(etalis);
 		} catch (Exception e) {
 			dEtalisConfigApi.getLogger().error("Error initializing ETALIS", e);
+			throw new DistributedEtalisException("Error initializing ETALIS", e);
 		}
 		
 		// Load Semantic Web Library

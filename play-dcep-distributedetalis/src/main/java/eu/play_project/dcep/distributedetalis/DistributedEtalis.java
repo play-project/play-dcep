@@ -176,7 +176,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void setConfig(Configuration configuration) {
+	public void setConfig(Configuration configuration) throws DistributedEtalisException {
 		configuration.configure(this);
 		init = true;
 	}

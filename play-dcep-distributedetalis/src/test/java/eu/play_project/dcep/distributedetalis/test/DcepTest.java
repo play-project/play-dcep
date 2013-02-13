@@ -26,6 +26,7 @@ import org.objectweb.proactive.core.node.NodeException;
 import com.hp.hpl.jena.graph.Node;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.distributedetalis.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
@@ -46,9 +47,11 @@ public class DcepTest implements Serializable {
 	/**
 	 * Instantiate DCEP component and check if you get a reference to PublishApi
 	 * and ManagementApi.
+	 * 
+	 * @throws DistributedEtalisException 
 	 */
 	@Test
-	public void testInstantiateDcepComponent() {
+	public void testInstantiateDcepComponent() throws DistributedEtalisException {
 
 		try {
 			InstantiateDcepComponent();
@@ -165,7 +168,7 @@ public class DcepTest implements Serializable {
 
 	public static void InstantiateDcepComponent()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
-			ADLException {
+			ADLException, DistributedEtalisException {
 
 		// CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue("proactive.java.policy");
 		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue(System
