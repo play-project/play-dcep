@@ -36,17 +36,29 @@ cd /tmp
 wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-static-5.10.2-3.fc15.x86_64.rpm
 wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-jpl-5.10.2-3.fc15.x86_64.rpm
 wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-5.10.2-3.fc15.x86_64.rpm
-rpm -i --nodeps pl-*.rpm
+rpm -i pl-*.rpm
 ```
+Add `--nodeps` to the rpm command if there is a problem with an old version of libjpeg which is actually on your system already.
+
 #### Tomcat
 ```
 yum install tomcat6 tomcat6-admin-webapps
 ```
+### Virtuoso (optional)
+```
+rpm -i http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-8.noarch.rpm
+yum install virtuoso-opensource virtuoso-opensource-conductor virtuoso-opensource-utils
+```
+
 #### PLAY DSB
 
 ### Build Requirements:
-* Maven 3.x
-* Git
+### Maven 3.x
+### Git
+```
+yum install git
+```
+
 
 Issues
 ------
