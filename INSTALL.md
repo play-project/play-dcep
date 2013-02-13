@@ -45,7 +45,7 @@ Add `--nodeps` to the rpm command if there is a problem with an old version of l
 yum install tomcat6 tomcat6-admin-webapps
 chkconfig tomcat6 on
 ```
-### Virtuoso (optional)
+#### Virtuoso (optional)
 ```
 rpm -i http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 yum install virtuoso-opensource virtuoso-opensource-conductor virtuoso-opensource-utils
@@ -58,8 +58,8 @@ chkconfig virtuoso on
 #### PLAY DSB
 
 ### Build Requirements:
-### Maven 3.x
-### Git
+#### Maven 3.x
+#### Git
 ```
 yum install git
 ```
