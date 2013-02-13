@@ -43,11 +43,16 @@ Add `--nodeps` to the rpm command if there is a problem with an old version of l
 #### Tomcat
 ```
 yum install tomcat6 tomcat6-admin-webapps
+chkconfig tomcat6 on
 ```
 ### Virtuoso (optional)
 ```
 rpm -i http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 yum install virtuoso-opensource virtuoso-opensource-conductor virtuoso-opensource-utils
+```
+Use the init.d start script from here: http://tw2.tw.rpi.edu/zhengj3/virtuoso/virtuoso-opensource-6.1.1/debian/init.d
+```
+chkconfig virtuoso on
 ```
 
 #### PLAY DSB
