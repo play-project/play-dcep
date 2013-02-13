@@ -25,11 +25,11 @@ events and there is no need to model mappings to binary formats.
 
 Installation
 ------------
-Tested on `CentOS release 6.3 (Final)`.
+Tested on `CentOS release 6.3 (Final)`:
 
 ### Runtime Requirements:
-#### Java
-#### SWI Prolog
+#### Java (>=1.6)
+#### SWI Prolog (5.10.2)
 ```
 yum install readline-devel libjpeg
 cd /tmp
@@ -40,7 +40,7 @@ rpm -i pl-*.rpm
 ```
 Add `--nodeps` to the rpm command if there is a problem with an old version of libjpeg which is actually on your system already.
 
-#### Tomcat
+#### Tomcat (>=6)
 ```
 yum install tomcat6 tomcat6-admin-webapps
 chkconfig tomcat6 on
@@ -58,7 +58,7 @@ chkconfig virtuoso on
 #### PLAY DSB
 
 ### Build Requirements:
-#### Maven 3.x
+#### Maven (3.x)
 #### Git
 ```
 yum install git
