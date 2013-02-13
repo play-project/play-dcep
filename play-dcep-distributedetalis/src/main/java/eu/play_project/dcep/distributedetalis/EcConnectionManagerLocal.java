@@ -15,17 +15,15 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
 
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
-import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
-import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 
@@ -49,7 +47,7 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery) {}
 	
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException {
+	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EcConnectionmanagerException, MalformedSparqlQueryException {
 		// Create an empty model.
 		ModelSet rdf = EventHelpers.createEmptyModelSet();
 

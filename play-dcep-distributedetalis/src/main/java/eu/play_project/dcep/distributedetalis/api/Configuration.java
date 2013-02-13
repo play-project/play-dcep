@@ -1,8 +1,6 @@
 package eu.play_project.dcep.distributedetalis.api;
 
-import java.io.Serializable;
 
-import eu.play_project.dcep.distributedetalis.DistributedEtalisException;
 
 
 /**

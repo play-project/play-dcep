@@ -26,8 +26,8 @@ import org.objectweb.proactive.core.node.NodeException;
 import com.hp.hpl.jena.graph.Node;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.distributedetalis.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;

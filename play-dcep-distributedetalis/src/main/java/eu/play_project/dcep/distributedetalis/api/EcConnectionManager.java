@@ -8,42 +8,40 @@ import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
-import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
-import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 public interface EcConnectionManager extends SimplePublishApi{
 
-	public abstract SelectResults getDataFromCloud(String query,
-			String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException;
+	public SelectResults getDataFromCloud(String query,
+			String cloudId) throws EcConnectionmanagerException, MalformedSparqlQueryException;
 
 	/**
 	 * Reuses or initiates an event cloud proxy.
 	 */
-	public abstract PutGetApi getHistoricCloud(String cloudId)
-			throws EventCloudIdNotManaged;
+	public PutGetApi getHistoricCloud(String cloudId)
+			throws EcConnectionmanagerException;
 
 	/**
 	 * Reuses or initiates an event cloud proxy.
 	 */
-	public abstract SubscribeApi getInputCloud(String cloudId)
-			throws EventCloudIdNotManaged;
+	public SubscribeApi getInputCloud(String cloudId)
+			throws EcConnectionmanagerException;
 
 	/**
 	 * Reuses or initiates an event cloud proxy.
 	 */
-	public abstract PublishApi getOutputCloud(String cloudId)
-			throws EventCloudIdNotManaged;
+	public PublishApi getOutputCloud(String cloudId)
+			throws EcConnectionmanagerException;
 
-	public abstract void publish(CompoundEvent event);
+	public void publish(CompoundEvent event);
 
-	public abstract void registerEventPattern(EpSparqlQuery epSparqlQuery);
+	public void registerEventPattern(EpSparqlQuery epSparqlQuery);
 
-	public abstract void unregisterEventPattern(EpSparqlQuery epSparqlQuery);
+	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery);
 
-	public abstract Subscription subscribe(String cloudId);
+	public void subscribe(String cloudId);
 
-	public abstract void unsubscribe(String cloudId, Subscription sub);
+	public void unsubscribe(String cloudId, Subscription sub);
 
-	public abstract void destroy();
+	public void destroy();
 
 }

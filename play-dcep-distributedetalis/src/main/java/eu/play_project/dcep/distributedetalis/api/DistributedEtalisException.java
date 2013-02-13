@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distributedetalis;
+package eu.play_project.dcep.distributedetalis.api;
 
 public class DistributedEtalisException extends Exception {
 

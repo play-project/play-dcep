@@ -1,16 +1,10 @@
 package eu.play_project.dcep.distributedetalis.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 
 import org.junit.Test;
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
@@ -18,33 +12,20 @@ import org.ontoware.rdf2go.exception.SyntaxNotSupportedException;
 import org.ontoware.rdf2go.model.ModelSet;
 import org.ontoware.rdf2go.model.Syntax;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.VCARD;
 
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
-import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-
-
-import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
-import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 
 /**
  * Tests of the local version of EcConnectionManager.
@@ -94,7 +75,7 @@ public class EcConnectionManagerLocalTest {
 	}
 	
 	@Test
-	public void queryEcConnectionManagerLocal() throws EventCloudIdNotManaged, MalformedSparqlQueryException{
+	public void queryEcConnectionManagerLocal() throws EcConnectionmanagerException, MalformedSparqlQueryException{
 		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("Example-historical-RDF-model.trig");
 		
 		String query = "SELECT ?O WHERE { GRAPH ?id {?S <http://events.event-processing.org/types/screenName> \"roland.stuehmer\"." +

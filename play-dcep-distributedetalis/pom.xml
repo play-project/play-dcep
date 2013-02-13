@@ -44,6 +44,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
+			<artifactId>play-eventadapter-abstractrdfreceiver</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-eventtypes</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
@@ -82,6 +87,11 @@
 <!-- 			<artifactId>ng4j</artifactId> -->
 <!-- 			<version>ng4j-0.9.3</version> -->
 <!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.ow2.petals.dsb</groupId>
+			<artifactId>dsb-notification-service</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

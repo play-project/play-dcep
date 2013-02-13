@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
@@ -37,9 +38,10 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 
 	private boolean init = false;
 	private Logger logger;
-	private EcConnectionListener eventCloudListener;
+	private EcConnectionListenerNet eventCloudListener;
 	
-	public EcConnectionManagerNet(){}
+	public EcConnectionManagerNet() {}
+	
 	public EcConnectionManagerNet(String eventCloudRegistry, DistributedEtalis dEtalis){
 		logger = LoggerFactory.getLogger(EcConnectionManagerNet.class);
 		
@@ -49,8 +51,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		this.eventCloudRegistryUrl = eventCloudRegistry;
 		//try {
 			//TODO sobermeier, Run ConnectinListern in own thread.
-			//this.eventCloudListener = PAActiveObject.newActive(EcConnectionListener.class, new Object[] {});
-			this.eventCloudListener = new EcConnectionListener();
+			//this.eventCloudListener = PAActiveObject.newActive(EcConnectionListenerNet.class, new Object[] {});
+			this.eventCloudListener = new EcConnectionListenerNet();
 			this.eventCloudListener.setDetalis(dEtalis);
 			this.init = true;
 		//} catch (ActiveObjectCreationException e) {
@@ -59,12 +61,9 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		//	logger.error("Error while initializing event cloud listener.", e);
 		//}
 	}
-		
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#getDataFromCloud(java.lang.String, java.lang.String)
-	 */
+
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EventCloudIdNotManaged, MalformedSparqlQueryException {
+	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EcConnectionmanagerException, MalformedSparqlQueryException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -76,7 +75,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		try {
 			putGetCloud = getHistoricCloud(cloudId);
 			response = putGetCloud.executeSparqlSelect(query);
-		} catch (EventCloudIdNotManaged e) {
+		} catch (EcConnectionmanagerException e) {
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
 		} catch (MalformedSparqlQueryException e) {
@@ -86,59 +85,58 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		ResultSetWrapper rw = response.getResult();
 		return new ResultRegistry(rw);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#getHistoricCloud(java.lang.String)
-	 */
+
 	@Override
-	public PutGetApi getHistoricCloud(String cloudId) throws EventCloudIdNotManaged {
+	public PutGetApi getHistoricCloud(String cloudId) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
-		
-		if (!putGetClouds.containsKey(cloudId)) {
-			PutGetApi proxy =  ProxyFactory.newPutGetProxy(eventCloudRegistryUrl, new EventCloudId(eu.play_project.play_commons.constants.Stream.toTopicUri(cloudId)));
-			putGetClouds.put(cloudId, proxy);
+		try {
+			if (!putGetClouds.containsKey(cloudId)) {
+				PutGetApi proxy = ProxyFactory.newPutGetProxy(eventCloudRegistryUrl, new EventCloudId(eu.play_project.play_commons.constants.Stream.toTopicUri(cloudId)));
+				putGetClouds.put(cloudId, proxy);
+			}
+		} catch (EventCloudIdNotManaged e) {
+			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		return putGetClouds.get(cloudId);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#getInputCloud(java.lang.String)
-	 */
 	@Override
-	public SubscribeApi getInputCloud(String cloudId) throws EventCloudIdNotManaged {
+	public SubscribeApi getInputCloud(String cloudId) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
-		if (!inputClouds.containsKey(cloudId)) {
-			SubscribeApi proxy =  ProxyFactory.newSubscribeProxy(eventCloudRegistryUrl, new EventCloudId(cloudId));
-			inputClouds.put(cloudId, proxy);
+		try {
+			if (!inputClouds.containsKey(cloudId)) {
+				SubscribeApi proxy = ProxyFactory.newSubscribeProxy(eventCloudRegistryUrl, new EventCloudId(cloudId));
+				inputClouds.put(cloudId, proxy);
+			}
+		} catch (EventCloudIdNotManaged e) {
+			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		return inputClouds.get(cloudId);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#getOutputCloud(java.lang.String)
-	 */
 	@Override
-	public PublishApi getOutputCloud(String cloudId) throws EventCloudIdNotManaged {
+	public PublishApi getOutputCloud(String cloudId) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
-		if (!outputClouds.containsKey(cloudId)) {
-			PublishApi proxy =  ProxyFactory.newPublishProxy(eventCloudRegistryUrl, new EventCloudId(cloudId));
-			outputClouds.put(cloudId, proxy);
+		try {
+			if (!outputClouds.containsKey(cloudId)) {
+				PublishApi proxy = ProxyFactory.newPublishProxy(eventCloudRegistryUrl, new EventCloudId(cloudId));
+				outputClouds.put(cloudId, proxy);
+			}
+		} catch (EventCloudIdNotManaged e) {
+			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		return outputClouds.get(cloudId);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#publish(fr.inria.eventcloud.api.CompoundEvent)
-	 */
+
 	@Override
 	public void publish(CompoundEvent event) {
 		if (!init) {
@@ -149,14 +147,11 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		
 		try {
 			this.getOutputCloud(cloudId).publish(event);
-		} catch (EventCloudIdNotManaged e) {
+		} catch (EcConnectionmanagerException e) {
 			logger.error("Event could not be published to cloud {}.", cloudId);
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#registerEventPattern(eu.play_project.play_platformservices.api.EpSparqlQuery)
-	 */
+
 	@Override
 	public void registerEventPattern(EpSparqlQuery epSparqlQuery) {
 		for (String cloudId : epSparqlQuery.getQueryDetails().getInputStreams()) {
@@ -166,17 +161,13 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		// Treat output streams lazily: don't connect before a complex event is detected.
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#unregisterEventPattern(eu.play_project.play_platformservices.api.EpSparqlQuery)
-	 */
 	@Override
 	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery) {
 		for (String cloudId : epSparqlQuery.getQueryDetails().getInputStreams()) {
 			try {
 					unsubscribe(cloudId, this.subscriptions.get(getInputCloud(cloudId)).sub);
 			}
-			catch (EventCloudIdNotManaged e) {
+			catch (EcConnectionmanagerException e) {
 				logger.error("Incurred unknown event cloud {}.", cloudId);
 			}
 		}
@@ -184,11 +175,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		// TODO stuehmer: handle (i.e. close) other proxy connections, too? needs counters!
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#subscribe(java.lang.String)
-	 */
 	@Override
-	public Subscription subscribe(String cloudId) {
+	public void subscribe(String cloudId) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -206,17 +194,17 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 				this.subscriptions.put(getInputCloud(cloudId), new SubscriptionUsage(sub));
 			}
 		}
-		catch (EventCloudIdNotManaged e) {
-			logger.error("Incurred unknown event cloud {}.", cloudId);
+		catch (EcConnectionmanagerException e) {
+			logger.error("Problem subscribing to event cloud {}: {}", cloudId, e.getMessage());
 		}
-		return sub;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#unsubscribe(java.lang.String, fr.inria.eventcloud.api.Subscription)
-	 */
 	@Override
 	public void unsubscribe(String cloudId, Subscription sub) {
+		if (!init) {
+			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
+		}
+		
 		try {
 			if (this.subscriptions.containsKey(getInputCloud(cloudId))) {
 				this.subscriptions.get(getInputCloud(cloudId)).usage--;
@@ -231,14 +219,11 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 					logger.info("Still subscribed to eventcloud {}.", cloudId);
 				}
 			}
-		} catch (EventCloudIdNotManaged e) {
-			logger.error("Incurred unknown event cloud {}.", cloudId);
+		} catch (EcConnectionmanagerException e) {
+			logger.error("Problem unsubscribing from event cloud {}: {}", cloudId, e.getMessage());
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.play_project.dcep.distributedetalis.EcConnectionManagerApi#destroy()
-	 */
 	@Override
 	public void destroy() {
 		logger.info("Unsubscribe from Event Clouds");
@@ -255,6 +240,9 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		this.init = false;
 	}
 	
+	/**
+	 * Usage counter for a subscription.
+	 */
 	private class SubscriptionUsage implements Serializable {
 		
 		private static final long serialVersionUID = -6063251924935507681L;

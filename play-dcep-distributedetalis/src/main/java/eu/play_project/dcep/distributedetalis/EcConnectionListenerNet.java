@@ -6,16 +6,15 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.SubscriptionId;
 import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;
 
-public class EcConnectionListener extends CompoundEventNotificationListener implements Serializable{
+public class EcConnectionListenerNet extends CompoundEventNotificationListener implements Serializable {
 
-	private DistributedEtalis dEtalis = null;
+	private static final long serialVersionUID = 8630112375640830481L;
+	private DistributedEtalis dEtalis;
 
 	// For ProActive:
-	public EcConnectionListener() {
+	public EcConnectionListenerNet() {
 	}
 	
-	private static final long serialVersionUID = 8630112375640830481L;
-
 	@Override
 	public void onNotification(SubscriptionId id, CompoundEvent event) {
 		this.dEtalis.publish(event);
