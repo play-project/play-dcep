@@ -197,6 +197,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			Map<String, List<String>> values = this.historicData.get(query.gethistoricalQueries(), variableBindings);
 
 			if (values.isEmpty()) {
+				// there is no matching historic data so the event pattern is not fulfilled: 
 				throw new RetractEventException();
 			} else {
 				String vars = "";
