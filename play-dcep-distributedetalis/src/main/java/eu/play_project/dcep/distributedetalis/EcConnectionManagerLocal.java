@@ -91,7 +91,7 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 		return (results);
 	}
 
-	public void setInputRdfModelFileName(String inputRdfModelFileName) {
-		this.inputRdfModelFileName = inputRdfModelFileName;
+	public void setInputRdfModelFileName(String inputRdfModelFile) {
+		this.inputRdfModelFileName = inputRdfModelFile;
 	}
 }

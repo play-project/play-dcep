@@ -62,9 +62,11 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	public boolean executeGoal(String goal) {
 
 		//return engine.executeGoal(goal);
-		
+	synchronized(this){
 		Query q = new Query(goal);
 		return q.hasSolution();
+	}
+
 		
 	}
 

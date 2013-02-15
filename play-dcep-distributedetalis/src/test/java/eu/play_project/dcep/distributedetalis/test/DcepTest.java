@@ -197,7 +197,7 @@ public class DcepTest implements Serializable {
 
 		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root
 				.getFcInterface("ConfigApi"));
-		configApi.setConfig(new DetalisLocalConfig());
+		configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-plus-tweet-historical-data.trig"));
 
 		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
 				.getFcInterface("DcepManagmentApi"));
