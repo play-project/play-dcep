@@ -188,7 +188,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 		middleware = (middleware == null) ? "local" : middleware; // set default
 		
 		if(middleware.equals("local")) {
-			configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-plus-tweet.eprq"));
+			configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));
 		}
 		else if(middleware.equals("eventcloud")) {
 			configApi.setConfig(new DefaultConfiguration());

@@ -63,6 +63,7 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 
 		// Read data from file.
 		try {
+			System.out.println(inputRdfModelFileName);
 			rdf.readFrom(in, Syntax.Trig);
 		} catch (SyntaxNotSupportedException e) {
 			logger.error("Syntax " + Syntax.Trig + " is not supported." );

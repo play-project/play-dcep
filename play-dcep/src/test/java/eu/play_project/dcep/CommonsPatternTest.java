@@ -78,7 +78,7 @@ public class CommonsPatternTest {
 		delay();
 
 		System.out.println("Events: " + subscriber.getComplexEvents().size());
-		assertTrue(subscriber.getComplexEvents().size()==9);
+		assertTrue(subscriber.getComplexEvents().size()==3);
 		
 
 		// Stop and terminate GCM Components
@@ -179,6 +179,10 @@ public class CommonsPatternTest {
 		event.setUcTelcoCalleePhoneNumber("49123456789");
 		event.setUcTelcoCallerPhoneNumber("49123498765");
 		event.setUcTelcoDirection("incoming");
+		
+		double longitude = 123;
+		double latitude = 345;
+		EventHelpers.setLocationToEvent(event, longitude, latitude);
 		
 		// Create a Calendar for the current date and time
 		event.setEndTime(Calendar.getInstance());

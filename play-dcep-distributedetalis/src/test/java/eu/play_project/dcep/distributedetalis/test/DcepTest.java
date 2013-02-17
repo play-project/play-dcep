@@ -22,6 +22,8 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.config.ProActiveConfiguration;
 import org.objectweb.proactive.core.node.NodeException;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -43,6 +45,7 @@ public class DcepTest implements Serializable {
 	private static PublishApiSubscriber subscriber = null;
 	private static ConfigApi configApi = null;
 	static Component root;
+	private Logger logger = LoggerFactory.getLogger(DcepTest.class);
 
 	/**
 	 * Instantiate DCEP component and check if you get a reference to PublishApi
@@ -64,6 +67,8 @@ public class DcepTest implements Serializable {
 		} catch (ADLException e) {
 			fail("Could not generate ETALIS Component" + e.getMessage());
 			e.printStackTrace();
+		} catch(java.lang.UnsatisfiedLinkError e){
+			logger.error("No JPL installed");
 		}
 
 		try {
@@ -136,8 +141,7 @@ public class DcepTest implements Serializable {
 			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples()
 					.get(4).equals(expectedResults));
 		} else {
-			System.out
-					.println("ERROR: No complex events in test 'checkComplexEvents()'.");
+			System.out.println("ERROR: No complex events in test 'checkComplexEvents()'.");
 			fail();
 		}
 

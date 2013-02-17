@@ -27,7 +27,7 @@ public interface DEtalisConfigApi {
 	public void setEtalis(JtalisContextImpl etalis);
 	public void setEventOutputProvider(JtalisOutputProvider eventOutputProvider);
 	public void setEventInputProvider(JtalisInputProvider eventInputProvider);
-	public void setSemWebLib(PrologSemWebLib semWebLib);
+	public void  setSemWebLib(PrologSemWebLib semWebLib);
 	public DistributedEtalis getDistributedEtalis();
 	public Map<String, EpSparqlQuery> getRegisteredQuerys();
 	public void setRegisteredQuerys(Map<String, EpSparqlQuery> registeredQuerys);

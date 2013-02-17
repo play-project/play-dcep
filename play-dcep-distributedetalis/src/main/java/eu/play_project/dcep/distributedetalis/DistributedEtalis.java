@@ -45,12 +45,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private JtalisContextImpl etalis; // ETALIS Object
 	private JtalisOutputProvider eventOutputProvider;
 	private JtalisInputProvider eventInputProvider;
-	private PrologSemWebLib semWebLib;
 	private Logger logger;
 	private Map<String, EpSparqlQuery> registeredQuerys = Collections
 			.synchronizedMap(new HashMap<String, EpSparqlQuery>());
 	private EcConnectionManager ecConnectionManager;
 	private MeasurementUnit measurementUnit;
+	private PrologSemWebLib semWebLib;
 	private boolean init = false;
 	private Set<SimplePublishApi> eventSinks = Collections
 			.synchronizedSet(new HashSet<SimplePublishApi>());
