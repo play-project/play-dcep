@@ -51,7 +51,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	private Logger logger;
 
 	private Endpoint soapEndpoint;
-	private Service service;
 
 	@Override
 	public String[] listFc() {

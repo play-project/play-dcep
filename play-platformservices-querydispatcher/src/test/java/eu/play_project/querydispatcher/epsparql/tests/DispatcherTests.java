@@ -31,13 +31,13 @@ import fr.inria.eventcloud.api.Quadruple;
  * @author sobermeier
  *
  */
-public class Dispatch {
+public class DispatcherTests {
 	private static Logger logger;
 
 	
 	@Test
-	public void getIoStreams(){
-		logger = LoggerFactory.getLogger(Dispatch.class);
+	public void getIoStreamIds(){
+		logger = LoggerFactory.getLogger(DispatcherTests.class);
 		String queryString;
 		String[] expectedInputStreams = {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"};
 		
@@ -48,6 +48,7 @@ public class Dispatch {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
 	
+		//
 		QueryDetails qd = new QueryDetails();
 		streamIdCollector.getStreamIds(query, qd);
 
@@ -63,7 +64,7 @@ public class Dispatch {
 	@Test
 	public void getVariablesAndTypes(){
 		if(logger == null){
-			logger= LoggerFactory.getLogger(Dispatch.class);
+			logger= LoggerFactory.getLogger(DispatcherTests.class);
 		}
 		
 		
@@ -100,7 +101,7 @@ public class Dispatch {
 	@Test
 	public void showRealtimeHistoricVariables(){
 		if(logger == null){
-			logger= LoggerFactory.getLogger(Dispatch.class);
+			logger= LoggerFactory.getLogger(DispatcherTests.class);
 		}
 		
 		
