@@ -72,7 +72,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	
 	@Override
 	public void outputEvent(EtalisEvent event) {
-System.out.println("New output event.");
 		//FIXME sobermeier: separate measurement events (e.g. without using "complex")
 
 		try {
