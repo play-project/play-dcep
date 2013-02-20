@@ -44,7 +44,7 @@ import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 	private Map<String, PublishApi> outputClouds;
 	private Map<String, SubscribeApi> inputClouds;
-	private Map<SubscribeApi, SubscriptionUsage> subscriptions = new HashMap<SubscribeApi, SubscriptionUsage>();
+	private Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
 	private VirtuosoDataSource ds;
 	private Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
 	private static final long serialVersionUID = 1L;
@@ -166,17 +166,6 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 	}
 
 	@Override
-	public SubscribeApi getInputCloud(String cloudId)
-			throws EcConnectionmanagerException {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}
-		
-		// TODO Auto-generated method stub
-		return super.getInputCloud(cloudId);
-	}
-
-	@Override
 	public PublishApi getOutputCloud(String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
@@ -213,58 +202,53 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 	@Override
 	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery) {
 		// TODO Auto-generated method stub
-		super.unregisterEventPattern(epSparqlQuery);
+
 	}
 
-	@Override
-	public void subscribe(String cloudId) {
+	private void subscribe(String cloudId) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 
 		try {
-			if (this.subscriptions.containsKey(getInputCloud(cloudId))) {
-				logger.info("Still subscribed to eventcloud {}.", cloudId);
-				this.subscriptions.get(getInputCloud(cloudId)).usage++;
+			if (this.subscriptions.containsKey(cloudId)) {
+				logger.info("Still subscribed to topic {}.", cloudId);
+				this.subscriptions.get(cloudId).usage++;
 			}
 			else {
-				logger.info("Subscribing to eventcloud {}.", cloudId);
-				//this.getInputCloud(cloudId).subscribe(sub, eventCloudListener);
+				logger.info("Subscribing to topic {}.", cloudId);
 
 				int index = cloudId.lastIndexOf("/");
 				QName topic = new QName(cloudId.substring(0, index), cloudId.substring(index + 1));
 				
-				this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
-				//this.subscriptions.put(getInputCloud(cloudId), new SubscriptionUsage(sub));
+				String subId = this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
+				this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
 			}
 		} catch (NotificationException e) {
-			logger.error("Problem subscribing to topic {}: {}", cloudId, e.getMessage());
-		} catch (EcConnectionmanagerException e) {
 			logger.error("Problem subscribing to topic {}: {}", cloudId, e.getMessage());
 		}
 	}
 
-	@Override
-	public void unsubscribe(String cloudId, Subscription sub) {
+	private void unsubscribe(String cloudId, String subId) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
 		try {
-			if (this.subscriptions.containsKey(getInputCloud(cloudId))) {
-				this.subscriptions.get(getInputCloud(cloudId)).usage--;
+			if (this.subscriptions.containsKey(cloudId)) {
+				this.subscriptions.get(cloudId).usage--;
 				
-				if (this.subscriptions.get(getInputCloud(cloudId)).usage == 0) {
-					logger.info("Unsubscribing from eventcloud {}.", cloudId);
-					getInputCloud(cloudId).unsubscribe(sub.getId());
-					this.subscriptions.remove(getInputCloud(cloudId));
+				if (this.subscriptions.get(cloudId).usage == 0) {
+					logger.info("Unsubscribing from topic {}.", cloudId);
+					rdfReceiver.unsubscribe(subId);
+					this.subscriptions.remove(cloudId);
 					this.inputClouds.remove(cloudId);
 				}
 				else {
-					logger.info("Still subscribed to eventcloud {}.", cloudId);
+					logger.info("Still subscribed to topic {}.", cloudId);
 				}
 			}
-		} catch (EcConnectionmanagerException e) {
+		} catch (NotificationException e) {
 			logger.error("Problem unsubscribing from topic {}: {}", cloudId, e.getMessage());
 		}
 	}
@@ -276,12 +260,12 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		
 		private static final long serialVersionUID = -6063251924935507681L;
 		
-		public SubscriptionUsage(Subscription sub) {
-			this.sub = sub;
+		public SubscriptionUsage(String subId) {
+			this.subId = subId;
 			this.usage = 1;
 		}
 		
-		public Subscription sub;
+		public String subId;
 		public int usage;
 	}
 }

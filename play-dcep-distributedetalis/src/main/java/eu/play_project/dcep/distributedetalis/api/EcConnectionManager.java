@@ -23,12 +23,6 @@ public interface EcConnectionManager extends SimplePublishApi{
 	/**
 	 * Reuses or initiates an event cloud proxy.
 	 */
-	public SubscribeApi getInputCloud(String cloudId)
-			throws EcConnectionmanagerException;
-
-	/**
-	 * Reuses or initiates an event cloud proxy.
-	 */
 	public PublishApi getOutputCloud(String cloudId)
 			throws EcConnectionmanagerException;
 
@@ -37,10 +31,6 @@ public interface EcConnectionManager extends SimplePublishApi{
 	public void registerEventPattern(EpSparqlQuery epSparqlQuery);
 
 	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery);
-
-	public void subscribe(String cloudId);
-
-	public void unsubscribe(String cloudId, Subscription sub);
 
 	public void destroy();
 

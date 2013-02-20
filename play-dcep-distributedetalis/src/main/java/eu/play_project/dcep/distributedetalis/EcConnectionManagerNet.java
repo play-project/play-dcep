@@ -103,8 +103,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		return putGetClouds.get(cloudId);
 	}
 
-	@Override
-	public SubscribeApi getInputCloud(String cloudId) throws EcConnectionmanagerException {
+	private SubscribeApi getInputCloud(String cloudId) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -175,8 +174,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		// TODO stuehmer: handle (i.e. close) other proxy connections, too? needs counters!
 	}
 
-	@Override
-	public void subscribe(String cloudId) {
+	private void subscribe(String cloudId) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -199,8 +197,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		}
 	}
 	
-	@Override
-	public void unsubscribe(String cloudId, Subscription sub) {
+	private void unsubscribe(String cloudId, Subscription sub) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
