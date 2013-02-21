@@ -220,10 +220,9 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 
 				int index = cloudId.lastIndexOf("/");
 				QName topic = new QName(cloudId.substring(0, index), cloudId.substring(index + 1));
-//FIXME Adapt EcConnectionManagerVirtuoso to new eu.play_project.play_eventadapter.AbstractReceiver.
-				this.rdfReceiver.subscribe(null); //TODO remove this line if class is adapted to new api.
-				// String subId = this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
-				//this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
+				this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
+				String subId = this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
+				this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
 
 			}
 		} catch (NotificationException e) {
