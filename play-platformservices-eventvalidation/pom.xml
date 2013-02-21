@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.ow2.play</groupId>
-		<artifactId>play-platformservices-parent</artifactId>
+		<artifactId>play-dcep-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>../play-platformservices-parent/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>play-platformservices-eventvalidation</artifactId>
