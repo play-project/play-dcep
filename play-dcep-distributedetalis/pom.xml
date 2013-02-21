@@ -130,16 +130,15 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>src/test/resources</directory>
-			</resource>
-			<resource>
-				<directory>src/main/resources/PrologMethods</directory>
-			</resource>
-			<resource>
 				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/pl</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
 				<directory>src/main/adl</directory>
+				<filtering>false</filtering>
 			</resource>
 		</resources>
 	</build>

@@ -428,7 +428,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //		
 //		//New prolog engine
 //		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
-//		engine.consult(System.getProperty("user.dir") + "/src/main/resources/PrologMethods/Measurement.pl");
+//		engine.consult(System.getProperty("user.dir") + "/src/main/pl/Measurement.pl");
 //		ExecutorService measureExecutor = Executors.newCachedThreadPool();
 //		
 //		// New task. Measure 5s.
@@ -480,9 +480,9 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 		this.ctx = new JtalisContextImpl(engine);
 
 		// FIXME use zipped files like Vesko
-		engine.consult(System.getProperty("user.dir") + "/src/main/resources/PrologMethods/constructQueryImp.pl");
-		engine.consult(System.getProperty("user.dir") + "/src/main/resources/PrologMethods/ReferenceCounting.pl");
-		engine.consult(System.getProperty("user.dir") + "/src/main/resources/PrologMethods/Measurement.pl");
+		engine.consult(System.getProperty("user.dir") + "/src/main/pl/constructQueryImp.pl");
+		engine.consult(System.getProperty("user.dir") + "/src/main/pl/ReferenceCounting.pl");
+		engine.consult(System.getProperty("user.dir") + "/src/main/pl/Measurement.pl");
 	}
 	
 	private String[] getPrologMethods(String methodFile){
