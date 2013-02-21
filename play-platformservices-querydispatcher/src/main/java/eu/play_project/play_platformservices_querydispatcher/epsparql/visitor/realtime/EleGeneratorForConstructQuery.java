@@ -33,7 +33,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
 	private Iterator<ElementEventBinOperator> binOperatorIter;
 	private SimpleEventPatternVisitor simpleEventPatternVisitor;
-	private Node graph = Node.createURI("urn:placeholder");
 	private String patternId;
 	
 	//Helper methods.

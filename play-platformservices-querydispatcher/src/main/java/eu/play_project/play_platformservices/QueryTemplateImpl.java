@@ -2,6 +2,7 @@ package eu.play_project.play_platformservices;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +15,7 @@ import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import fr.inria.eventcloud.api.Quadruple;
 
-public class QueryTemplateImpl implements QueryTemplate {
+public class QueryTemplateImpl implements QueryTemplate, Serializable {
 	List<Quadruple> templateQuads = new LinkedList<Quadruple>();
 	
 	public void appendLine(Node graph, Node subject, Node predicate, Node object) {
