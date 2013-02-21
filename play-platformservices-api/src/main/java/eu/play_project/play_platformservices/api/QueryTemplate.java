@@ -16,5 +16,9 @@ import fr.inria.eventcloud.api.Quadruple;
 public interface QueryTemplate {
 	public void appendLine(Quadruple line);
 	public void appendLine(Node graph, Node subject, Node predicate, Node object);
+	/**
+	 * 
+	 * @param variableBindings Variablename flowed by a list with values.
+	 */
 	public List<Quadruple> fillTemplate(Map<String, List<String>> variableBindings, Node graph, Node eventId);
 }

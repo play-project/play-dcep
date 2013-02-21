@@ -29,7 +29,9 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 	    try {
 		    logger.info("Got a notify...");
 		    // Forward the event to Detalis:
-		    this.dEtalis.publish(EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify)));
+		  //FIXME Adapt EcConnectionListenerVirtuoso to new eu.play_project.play_eventadapter.AbstractReceiver.
+		   // this.dEtalis.publish(EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify)));
+		   throw new NoRdfEventException(); //TODO remove this line if class is adapted to new api.
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
 		}

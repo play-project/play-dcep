@@ -15,6 +15,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QueryParseException;
 
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
@@ -75,10 +76,17 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 			logger.error("IO-Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
-
+		
 		// Query data from model
-		Query jenaQuery = QueryFactory.create(query);
-		Dataset jena = (Dataset) rdf.getUnderlyingModelSetImplementation();
+		Query jenaQuery;
+		Dataset jena;
+		try{
+			jenaQuery = QueryFactory.create(query);
+			jena = (Dataset) rdf.getUnderlyingModelSetImplementation();
+		}catch(QueryParseException e){
+			logger.error("Query with pars error: " + query);
+			throw e;
+		}
 		
 		QueryExecution qexec = QueryExecutionFactory.create(jenaQuery, jena);
 

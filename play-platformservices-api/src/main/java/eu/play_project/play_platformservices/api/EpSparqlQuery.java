@@ -60,9 +60,11 @@ public class EpSparqlQuery implements Serializable {
 	public void setConstructTemplate(QueryTemplate constructTemplate) {
 		this.constructTemplate = constructTemplate;
 	}
+	
 	public List<HistoricalQuery> getHistoricalQueries() {
 		return historicalQueries;
 	}
+	
 	public void setHistoricalQueries(List<HistoricalQuery> historicalQueries) {
 		this.historicalQueries = historicalQueries;
 	}

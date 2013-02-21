@@ -3,6 +3,9 @@ package eu.play_project.querydispatcher.tests;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,8 +16,16 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_project.play_platformservices.QueryTemplateImpl;
+import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.StreamIdCollector;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -60,5 +71,69 @@ public class QueryTemplateImplTest {
 		Assert.assertEquals("We expected 27 results.", 27, result.size());
 		
 		System.out.println(new CompoundEvent(result));
+	}
+	
+	@Test
+	public void generateTemplateForMissedCallsPlusTwitterQuery(){
+		EleGeneratorForConstructQuery eleGenerator = new EleGeneratorForConstructQuery();
+		
+		// Get query.
+		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		
+		// Parse query
+		Query q = QueryFactory.create(queryString, Syntax.syntaxEPSPARQL_20);
+
+		// Generate CEP-language
+		eleGenerator.setPatternId("'" + "123" + "'"); // TODO sobermeier: Remove in the future, ETALIS will do this
+		eleGenerator.generateQuery(q);
+
+		// Add queryDetails
+		QueryDetails qd = this.createQueryDetails("'" + "123" + "'", q);
+
+		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
+		
+		//Generate historical query.
+		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
+		epQuery.setConstructTemplate(eleGenerator.getQueryTemplate());
+		
+		System.out.println("FFF");
+		
+		
+	}
+	
+	private QueryDetails createQueryDetails(String queryId, Query query) {
+
+		QueryDetails qd = new QueryDetails();
+		qd.setQueryId(queryId);
+
+		qd.setWindowTime(query.getWindowTime());
+
+		StreamIdCollector streamIdCollector = new StreamIdCollector();
+		streamIdCollector.getStreamIds(query, qd);
+
+		return qd;
+	}
+	
+	private String getSparqlQuery(String queryFile) {
+		try {
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(queryFile);
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			StringBuffer sb = new StringBuffer();
+			String line;
+
+			while (null != (line = br.readLine())) {
+				sb.append(line);
+				sb.append("\n");
+			}
+			// System.out.println(sb.toString());
+			br.close();
+			is.close();
+
+			return sb.toString();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

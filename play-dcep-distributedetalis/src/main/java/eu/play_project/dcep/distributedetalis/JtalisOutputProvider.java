@@ -188,12 +188,12 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				System.out.println(variableBindings.get(variable));
 			}
 			
-			System.out.println("Historical queries");
-			List<String> var1 =  new LinkedList<String>();
-			var1.add("alice1");
-			 query.gethistoricalQueries().get(0).setVariables(var1) ;
-						
-			System.out.println("Debug =========================================================="); 
+
+//			List<String> var1 =  new LinkedList<String>();
+//			var1.add("alice1");
+//			 query.gethistoricalQueries().get(0).setVariables(var1) ;
+//						
+//			System.out.println("Debug =========================================================="); 
 			Map<String, List<String>> values = this.historicData.get(query.gethistoricalQueries(), variableBindings);
 
 			if (values.isEmpty()) {

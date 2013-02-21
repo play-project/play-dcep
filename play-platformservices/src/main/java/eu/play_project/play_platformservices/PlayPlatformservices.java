@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.StreamIdCollector;
 
@@ -51,7 +54,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	private Logger logger;
 
 	private Endpoint soapEndpoint;
-	private Service service;
 
 	@Override
 	public String[] listFc() {
@@ -91,8 +93,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	
 			// Provide PublishApi as Webservice
 			try {
-				// FIXME Add it if when it is working.
-				//soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this); 
+				soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this); 
 			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch Web Service endpoint", e);
 			}
@@ -135,7 +136,8 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		//Generate historical query.
 		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
-		epQuery.setConstructTemplate(eleGenerator.getQueryTemplate());
+		
+		epQuery.setConstructTemplate((new QueryTemplateGenerator()).createQueryTemplate(q));
 		
 		try {
 			dcepManagmentApi.registerEventPattern(epQuery);

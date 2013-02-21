@@ -20,7 +20,9 @@ import com.hp.hpl.jena.sparql.serializer.Serializer;
 
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.VariableQuadrupleVisitor;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.StreamIdCollector;
 import eu.play_project.play_platformservices_querydispatcher.types.C_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.H_Quadruple;
@@ -31,13 +33,13 @@ import fr.inria.eventcloud.api.Quadruple;
  * @author sobermeier
  *
  */
-public class Dispatch {
+public class DispatcherTests {
 	private static Logger logger;
 
 	
 	@Test
-	public void getIoStreams(){
-		logger = LoggerFactory.getLogger(Dispatch.class);
+	public void getIoStreamIds(){
+		logger = LoggerFactory.getLogger(DispatcherTests.class);
 		String queryString;
 		String[] expectedInputStreams = {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"};
 		
@@ -48,6 +50,7 @@ public class Dispatch {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
 	
+		//
 		QueryDetails qd = new QueryDetails();
 		streamIdCollector.getStreamIds(query, qd);
 
@@ -63,7 +66,7 @@ public class Dispatch {
 	@Test
 	public void getVariablesAndTypes(){
 		if(logger == null){
-			logger= LoggerFactory.getLogger(Dispatch.class);
+			logger= LoggerFactory.getLogger(DispatcherTests.class);
 		}
 		
 		
@@ -100,7 +103,7 @@ public class Dispatch {
 	@Test
 	public void showRealtimeHistoricVariables(){
 		if(logger == null){
-			logger= LoggerFactory.getLogger(Dispatch.class);
+			logger= LoggerFactory.getLogger(DispatcherTests.class);
 		}
 		
 		
@@ -191,6 +194,22 @@ public class Dispatch {
 		assertTrue(qd.getInputStreams().get(0).equals("http://streams.event-processing.org/ids/TaxiUCCall"));
 	}
 	
+	@Test
+	public void testQueryTemplateGenerator(){
+		 QueryTemplateGenerator ab  =  new  QueryTemplateGenerator();
+		 
+		// Get query.
+		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+			
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		
+		QueryTemplate qt = ab.createQueryTemplate(query);
+		
+		//System.out.println(qt.);
+		 
+		 
+	}
 	
 	private String getSparqlQuery(String queryFile) {
 		try {
