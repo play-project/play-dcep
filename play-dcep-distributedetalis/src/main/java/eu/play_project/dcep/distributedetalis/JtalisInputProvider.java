@@ -42,6 +42,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	 * Push events to Jtalis.
 	 */
 	public void notify(CompoundEvent event) {
+		System.out.println("DCEP Entry ===================================================");
 		logger.info("DCEP Entry " + event.getGraph());
 		try {
 			semWebLib.addEvent(event);

@@ -92,6 +92,10 @@
 			<artifactId>dsb-notification-service</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>fr.inria.eventcloud</groupId>
+			<artifactId>eventcloud-webservices-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<repositories>
