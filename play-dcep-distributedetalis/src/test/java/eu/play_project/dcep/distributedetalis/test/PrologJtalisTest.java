@@ -34,6 +34,7 @@ import eu.play_project.dcep.distributedetalis.EventCloudHelpers;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
+import eu.play_project.dcep.distributedetalis.configurations.DefaultConfiguration;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -303,28 +304,28 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 	public void loadPrologMethods() throws InterruptedException{
 		if(ctx == null) instantiateJtalis();
 		
-		String[] methods = getPrologMethods("constructQueryImp.pl");
+		String[] methods = DefaultConfiguration.getPrologMethods("constructQueryImp.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = getPrologMethods("ReferenceCounting.pl");
+		methods = DefaultConfiguration.getPrologMethods("ReferenceCounting.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = getPrologMethods("Measurement.pl");
+		methods = DefaultConfiguration.getPrologMethods("Measurement.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = getPrologMethods("Math.pl");
+		methods = DefaultConfiguration.getPrologMethods("Math.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
@@ -479,39 +480,15 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 		PlayJplEngineWrapper engine = eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);
 
-		// FIXME use zipped files like Vesko
-		engine.consult(System.getProperty("user.dir") + "/src/main/pl/constructQueryImp.pl");
-		engine.consult(System.getProperty("user.dir") + "/src/main/pl/ReferenceCounting.pl");
-		engine.consult(System.getProperty("user.dir") + "/src/main/pl/Measurement.pl");
-	}
-	
-	private String[] getPrologMethods(String methodFile){
-		try {
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream(methodFile);
-			BufferedReader br =new BufferedReader(new InputStreamReader(is));
-			StringBuffer sb = new StringBuffer();
-			String line;
-			
-			while (null != (line = br.readLine())) {
-				if (!(line.equals(" "))) {
-					if (!line.startsWith("%")) { // Ignore comments
-						sb.append(line);
-					}
-				}
-			}
-			//System.out.println(sb.toString());
-			br.close();
-			is.close();
-			
-			String[] methods = sb.toString().split(Pattern.quote( "." ) ); 
-			return methods;
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		//Load prolog methods.
+		for (String method : DefaultConfiguration.getPrologMethods("constructQueryImp.pl")) {
+			engine.execute("assert(" + method + ")");
 		}
-		return null;
-	
+		for (String method : DefaultConfiguration.getPrologMethods("ReferenceCounting.pl")) {
+			engine.execute("assert(" + method + ")");
+		}
+		for (String method : DefaultConfiguration.getPrologMethods("Measurement.pl")) {
+			engine.execute("assert(" + method + ")");
+		}
 	}
-
-
 }
