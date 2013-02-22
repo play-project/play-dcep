@@ -26,6 +26,14 @@
 			</resource>
 		</resources>
 		<plugins>
+			<!-- Do not deploy this artefact to maven repo, it is very big. :stuehmer  -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
