@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
  */
 public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		DistributedEtalisTestApi, ComponentInitActive, ComponentEndActive,
-		ConfigApi, DEtalisConfigApi {
+		ConfigApi, DEtalisConfigApi, Serializable{
 
 	private String name;
 	private JtalisContextImpl etalis; // ETALIS Object
