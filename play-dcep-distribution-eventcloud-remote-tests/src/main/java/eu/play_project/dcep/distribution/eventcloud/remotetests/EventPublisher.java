@@ -24,22 +24,33 @@ import fr.inria.eventcloud.factories.ProxyFactory;
  */
 public class EventPublisher {
 	PublishApi publishProxy = null;
-	String eventCloudRegistryUrl = "pnp://eventcloud.inria.fr:8081/eventclouds-registry";
+	String eventCloudRegistryUrl;
+	String outputCloudId;
 
-	public void publish() throws EventCloudIdNotManaged {
+	public EventPublisher(String eventCloudRegistryUrl, String cloudId){
+		outputCloudId = cloudId;
+		this.eventCloudRegistryUrl = eventCloudRegistryUrl;
+	}
+	
+	public void publish(int numberOfEvents, int delay) throws EventCloudIdNotManaged {
 		if (publishProxy == null) {
-			publishProxy = getOutputCloud("");
+			publishProxy = getOutputCloud(outputCloudId);
 		}
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < numberOfEvents; i++) {
 			publishProxy.publish(createTaxiUCCallEvent("http://example.com/" + Math.random()));
+			
+			try {
+				Thread.sleep(delay*1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	private PublishApi getOutputCloud(String cloudId)
 			throws EventCloudIdNotManaged {
-		publishProxy = ProxyFactory.newPublishProxy(eventCloudRegistryUrl,
-				new EventCloudId(cloudId));
+		publishProxy = ProxyFactory.newPublishProxy(eventCloudRegistryUrl, new EventCloudId(cloudId));
 		return publishProxy;
 	}
 

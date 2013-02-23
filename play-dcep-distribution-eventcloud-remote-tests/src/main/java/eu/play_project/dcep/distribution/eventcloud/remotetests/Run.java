@@ -32,9 +32,9 @@ public class Run {
 			System.in.read();
 		}
 		else if (args[0].equals("publish")) {
-			EventPublisher eventPublisher = new EventPublisher();
+			EventPublisher eventPublisher = new EventPublisher("pnp://eventcloud.inria.fr:8081/eventclouds-registry", Stream.TaxiUCCall.getTopicUri());
 			
-			eventPublisher.publish();
+			eventPublisher.publish(1000, 1);
 		
 			System.out.println("Press three times enter to terminate application");
 			System.in.read();
