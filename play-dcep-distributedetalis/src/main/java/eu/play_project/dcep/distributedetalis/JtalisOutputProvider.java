@@ -172,6 +172,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		if (query == null) {
 			logger.error("Query with ID {} was not found in registeredQueries.", event.getProperties()[1].toString());
 		} else if (query.gethistoricalQueries() != null && !query.gethistoricalQueries().isEmpty()) {
+			
+			//Get variable bindings.
 			Map<String, List<String>> variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
 
 			//Print variable bindings
@@ -181,6 +183,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				System.out.println(variableBindings.get(variable));
 			}
 
+			//Get historical data to the given binding.
 			Map<String, List<String>> values = this.historicData.get(query.gethistoricalQueries(), variableBindings);
 
 			if (values.isEmpty()) {
