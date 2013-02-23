@@ -172,28 +172,15 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		if (query == null) {
 			logger.error("Query with ID {} was not found in registeredQueries.", event.getProperties()[1].toString());
 		} else if (query.gethistoricalQueries() != null && !query.gethistoricalQueries().isEmpty()) {
-			Map<String, List<String>> variableBindings = JtalisOutputProvider
-					.getSharedVariablesValues(engine, event.getProperties()[1].toString());
-			System.out.println("Debug =========================================================="); 
-			//Test//////////////////////
-			List<String> bValues =  new LinkedList<String>();
-			bValues.add("bob1");
-			bValues.add("bob2");
-			variableBindings.put("e4", bValues);
-			// Test -----------------------
+			Map<String, List<String>> variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
 
 			//Print variable bindings
+			System.out.println("Variable bindings:  ");
 			for (String variable : variableBindings.keySet()) {
 				System.out.print(variable);
 				System.out.println(variableBindings.get(variable));
 			}
-			
 
-//			List<String> var1 =  new LinkedList<String>();
-//			var1.add("alice1");
-//			 query.gethistoricalQueries().get(0).setVariables(var1) ;
-//						
-//			System.out.println("Debug =========================================================="); 
 			Map<String, List<String>> values = this.historicData.get(query.gethistoricalQueries(), variableBindings);
 
 			if (values.isEmpty()) {
