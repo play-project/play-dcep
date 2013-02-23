@@ -184,8 +184,8 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 	}
 	
 	public void configDEtalisInstance(ConfigApi configApi) throws DistributedEtalisException{
-		String middleware = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.middleware");
-		middleware = (middleware == null) ? "eventcloud" : middleware; // set default
+		// get property or set default:
+		String middleware = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.middleware", "eventcloud");
 		
 		if(middleware.equals("local")) {
 			configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));
