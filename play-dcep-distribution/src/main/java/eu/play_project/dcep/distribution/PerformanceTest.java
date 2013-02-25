@@ -43,7 +43,6 @@ public class PerformanceTest {
 
 	private static final String propertiesFile = "proactive.java.policy";
 	private static Set<CompoundEvent> events = new HashSet<CompoundEvent>();
-	private static Random random = new Random();
 	private static QueryDispatchApi queryDispatchApi;
 	private static PublishApi dcepPublishApi;
 	private static Component root;
@@ -173,7 +172,7 @@ public class PerformanceTest {
 		for (int i = number; i <= number; i--) {
 			List<Quadruple> quadruple = new ArrayList<Quadruple>();
 			
-			String eventId = EVENTS.getUri() + "e" + Math.abs(random.nextLong());
+			String eventId = EventHelpers.createRandomEventId();
 			FacebookStatusFeedEvent event = new FacebookStatusFeedEvent(
 					// set the RDF context part
 							EventHelpers.createEmptyModel(eventId),

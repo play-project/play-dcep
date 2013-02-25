@@ -1,12 +1,10 @@
 package eu.play_project.dcep.distribution;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
-import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 import org.event_processing.events.types.Event;
 import org.event_processing.events.types.FacebookCepResult;
@@ -18,15 +16,11 @@ import eu.play_project.play_commons.eventtypes.EventHelpers;
 
 public class FacebookStatusFeedSimulator {
 
-	private static Random random = new Random();
-
 	public List<Event> simulateEvents(String type, int number) {
 
 		List<Event> events = new ArrayList<Event>();
 
 		if (type.equals("FacebookSimple")) {
-
-			FacebookStatusFeedEvent event;
 
 			for (int i = number; i > 0; i--) {
 				// Generate new event
@@ -45,7 +39,7 @@ public class FacebookStatusFeedSimulator {
 
 	private FacebookStatusFeedEvent generateFacebookStatusFeedEvent() {
 		// Create an event ID used in RDF context and RDF subject
-		String eventId = EVENTS.getUri() + "e" + Math.abs(random.nextLong());
+		String eventId = EventHelpers.createRandomEventId();
 
 		FacebookStatusFeedEvent event = new FacebookStatusFeedEvent(
 		// set the RDF context part
@@ -70,7 +64,7 @@ public class FacebookStatusFeedSimulator {
 
 	private FacebookCepResult generateFacebookCepResult() {
 		// Create an event ID used in RDF context and RDF subject
-		String eventId = EVENTS.getUri() + "e" + Math.abs(random.nextLong());
+		String eventId = EventHelpers.createRandomEventId();
 
 		FacebookCepResult event = new FacebookCepResult(
 				// set the RDF context part

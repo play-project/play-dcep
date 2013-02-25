@@ -1,7 +1,6 @@
 package eu.play_project.dcep.distributedetalis.test;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
-import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 import jpl.Query;
@@ -41,10 +39,9 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class PrologJtalisTest {
 	
-	public static JtalisContextImpl ctx;
+	public JtalisContextImpl ctx;
 	public static UsePrologSemWebLib prologSemWebLib;
 	public static EtalisEvent result;
-	private static Random random = new Random();
 	
 	/**
 	 * Instantiate ETALIS
@@ -149,7 +146,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 	public void addEventsInTriplestore(){
 
 		// Create an event ID used in RDF context and RDF subject
-		String eventId = EVENTS.getUri() + "e" + Math.abs(random.nextLong());
+		String eventId = EventHelpers.createRandomEventId();
 
 		AvgTempEvent event = new AvgTempEvent(
 				// set the RDF context part
@@ -189,7 +186,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 		 */
 		
 		// Create an event ID used in RDF context and RDF subject
-		String eventId = EVENTS.getUri() + "e" + Math.abs(random.nextLong());
+		String eventId = EventHelpers.createRandomEventId();
 
 		AvgTempEvent event = new AvgTempEvent(
 				// set the RDF context part
