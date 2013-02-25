@@ -32,14 +32,10 @@
 			<groupId>fr.inria.eventcloud</groupId>
 			<artifactId>eventcloud-core</artifactId>
 			<exclusions>
-				<exclusion>
-					<artifactId>play-commons-constants</artifactId>
-					<groupId>eu.play-project</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>play-commons-eventformat</artifactId>
-					<groupId>eu.play-project</groupId>
-				</exclusion>
+			<exclusion>
+				<artifactId>play-commons-constants</artifactId>
+				<groupId>eu.play-project</groupId>
+			</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -81,15 +77,20 @@
 			<artifactId>virtjdbc4</artifactId>
 			<version>1.0</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>de.fuberlin.wiwss.ng4j</groupId> -->
-<!-- 			<artifactId>ng4j</artifactId> -->
-<!-- 			<version>ng4j-0.9.3</version> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.ow2.petals.dsb</groupId>
 			<artifactId>dsb-notification-service</artifactId>
 			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.inria.eventcloud</groupId>
+			<artifactId>eventcloud-webservices-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>play-commons-constants</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
@@ -137,6 +138,10 @@
 			</resource>
 			<resource>
 				<directory>src/main/adl</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/test/resources/historical-data</directory>
 				<filtering>false</filtering>
 			</resource>
 		</resources>

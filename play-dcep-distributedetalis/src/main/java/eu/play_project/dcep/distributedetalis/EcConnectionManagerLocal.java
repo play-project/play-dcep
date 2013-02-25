@@ -88,6 +88,8 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 			throw e;
 		}
 		
+		logger.debug("Execute historical query: " + query);
+		System.out.println("Execute historical query: " + query);
 		QueryExecution qexec = QueryExecutionFactory.create(jenaQuery, jena);
 
 		ResultRegistry results = null;

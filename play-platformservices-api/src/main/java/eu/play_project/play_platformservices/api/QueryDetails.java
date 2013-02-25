@@ -62,9 +62,6 @@ public class QueryDetails implements Serializable {
 		this.outputStream = outputStream;
 	}
 
-	// TESTing
-	Map<String, List<Quadruplable>> variables = new HashMap<String, List<Quadruplable>>(); 
-	List<Quadruplable> quads = new ArrayList<Quadruplable>();
 
 	/**
 	 * Set the window length in seconds.

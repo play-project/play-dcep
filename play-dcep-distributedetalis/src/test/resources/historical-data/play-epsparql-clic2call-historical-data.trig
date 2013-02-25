@@ -16,8 +16,8 @@ e:e5917518587088559184  {
     <http://events.event-processing.org/ids/e5917518587088559184#event>
             :stream  <http://streams.event-processing.org/ids/TwitterFeed#stream> ;
             rdf:type  :TwitterEvent;
-            :test "2";
+            :test "2013-08-24T12:42:01.011Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
             sioc:content "Tweettext 1";
-            :endTime  "2013-02-11T10:40:44.405Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+            :endTime  "2999-08-24T12:42:01.011Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
             :startTime  "2011-08-24T12:42:01.011Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;   
 }

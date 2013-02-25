@@ -1,6 +1,10 @@
 package eu.play_project.dcep.distributedetalis.configurations;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 import com.jtalis.core.JtalisContextImpl;
 
@@ -49,6 +53,27 @@ public class DefaultConfiguration implements Configuration, Serializable{
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
+		//Load prolog methods.
+		String[] methods = getPrologMethods("constructQueryImp.pl");
+		for (int i = 0; i < methods.length; i++) {
+			engine.execute("assert(" + methods[i] + ")");
+		}
+
+		methods = getPrologMethods("ReferenceCounting.pl");
+		for (int i = 0; i < methods.length; i++) {
+			engine.execute("assert(" + methods[i] + ")");
+		}
+
+		methods = getPrologMethods("Measurement.pl");
+		for (int i = 0; i < methods.length; i++) {
+			engine.execute("assert(" + methods[i] + ")");
+		}
+		
+		methods = getPrologMethods("Math.pl");
+		for (int i = 0; i < methods.length; i++) {
+			engine.execute("assert(" + methods[i] + ")");
+		}
+		
 		// Set ETALIS properties.
 		etalis.setEtalisFlags("save_ruleId", "on");
 		etalis.addEventTrigger("complex/_");
@@ -61,5 +86,33 @@ public class DefaultConfiguration implements Configuration, Serializable{
 
 		// Instatiate measurement unit.
 		// this.measurementUnit = new MeasurementUnit(this,	
+	}
+	
+	public static String[] getPrologMethods(String methodFile){
+		try {
+			InputStream is = DefaultConfiguration.class.getClassLoader().getResourceAsStream(methodFile);
+			BufferedReader br =new BufferedReader(new InputStreamReader(is));
+			StringBuffer sb = new StringBuffer();
+			String line;
+			
+			while (null != (line = br.readLine())) {
+				if (!(line.equals(" "))) {
+					if (!line.startsWith("%")) { // Ignore comments
+						sb.append(line);
+					}
+				}
+			}
+			//System.out.println(sb.toString());
+			br.close();
+			is.close();
+			
+			String[] methods = sb.toString().split(Pattern.quote( "." ) ); 
+			return methods;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	
 	}
 }

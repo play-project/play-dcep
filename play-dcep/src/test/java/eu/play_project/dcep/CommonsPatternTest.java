@@ -41,7 +41,7 @@ public class CommonsPatternTest {
 	public static boolean test;
 	private Logger logger = Logger.getAnonymousLogger();
 	
-	@Test
+	//@Test
 	public void Clic2callPatternTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException {
 
@@ -72,7 +72,6 @@ public class CommonsPatternTest {
 		for (int i = 0; i < 5; i++) {
 			CompoundEvent event = createTaxiUCCallEvent("example1" + Math.random());
 			testApi.publish(event);
-			System.out.println(event);
 		}
 
 		// Wait
@@ -246,7 +245,7 @@ public class CommonsPatternTest {
 	
 	private void delay(){
 		try {
-			Thread.sleep(8000);
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

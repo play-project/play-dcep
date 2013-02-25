@@ -87,7 +87,7 @@ public class HistoricalQueryContainer {
 		if(makeVariableList()){
 			ret.append("\n VALUES (");
 			for(int i = 0; i < vvariables.size(); i++){
-				ret.append(" ?"+vvariables.get(i));
+				ret.append(vvariables.get(i));
 			}
 			ret.append(" ) {\n");
 			
@@ -101,6 +101,7 @@ public class HistoricalQueryContainer {
 	private boolean makeVariableList(){
 		boolean ret = false;
 		for(String variable : map.keySet()){
+			System.out.println("Add variable to list: " + variable);
 			vvariables.add(variable);
 			ret = true;
 		}

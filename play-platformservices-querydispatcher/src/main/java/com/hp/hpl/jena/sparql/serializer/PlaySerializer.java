@@ -38,7 +38,8 @@ public class PlaySerializer extends Serializer{
         HistoricalQuery hq = new HistoricalQuery();
         
 		Map<String, String> queries = e.getHistoricalCloudQueries();
-		List<String> vars = query.getResultVars();
+		List<String> vars = query.getResultVars(); // FIXME different values for historical query.
+		vars.add("firstEvent");
 		String selectString = null;
 
 		// Add select variables
@@ -60,7 +61,6 @@ public class PlaySerializer extends Serializer{
 			hq.setCloudId(key);
 			result.add(hq);
 		}
-		System.out.println(e.getPrefixNames());
 		return result;
 		
 
