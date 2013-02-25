@@ -42,8 +42,8 @@ import fr.inria.eventcloud.api.CompoundEvent;
  * @author Roland Stühmer
  */
 public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
-		ComponentInitActive, ComponentEndActive, DistributedEtalisTestApi,
-		Serializable {
+ComponentInitActive, ComponentEndActive, DistributedEtalisTestApi,
+Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private DistributedEtalisTestApi dEtalisTest;
@@ -53,7 +53,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 	private Component dEtalis;
 	private Logger logger;
 	private boolean init = false; // Shows if variables for other components are
-									// initialized.
+	// initialized.
 
 	public Dcep() {
 	}
@@ -65,7 +65,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 				.getSimpleName());
 
 		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
+		.setValue("org.objectweb.proactive.core.component.Fractive");
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 
 		logger.debug("Pattern reached DCEP facade: "
 				+ epSparqlQuery.getEleQuery());
-		
+
 		if(!init); init();
 		dEtalisManagment.registerEventPattern(epSparqlQuery);
 	}
@@ -182,11 +182,11 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 		}
 		return init;
 	}
-	
-	public void configDEtalisInstance(ConfigApi configApi) throws DistributedEtalisException{
+
+	public void configDEtalisInstance(ConfigApi configApi) throws DistributedEtalisException {
 		// get property or set default:
-		String middleware = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.middleware", "eventcloud");
-		
+		String middleware = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.middleware", "local");
+
 		if(middleware.equals("local")) {
 			configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));
 		}
