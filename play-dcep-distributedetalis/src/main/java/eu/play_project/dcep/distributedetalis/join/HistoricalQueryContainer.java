@@ -87,7 +87,7 @@ public class HistoricalQueryContainer {
 		if(makeVariableList()){
 			ret.append("\n VALUES (");
 			for(int i = 0; i < vvariables.size(); i++){
-				ret.append(" ?"+vvariables.get(i));
+				ret.append(vvariables.get(i));
 			}
 			ret.append(" ) {\n");
 			
