@@ -85,5 +85,21 @@ public class EcConnectionManagerLocalTest {
 		
 		assertEquals(sr.getResult().get(0).get(0).toString(), "Roland Stühmer");
 	}
+	
+	@Test
+	public void executeExamplePlayEpsparqlClic2callPlusTweetHistoricalQuery() throws EcConnectionmanagerException, MalformedSparqlQueryException{
+		String query = "PREFIX sioc: <http://rdfs.org/sioc/ns#> \nPREFIX : <http://events.event-processing.org/types/> \nPREFIX uctelco: <http://events.event-processing.org/uc/telco/> \nPREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> \nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e3 ?tweetTime ?firstEvent ?tweetContent ?id3 ?firstEvent \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :TwitterEvent .\n    ?e3 :stream <http://streams.event-processing.org/ids/TwitterFeed#stream> .\n    ?e3 :endTime ?tweetTime .\n    ?e3 :test ?firstEvent .\n    ?e3 sioc:content ?tweetContent\n\t FILTER ( ?tweetTime > ?firstEvent )\n    }} \n VALUES (?firstEvent) {\n(\"2013-08-24T12:42:01.011Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) }\n ";
+		
+		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("play-epsparql-clic2call-historical-data.trig");
+		
+		SelectResults sr = ecm.getDataFromCloud(query, "local");
+		System.out.println(sr.getResult().get(0));
+		assertTrue(sr.getResult().get(0).get(0).equals("http://events.event-processing.org/ids/e5917518587088559184#event"));
+		assertTrue(sr.getResult().get(0).get(1).equals("2999-08-24T12:42:01.011Z^^http://www.w3.org/2001/XMLSchema#dateTime"));
+		assertTrue(sr.getResult().get(0).get(2).equals("2013-08-24T12:42:01.011Z^^http://www.w3.org/2001/XMLSchema#dateTime"));
+		assertTrue(sr.getResult().get(0).get(3).equals("Tweettext 1"));
+		assertTrue(sr.getResult().get(0).get(4).equals("http://events.event-processing.org/ids/e5917518587088559184"));
+	}
+	
 
 }

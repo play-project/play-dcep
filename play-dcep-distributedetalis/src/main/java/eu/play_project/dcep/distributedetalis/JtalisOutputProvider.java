@@ -182,6 +182,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				System.out.print(variable);
 				System.out.println(variableBindings.get(variable));
 			}
+			
 
 			//Get historical data to the given binding.
 			Map<String, List<String>> values = this.historicData.get(query.gethistoricalQueries(), variableBindings);
