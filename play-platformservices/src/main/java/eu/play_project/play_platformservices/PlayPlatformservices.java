@@ -216,7 +216,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		for (String queryId : queries.keySet()) {
 			eu.play_project.play_platformservices.jaxb.Query query = new eu.play_project.play_platformservices.jaxb.Query();
 			query.id = queryId;
-			query.content = queries.get(queries).getEpSparqlQuery();
+			query.content = queries.get(queryId).getEpSparqlQuery();
 			
 			results.add(query);
 		} 
