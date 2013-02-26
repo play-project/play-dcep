@@ -1,18 +1,14 @@
 package eu.play_project.play_platformservices.api;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import fr.inria.eventcloud.api.Quadruplable;
 
 /**
  * Represents informations extracted from a EP-SPARQL 2.0 query.
  * With this informations no additional parsing is required to deal with a query in this system.
  * 
- * @author sobermeier
+ * @author Stefan Obermeier
+ * @author Roland Stühmer
  *
  */
 public class QueryDetails implements Serializable {
@@ -20,17 +16,17 @@ public class QueryDetails implements Serializable {
 	private String queryId;
 	private List<String> inputStreams;
 	private String outputStream;
+	private List<String> historicStreams;
 	private String windowTime = "";
 	
 	public QueryDetails(){}
 	
-
 	public QueryDetails(String queryId){
 		this.queryId = queryId;
 	}
 	
 	public String getQueryId() {
-		return queryId;
+		return this.queryId;
 	}
 	public void setQueryId(String queryId) {
 		this.queryId = queryId;
@@ -42,7 +38,7 @@ public class QueryDetails implements Serializable {
 	 * with DSB and EC.
 	 */
 	public List<String> getInputStreams() {
-		return inputStreams;
+		return this.inputStreams;
 	}
 	
 	public void setInputStreams(List<String> inputStreams) {
@@ -55,14 +51,26 @@ public class QueryDetails implements Serializable {
 	 * with DSB and EC.
 	 */
 	public String getOutputStream() {
-		return outputStream;
+		return this.outputStream;
 	}
 	
 	public void setOutputStream(String outputStream) {
 		this.outputStream = outputStream;
 	}
 
-
+	/**
+	 * Provides the historic event streams in a query. This representation
+	 * omits the trailing {@code #stream} suffix so the stream ID can be used
+	 * with DSB and EC.
+	 */
+	public List<String> getHistoricStreams() {
+		return this.historicStreams;
+	}
+	
+	public void setHistoricStreams(List<String> historicStreams) {
+		this.historicStreams = historicStreams;
+	}
+	
 	/**
 	 * Set the window length in seconds.
 	 */
