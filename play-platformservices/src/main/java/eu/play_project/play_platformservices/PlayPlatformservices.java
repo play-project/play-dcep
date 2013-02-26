@@ -201,8 +201,11 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
-		
-		return this.dcepManagmentApi.getRegisteredEventPattern(queryId).getEpSparqlQuery();
+		if(this.dcepManagmentApi.getRegisteredEventPattern(queryId)!=null){
+			return this.dcepManagmentApi.getRegisteredEventPattern(queryId).getEpSparqlQuery();
+		}else{
+			throw new RuntimeException("Query with id \"" + queryId +  "\" is not rgisterd.");
+		}
 	}
 
 	@Override
@@ -211,19 +214,24 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
-			
+
 		List<eu.play_project.play_platformservices.jaxb.Query> results = new ArrayList<eu.play_project.play_platformservices.jaxb.Query>();
-		
-		Map<String, EpSparqlQuery> queries = dcepManagmentApi.getRegisteredEventPatterns();
-		
-		for (String queryId : queries.keySet()) {
-			eu.play_project.play_platformservices.jaxb.Query query = new eu.play_project.play_platformservices.jaxb.Query();
-			query.id = queryId;
-			query.content = queries.get(queryId).getEpSparqlQuery();
-			
-			results.add(query);
-		} 
-		
+
+		Map<String, EpSparqlQuery> queries = dcepManagmentApi
+				.getRegisteredEventPatterns();
+
+		if (queries != null) {
+			for (String queryId : queries.keySet()) {
+				eu.play_project.play_platformservices.jaxb.Query query = new eu.play_project.play_platformservices.jaxb.Query();
+				query.id = queryId;
+				query.content = queries.get(queryId).getEpSparqlQuery();
+
+				results.add(query);
+			}
+		} else {
+			results = new ArrayList<eu.play_project.play_platformservices.jaxb.Query>();
+		}
+
 		return results;
 	}
 

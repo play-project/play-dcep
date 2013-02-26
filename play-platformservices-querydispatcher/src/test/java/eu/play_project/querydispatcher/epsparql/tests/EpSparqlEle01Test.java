@@ -93,7 +93,7 @@ public class EpSparqlEle01Test {
 
 		// Get query.
 		queryString = getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
-System.out.println(queryString);		
+
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 
