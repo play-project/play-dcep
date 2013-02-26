@@ -22,11 +22,12 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.config.ProActiveConfiguration;
 import org.objectweb.proactive.core.node.NodeException;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
 
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
@@ -45,13 +46,13 @@ public class DcepTest implements Serializable {
 	private static PublishApiSubscriber subscriber = null;
 	private static ConfigApi configApi = null;
 	static Component root;
-	private Logger logger = LoggerFactory.getLogger(DcepTest.class);
+	private final Logger logger = LoggerFactory.getLogger(DcepTest.class);
 
 	/**
 	 * Instantiate DCEP component and check if you get a reference to PublishApi
 	 * and ManagementApi.
 	 * 
-	 * @throws DistributedEtalisException 
+	 * @throws DistributedEtalisException
 	 */
 	@Test
 	public void testInstantiateDcepComponent() throws DistributedEtalisException {
@@ -84,7 +85,7 @@ public class DcepTest implements Serializable {
 	}
 
 	@Test
-	public void registerPattern() {
+	public void registerPattern() throws DcepManagementException {
 		if (distributedEtalisTestApi == null) {
 			fail("No DCEP component instantiated");
 		} else {

@@ -1,58 +1,38 @@
 package eu.play_project.dcep;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Test;
-
-import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.distributedetalis.*; // Because of Maven, to find fractal file
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
-
 import org.etsi.uri.gcm.util.GCM;
+import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.ActiveObjectCreationException;
-import org.objectweb.proactive.annotation.TurnActive;
 import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.ProActiveException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.config.ProActiveConfiguration;
 import org.objectweb.proactive.core.node.NodeException;
 
-
 import com.hp.hpl.jena.graph.Node;
-import com.jtalis.core.JtalisContextImpl;
-import com.jtalis.core.plengine.JPLEngineWrapper;
-import com.jtalis.core.plengine.PrologEngineWrapper;
 
+import eu.play_project.dcep.api.DcepManagementException;
+import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.PublishApi;
-import fr.inria.eventcloud.api.Event;
-import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.Quadruple;
-import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
-import fr.inria.eventcloud.api.SubscribeApi;
-import fr.inria.eventcloud.api.Subscription;
-import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
-import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
-
-import static org.junit.Assert.*;
 
 public class DcepTest implements Serializable {
 
@@ -61,7 +41,7 @@ public class DcepTest implements Serializable {
 	public static eu.play_project.dcep.api.DcepManagmentApi dcepManagmentApi;
 	public static DistributedEtalisTestApi dcepTestApi;
 
-	
+
 	@Test
 	public void InstantiateDcepComponentTest() {
 
@@ -90,8 +70,8 @@ public class DcepTest implements Serializable {
 
 
 
-//	@Test
-	public void pushEvents() {
+	//	@Test
+	public void pushEvents() throws DcepManagementException {
 
 		PublishApiSubscriber subscriber =null;
 		try {
@@ -104,37 +84,37 @@ public class DcepTest implements Serializable {
 
 		//Subscribe for new events.
 		dcepTestApi.attach(subscriber);
-		
+
 		//dcepTestApi.setEcConnectionManager(new EcConnectionMangerLocal());
 
 		//Register pattern
 		dcepManagmentApi.registerEventPattern(new EpSparqlQuery(
 				new QueryDetails("queryId42"),
 				"complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))"));
-		
+
 		if (dcepPublishApi == null) {
 			fail("No DCEP component instantiated");
 		} else {
 			for (int i = 0; i < 30; i++) {
 				List<Quadruple> quadruple = new ArrayList<Quadruple>();
 				quadruple
-						.add(new Quadruple(
-							Node.createURI("ab" + Math.random()),
-							Node.createURI("http://events.event-processing.org/ids/e2#event"),
-							Node.createURI("http://events.event-processing.org/ids/endTime"),
-							Node.createURI("\"2011-08-24T12:42:01.011Z\"^^http://www.w3.org/2001/XMLSchema#dateTime")));
+				.add(new Quadruple(
+						Node.createURI("ab" + Math.random()),
+						Node.createURI("http://events.event-processing.org/ids/e2#event"),
+						Node.createURI("http://events.event-processing.org/ids/endTime"),
+						Node.createURI("\"2011-08-24T12:42:01.011Z\"^^http://www.w3.org/2001/XMLSchema#dateTime")));
 				dcepPublishApi.publish(new CompoundEvent(quadruple));
 			}
 		}
-		
+
 		try {
 			Thread.sleep(8000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		//assertTrue(subscriber.getComplexEvents().get(0).getGraph().toString().equals("http://events.event-processing.org/ids/2620:0:1C11:e::100") ); //&&
-			//	subscriber.getComplexEvents().size()==2);
+		//	subscriber.getComplexEvents().size()==2);
 	}
 
 	public static void InstantiateDcepComponent()
@@ -142,11 +122,11 @@ public class DcepTest implements Serializable {
 			ADLException {
 
 		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-				.setValue("proactive.java.policy");
+		.setValue("proactive.java.policy");
 		// CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue(System.getProperty("user.dir")+
 		// "/proactive.java.policy");
 		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
+		.setValue("org.objectweb.proactive.core.component.Fractive");
 		// setProAktiveHome();
 
 		Factory factory = FactoryFactory.getFactory();
@@ -165,13 +145,13 @@ public class DcepTest implements Serializable {
 
 		dcepPublishApi = ((SimplePublishApi) root
 				.getFcInterface("SimplePublishApi"));
-		
+
 		dcepManagmentApi = ((DcepManagmentApi) root
 				.getFcInterface("DcepManagmentApi"));
-		
+
 		dcepTestApi = ((DistributedEtalisTestApi) root
 				.getFcInterface("DistributedEtalisTestApi"));
-		
+
 	}
 
 	/**

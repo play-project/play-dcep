@@ -18,6 +18,7 @@ import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
@@ -83,7 +84,7 @@ Serializable {
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) {
+	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException {
 
 		logger.debug("Pattern reached DCEP facade: "
 				+ epSparqlQuery.getEleQuery());
@@ -94,7 +95,7 @@ Serializable {
 	}
 
 	@Override
-	public EpSparqlQuery getRegisteredEventPattern(String queryId) {
+	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException {
 		if(!init); init();
 		return dEtalisManagment.getRegisteredEventPattern(queryId);
 	}

@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
@@ -40,8 +41,9 @@ import fr.inria.eventcloud.api.CompoundEvent;
  */
 public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		DistributedEtalisTestApi, ComponentInitActive, ComponentEndActive,
-		ConfigApi, DEtalisConfigApi, Serializable{
+		ConfigApi, DEtalisConfigApi, Serializable {
 
+	private static final long serialVersionUID = -4521383169150547552L;
 	private String name;
 	private JtalisContextImpl etalis; // ETALIS Object
 	private JtalisOutputProvider eventOutputProvider;
@@ -53,7 +55,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private MeasurementUnit measurementUnit;
 	private PrologSemWebLib semWebLib;
 	private boolean init = false;
-	private Set<SimplePublishApi> eventSinks = Collections
+	private final Set<SimplePublishApi> eventSinks = Collections
 			.synchronizedSet(new HashSet<SimplePublishApi>());
 
 	Service service;
@@ -98,12 +100,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		}
 		logger.info("New event pattern registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), epSparqlQuery
-						.getQueryDetails().getQueryId());
+				.getQueryDetails().getQueryId());
 		logger.debug("ELE: " + epSparqlQuery.getEleQuery());
 
 		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(),
 				epSparqlQuery);
-System.out.println(epSparqlQuery.getEpSparqlQuery());
+		System.out.println(epSparqlQuery.getEpSparqlQuery());
 		// Deal with sliding time windows:
 		String windowDefinition = "";
 		if (!epSparqlQuery.getQueryDetails().getWindowTime().equals("")
@@ -122,13 +124,18 @@ System.out.println(epSparqlQuery.getEpSparqlQuery());
 	}
 
 	@Override
-	public EpSparqlQuery getRegisteredEventPattern(String queryId) {
+	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
-
-		return this.registeredQuerys.get(queryId);
+		
+		if (this.registeredQuerys.get(queryId) != null) {
+			return this.registeredQuerys.get(queryId);
+		}
+		else {
+			throw new DcepManagementException("No event pattern is registered with id: " + queryId);
+		}
 	}
 
 	@Override
@@ -182,7 +189,7 @@ System.out.println(epSparqlQuery.getEpSparqlQuery());
 		configuration.configure(this);
 		init = true;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -199,6 +206,7 @@ System.out.println(epSparqlQuery.getEpSparqlQuery());
 		this.service = service;
 	}
 
+	@Override
 	public JtalisInputProvider getEventInputProvider() {
 		return eventInputProvider;
 	}
@@ -243,36 +251,43 @@ System.out.println(epSparqlQuery.getEpSparqlQuery());
 	public void setEtalis(JtalisContextImpl etalis) {
 		this.etalis = etalis;
 	}
-	
+
 	@Override
 	public DistributedEtalis getDistributedEtalis(){
 		return this;
 	}
 
+	@Override
 	public Logger getLogger() {
 		return logger;
 	}
 
+	@Override
 	public Map<String, EpSparqlQuery> getRegisteredQuerys() {
 		return registeredQuerys;
 	}
 
+	@Override
 	public void setRegisteredQuerys(Map<String, EpSparqlQuery> registeredQuerys) {
 		this.registeredQuerys = registeredQuerys;
 	}
 
+	@Override
 	public EcConnectionManager getEcConnectionManager() {
 		return ecConnectionManager;
 	}
 
+	@Override
 	public Set<SimplePublishApi> getEventSinks() {
 		return eventSinks;
 	}
 
+	@Override
 	public JtalisContextImpl getEtalis() {
 		return etalis;
 	}
 
+	@Override
 	public JtalisOutputProvider getEventOutputProvider() {
 		return eventOutputProvider;
 	}

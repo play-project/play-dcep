@@ -1,20 +1,19 @@
 package eu.play_project.play_platformservices.tests;
 
 import java.net.MalformedURLException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.jaxb.Query;
 
 public class ManualWebServiceTest {
 	
-	public static void  main(String[] args){
+	public static void  main(String[] args) throws QueryDispatchException {
 		URL wsdl = null;
 		try {
 			wsdl = new URL(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint") + "?wsdl");

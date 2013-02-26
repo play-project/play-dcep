@@ -35,14 +35,18 @@ public interface QueryDispatchApi {
 	/**
 	 * To get details about a query. This operation does not register the query
 	 * and can be used to do checks on the query before registering.
+	 * 
+	 * @throws QueryDispatchException if the query contains errors
 	 */
-	public QueryDetails analyseQuery(String queryId, String query);
+	public QueryDetails analyseQuery(String queryId, String query) throws QueryDispatchException;
 
 	/**
 	 * Get a registered query identified by it's query ID which was used when
 	 * registering it.
+	 * 
+	 * @throws QueryDispatchException if there is no query for the given ID
 	 */
-	public String getRegisteredQuery(String queryId);
+	public String getRegisteredQuery(String queryId) throws QueryDispatchException;
 
 	/**
 	 * Get all currently registered queries.

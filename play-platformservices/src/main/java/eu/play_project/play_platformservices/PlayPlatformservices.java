@@ -23,11 +23,13 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
@@ -89,7 +91,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	
 			// Provide PublishApi as Webservice
 			try {
-				soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this); 
+				soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this);
 			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch Web Service endpoint", e);
 			}
@@ -196,15 +198,15 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 	
 	@Override
-	public String getRegisteredQuery(String queryId) {
+	public String getRegisteredQuery(String queryId) throws QueryDispatchException {
 		if (!init) {
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
-		if(this.dcepManagmentApi.getRegisteredEventPattern(queryId)!=null){
+		try {
 			return this.dcepManagmentApi.getRegisteredEventPattern(queryId).getEpSparqlQuery();
-		}else{
-			throw new RuntimeException("Query with id \"" + queryId +  "\" is not rgisterd.");
+		} catch (DcepManagementException e) {
+			throw new QueryDispatchException(e);
 		}
 	}
 
