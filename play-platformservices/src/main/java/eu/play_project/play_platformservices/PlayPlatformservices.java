@@ -24,6 +24,7 @@ import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
@@ -88,7 +89,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	
 			// Provide PublishApi as Webservice
 			try {
-				//soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this); 
+				soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this); 
 			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch Web Service endpoint", e);
 			}
