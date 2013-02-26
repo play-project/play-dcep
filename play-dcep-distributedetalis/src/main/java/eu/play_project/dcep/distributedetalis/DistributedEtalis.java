@@ -103,7 +103,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(),
 				epSparqlQuery);
-
+System.out.println(epSparqlQuery.getEpSparqlQuery());
 		// Deal with sliding time windows:
 		String windowDefinition = "";
 		if (!epSparqlQuery.getQueryDetails().getWindowTime().equals("")

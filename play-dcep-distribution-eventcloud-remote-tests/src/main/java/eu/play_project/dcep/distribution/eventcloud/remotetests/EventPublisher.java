@@ -78,6 +78,7 @@ public class EventPublisher {
 		event.setStream(new URIImpl(Stream.TaxiUCCall.getUri()));
 
 		// Push events.
+		System.out.println(EventCloudHelpers.toCompoundEvent(event));
 		return EventCloudHelpers.toCompoundEvent(event);
 	}
 

@@ -135,6 +135,9 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		epQuery.setConstructTemplate((new QueryTemplateGenerator()).createQueryTemplate(q));
 		
+		//Add EP-SPARQL query.
+		epQuery.setEpSparqlQuery(query);
+		
 		try {
 			dcepManagmentApi.registerEventPattern(epQuery);
 		} catch (Exception e) {

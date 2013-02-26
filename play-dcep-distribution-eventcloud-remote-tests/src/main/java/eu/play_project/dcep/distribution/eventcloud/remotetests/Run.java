@@ -34,7 +34,7 @@ public class Run {
 		else if (args[0].equals("publish")) {
 			EventPublisher eventPublisher = new EventPublisher("pnp://eventcloud.inria.fr:8081/eventclouds-registry", Stream.TaxiUCCall.getTopicUri());
 			
-			eventPublisher.publish(1000, 1);
+			eventPublisher.publish(10000, 10);
 		
 			System.out.println("Press three times enter to terminate application");
 			System.in.read();

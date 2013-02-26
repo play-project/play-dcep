@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.objectweb.proactive.ActiveObjectCreationException;
+import org.objectweb.proactive.api.PAActiveObject;
+import org.objectweb.proactive.core.node.NodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,18 +52,10 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		outputClouds = new HashMap<String, PublishApi>();
 		inputClouds = new HashMap<String, SubscribeApi>();
 		this.eventCloudRegistryUrl = eventCloudRegistry;
-		//try {
-			//TODO sobermeier, Run ConnectinListern in own thread.
-			//this.eventCloudListener = PAActiveObject.newActive(EcConnectionListenerNet.class, new Object[] {});
-			this.eventCloudListener = new EcConnectionListenerNet();
-			this.eventCloudListener.setDetalis(dEtalis);
+			this.eventCloudListener = new EcConnectionListenerNet(dEtalis);
 			this.init = true;
-		//} catch (ActiveObjectCreationException e) {
-		//	logger.error("Error while initializing event cloud listener.", e);
-		//} catch (NodeException e) {
-		//	logger.error("Error while initializing event cloud listener.", e);
-		//}
 	}
+
 
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EcConnectionmanagerException, MalformedSparqlQueryException {

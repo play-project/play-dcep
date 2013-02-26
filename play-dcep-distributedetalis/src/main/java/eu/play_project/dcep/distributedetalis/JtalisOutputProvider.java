@@ -179,7 +179,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			//Print variable bindings
 			System.out.println("Variable bindings:  ");
 			for (String variable : variableBindings.keySet()) {
-				System.out.print(variable);
+				System.out.print("Variable: " + variable);
 				System.out.println(variableBindings.get(variable));
 			}
 			

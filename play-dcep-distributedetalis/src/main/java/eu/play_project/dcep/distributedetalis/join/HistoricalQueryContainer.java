@@ -136,6 +136,8 @@ public class HistoricalQueryContainer {
 		}
 		else{
 			pathMinusOne = path.toString();
+			System.out.println(vvariables.get(depth));
+			System.out.println(map.get(vvariables.get(depth)));
 			List<String> values = map.get(vvariables.get(depth));
 			if(values == null || values.isEmpty()){
 				path.append("UNDEF ");
