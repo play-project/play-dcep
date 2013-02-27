@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
@@ -26,14 +27,14 @@ import fr.inria.eventcloud.api.CompoundEvent;
  * @author sobermeier
  */
 public class MeasurementUnit implements MeasurementState{
-	private Logger logger;
+	private final Logger logger;
 	private MeasurementState state; // State for the measurement.
-	private PrologSemWebLib semWebLib;
-	private DistributedEtalis cepEngine;
+	private final PrologSemWebLib semWebLib;
+	private final DistributedEtalis cepEngine;
 	
 	PlayJplEngineWrapper  etalis;
 
-	private int numberOfInputEvents = 0; 
+	private int numberOfInputEvents = 0;
 	private int numberOfOutputEvents = 0;
 	private long totalInputEvents = 0;
 	private long totalOutputEvents = 0;
@@ -64,7 +65,11 @@ public class MeasurementUnit implements MeasurementState{
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId("'measurement-pattern'");
 		eq.setQueryDetails(qd);
-		cepEngine.registerEventPattern(eq);
+		try {
+			cepEngine.registerEventPattern(eq);
+		} catch (DcepManagementException e) {
+			logger.error("Measurement pattern could not be registered.");
+		}
 	}
 
 	@Override
@@ -74,17 +79,19 @@ public class MeasurementUnit implements MeasurementState{
 		//Clear counters
 		numberOfInputEvents =0;
 		numberOfOutputEvents = 0;
-		singleEventTime = new ArrayList<Long>();	
+		singleEventTime = new ArrayList<Long>();
 		this.setInMeasurementMode(true);
 		
 		state.startMeasurement(period);
 	}
 	
+	@Override
 	public void eventReceived() {
 		totalInputEvents++;
 		state.eventReceived();
 	}
 
+	@Override
 	public void eventProduced(CompoundEvent event, String patternId) {
 		totalOutputEvents++;
 		state.eventProduced(event, patternId);
@@ -141,7 +148,7 @@ public class MeasurementUnit implements MeasurementState{
 
 	@Override
 	public void setMeasuredData(NodeMeasuringResult measuredValues) {
-		state.setMeasuredData(measuredValues);		
+		state.setMeasuredData(measuredValues);
 	}
 	
 	/**

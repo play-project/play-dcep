@@ -90,7 +90,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) {
+	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
@@ -103,6 +103,10 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 				.getQueryDetails().getQueryId());
 		logger.debug("ELE: " + epSparqlQuery.getEleQuery());
 
+		if(this.registeredQuerys.containsKey(epSparqlQuery.getQueryDetails().getQueryId())) {
+			throw new DcepManagementException("Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId());
+		}
+		
 		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(),
 				epSparqlQuery);
 		System.out.println(epSparqlQuery.getEpSparqlQuery());
