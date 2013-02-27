@@ -38,7 +38,7 @@ public class ManualWebServiceTest {
 			System.out.println("===================================");
 		}
 		
-		System.out.println(queryDispatchApi.getRegisteredQuery("http://patterns.event-processing.org/ids/webapp_0.6431289675616686"));
+		//System.out.println(queryDispatchApi.getRegisteredQuery("http://patterns.event-processing.org/ids/webapp_0.6431289675616686"));
 	}
 
 }

@@ -275,12 +275,10 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 					if (queue.isEmpty()) {
 						try {
 							queue.wait();
-							System.out.println("Take thread wait.");
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					} else {
-						System.out.println("Thread poll event from que.");
 						dEtalis.publish(queue.pollFirst());
 					}
 				}

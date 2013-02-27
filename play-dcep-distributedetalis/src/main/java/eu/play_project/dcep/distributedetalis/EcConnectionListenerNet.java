@@ -26,7 +26,7 @@ public class EcConnectionListenerNet extends CompoundEventNotificationListener i
 	public void onNotification(SubscriptionId id, CompoundEvent event) {
 		synchronized(queue){
 			queue.add(event);
-			queue.notify();
+			queue.notifyAll();
 		}
 	}
 }
