@@ -21,7 +21,6 @@
 	<modules>
 		<module>play-platformservices</module>
 		<module>play-platformservices-api</module>
-		<module>play-platformservices-cepdeployer</module>
 		<module>play-platformservices-epsparql</module>
 		<module>play-platformservices-querydispatcher</module>
 		<module>play-platformservices-eventvalidation</module>
