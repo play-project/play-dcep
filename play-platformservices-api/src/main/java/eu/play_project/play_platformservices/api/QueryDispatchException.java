@@ -8,20 +8,7 @@ public class QueryDispatchException extends Exception {
 		super();
 	}
 
-	public QueryDispatchException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
-	public QueryDispatchException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 	public QueryDispatchException(String message) {
 		super(message);
-	}
-
-	public QueryDispatchException(Throwable cause) {
-		super(cause);
 	}
 }

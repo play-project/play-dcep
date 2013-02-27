@@ -144,7 +144,8 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			dcepManagmentApi.registerEventPattern(epQuery);
 		} catch (Exception e) {
 			logger.error("Error while registering query: " + queryId, e);
-			throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage()));
+			//throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage())); // FIXME stuehmer: revert to descriptive messages
+			throw new QueryDispatchException(String.format("Error while registering query ID '%s'", queryId));
 		}
 		return queryId;
 	}
@@ -207,7 +208,8 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		try {
 			return this.dcepManagmentApi.getRegisteredEventPattern(queryId).getEpSparqlQuery();
 		} catch (DcepManagementException e) {
-			throw new QueryDispatchException(e);
+			//throw new QueryDispatchException(e.getMessage()); // FIXME stuehmer: revert to descriptive messages
+			throw new QueryDispatchException();
 		}
 	}
 

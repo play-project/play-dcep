@@ -11,17 +11,4 @@ public class DcepManagementException extends Exception {
 		super(message);
 	}
 
-	public DcepManagementException(Throwable cause) {
-		super(cause);
-	}
-
-	public DcepManagementException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public DcepManagementException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
 }
