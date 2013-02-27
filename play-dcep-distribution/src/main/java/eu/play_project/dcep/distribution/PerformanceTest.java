@@ -1,7 +1,6 @@
 package eu.play_project.dcep.distribution;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
-import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -11,7 +10,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -35,6 +33,7 @@ import eu.play_project.dcep.distributedetalis.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.Quadruple;
@@ -48,7 +47,7 @@ public class PerformanceTest {
 	private static Component root;
 	private static Logger logger = LoggerFactory.getLogger(PerformanceTest.class);
 	
-	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, InterruptedException {
+	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, InterruptedException, QueryDispatchException {
 
 		String queryString;
 		

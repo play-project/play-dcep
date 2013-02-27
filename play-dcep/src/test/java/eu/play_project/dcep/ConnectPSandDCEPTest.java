@@ -12,7 +12,6 @@ import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.event_processing.events.types.FacebookStatusFeedEvent;
-import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
@@ -30,6 +29,7 @@ import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 
@@ -48,7 +48,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 	
 	//@Test
 	public void instantiatePlayPlatformTest() throws IllegalLifeCycleException,
-			NoSuchInterfaceException, ADLException, InterruptedException {
+			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
 		String queryString;
 		

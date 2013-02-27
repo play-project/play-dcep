@@ -112,7 +112,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	
 
 	@Override
-	public synchronized String registerQuery(String queryId, String query) {
+	public synchronized String registerQuery(String queryId, String query) throws QueryDispatchException {
 		if (!init) {
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
@@ -144,6 +144,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			dcepManagmentApi.registerEventPattern(epQuery);
 		} catch (Exception e) {
 			logger.error("Error while registering query: " + queryId, e);
+			throw new QueryDispatchException("Error while registering query: " + queryId, e);
 		}
 		return queryId;
 	}

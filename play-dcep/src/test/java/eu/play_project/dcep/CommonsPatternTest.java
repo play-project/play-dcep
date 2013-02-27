@@ -30,6 +30,7 @@ import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 public class CommonsPatternTest {
@@ -39,11 +40,11 @@ public class CommonsPatternTest {
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private Logger logger = Logger.getAnonymousLogger();
+	private final Logger logger = Logger.getAnonymousLogger();
 	
 	//@Test
 	public void Clic2callPatternTest() throws IllegalLifeCycleException,
-			NoSuchInterfaceException, ADLException, InterruptedException {
+			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
 		String queryString;
 		
@@ -102,7 +103,7 @@ public class CommonsPatternTest {
 
 	@Test
 	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
-			NoSuchInterfaceException, ADLException, InterruptedException {
+			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
 		String queryString;
 		

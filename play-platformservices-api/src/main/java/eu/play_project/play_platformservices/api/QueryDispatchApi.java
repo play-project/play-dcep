@@ -22,7 +22,7 @@ public interface QueryDispatchApi {
 	 * @param query
 	 *            EP-SPARQL query.
 	 */
-	public String registerQuery(String queryId, String epSparqlQuery);
+	public String registerQuery(String queryId, String epSparqlQuery) throws QueryDispatchException;
 
 	/**
 	 * To unregister a query from the PLAY platform.
