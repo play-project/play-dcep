@@ -1,7 +1,9 @@
 package eu.play_project.dcep.distributedetalis;
 
 import java.io.Serializable;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.objectweb.proactive.ActiveObjectCreationException;
@@ -38,6 +40,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 	private Map<String, SubscribeApi> inputClouds;
 	private Map<String, PutGetApi> putGetClouds;
 	private Map<SubscribeApi, SubscriptionUsage> subscriptions = new HashMap<SubscribeApi, SubscriptionUsage>();
+	private LinkedList<CompoundEvent> inputEventQueue;
 
 	private boolean init = false;
 	private Logger logger;
@@ -52,8 +55,10 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		outputClouds = new HashMap<String, PublishApi>();
 		inputClouds = new HashMap<String, SubscribeApi>();
 		this.eventCloudRegistryUrl = eventCloudRegistry;
-			this.eventCloudListener = new EcConnectionListenerNet(dEtalis);
-			this.init = true;
+		this.inputEventQueue = new LinkedList<CompoundEvent>();
+		this.eventCloudListener = new EcConnectionListenerNet(inputEventQueue);
+		(new Thread(new GetEventThread(dEtalis, inputEventQueue))).start(); //Publish events from queue to dEtalis.
+		this.init = true;
 	}
 
 
@@ -246,5 +251,40 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		
 		public Subscription sub;
 		public int usage;
+	}
+	
+	/**
+	 * Take events from queue and publish them to dEtalis.
+	 * @author sobermeier
+	 *
+	 */
+	public class GetEventThread implements Runnable{
+		
+		private DistributedEtalis dEtalis;
+		private Deque<CompoundEvent> queue;
+
+		public GetEventThread(DistributedEtalis dEtalis, Deque<CompoundEvent> queue) {
+			this.dEtalis = dEtalis;
+			this.queue = queue;
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				synchronized (queue) {
+					if (queue.isEmpty()) {
+						try {
+							queue.wait();
+							System.out.println("Take thread wait.");
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					} else {
+						System.out.println("Thread poll event from que.");
+						dEtalis.publish(queue.pollFirst());
+					}
+				}
+			}
+		}
 	}
 }

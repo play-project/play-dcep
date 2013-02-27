@@ -11,51 +11,22 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.SubscriptionId;
 import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;
 
-public class EcConnectionListenerNet extends CompoundEventNotificationListener
-		implements Serializable {
-
+public class EcConnectionListenerNet extends CompoundEventNotificationListener implements Serializable {
 	private static final long serialVersionUID = 8630112375640830481L;
-
 	private Deque<CompoundEvent> queue;
-
-	@Override
-	public void onNotification(SubscriptionId id, CompoundEvent event) {
-		queue.add(event);
-		//notifyAll();
-	}
 
 	// For ProActive:
 	public EcConnectionListenerNet(){}
 	
-	public EcConnectionListenerNet(DistributedEtalis dEtalis) {
-		queue = new LinkedList<CompoundEvent>();
-		//new Thread(new Publisher(dEtalis, queue)).start();
+	public EcConnectionListenerNet(LinkedList<CompoundEvent> queue) {
+		this.queue = queue;
 	}
-
-	class Publisher implements Runnable {
-		private DistributedEtalis dEtalis;
-		private Deque<CompoundEvent> queue;
-
-		public Publisher(DistributedEtalis dEtalis, Deque<CompoundEvent> queue) {
-			this.dEtalis = dEtalis;
-			this.queue = queue;
-		}
-
-		@Override
-		public void run() {
-			while (true) {
-				if (!queue.isEmpty()) {
-					dEtalis.publish(queue.pollFirst());
-				} else {
-					try {
-						wait();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-
+	
+	@Override
+	public void onNotification(SubscriptionId id, CompoundEvent event) {
+		synchronized(queue){
+			queue.add(event);
+			queue.notify();
 		}
 	}
-
 }
