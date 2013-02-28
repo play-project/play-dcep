@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution;
+package eu.play_project.dcep.distribution.tests;
 
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;

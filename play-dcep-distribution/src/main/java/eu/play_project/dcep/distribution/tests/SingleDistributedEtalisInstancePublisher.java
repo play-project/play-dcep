@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution;
+package eu.play_project.dcep.distribution.tests;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -30,32 +30,45 @@ import fr.inria.eventcloud.api.Quadruple;
  * @author Stefan Obermeier
  *
  */
-public class SingleDistributedEtalisInstanceClient {
+public class SingleDistributedEtalisInstancePublisher {
 
-	private static DistributedEtalisTestApi testApi;
-	private static DcepManagmentApi managementApi;
+	private static DistributedEtalisTestApi testApiI1;
+	private static DcepManagmentApi managementApiI1;
+	private static DistributedEtalisTestApi testApiI2;
+	private static DcepManagmentApi managementApiI2;
 
 	public static void main(String[] args) throws RemoteException,
 			NotBoundException, Exception {
 
-		// Connect to DistributedEtalis instance.
-		PAComponentRepresentative root;
-		// root = Fractive.lookup(URIBuilder.buildURI("2001:6f8:100d:b::1", "dEtalis2", "rmi", 1099).toString());
-		// root = Fractive.lookup(URIBuilder.buildURI("172.20.47.169", "dEtalis2", "rmi", 1099).toString());
-		root = Fractive.lookup(URIBuilder.buildURI("fe80:0:0:0:492a:79ab:db40:f8b1", "dEtalis1", "rmi", 1099).toString());
+		// Connect to DistributedEtalis instance 1.
+		PAComponentRepresentative root1 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
+		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface("DistributedEtalisTestApi"));
+		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
+		
+		// Connect to DistributedEtalis instance 2.
+		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
+		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
+		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
 
-		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
-		managementApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
+		//Register queries.
+		managementApiI1.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
+		managementApiI2.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
 
-		//Register query.
-		//managementApi.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
-
-		// Publish some events.
+		//TODO stuehmer:  Implemt simulation.
+		
+		// Publish some events to instance 1.
 		for (int i = 0; i < 1000000; i++) {
-			testApi.publish(createEvent("timeS" + i, (i % 20), "A"));
+			testApiI1.publish(createEvent("timeS" + i, (i % 20), "A"));
+			delay(2);
+		}
+
+		// Publish some events to instance 2.
+		for (int i = 0; i < 1000000; i++) {
+			testApiI2.publish(createEvent("timeS" + i, (i % 20), "B"));
 			delay(2);
 		}
 	}
+	
 	
 	public static CompoundEvent createEvent(String eventId, int value, String type) {
 
@@ -118,7 +131,7 @@ public class SingleDistributedEtalisInstanceClient {
 	}
 	private static String getSparqlQuerys(String queryFile){
 		try {
-			InputStream is = SingleDistributedEtalisInstanceClient.class.getClassLoader().getResourceAsStream(queryFile);
+			InputStream is = SingleDistributedEtalisInstancePublisher.class.getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			StringBuffer sb = new StringBuffer();
 			String line;
