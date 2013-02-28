@@ -31,7 +31,7 @@ import fr.inria.eventcloud.api.PublishApi;
  * @author Stefan Obermeier
  *
  */
-public class RunSingleDistributedEtalisInstance {
+public class SingleDistributedEtalisInstanceRunner {
 	private static PublishApiSubscriber subscriber = null;
 	private static DistributedEtalisTestApi testApi;
 	
@@ -49,11 +49,11 @@ public class RunSingleDistributedEtalisInstance {
 
 		// Register component
 		Registry registry = LocateRegistry.getRegistry();
-		Fractive.registerByName(root, "dEtalis2");
+		Fractive.registerByName(root, "dEtalis1");
 		
 		
 		//Subscribe to print complex events to local console.
-		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DcepSubscribeApi"));
+		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
 		try {
 			subscriber = PAActiveObject.newActive(PublishApiSubscriber.class, new Object[] {});
 		} catch (ActiveObjectCreationException e) {
