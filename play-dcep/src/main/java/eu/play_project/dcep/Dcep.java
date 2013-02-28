@@ -90,7 +90,6 @@ Serializable {
 				+ epSparqlQuery.getEleQuery());
 
 		if(!init); init();
-		System.out.println("00000000000000000000000000000000000000000000  " + epSparqlQuery.getEpSparqlQuery());
 		dEtalisManagment.registerEventPattern(epSparqlQuery);
 	}
 
