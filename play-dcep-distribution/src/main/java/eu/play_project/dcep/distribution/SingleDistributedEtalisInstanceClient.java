@@ -42,16 +42,15 @@ public class SingleDistributedEtalisInstanceClient {
 		PAComponentRepresentative root;
 		// root = Fractive.lookup(URIBuilder.buildURI("2001:6f8:100d:b::1", "dEtalis2", "rmi", 1099).toString());
 		// root = Fractive.lookup(URIBuilder.buildURI("172.20.47.169", "dEtalis2", "rmi", 1099).toString());
-		root = Fractive.lookup(URIBuilder.buildURI("detalis1.dcep.s-node.de", "dEtalis1", "rmi", 1099).toString());
+		root = Fractive.lookup(URIBuilder.buildURI("fe80:0:0:0:492a:79ab:db40:f8b1", "dEtalis1", "rmi", 1099).toString());
 
 		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
 		managementApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
 
 		//Register query.
-		managementApi.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
+		//managementApi.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
 
 		// Publish some events.
-		long time = System.currentTimeMillis();
 		for (int i = 0; i < 1000000; i++) {
 			testApi.publish(createEvent("timeS" + i, (i % 20), "A"));
 			delay(2);

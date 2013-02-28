@@ -22,7 +22,10 @@ import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.node.NodeException;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.distributedetalis.api.ConfigApi;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
 import eu.play_project.dcep.distributedetalis.test.PublishApiSubscriber;
 import fr.inria.eventcloud.api.PublishApi;
 
@@ -35,21 +38,25 @@ public class SingleDistributedEtalisInstanceRunner {
 	private static PublishApiSubscriber subscriber = null;
 	private static DistributedEtalisTestApi testApi;
 	
-	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, RemoteException, ProActiveException {
+	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, RemoteException, ProActiveException, DistributedEtalisException {
 		
 		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue("proactive.java.policy");
 		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
 
-		//Start component
+		//Start component.
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 
 		Component root = (Component) factory.newComponent("DistributedEtalis", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 
-		// Register component
+		// Register component.
 		Registry registry = LocateRegistry.getRegistry();
 		Fractive.registerByName(root, "dEtalis1");
+		
+		//Configure component.
+		ConfigApi configApi = ((ConfigApi)root.getFcInterface("ConfigApi"));
+		configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));
 		
 		
 		//Subscribe to print complex events to local console.
