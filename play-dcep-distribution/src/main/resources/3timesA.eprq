@@ -1,0 +1,70 @@
+PREFIX rdf:		<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX math:	<http://prefix.example.com/math/>
+PREFIX :		<http://prefix.example.com/> 
+
+
+CONSTRUCT {
+    :e   rdf:type :3timesA .
+    :e2  :value   ?v1
+}
+WHERE {
+     EVENT ?id1 {
+         ?e1 rdf:type   :A .
+         ?e1 math:value ?n1.
+         ?e1 :value     ?v1
+     } FILTER(?n1 < 5000)
+     SEQ 
+ 	 EVENT ?id2{ 
+		 ?e2 rdf:type   :A . 
+ 		 ?e2 math:value ?n2. 
+		 ?e2 :value     ?v2 
+	 } FILTER(?n2 < 5000)
+	 SEQ 
+ 	 EVENT ?id3{ 
+		 ?e3 rdf:type   :A . 
+ 		 ?e3 math:value ?n3. 
+		 ?e3 :value     ?v3 
+	 } FILTER(?n3 < 5000)
+	 SEQ 
+ 	 EVENT ?id4{ 
+		 ?e4 rdf:type   :A . 
+ 		 ?e4 math:value ?n4. 
+		 ?e4 :value     ?v4 
+	 } FILTER(?n4 < 5000)
+	 SEQ 
+ 	 EVENT ?id5{ 
+		 ?e5 rdf:type   :A . 
+ 		 ?e5 math:value ?n5. 
+		 ?e5 :value     ?v5 
+	 } FILTER(?n5 < 5000)
+	 SEQ 
+ 	 EVENT ?id6{ 
+		 ?e6 rdf:type   :A . 
+ 		 ?e6 math:value ?n6. 
+		 ?e6 :value     ?v6 
+	 } FILTER(?n6 < 5000)
+	 SEQ 
+ 	 EVENT ?id7{ 
+		 ?e7 rdf:type   :A . 
+ 		 ?e7 math:value ?n7. 
+		 ?e7 :value     ?v7 
+	 } FILTER(?n7 < 5000)
+	 SEQ 
+ 	 EVENT ?id8{ 
+		 ?e8 rdf:type   :A . 
+ 		 ?e8 math:value ?n8. 
+		 ?e8 :value     ?v8 
+	 } FILTER(?n8 < 5000)
+	 SEQ 
+ 	 EVENT ?id9{ 
+		 ?e9 rdf:type   :A . 
+ 		 ?e9 math:value ?n9. 
+		 ?e9 :value     ?v9 
+	 } FILTER(?n9 < 5000)
+	 SEQ 
+ 	 EVENT ?id10{ 
+		 ?e10 rdf:type   :A . 
+ 		 ?e10 math:value ?n10. 
+		 ?e10 :value     ?v10 
+	 } FILTER(?n10 < 5000)
+  }

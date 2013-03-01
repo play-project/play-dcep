@@ -46,27 +46,34 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 		
 		// Connect to DistributedEtalis instance 2.
-		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
-		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
-		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
+//		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
+//		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
+//		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
 
 		//Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
-		managementApiI2.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
+//		managementApiI1.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
+//		managementApiI2.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
 
 		//TODO stuehmer:  Implemt simulation.
 		
 		// Publish some events to instance 1.
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 100; i++) {
+			testApiI1.publish(createEvent("timeS" + i, (i % 20), "A"));
+			delay(2);
+		}
+		
+		Thread.sleep(4000);
+		
+		for (int i = 0; i < 100; i++) {
 			testApiI1.publish(createEvent("timeS" + i, (i % 20), "A"));
 			delay(2);
 		}
 
-		// Publish some events to instance 2.
-		for (int i = 0; i < 1000000; i++) {
-			testApiI2.publish(createEvent("timeS" + i, (i % 20), "B"));
-			delay(2);
-		}
+//		// Publish some events to instance 2.
+//		for (int i = 0; i < 1000000; i++) {
+//			testApiI2.publish(createEvent("timeS" + i, (i % 20), "B"));
+//			delay(2);
+//		}
 	}
 	
 	
