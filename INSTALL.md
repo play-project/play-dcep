@@ -54,8 +54,8 @@ Use the init.d start script from here: http://tw2.tw.rpi.edu/zhengj3/virtuoso/vi
 ```
 chkconfig virtuoso on
 ```
-
 #### PLAY DSB
+https://github.com/PetalsLinkLabs/petals-dsb/
 
 ### Build Requirements:
 #### Maven (3.x)
@@ -63,7 +63,6 @@ chkconfig virtuoso on
 ```
 yum install git
 ```
-
 
 Issues
 ------
