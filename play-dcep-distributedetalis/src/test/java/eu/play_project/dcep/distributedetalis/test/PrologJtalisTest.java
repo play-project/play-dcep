@@ -4,21 +4,18 @@ import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import jpl.Query;
 import jpl.Term;
 
 import org.event_processing.events.types.AvgTempEvent;
+import org.junit.Before;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
@@ -46,7 +43,7 @@ public class PrologJtalisTest {
 	
 	/**
 	 * Instantiate ETALIS
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	@Test
 	public void instantiateJtalis() throws InterruptedException{
@@ -129,11 +126,11 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //			fail("It was not possible to load the semweb/rdf_db library ");
 //		}
 //
-//		
+//
 //		delay();
 //	}
 	
-	@Test
+	@Before
 	public void instantiatePrologSemWebLib(){
 
 		prologSemWebLib = new PrologSemWebLib();
@@ -245,35 +242,35 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 		Quadruple q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
 				Node.createURI("s1"),
-                Node.createURI("p"), 
+                Node.createURI("p"),
                 Node.createURI("o1"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
 				Node.createURI("s1"),
-                Node.createURI("p"), 
+                Node.createURI("p"),
                 Node.createURI("o2"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
 				Node.createURI("s2"),
-                Node.createURI("p"), 
+                Node.createURI("p"),
                 Node.createURI("o1"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
 				Node.createURI("s2"),
-                Node.createURI("p"), 
+                Node.createURI("p"),
                 Node.createURI("o2"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
 				Node.createURI("false"),
-                Node.createURI("false"), 
+                Node.createURI("false"),
                 Node.createURI("false"));
 		quadruple.add(q1);
 		
@@ -295,7 +292,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 	
 	/**
 	 * Load methods from file and add it to prolog.
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	@Test
 	public void loadPrologMethods() throws InterruptedException{
@@ -334,7 +331,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //	@Test
 //	public void instantiateDistributedEtalis(){
 //		DistributedEtalis dE = new DistributedEtalis("de1");
-//		
+//
 //		delay();
 //	}
 	
@@ -351,7 +348,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //			Term t = (Term) binding.get("Result");
 //			System.out.println(t);
 //			assertTrue(t.toString().equals("-1"));
-//			
+//
 //			q.close();
 //		}
 		
@@ -362,13 +359,13 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //	 */
 //	@Test
 //	public void getEventsFromTriplestorePrologSemWebLibClass(){
-//		
+//
 //		// Test event
 //		EtalisEvent event = new EtalisEvent("a", "testDb2");
 //		event.setRuleID("498929293");
-//		
+//
 //		CompoundEvent result = new CompoundEvent(JtalisOutputProvider.getEventData(PlayJplEngineWrapper.getPlayJplEngineWrapper(), event));
-//		
+//
 //		assertTrue((result.getQuadruples().get(3).getSubject().toString().equals("s1")));
 //		delay();
 //	}
@@ -423,21 +420,21 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //	 */
 //	@Test
 //	public void MeasurementTrheadTest(){
-//		
+//
 //		//New prolog engine
 //		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 //		engine.consult(System.getProperty("user.dir") + "/src/main/pl/Measurement.pl");
 //		ExecutorService measureExecutor = Executors.newCachedThreadPool();
-//		
+//
 //		// New task. Measure 5s.
 //		MeasurementThread task = new MeasurementThread(5000, engine, null); //TODO change
 //
 //		// Execute task.
 //		Future<MeasuringResult> future = measureExecutor.submit(task);
-//		
+//
 //		// Simulate events.
 //		for(int i=0; i<10; i++){
-//			
+//
 //			engine.executeGoal("measure('http://example.com/patternID1')");
 //			if(i%2==0){
 //				engine.executeGoal("measure('http://example.com/patternID2')");
@@ -445,7 +442,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //			if(i%3==0){
 //				engine.executeGoal("measure('http://example.com/patternID3')");
 //			}
-//			
+//
 //			delay();
 //		}
 //
@@ -458,7 +455,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //		} catch (ExecutionException e) {
 //			e.printStackTrace();
 //		}
-//		
+//
 //
 //		assertTrue(measuredValues.getMeasuredValues().get(1).getProcessedEvents()==4);
 //		assertTrue(measuredValues.getMeasuredValues().get(2).getProcessedEvents()==2);
