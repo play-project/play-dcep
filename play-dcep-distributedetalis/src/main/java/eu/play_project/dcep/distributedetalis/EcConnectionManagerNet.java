@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.objectweb.proactive.ActiveObjectCreationException;
-import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.node.NodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +36,14 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 	private Map<String, PublishApi> outputClouds;
 	private Map<String, SubscribeApi> inputClouds;
 	private Map<String, PutGetApi> putGetClouds;
-	private Map<SubscribeApi, SubscriptionUsage> subscriptions = new HashMap<SubscribeApi, SubscriptionUsage>();
+	private final Map<SubscribeApi, SubscriptionUsage> subscriptions = new HashMap<SubscribeApi, SubscriptionUsage>();
 	private LinkedList<CompoundEvent> inputEventQueue;
 
 	private boolean init = false;
 	private Logger logger;
 	private EcConnectionListenerNet eventCloudListener;
+
+	private GetEventThread getEventThread;
 	
 	public EcConnectionManagerNet() {}
 	
@@ -57,7 +56,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		this.eventCloudRegistryUrl = eventCloudRegistry;
 		this.inputEventQueue = new LinkedList<CompoundEvent>();
 		this.eventCloudListener = new EcConnectionListenerNet(inputEventQueue);
-		(new Thread(new GetEventThread(dEtalis, inputEventQueue))).start(); //Publish events from queue to dEtalis.
+		this.getEventThread = new GetEventThread(dEtalis, inputEventQueue);
+		new Thread(this.getEventThread).start(); //Publish events from queue to dEtalis.
 		this.init = true;
 	}
 
@@ -230,6 +230,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 			proxy.unsubscribe(subscriptions.get(proxy).sub.getId());
 		}
 		
+		getEventThread.stop();
 		subscriptions.clear();
 		inputClouds.clear();
 		outputClouds.clear();
@@ -260,8 +261,10 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 	 */
 	public class GetEventThread implements Runnable{
 		
-		private DistributedEtalis dEtalis;
-		private Deque<CompoundEvent> queue;
+		private final DistributedEtalis dEtalis;
+		private final Deque<CompoundEvent> queue;
+		
+		private volatile Thread getEventThread;
 
 		public GetEventThread(DistributedEtalis dEtalis, Deque<CompoundEvent> queue) {
 			this.dEtalis = dEtalis;
@@ -270,13 +273,14 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 
 		@Override
 		public void run() {
-			while (true) {
+			while (this.getEventThread == Thread.currentThread()) {
 				synchronized (queue) {
 					if (queue.isEmpty()) {
 						try {
 							queue.wait();
 						} catch (InterruptedException e) {
 							e.printStackTrace();
+							Thread.currentThread().interrupt();
 						}
 					} else {
 						dEtalis.publish(queue.pollFirst());
@@ -284,5 +288,15 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 				}
 			}
 		}
+		
+		/*
+		 * See <http://docs.oracle.com/javase/1.5.0/docs/guide/misc/threadPrimitiveDeprecation.html>
+		 */
+	    public void stop() {
+	        Thread moribund = getEventThread;
+	        getEventThread = null;
+	        moribund.interrupt();
+	    }
+
 	}
 }
