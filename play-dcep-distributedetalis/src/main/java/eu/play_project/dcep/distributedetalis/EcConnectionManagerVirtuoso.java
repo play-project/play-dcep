@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 
 import javax.naming.NamingException;
 import javax.xml.namespace.QName;
@@ -38,20 +39,19 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.SubscribeApi;
-import fr.inria.eventcloud.api.Subscription;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 
 public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 	private Map<String, PublishApi> outputClouds;
 	private Map<String, SubscribeApi> inputClouds;
-	private Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
-	private VirtuosoDataSource ds;
-	private Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
+	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
+	private final VirtuosoDataSource ds;
+	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
 	private static final long serialVersionUID = 1L;
 	private INotificationConsumer dsbListener;
 	private boolean init = false;
 	private AbstractReceiver rdfReceiver;
-	public static String notificationReceiverEndpoint = "http://localhost:9998/foo/bar/NotificationConsumerService";
+	public static String notificationReceiverEndpoint = "http://localhost:9998/play-dcep/NotificationConsumerService" + Math.abs(new Random().nextLong());
 
 
 	public EcConnectionManagerVirtuoso() throws NamingException, DistributedEtalisException {
@@ -105,7 +105,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 	}
 	
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId) 
+	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException, MalformedSparqlQueryException
 			{
 		if (!init) {
@@ -165,6 +165,11 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		return super.getHistoricCloud(cloudId);
 	}
 
+	private QName getTopic(String cloudId) {
+		int index = cloudId.lastIndexOf("/");
+		return new QName(cloudId.substring(0, index), cloudId.substring(index + 1));
+	}
+
 	@Override
 	public PublishApi getOutputCloud(String cloudId)
 			throws EcConnectionmanagerException {
@@ -201,8 +206,9 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 
 	@Override
 	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery) {
-		// TODO Auto-generated method stub
-
+		for (String cloudId : epSparqlQuery.getQueryDetails().getInputStreams()) {
+			unsubscribe(cloudId, this.subscriptions.get(cloudId).sub);
+		}
 	}
 
 	private void subscribe(String cloudId) {
@@ -217,9 +223,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 			}
 			else {
 				logger.info("Subscribing to topic {}.", cloudId);
-
-				int index = cloudId.lastIndexOf("/");
-				QName topic = new QName(cloudId.substring(0, index), cloudId.substring(index + 1));
+				QName topic = getTopic(cloudId);
 				this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
 				String subId = this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
 				this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
@@ -261,12 +265,12 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		
 		private static final long serialVersionUID = -6063251924935507681L;
 		
-		public SubscriptionUsage(String subId) {
-			this.subId = subId;
+		public SubscriptionUsage(String sub) {
+			this.sub = sub;
 			this.usage = 1;
 		}
 		
-		public String subId;
+		public String sub;
 		public int usage;
 	}
 }
