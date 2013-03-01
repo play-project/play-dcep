@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution.tests;
+package eu.play_project.dcep.distribution.tests.integration.performance;
 
 import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
@@ -21,13 +21,11 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.node.NodeException;
 
-import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
-import eu.play_project.dcep.distributedetalis.test.PublishApiSubscriber;
-import fr.inria.eventcloud.api.PublishApi;
+
 
 /**
  * Start a single DistributedEtalis instance an register this instance in local registry.
@@ -35,7 +33,7 @@ import fr.inria.eventcloud.api.PublishApi;
  *
  */
 public class SingleDistributedEtalisInstanceRunner {
-	private static PublishApiSubscriber subscriber = null;
+	private static ComplexEventSubscriber subscriber = null;
 	private static DistributedEtalisTestApi testApi;
 	
 	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, RemoteException, ProActiveException, DistributedEtalisException {
@@ -62,7 +60,7 @@ public class SingleDistributedEtalisInstanceRunner {
 		//Subscribe to print complex events to local console.
 		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
 		try {
-			subscriber = PAActiveObject.newActive(PublishApiSubscriber.class, new Object[] {});
+			subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
 		} catch (ActiveObjectCreationException e) {
 			e.printStackTrace();
 		} catch (NodeException e) {

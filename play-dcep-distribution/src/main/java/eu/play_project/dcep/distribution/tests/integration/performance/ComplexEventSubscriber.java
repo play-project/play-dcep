@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution.tests;
+package eu.play_project.dcep.distribution.tests.integration.performance;
 
 import java.io.Serializable;
 import java.net.URL;

@@ -82,8 +82,8 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.info("Terminating {} component.", this.getClass()
 				.getSimpleName());
 		if (init) {
-			this.etalis.shutdown();
 			if(ecConnectionManager!=null) this.ecConnectionManager.destroy();
+			this.etalis.shutdown();
 			this.eventSinks.clear();
 			this.init = false;
 		}

@@ -94,6 +94,18 @@
 		</dependency>
 	</dependencies>
 
+	<!-- this was an attampt to get jpl from the local prolog installation avoiding version mismatches:
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<artifactId>jpl</artifactId>
+				<groupId>jpl</groupId>
+				<scope>system</scope>
+     			<systemPath>${env.SWI_HOME_DIR}/lib/jpl.jar</systemPath>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	-->
 	<repositories>
 		<repository>
 			<id>sti2-archiva-external</id>

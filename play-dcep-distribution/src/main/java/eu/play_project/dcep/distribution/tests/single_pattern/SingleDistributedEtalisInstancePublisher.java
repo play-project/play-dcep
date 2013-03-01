@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution.tests;
+package eu.play_project.dcep.distribution.tests.single_pattern;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -27,15 +27,14 @@ import fr.inria.eventcloud.api.Quadruple;
 
 /**
  * Connect to a DistributedEtalis instance and use the api(s).
- * @author Stefan Obermeier
+ * @author sobermeier
  *
  */
 public class SingleDistributedEtalisInstancePublisher {
 
 	private static DistributedEtalisTestApi testApiI1;
 	private static DcepManagmentApi managementApiI1;
-	private static DistributedEtalisTestApi testApiI2;
-	private static DcepManagmentApi managementApiI2;
+
 
 	public static void main(String[] args) throws RemoteException,
 			NotBoundException, Exception {
@@ -44,27 +43,14 @@ public class SingleDistributedEtalisInstancePublisher {
 		PAComponentRepresentative root1 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
 		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface("DistributedEtalisTestApi"));
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
-		
-		// Connect to DistributedEtalis instance 2.
-		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
-		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
-		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
 
 		//Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
-		managementApiI2.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
+		//managementApiI1.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq"))); //TODO define pattern.
 
-		//TODO stuehmer:  Implemt simulation.
 		
 		// Publish some events to instance 1.
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 100; i++) {
 			testApiI1.publish(createEvent("timeS" + i, (i % 20), "A"));
-			delay(2);
-		}
-
-		// Publish some events to instance 2.
-		for (int i = 0; i < 1000000; i++) {
-			testApiI2.publish(createEvent("timeS" + i, (i % 20), "B"));
 			delay(2);
 		}
 	}

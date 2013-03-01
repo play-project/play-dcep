@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution.tests;
+package eu.play_project.dcep.distribution.tests.integration.performance;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -28,11 +28,10 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
-import eu.play_project.dcep.distributedetalis.test.PublishApiSubscriber;
 
 public class SingleDistributedEtalisInstanceSubscriber {
 
-	private static PublishApiSubscriber subscriber = null;
+	private static ComplexEventSubscriber subscriber = null;
 	private static DistributedEtalisTestApi testApiI1;
 	private static DistributedEtalisTestApi testApiI2;
 
