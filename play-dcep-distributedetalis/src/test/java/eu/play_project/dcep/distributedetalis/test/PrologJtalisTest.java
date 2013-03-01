@@ -15,7 +15,6 @@ import jpl.Query;
 import jpl.Term;
 
 import org.event_processing.events.types.AvgTempEvent;
-import org.junit.Before;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
@@ -130,7 +129,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //		delay();
 //	}
 	
-	@Before
+	@Test
 	public void instantiatePrologSemWebLib(){
 
 		prologSemWebLib = new PrologSemWebLib();
