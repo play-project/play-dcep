@@ -269,14 +269,18 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 		public GetEventThread(DistributedEtalis dEtalis, Deque<CompoundEvent> queue) {
 			this.dEtalis = dEtalis;
 			this.queue = queue;
+			System.out.println("GetEventThread constructed");
 		}
 
 		@Override
 		public void run() {
+			System.out.println("GetEventThread run()");
 			this.getEventThread = Thread.currentThread();
 
 			while (this.getEventThread == Thread.currentThread()) {
 				synchronized (queue) {
+					System.out.println("GetEventThread thread awake");
+
 					if (queue.isEmpty()) {
 						try {
 							queue.wait();
