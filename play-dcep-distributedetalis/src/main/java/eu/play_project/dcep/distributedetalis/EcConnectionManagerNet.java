@@ -55,6 +55,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		outputClouds = new HashMap<String, PublishApi>();
 		inputClouds = new HashMap<String, SubscribeApi>();
 		this.eventCloudRegistryUrl = eventCloudRegistry;
+		eventInputQueue = new LinkedList<CompoundEvent>();
 		this.eventCloudListener = new EcConnectionListenerNet();
 		getEventThread = new GetEventThread(dEtalis); // Publish events from queue to dEtalis.
 		new Thread(getEventThread).start();

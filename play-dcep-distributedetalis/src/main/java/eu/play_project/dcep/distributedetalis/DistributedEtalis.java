@@ -90,7 +90,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException {
+	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException{
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");

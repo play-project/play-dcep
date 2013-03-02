@@ -1,7 +1,5 @@
 package eu.play_project.dcep.distribution.tests.single_pattern;
 
-import java.rmi.AccessException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

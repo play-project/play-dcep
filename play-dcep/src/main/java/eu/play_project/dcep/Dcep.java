@@ -84,7 +84,7 @@ Serializable {
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException {
+	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException{
 
 		logger.debug("Pattern reached DCEP facade: "
 				+ epSparqlQuery.getEleQuery());
@@ -94,7 +94,7 @@ Serializable {
 	}
 
 	@Override
-	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException {
+	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException{
 		if(!init); init();
 		return dEtalisManagment.getRegisteredEventPattern(queryId);
 	}

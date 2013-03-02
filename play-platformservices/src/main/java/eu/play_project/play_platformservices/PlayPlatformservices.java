@@ -200,15 +200,18 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 	
 	@Override
-	public String getRegisteredQuery(String queryId) throws QueryDispatchException {
+	public String getRegisteredQuery(String queryId)
+			throws QueryDispatchException {
 		if (!init) {
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
 		try {
-			return this.dcepManagmentApi.getRegisteredEventPattern(queryId).getEpSparqlQuery();
+			return this.dcepManagmentApi.getRegisteredEventPattern(queryId)
+					.getEpSparqlQuery();
 		} catch (DcepManagementException e) {
-			//throw new QueryDispatchException(e.getMessage()); // FIXME stuehmer: revert to descriptive messages
+			// throw new QueryDispatchException(e.getMessage()); // FIXME
+			// stuehmer: revert to descriptive messages
 			throw new QueryDispatchException();
 		}
 	}
