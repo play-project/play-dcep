@@ -60,7 +60,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private AbstractSender rdfSender;
 	private final DistributedEtalis dEtalis;
 	private EcConnectionListenerVirtuoso dsbListener;
-	public static String notificationReceiverEndpoint = "http://localhost:9998/play-dcep/NotificationConsumerService" + Math.abs(new Random().nextLong());
+	public static String notificationReceiverEndpoint;
 
 
 	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws NamingException, DistributedEtalisException {
@@ -88,6 +88,10 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 	
 	private void init() throws DistributedEtalisException {
+		
+		notificationReceiverEndpoint = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.notify.endpoint", "http://localhost:9998/play-dcep/NotificationConsumerService");
+		notificationReceiverEndpoint += Math.abs(new Random().nextLong()); // generate one-time notifications endpoints
+		
 		this.rdfReceiver = new AbstractReceiver() {};
 		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
 		this.rdfSender.setDsbNotify(Constants.getProperties().getProperty(
