@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 
 import javax.naming.NamingException;
 import javax.xml.namespace.QName;
@@ -90,7 +89,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private void init() throws DistributedEtalisException {
 		
 		notificationReceiverEndpoint = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.notify.endpoint", "http://localhost:9998/play-dcep/NotificationConsumerService");
-		notificationReceiverEndpoint += Math.abs(new Random().nextLong()); // generate one-time notifications endpoints
+		//notificationReceiverEndpoint += Math.abs(new Random().nextLong()); // generate one-time notifications endpoints
 		
 		this.rdfReceiver = new AbstractReceiver() {};
 		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
@@ -111,6 +110,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
             QName endpointName = new QName("http://docs.oasis-open.org/wsn/bw-2",
                     "NotificationConsumerPort");
             // expose the service
+            logger.info("Exposing notification endpoint at: " + notificationReceiverEndpoint);
             NotificationConsumerService service = new NotificationConsumerService(interfaceName,
                     serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpoint,
                     this.dsbListener);
