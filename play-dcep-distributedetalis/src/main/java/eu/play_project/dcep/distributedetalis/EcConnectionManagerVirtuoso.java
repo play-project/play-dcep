@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -23,38 +24,46 @@ import org.petalslink.dsb.soap.CXFExposer;
 import org.petalslink.dsb.soap.api.Exposer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
-import virtuoso.jdbc4.VirtuosoDataSource;
+import virtuoso.jdbc3.VirtuosoDataSource;
 
-import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
+import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_commons.constants.Constants;
+import eu.play_project.play_commons.constants.Stream;
+import eu.play_project.play_commons.eventformat.EventFormatHelpers;
 import eu.play_project.play_eventadapter.AbstractReceiver;
+import eu.play_project.play_eventadapter.AbstractSender;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.PublishApi;
-import fr.inria.eventcloud.api.PutGetApi;
+import fr.inria.eventcloud.api.PublishSubscribeConstants;
+import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
+import fr.inria.eventcloud.utils.trigwriter.TriGWriter;
 
-public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
-	private Map<String, PublishApi> outputClouds;
+public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private Map<String, SubscribeApi> inputClouds;
 	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
 	private final VirtuosoDataSource ds;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
-	private static final long serialVersionUID = 1L;
-	private INotificationConsumer dsbListener;
 	private boolean init = false;
 	private AbstractReceiver rdfReceiver;
+	private AbstractSender rdfSender;
+	private final DistributedEtalis dEtalis;
+	private EcConnectionListenerVirtuoso dsbListener;
 	public static String notificationReceiverEndpoint = "http://localhost:9998/play-dcep/NotificationConsumerService" + Math.abs(new Random().nextLong());
 
 
-	public EcConnectionManagerVirtuoso() throws NamingException, DistributedEtalisException {
+	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws NamingException, DistributedEtalisException {
 		Properties constants = Constants.getProperties("play-dcep-distribution.properties");
 
 		ds = new VirtuosoDataSource();
@@ -62,26 +71,34 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		ds.setPortNumber(Integer.parseInt(constants.getProperty("dcep.virtuoso.port")));
 		ds.setUser(constants.getProperty("dcep.virtuoso.user"));
 		ds.setPassword(constants.getProperty("dcep.virtuoso.password"));
+		this.dEtalis = dEtalis;
+
 		init();
 	}
 	
-	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw) throws DistributedEtalisException {
+	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws DistributedEtalisException {
 		ds = new VirtuosoDataSource();
 		ds.setServerName(server);
 		ds.setPortNumber(port);
 		ds.setUser(user);
 		ds.setPassword(pw);
+		this.dEtalis = dEtalis;
+
 		init();
 	}
 	
 	private void init() throws DistributedEtalisException {
 		this.rdfReceiver = new AbstractReceiver() {};
+		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
+		this.rdfSender.setDsbNotify(Constants.getProperties().getProperty(
+				"dsb.notify.endpoint"));
 		
-        // instanciate the WSN server stuff...
+        // instanciate the WSN service...
         Service server = null;
 
         try {
         	this.dsbListener = new EcConnectionListenerVirtuoso(this.rdfReceiver);
+        	this.dsbListener.setDetalis(this.dEtalis);
             
             QName interfaceName = new QName("http://docs.oasis-open.org/wsn/bw-2",
                     "NotificationConsumer");
@@ -104,6 +121,21 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		init = true;
 	}
 	
+	public void putDataInCloud(String query, String cloudId) {
+		Connection con = null;
+
+		try {
+			con = ds.getConnection();
+			
+			//VirtGraph set = new VirtGraph (url, "dba", "dba");
+			// FIXME stuehmer: finish writing of historicl events to virtuoso
+			
+		} catch (SQLException e) {
+			logger.error("Error storing data in virtuoso: " + e.getMessage());
+		}
+
+	}
+
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException, MalformedSparqlQueryException
@@ -154,31 +186,9 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		return rr;
 	}
 
-	@Override
-	public PutGetApi getHistoricCloud(String cloudId)
-			throws EcConnectionmanagerException {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}
-		
-		// TODO Auto-generated method stub
-		return super.getHistoricCloud(cloudId);
-	}
-
 	private QName getTopic(String cloudId) {
 		int index = cloudId.lastIndexOf("/");
 		return new QName(cloudId.substring(0, index), cloudId.substring(index + 1));
-	}
-
-	@Override
-	public PublishApi getOutputCloud(String cloudId)
-			throws EcConnectionmanagerException {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}
-		
-		// TODO Auto-generated method stub
-		return super.getOutputCloud(cloudId);
 	}
 
 	@Override
@@ -187,8 +197,14 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
-		// TODO Auto-generated method stub
-		super.publish(event);
+		String cloudId = EventCloudHelpers.getCloudId(event);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		TriGWriter.write(out, DatasetFactory.create(quadruplesToDatasetGraph(event.getQuadruples())));
+
+		Element notifPayload = EventFormatHelpers.wrapWithDomNativeMessageElement(new String(out.toByteArray()));
+		
+		this.rdfSender.notify(notifPayload, getTopic(cloudId));
 	}
 
 	@Override
@@ -258,6 +274,18 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		}
 	}
 	
+	@Override
+	public void destroy() {
+		logger.info("Terminating {}.", this.getClass()
+				.getSimpleName());
+		logger.info("Unsubscribe from Topics");
+
+		// Unsubscribe
+		for (String cloudId : subscriptions.keySet()) {
+			this.unsubscribe(cloudId, subscriptions.get(cloudId).sub);
+		}
+	}
+	
 	/**
 	 * Usage counter for a subscription.
 	 */
@@ -273,4 +301,28 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerNet {
 		public String sub;
 		public int usage;
 	}
+
+    /**
+     * A private method to convert a collection of quadruples into the
+     * corresponding data set graph to be used in the event format writers
+     * 
+     * @author ialshaba
+     * 
+     * @param quads
+     *            the collection of the quadruples
+     * @return the corresponding data set graph
+     */
+    private static DatasetGraph quadruplesToDatasetGraph(List<Quadruple> quads) {
+        DatasetGraph dsg = DatasetGraphFactory.createMem();
+        for (Quadruple q : quads) {
+            if (q.getPredicate() != PublishSubscribeConstants.EVENT_NB_QUADRUPLES_NODE) {
+                dsg.add(
+                        q.getGraph(), q.getSubject(), q.getPredicate(),
+                        q.getObject());
+            }
+        }
+
+        return dsg;
+    }
+
 }

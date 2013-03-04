@@ -7,14 +7,14 @@ import java.sql.Statement;
 
 import javax.naming.NamingException;
 
-import virtuoso.jdbc4.VirtuosoDataSource;
+import virtuoso.jdbc3.VirtuosoDataSource;
 
 public class Test {
 
 	/**
 	 * @param args
-	 * @throws NamingException 
-	 * @throws SQLException 
+	 * @throws NamingException
+	 * @throws SQLException
 	 */
 	public static void main(String[] args) throws NamingException{
 		// TODO Auto-generated method stub

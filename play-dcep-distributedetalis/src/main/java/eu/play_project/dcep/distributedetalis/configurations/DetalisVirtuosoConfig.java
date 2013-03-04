@@ -41,7 +41,7 @@ public class DetalisVirtuosoConfig implements Configuration, Serializable{
 			
 			dEtalisConfigApi.setEventInputProvider(new JtalisInputProvider(semWebLib));
 	
-			dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerVirtuoso());
+			dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerVirtuoso(dEtalisConfigApi.getDistributedEtalis()));
 			dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 			dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
 					dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQuerys(),
@@ -61,7 +61,7 @@ public class DetalisVirtuosoConfig implements Configuration, Serializable{
 	
 	
 			// Instatiate measurement unit.
-			// this.measurementUnit = new MeasurementUnit(this,	
+			// this.measurementUnit = new MeasurementUnit(this,
 		} catch (NamingException e) {
 			throw new DistributedEtalisException("Error configuring DistributesEtalis: " + e.getMessage(), e);
 		}

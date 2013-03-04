@@ -16,8 +16,8 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 
 	private static final long serialVersionUID = -461705400447885142L;
 	private DistributedEtalis dEtalis;
-	private AbstractReceiver rdfReceiver;
-	private Logger logger;
+	private final AbstractReceiver rdfReceiver;
+	private final Logger logger;
 	
 	public EcConnectionListenerVirtuoso(AbstractReceiver rdfReceiver) {
 		this.rdfReceiver = rdfReceiver;
@@ -26,10 +26,20 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 	
 	@Override
 	public void notify(Notify notify) throws WsnbException {
+		if (this.dEtalis == null) {
+			String msg = "Detalis was not set in " + this.getClass().getSimpleName();
+			logger.error(msg);
+			throw new IllegalStateException(msg);
+		}
+		
 	    try {
 		    logger.info("Got a notify...");
+		    
 		    // Forward the event to Detalis:
 		    this.dEtalis.publish(EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify)));
+		    
+		    // Store the event in Virtuoso:
+		    
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
 		}

@@ -90,8 +90,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		return new ResultRegistry(rw);
 	}
 
-	@Override
-	public PutGetApi getHistoricCloud(String cloudId)
+	private PutGetApi getHistoricCloud(String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
@@ -132,8 +131,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		return inputClouds.get(cloudId);
 	}
 
-	@Override
-	public PublishApi getOutputCloud(String cloudId)
+	private PublishApi getOutputCloud(String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
@@ -244,6 +242,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 
 	@Override
 	public void destroy() {
+		logger.info("Terminating {}.", this.getClass()
+				.getSimpleName());
 		logger.info("Unsubscribe from Event Clouds");
 
 		// Unsubscribe
