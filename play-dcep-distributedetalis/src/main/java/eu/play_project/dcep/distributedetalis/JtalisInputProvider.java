@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.event.JtalisInputEventProvider;
 
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -28,7 +29,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	BlockingQueue<EtalisEvent> meausrementEvents = null; //Contains measurement events. They are preferred to the other events.
 	boolean shutdownEtalis = false; // If true ETALIS will shutdown.
 	private MeasurementUnit measurementUnit;
-	private PrologSemWebLib semWebLib;
+	private final PrologSemWebLib semWebLib;
 	public static int eventConsumed = 0;
 	private static Logger logger = LoggerFactory.getLogger(JtalisInputProvider.class);
 
@@ -43,21 +44,23 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	 */
 	public void notify(CompoundEvent event) {
 		logger.info("DCEP Entry " + event.getGraph());
-		try {
-			semWebLib.addEvent(event);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		String eventType = EventCloudHelpers.getEventType(event);
 		String eventId = event.getGraph().toString();
-		
+
 		try {
-			System.out.println("New simple event: " + "'" + eventType + "'");
+			// Add RDF payload to Prolog:
+			semWebLib.addEvent(event);
+			// Trigger event in ETALIS:
 			events.put(new EtalisEvent("'" + eventType + "'", eventId));
 		} catch (PrologException e) {
 			logger.error("Error on new event. ", e);
+			semWebLib.removeEvent(eventId);
 		} catch (InterruptedException e) {
 			logger.error("Error adding event to Jtalis queue.", e);
+			semWebLib.removeEvent(eventId);
+		} catch (DistributedEtalisException e) {
+			logger.error("Error on new event. ", e);
+			semWebLib.removeEvent(eventId);
 		}
 	}
 

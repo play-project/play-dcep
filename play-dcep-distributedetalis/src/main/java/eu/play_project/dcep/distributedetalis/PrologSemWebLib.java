@@ -3,13 +3,13 @@ package eu.play_project.dcep.distributedetalis;
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class PrologSemWebLib implements UsePrologSemWebLib {
 	private JtalisContextImpl ctx;
-	int count = 0;
 	int oldValue =0;
 	
 	@Override
@@ -26,16 +26,16 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	}
 
 	@Override
-	public Boolean addEvent(CompoundEvent event) throws Exception {
+	public Boolean addEvent(CompoundEvent event) throws DistributedEtalisException {
 		Boolean dataAddedToTriplestore = true;
-		Boolean gcDataAdded = true;	
+		Boolean gcDataAdded = true;
 		for(Quadruple quadruple : event.getQuadruples()){
-			if((dataAddedToTriplestore && gcDataAdded)){
+			if(dataAddedToTriplestore){
 				// TODO use prolog type system
 				Node o = quadruple.getObject();
 				String rdfObject;
 				if (o.isLiteral()) {
-					rdfObject = "'" + quadruple.getObject().getLiteralValue() + "'";
+					rdfObject = "'" + quadruple.getObject().getLiteralLexicalForm() + "'";
 					
 					
 //					if (null != o.getLiteralDatatypeURI()) {
@@ -62,29 +62,32 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 				}
 				else {
 					// 5.) Resource URI
-					rdfObject = "'" + o + "'";
+					rdfObject = "'" + o.getURI() + "'";
 				}
 				// Add data to triplestore
-				dataAddedToTriplestore = ctx.getEngineWrapper().executeGoal("rdf_assert(" +
-						"'" + quadruple.getSubject()   + "', "+
-						"'" + quadruple.getPredicate() + "', "+
-						    rdfObject                  + ", "+
-						//"'" + quadruple.getObject()    + "', "+
-						"'" + event.getGraph() + "')");
+				String prologString = "rdf_assert(" +
+						"'" + quadruple.getSubject()   + "', " +
+						"'" + quadruple.getPredicate() + "', " +
+						    rdfObject                  + ", " +
+						"'" + event.getGraph() + "')";
+				dataAddedToTriplestore = ctx.getEngineWrapper().executeGoal(prologString);
 			} else {
-				throw new Exception("Failed to insert event data in SWI Prolog triple store.");
+				throw new DistributedEtalisException("Failed to insert event data in Prolog triple store.");
 			}
 		}
 		// Add GC counter.
-		gcDataAdded = ctx.getEngineWrapper().executeGoal("assert(id('" + event.getGraph() + "', 0))");	 
-		count++;
+		gcDataAdded = ctx.getEngineWrapper().executeGoal("assert(id('" + event.getGraph() + "', 0))");
+		
+		if (!gcDataAdded) {
+			throw new DistributedEtalisException("Failed to insert garbage collection information in Prolog.");
+		}
+		
 		return (dataAddedToTriplestore && gcDataAdded);
-	}
+}
 
 	@Override
 	public void removeEvent(String id) {
 		ctx.getEngineWrapper().executeGoal("rdf_retractall(S,P,O,'" + id + "')");
-		//etalis.getEngineWrapper().executeGoal("rdf_retractall(S,P,O,G)");
 	}
 
 
