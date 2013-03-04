@@ -188,7 +188,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 	private QName getTopic(String cloudId) {
 		int index = cloudId.lastIndexOf("/");
-		return new QName(cloudId.substring(0, index), cloudId.substring(index + 1));
+		return new QName(cloudId.substring(0, index), cloudId.substring(index + 1), "s"); // FIXME randomize "s"
 	}
 
 	@Override
