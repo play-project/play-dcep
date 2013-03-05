@@ -59,20 +59,18 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private AbstractSender rdfSender;
 	private final DistributedEtalis dEtalis;
 	private EcConnectionListenerVirtuoso dsbListener;
+	static final Properties constants = Constants.getProperties("play-dcep-distribution.properties");
 	public static String notificationReceiverEndpoint;
 
 
 	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws NamingException, DistributedEtalisException {
-		Properties constants = Constants.getProperties("play-dcep-distribution.properties");
-
-		ds = new VirtuosoDataSource();
-		ds.setServerName(constants.getProperty("dcep.virtuoso.servername"));
-		ds.setPortNumber(Integer.parseInt(constants.getProperty("dcep.virtuoso.port")));
-		ds.setUser(constants.getProperty("dcep.virtuoso.user"));
-		ds.setPassword(constants.getProperty("dcep.virtuoso.password"));
-		this.dEtalis = dEtalis;
-
-		init();
+		this(
+				constants.getProperty("dcep.virtuoso.servername"),
+				Integer.parseInt(constants.getProperty("dcep.virtuoso.port")),
+				constants.getProperty("dcep.virtuoso.user"),
+				constants.getProperty("dcep.virtuoso.password"),
+				dEtalis
+				);
 	}
 	
 	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws DistributedEtalisException {
@@ -88,12 +86,12 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	
 	private void init() throws DistributedEtalisException {
 		
-		notificationReceiverEndpoint = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.notify.endpoint", "http://localhost:9998/play-dcep/NotificationConsumerService");
+		notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint.local");
 		//notificationReceiverEndpoint += Math.abs(new Random().nextLong()); // generate one-time notifications endpoints
 		
 		this.rdfReceiver = new AbstractReceiver() {};
 		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
-		this.rdfSender.setDsbNotify(Constants.getProperties().getProperty(
+		this.rdfSender.setDsbNotify(constants.getProperty(
 				"dsb.notify.endpoint"));
 		
         // instanciate the WSN service...

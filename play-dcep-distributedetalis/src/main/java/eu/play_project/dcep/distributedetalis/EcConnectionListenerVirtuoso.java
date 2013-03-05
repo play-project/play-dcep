@@ -39,6 +39,7 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 		    this.dEtalis.publish(EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify)));
 		    
 		    // Store the event in Virtuoso:
+		    // FIXME stuehmer: call putData....()
 		    
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
