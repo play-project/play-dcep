@@ -96,6 +96,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			// Provide PublishApi as SOAP Webservice
 			try {
 				soapServer = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this);
+				logger.info("QueryDispatch SOAP service started.");
 			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch SOAP Service", e);
 			}
@@ -103,7 +104,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			// Provide PublishApi as REST Webservice
 			try {
 				restServer = new PlayPlatformservicesRest();
-	        	logger.info(String.format("Jersey REST app started with WADL available at "
+	        	logger.info(String.format("QueryDispatch REST service started with WADL available at "
 	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI));
 			} catch (ProcessingException e) {
 				logger.error("Exception while publishing QueryDispatch REST Service", e);
