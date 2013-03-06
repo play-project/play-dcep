@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
+import org.glassfish.jersey.internal.ProcessingException;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.BindingController;
 import org.objectweb.fractal.api.control.IllegalBindingException;
@@ -51,7 +52,9 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 	private Logger logger;
 
-	private Endpoint soapEndpoint;
+	private Endpoint soapServer;
+
+	private PlayPlatformservicesRest restServer;
 
 	@Override
 	public String[] listFc() {
@@ -71,6 +74,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	public void bindFc(String clientItfName, Object serverItf) throws NoSuchInterfaceException, IllegalBindingException, IllegalLifeCycleException {
 		if (clientItfName.equals("DcepManagmentApi")) {
 			dcepManagmentApi = (DcepManagmentApi) serverItf;
+			restServer.setDcepManagement((DcepManagmentApi) serverItf);
 		}
 	}
 
@@ -89,13 +93,22 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	
 			eleGenerator = new EleGeneratorForConstructQuery();
 	
-			// Provide PublishApi as Webservice
+			// Provide PublishApi as SOAP Webservice
 			try {
-				soapEndpoint = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this);
+				soapServer = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this);
 			} catch (Exception e) {
-				logger.error("Exception while publishing QueryDispatch Web Service endpoint", e);
+				logger.error("Exception while publishing QueryDispatch SOAP Service", e);
 			}
 	
+			// Provide PublishApi as REST Webservice
+			try {
+				restServer = new PlayPlatformservicesRest();
+	        	logger.info(String.format("Jersey REST app started with WADL available at "
+	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI));
+			} catch (ProcessingException e) {
+				logger.error("Exception while publishing QueryDispatch REST Service", e);
+			}
+			
 			this.init = true;
 		}
 	}
@@ -104,9 +117,14 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	public void endComponentActivity(Body arg0) {
 		logger.info("Terminating {} component.", this.getClass().getSimpleName());
 		
-		if (this.soapEndpoint != null) {
-			this.soapEndpoint.stop();
+		if (this.soapServer != null) {
+			this.soapServer.stop();
 		}
+		
+		if (this.restServer != null) {
+			this.restServer.destroy();
+		}
+
 		this.init = false;
 	}
 	
@@ -144,7 +162,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			dcepManagmentApi.registerEventPattern(epQuery);
 		} catch (Exception e) {
 			logger.error("Error while registering query: " + queryId, e);
-			//throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage())); // FIXME stuehmer: revert to descriptive messages
+			//throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e)); // FIXME stuehmer: revert to descriptive messages
 			throw new QueryDispatchException(String.format("Error while registering query ID '%s'", queryId));
 		}
 		return queryId;
@@ -210,8 +228,8 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			return this.dcepManagmentApi.getRegisteredEventPattern(queryId)
 					.getEpSparqlQuery();
 		} catch (DcepManagementException e) {
-			// throw new QueryDispatchException(e.getMessage()); // FIXME
-			// stuehmer: revert to descriptive messages
+			// throw new QueryDispatchException(e.getMessage());
+			// FIXME stuehmer: revert to descriptive messages
 			throw new QueryDispatchException();
 		}
 	}

@@ -16,6 +16,7 @@
 
 	<properties>
 		<cxf.version>2.4.3</cxf.version>
+        <jersey-version>2.0-m12-1</jersey-version>
 	</properties>
 	
 	<build>
@@ -79,6 +80,24 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-constants</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <!-- uncomment this to get JSON support:
+         <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey-version}</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 </project>
