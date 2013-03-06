@@ -21,7 +21,7 @@ public class PlayEleParser{
 | < STRING : "\"" (< DIGIT > | < CHAR >)+ "\"" >
 | < PROLOG_VAR : "V" (["A"-"Z","a"-"z","0"-"9"])+ > // Variale
 | < URI_CHARS :  (< DIGIT > | < CHAR > | [ ":",".", "-", "/", "?", "#"])+ >
-}
+}
 void Start():{}
 {	ElePattern()
 }
