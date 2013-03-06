@@ -79,7 +79,6 @@ public class CommonsPatternTest {
 		// Wait
 		delay();
 
-		System.out.println("Events: " + subscriber.getComplexEvents().size());
 		assertTrue(subscriber.getComplexEvents().size()==3);
 		
 
@@ -159,7 +158,7 @@ public class CommonsPatternTest {
 		}
 }
 	
-	//@Test
+	@Test
 	public void registerCommonPatterns(){
 		
 		for (String queryFileName : Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.startup.registerqueries").split(",")) {
@@ -177,7 +176,7 @@ public class CommonsPatternTest {
 	public void sendEvents(){
 		start = true;
 		System.out.println("Start Producer");
-		System.out.println("Send 2000 Events \n\n\n\n\n\n\n");
+		System.out.println("Send 2000 Events ");
 		
 	}
 	

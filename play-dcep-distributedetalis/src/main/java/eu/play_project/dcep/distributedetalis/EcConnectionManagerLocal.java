@@ -64,7 +64,7 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 
 		// Read data from file.
 		try {
-			System.out.println(inputRdfModelFileName);
+			logger.debug("Read historical data from file: " + inputRdfModelFileName + ".");
 			rdf.readFrom(in, Syntax.Trig);
 		} catch (SyntaxNotSupportedException e) {
 			logger.error("Syntax " + Syntax.Trig + " is not supported." );
@@ -89,7 +89,6 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 		}
 		
 		logger.debug("Execute historical query: " + query);
-		System.out.println("Execute historical query: " + query);
 		QueryExecution qexec = QueryExecutionFactory.create(jenaQuery, jena);
 
 		ResultRegistry results = null;
