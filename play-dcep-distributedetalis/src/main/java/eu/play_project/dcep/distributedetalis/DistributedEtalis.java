@@ -90,10 +90,9 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException{
+	public void registerEventPattern(EpSparqlQuery epSparqlQuery) {
 		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
+			throw new IllegalStateException(this.getClass().getSimpleName()+ " has not been initialized.");
 		}
 		if (epSparqlQuery.getQueryDetails() == null) {
 			throw new IllegalArgumentException("QueryDetails is not set");
@@ -104,13 +103,13 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.debug("ELE: " + epSparqlQuery.getEleQuery());
 
 		if(this.registeredQuerys.containsKey(epSparqlQuery.getQueryDetails().getQueryId())) {
-			throw new DcepManagementException("Pattern ID already exists.");
-			//throw new DcepManagementException("Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId());
+			String error = "Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId();
+			logger.error(error);
+			//throw new DcepManagementException(error);
 			// FIXME stuehmer: revert to descriptive messages
 		}
 		
-		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(),
-				epSparqlQuery);
+		this.registeredQuerys.put("'" + epSparqlQuery.getQueryDetails().getQueryId() + "'", epSparqlQuery);
 		// Deal with sliding time windows:
 		String windowDefinition = "";
 		if (!epSparqlQuery.getQueryDetails().getWindowTime().equals("")

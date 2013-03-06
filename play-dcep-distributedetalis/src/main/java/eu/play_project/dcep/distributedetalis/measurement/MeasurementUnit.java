@@ -65,11 +65,8 @@ public class MeasurementUnit implements MeasurementState{
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId("'measurement-pattern'");
 		eq.setQueryDetails(qd);
-		try {
-			cepEngine.registerEventPattern(eq);
-		} catch (DcepManagementException e) {
-			logger.error("Measurement pattern could not be registered.");
-		}
+		cepEngine.registerEventPattern(eq);
+		
 	}
 
 	@Override

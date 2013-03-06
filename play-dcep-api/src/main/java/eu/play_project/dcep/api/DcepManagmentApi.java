@@ -13,7 +13,7 @@ public interface DcepManagmentApi {
 	 * @throws DcepManagementException
 	 *             if the pattern has errors
 	 */
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) throws DcepManagementException;
+	public void registerEventPattern(EpSparqlQuery epSparqlQuery);
 
 	/**
 	 * Unregister an existing event pattern. This method silently does nothing
