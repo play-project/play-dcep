@@ -44,8 +44,8 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>eu.play_project.dcep.distribution.Main</mainClass>
-<!-- 							<mainClass>eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher</mainClass> -->
+<!-- 							<mainClass>eu.play_project.dcep.distribution.Main</mainClass> -->
+							<mainClass>eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher</mainClass>
 <!-- 							<mainClass>eu.play_project.dcep.distribution.tests.SingleDistributedEtalisInstanceRunner</mainClass>	 -->
 						</manifest>
 					</archive>

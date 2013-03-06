@@ -187,7 +187,7 @@ Serializable {
 	public void configDEtalisInstance(ConfigApi configApi) throws DistributedEtalisException {
 		// get property or set default:
 		String middleware = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.middleware", "local");
-
+middleware = "local";
 		if(middleware.equals("local")) {
 			configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));
 		}

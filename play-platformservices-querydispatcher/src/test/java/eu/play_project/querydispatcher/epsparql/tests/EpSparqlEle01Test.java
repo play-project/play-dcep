@@ -63,7 +63,7 @@ public class EpSparqlEle01Test {
 	
 	@Test
 	public void startParser() throws InterruptedException {
-		String queryString = getQuery("play-epsparql-clic2call-plus-tweet.eprq")[0];
+		String queryString = getQuery("play-bdpl-personalmonitoring-01-slowdown-recom.eprq")[0];
 		//queryString = "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
 		System.out.println(queryString);
 		// Parse query
