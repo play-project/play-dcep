@@ -1,10 +1,8 @@
 package eu.play_project.distributedetalis.join.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -29,7 +27,6 @@ public class NaturalJoinerTest {
 	
 	@Test
 	public void testNaturalJoin1() throws IOException {
-		// TODO use classpath address and classloader
 		NaturalJoinerTestReader re = new NaturalJoinerTestReader("nj1.txt");
 		re.read();
 		
