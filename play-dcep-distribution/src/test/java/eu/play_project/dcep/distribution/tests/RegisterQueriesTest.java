@@ -36,10 +36,10 @@ public class RegisterQueriesTest {
 	public void registerCommonPatterns() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException{
 		
 		InstantiatePlayPlatform();
-		
 		for (String queryFileName : Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.startup.registerqueries").split(",")) {
 			queryFileName = queryFileName.trim();
 			String	queryString = getSparqlQuerys(queryFileName);
+
 			try {
 				queryDispatchApi.registerQuery("urn:bdpl:" + queryFileName, queryString);
 			} catch (QueryDispatchException e) {
