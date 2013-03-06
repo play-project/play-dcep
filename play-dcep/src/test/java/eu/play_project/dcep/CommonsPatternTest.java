@@ -27,6 +27,7 @@ import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 import eu.play_project.dcep.distributedetalis.EventCloudHelpers;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
@@ -150,14 +151,28 @@ public class CommonsPatternTest {
 			 for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
 				GCM.getGCMLifeCycleController(subcomponent).terminateGCMComponent();
 			 }
-
-			
+	
 		} catch (IllegalLifeCycleException e) {
 			e.printStackTrace();
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();
 		}
 }
+	
+	//@Test
+	public void registerCommonPatterns(){
+		
+		for (String queryFileName : Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.startup.registerqueries").split(",")) {
+			queryFileName = queryFileName.trim();
+			String	queryString = getSparqlQuerys(queryFileName);
+			logger.info(queryString);
+			try {
+				queryDispatchApi.registerQuery("urn:bdpl:" + queryFileName, queryString);
+			} catch (QueryDispatchException e) {
+				System.out.println(("Error registering query " + queryFileName + " on startup: " + e.getMessage()));
+			}
+		}
+	}
 
 	public void sendEvents(){
 		start = true;
@@ -246,7 +261,7 @@ public class CommonsPatternTest {
 	
 	private void delay(){
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
