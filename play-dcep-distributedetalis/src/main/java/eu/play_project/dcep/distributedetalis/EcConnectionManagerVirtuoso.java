@@ -92,7 +92,9 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 	
 	private void init() throws DistributedEtalisException {
-		
+
+		logger.info("Initialising {}.", this.getClass().getSimpleName());
+
 		notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint.local");
 		//notificationReceiverEndpoint += Math.abs(new Random().nextLong()); // generate one-time notifications endpoints
 		

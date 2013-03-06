@@ -98,14 +98,15 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		if (epSparqlQuery.getQueryDetails() == null) {
 			throw new IllegalArgumentException("QueryDetails is not set");
 		}
-		logger.info("New event pattern registered at {} with queryId = {}",
+		logger.info("New event pattern is being registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), epSparqlQuery
 				.getQueryDetails().getQueryId());
 		logger.debug("ELE: " + epSparqlQuery.getEleQuery());
 
 		if(this.registeredQuerys.containsKey(epSparqlQuery.getQueryDetails().getQueryId())) {
 			throw new DcepManagementException("Pattern ID already exists.");
-			//throw new DcepManagementException("Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId()); // FIXME stuehmer: revert to descriptive messages
+			//throw new DcepManagementException("Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId());
+			// FIXME stuehmer: revert to descriptive messages
 		}
 		
 		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(),

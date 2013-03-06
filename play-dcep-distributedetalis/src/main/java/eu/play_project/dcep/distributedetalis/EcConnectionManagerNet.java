@@ -52,6 +52,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	public EcConnectionManagerNet(String eventCloudRegistry,
 			DistributedEtalis dEtalis) {
 		logger = LoggerFactory.getLogger(EcConnectionManagerNet.class);
+		logger.info("Initialising {}.", this.getClass().getSimpleName());
 
 		putGetClouds = new HashMap<String, PutGetApi>();
 		outputClouds = new HashMap<String, PublishApi>();
@@ -336,7 +337,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			synchronized(eventInputQueue){
 				eventInputQueue.add(event);
 				eventInputQueue.notifyAll();
-			}	
+			}
 		}
 	}
 }
