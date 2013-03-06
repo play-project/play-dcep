@@ -45,12 +45,10 @@ import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
-import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.utils.trigwriter.TriGWriter;
 
 public class EcConnectionManagerVirtuoso implements EcConnectionManager {
-	private Map<String, SubscribeApi> inputClouds;
 	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
 	private final VirtuosoDataSource ds;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
@@ -277,7 +275,6 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 					logger.info("Unsubscribing from topic {}.", cloudId);
 					rdfReceiver.unsubscribe(subId);
 					this.subscriptions.remove(cloudId);
-					this.inputClouds.remove(cloudId);
 				}
 				else {
 					logger.info("Still subscribed to topic {}.", cloudId);
