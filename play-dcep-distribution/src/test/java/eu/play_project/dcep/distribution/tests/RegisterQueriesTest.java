@@ -40,7 +40,6 @@ public class RegisterQueriesTest {
 		for (String queryFileName : Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.startup.registerqueries").split(",")) {
 			queryFileName = queryFileName.trim();
 			String	queryString = getSparqlQuerys(queryFileName);
-			logger.info(queryString);
 			try {
 				queryDispatchApi.registerQuery("urn:bdpl:" + queryFileName, queryString);
 			} catch (QueryDispatchException e) {
@@ -70,7 +69,7 @@ public class RegisterQueriesTest {
 		testApi = (DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi");
 		
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(20000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

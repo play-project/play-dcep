@@ -23,21 +23,23 @@ public class EpSparqlQuery implements Serializable {
 	public QueryDetails getQueryDetails() {
 		return queryDetails;
 	}
+	
 	public void setQueryDetails(QueryDetails queryDetails) {
 		this.queryDetails = queryDetails;
 	}
+	
 	public String getEpSparqlQuery() {
 		return epSparqlQuery;
 	}
+	
 	public void setEpSparqlQuery(String epSparqlQuery) {
 		this.epSparqlQuery = epSparqlQuery;
 	}
+	
 	public String getEleQuery() {
 		return eleQuery;
 	}
-	public void setEleQuery(String eleQuery) {
-		this.eleQuery = eleQuery;
-	}
+
 	public List<HistoricalQuery> gethistoricalQueries() {
 		return historicalQueries;
 	}
@@ -67,6 +69,9 @@ public class EpSparqlQuery implements Serializable {
 	
 	public void setHistoricalQueries(List<HistoricalQuery> historicalQueries) {
 		this.historicalQueries = historicalQueries;
+	}
+	public void setEleQuery(String eleQuery) {
+		this.eleQuery = eleQuery;
 	}
 	
 }

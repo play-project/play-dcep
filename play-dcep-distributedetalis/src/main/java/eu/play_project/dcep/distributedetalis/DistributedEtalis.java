@@ -108,7 +108,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			//throw new DcepManagementException("Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId()); // FIXME stuehmer: revert to descriptive messages
 		}
 		
-		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(), epSparqlQuery);
+		this.registeredQuerys.put("'" + epSparqlQuery.getQueryDetails().getQueryId() + "'", epSparqlQuery);
 		// Deal with sliding time windows:
 		String windowDefinition = "";
 		if (!epSparqlQuery.getQueryDetails().getWindowTime().equals("")

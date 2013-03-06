@@ -117,19 +117,21 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
+		
+		//FIXME sobermeier find an other solution.
+		queryId =  queryId.replace(".", "").replace(":", "").replace("-", "");
 
 		// Parse query
 		Query q = QueryFactory.create(query, Syntax.syntaxEPSPARQL_20);
 
 		// Generate CEP-language
-		eleGenerator.setPatternId("'" + queryId + "'"); // TODO sobermeier: Remove in the future, ETALIS will do this
+		eleGenerator.setPatternId(queryId); // TODO sobermeier: Remove in the future, ETALIS will do this
 		eleGenerator.generateQuery(q);
 
 		logger.info("Registering query " + q);
 
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);
-
 		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
 		
 		//Generate historical query.
@@ -137,14 +139,19 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		epQuery.setConstructTemplate((new QueryTemplateGenerator()).createQueryTemplate(q));
 		
-		//Add EP-SPARQL query.
+		// Add EP-SPARQL query.
 		epQuery.setEpSparqlQuery(query);
 
-			dcepManagmentApi.registerEventPattern(epQuery);
+		dcepManagmentApi.registerEventPattern(epQuery);
 
-			logger.error("Error while registering query: " + queryId);
-			//throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage())); // FIXME stuehmer: revert to descriptive messages
-			//throw new QueryDispatchException(String.format("Error while registering query ID '%s'", queryId));
+		// logger.error("Error while registering query: " + queryId);
+		// throw new
+		// QueryDispatchException(String.format("Error while registering query ID '%s': %s",
+		// queryId, e.getMessage())); // FIXME stuehmer: revert to descriptive
+		// messages
+		// throw new
+		// QueryDispatchException(String.format("Error while registering query ID '%s'",
+		// queryId));
 
 		return queryId;
 	}
