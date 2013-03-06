@@ -81,6 +81,13 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		ds.setPassword(pw);
 		this.dEtalis = dEtalis;
 
+		// Test Virtuoso connection
+		try {
+			ds.getConnection().close();
+		} catch (SQLException e) {
+			throw new DistributedEtalisException("Could not connect to Virtuoso.", e);
+		}
+
 		init();
 	}
 	
@@ -93,6 +100,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
 		this.rdfSender.setDsbNotify(constants.getProperty(
 				"dsb.notify.endpoint"));
+		
 		
         // instanciate the WSN service...
         Service server = null;
@@ -117,6 +125,10 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
             server.start();
 
         } catch (Exception e) {
+        	if (server != null) {
+        		server.stop();
+        	}
+        	
             throw new DistributedEtalisException("Error while starting DSB listener.", e);
         }
         
@@ -171,14 +183,12 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 			
 		} catch (SQLException e) {
 			logger.error("Exception with Virtuoso", e);
-			e.printStackTrace();
 		} finally {
 			if(con != null)
 				try {
 					con.close();
 				} catch (SQLException e) {
 					logger.error("Connection Exception with Virtuoso", e);
-					e.printStackTrace();
 				}
 		}
 		
