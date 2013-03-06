@@ -101,7 +101,7 @@ public class CommonsPatternTest {
 		}
 	}
 
-	@Test
+	//@Test
 	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
@@ -158,20 +158,7 @@ public class CommonsPatternTest {
 		}
 }
 	
-	@Test
-	public void registerCommonPatterns(){
-		
-		for (String queryFileName : Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.startup.registerqueries").split(",")) {
-			queryFileName = queryFileName.trim();
-			String	queryString = getSparqlQuerys(queryFileName);
-			logger.info(queryString);
-			try {
-				queryDispatchApi.registerQuery("urn:bdpl:" + queryFileName, queryString);
-			} catch (QueryDispatchException e) {
-				System.out.println(("Error registering query " + queryFileName + " on startup: " + e.getMessage()));
-			}
-		}
-	}
+
 
 	public void sendEvents(){
 		start = true;

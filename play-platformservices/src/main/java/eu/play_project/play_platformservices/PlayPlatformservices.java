@@ -139,14 +139,13 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		//Add EP-SPARQL query.
 		epQuery.setEpSparqlQuery(query);
-		
-		try {
+
 			dcepManagmentApi.registerEventPattern(epQuery);
-		} catch (Exception e) {
-			logger.error("Error while registering query: " + queryId, e);
+
+			logger.error("Error while registering query: " + queryId);
 			//throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage())); // FIXME stuehmer: revert to descriptive messages
-			throw new QueryDispatchException(String.format("Error while registering query ID '%s'", queryId));
-		}
+			//throw new QueryDispatchException(String.format("Error while registering query ID '%s'", queryId));
+
 		return queryId;
 	}
 
