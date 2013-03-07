@@ -35,7 +35,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 				Node o = quadruple.getObject();
 				String rdfObject;
 				if (o.isLiteral()) {
-					rdfObject = "'" + quadruple.getObject().getLiteralLexicalForm() + "'";
+					rdfObject = "'" + escapeForProlog(quadruple.getObject().getLiteralLexicalForm()) + "'";
 					
 					
 //					if (null != o.getLiteralDatatypeURI()) {
@@ -94,5 +94,19 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	@Override
 	public CompoundEvent getRdfData(String complexEventID) {
 		throw new RuntimeException("Not implemented in this class.");
+	}
+	
+	/**
+	 * Escape all characters which are illegal in Prolog's quoted strings:
+	 * {@code It's me, Mario.} becomes {@code It\'s me, Mario.}. The resulting
+	 * strings are meanto to be used as <i>quoted atoms</i> in Prolog, between
+	 * single quotes.
+	 * 
+	 * @see http
+	 *      ://www.swi-prolog.org/pldoc/doc_for?object=section%284,%272.15.1.2
+	 *      %27,swi%28%27/doc/Manual/syntax.html%27%29%29
+	 */
+	public static String escapeForProlog(String s) {
+		return s.replaceAll("'", "\'");
 	}
 }
