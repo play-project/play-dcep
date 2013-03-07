@@ -220,7 +220,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	@Override
 	public void setPatternId(String patternId) {
-		this.patternId = patternId;
+		this.patternId = "'" + patternId + "'";
 	}
 
 	@Override
