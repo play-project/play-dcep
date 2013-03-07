@@ -220,9 +220,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	@Override
 	public void setPatternId(String patternId) {
-		// Add escape sequence for prolog
-		String tmp= patternId.replace(":", "\\:");
-		this.patternId = tmp.replace(".", "\\.");
+		this.patternId = patternId;
 	}
 
 	@Override
