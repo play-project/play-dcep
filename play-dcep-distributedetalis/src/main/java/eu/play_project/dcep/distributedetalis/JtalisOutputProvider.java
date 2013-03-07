@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +23,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.event.JtalisOutputEventProvider;
 
+import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.HistoricalData;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
@@ -41,10 +41,10 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 	boolean shutdownEtalis = false; // If true ETALIS will shutdown.
 
-	private PlayJplEngineWrapper engine;
-	private Set<SimplePublishApi> recipients;
-	private Map<String, EpSparqlQuery> registeredQueries;
-	private HistoricalData historicData;
+	private final PlayJplEngineWrapper engine;
+	private final Set<SimplePublishApi> recipients;
+	private final Map<String, EpSparqlQuery> registeredQueries;
+	private final HistoricalData historicData;
 	
 	private final static Node STARTTIME = TypeConversion.toJenaNode(Event.STARTTIME);
 	private final static Node ENDTIME = TypeConversion.toJenaNode(Event.ENDTIME);
@@ -100,7 +100,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	public List<Quadruple> getEventData(PlayJplEngineWrapper engine, EtalisEvent event) throws RetractEventException {
 		List<Quadruple> quadruples = new ArrayList<Quadruple>();
 		
-		String eventId = EVENTS.getUri() + event.getStringProperty(0); 
+		String eventId = EVENTS.getUri() + event.getStringProperty(0);
 	
 		final Node GRAPHNAME = Node.createURI(eventId);
 		final Node EVENTID = Node.createURI(eventId + EVENT_ID_SUFFIX);
@@ -109,11 +109,11 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		 *  Add implicit values from Jtalis to each event:
 		 */
 		quadruples.add(new Quadruple(
-				GRAPHNAME, 
-				EVENTID, 
-				EVENTPATTERN, 
-				//Node.createURI(event.getRuleID()))); // FIXME sobermeier
-				Node.createURI(event.getStringProperty(1))));
+				GRAPHNAME,
+				EVENTID,
+				EVENTPATTERN,
+				//Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getRuleID()))); // FIXME sobermeier
+				Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
 
 		quadruples.add(new Quadruple(
 				GRAPHNAME,
@@ -132,9 +132,9 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 						XSDDatatype.XSDdateTime)));
 
 		quadruples.add(new Quadruple(
-				GRAPHNAME, 
-				EVENTID, 
-				SOURCE, 
+				GRAPHNAME,
+				EVENTID,
+				SOURCE,
 				Node.createURI(Source.Dcep.toString())));
 
 		//TODO Add :members to the event (an RDF list of all simple events which were detected)
@@ -161,7 +161,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 					GRAPHNAME,
 					// Replace dummy event id placeholder with actual unique id for complex event:
 					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : Node.createURI(subject)),
-	                Node.createURI(predicate), 
+	                Node.createURI(predicate),
 	                objectNode));
 		}
 		
@@ -188,7 +188,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			Map<String, List<String>> values = this.historicData.get(query.gethistoricalQueries(), variableBindings);
 
 			if (values.isEmpty()) {
-				// there is no matching historic data so the event pattern is not fulfilled: 
+				// there is no matching historic data so the event pattern is not fulfilled:
 				throw new RetractEventException();
 			} else {
 				String vars = "";

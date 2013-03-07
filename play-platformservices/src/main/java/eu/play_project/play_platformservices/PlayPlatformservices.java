@@ -136,9 +136,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 					+ this.getClass().getSimpleName());
 		}
 		
-		//FIXME sobermeier find an other solution.
-		queryId =  queryId.replace(".", "").replace(":", "").replace("-", "");
-
 		// Parse query
 		Query q = QueryFactory.create(query, Syntax.syntaxEPSPARQL_20);
 
