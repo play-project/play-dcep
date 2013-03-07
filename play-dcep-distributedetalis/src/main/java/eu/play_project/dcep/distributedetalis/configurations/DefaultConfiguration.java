@@ -85,7 +85,7 @@ public class DefaultConfiguration implements Configuration, Serializable{
 
 
 		// Instatiate measurement unit.
-		// this.measurementUnit = new MeasurementUnit(this,	
+		// this.measurementUnit = new MeasurementUnit(this,
 	}
 	
 	public static String[] getPrologMethods(String methodFile){
@@ -102,11 +102,10 @@ public class DefaultConfiguration implements Configuration, Serializable{
 					}
 				}
 			}
-			//System.out.println(sb.toString());
 			br.close();
 			is.close();
 			
-			String[] methods = sb.toString().split(Pattern.quote( "." ) ); 
+			String[] methods = sb.toString().split(Pattern.quote( "." ) );
 			return methods;
 
 		} catch (Exception e) {

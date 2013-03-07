@@ -153,7 +153,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		eleGenerator.setPatternId(queryId); // TODO sobermeier: Remove in the future, ETALIS will do this
 		eleGenerator.generateQuery(q);
 
-		logger.info("Registering query " + q);
+		logger.info("Registering query with ID " + queryId);
 
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);

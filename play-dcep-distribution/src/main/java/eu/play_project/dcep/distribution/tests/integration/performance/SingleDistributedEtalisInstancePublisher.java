@@ -82,16 +82,16 @@ public class SingleDistributedEtalisInstancePublisher {
 
 
 		Quadruple q2 = new Quadruple(
-				Node.createURI("http://prefix.example.com/" + eventId), 
+				Node.createURI("http://prefix.example.com/" + eventId),
 				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://prefix.example.com/value"), 
+				Node.createURI("http://prefix.example.com/value"),
 				Node.createURI(System.currentTimeMillis() + ""));
 
 
 //		Quadruple q3 = new Quadruple(
-//				Node.createURI("http://prefix.example.com/" + eventId), 
+//				Node.createURI("http://prefix.example.com/" + eventId),
 //				Node.createURI("http://prefix.example.com/e1"),
-//				Node.createURI("http://prefix.example.com/math/value"), 
+//				Node.createURI("http://prefix.example.com/math/value"),
 //				Node.createURI(value + ""));
 
 		quads.add(q1);
@@ -140,7 +140,6 @@ public class SingleDistributedEtalisInstancePublisher {
 					sb.append(line);
 					sb.append("\n");
 			}
-			//System.out.println(sb.toString());
 			br.close();
 			is.close();
 

@@ -54,7 +54,6 @@ public class QueryTemplateGenerator {
 		Map<String, Integer> vars = new HashMap<String, Integer>();
 		
 		query.getConstructTemplate();
-		System.out.println(query.getProjectVars());
 		
 		return false;
 	}

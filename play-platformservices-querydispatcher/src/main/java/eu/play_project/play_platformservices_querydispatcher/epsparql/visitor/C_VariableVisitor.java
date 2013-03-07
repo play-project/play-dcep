@@ -8,7 +8,6 @@ public class C_VariableVisitor extends GenericVisitor{
 	
 	@Override
 	public Object visitVariable(Node_Variable it, String name) {
-		System.out.println("Variable: " + it.getClass().getName());
 		return name;
 	}
 
