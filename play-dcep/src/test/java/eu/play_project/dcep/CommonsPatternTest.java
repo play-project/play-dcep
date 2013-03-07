@@ -43,7 +43,7 @@ public class CommonsPatternTest {
 	public static boolean test;
 	private final Logger logger = Logger.getAnonymousLogger();
 	
-	//@Test
+	@Test
 	public void Clic2callPatternTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
