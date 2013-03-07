@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution.tests;
+package eu.play_project.dcep.api.tests;
 
 import org.junit.Assert;
 import org.junit.Test;
