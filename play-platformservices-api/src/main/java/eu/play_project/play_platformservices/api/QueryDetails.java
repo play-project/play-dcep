@@ -1,7 +1,7 @@
 package eu.play_project.play_platformservices.api;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Represents informations extracted from a EP-SPARQL 2.0 query.
@@ -14,9 +14,9 @@ import java.util.List;
 public class QueryDetails implements Serializable {
 	private static final long serialVersionUID = -8156425318534996557L;
 	private String queryId;
-	private List<String> inputStreams;
+	private Set<String> inputStreams;
 	private String outputStream;
-	private List<String> historicStreams;
+	private Set<String> historicStreams;
 	private String windowTime = "";
 	
 	public QueryDetails(){}
@@ -33,16 +33,16 @@ public class QueryDetails implements Serializable {
 	}
 	
 	/**
-	 * Provides the List of input event streams in a query. This representation
+	 * Provides the set of input event streams in a query. This representation
 	 * omits the trailing {@code #stream} suffix so the stream IDs can be used
 	 * with DSB and EC.
 	 */
-	public List<String> getInputStreams() {
+	public Set<String> getInputStreams() {
 		return this.inputStreams;
 	}
 	
-	public void setInputStreams(List<String> inputStreams) {
-		this.inputStreams = inputStreams;
+	public void setInputStreams(Set<String> set) {
+		this.inputStreams = set;
 	}
 	
 	/**
@@ -63,11 +63,11 @@ public class QueryDetails implements Serializable {
 	 * omits the trailing {@code #stream} suffix so the stream ID can be used
 	 * with DSB and EC.
 	 */
-	public List<String> getHistoricStreams() {
+	public Set<String> getHistoricStreams() {
 		return this.historicStreams;
 	}
 	
-	public void setHistoricStreams(List<String> historicStreams) {
+	public void setHistoricStreams(Set<String> historicStreams) {
 		this.historicStreams = historicStreams;
 	}
 	

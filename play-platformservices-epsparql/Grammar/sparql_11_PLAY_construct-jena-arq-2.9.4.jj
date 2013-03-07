@@ -629,7 +629,7 @@ Element GroupGraphPatternSub() : { Element el = null ; }
     )?
   )*
       { endGroup(elg) ; }
-      { return elg ; }
+      { getQuery().addHistoricElement(elg) ; return elg ; }
 }
 Element TriplesBlock(ElementPathBlock acc) : { }
 {

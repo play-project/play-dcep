@@ -1,8 +1,8 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Triple;
@@ -18,7 +18,7 @@ import eu.play_project.play_platformservices.api.QueryDetails;
 
 /**
  * Enriches a {@linkplain QueryDetails} object with information about the streams in a query.
- *  
+ * 
  * @author sobermeier
  * @author stuehmer
  */
@@ -30,6 +30,7 @@ public class StreamIdCollector {
 		} else {
 			qd.setOutputStream(getOutputStream(query));
 			qd.setInputStreams(getInputStreams(query));
+			qd.setHistoricStreams(getHistoricStreams(query));
 		}
 
 	}
@@ -63,22 +64,41 @@ public class StreamIdCollector {
 	}
 
 	/**
-	 * Returns the stream IDs without {@code #stream} suffix to be used with EC and DSB. 
+	 * Returns the input stream IDs without the {@code #stream} suffix to be used with EC and DSB.
 	 * 
 	 * @param query
 	 * @return
 	 */
-	private List<String> getInputStreams(Query query) {
-		List<String> streams = new ArrayList<String>();
+	private Set<String> getInputStreams(Query query) {
+		Set<String> streams = new HashSet<String>();
 		ValueOrganizerVisitor valueOrganizerVisitor = new ValueOrganizerVisitor();
 
 		for (Element element : query.getEventQuery()) {
 			element.visit(valueOrganizerVisitor);
 			if (valueOrganizerVisitor.getStreamURI() != null) {
-				if(!streams.contains(valueOrganizerVisitor.getStreamURI())){
-					String streamId = valueOrganizerVisitor.getStreamURI();
-					streams.add(Stream.toTopicUri(streamId));
-				}
+				String streamId = valueOrganizerVisitor.getStreamURI();
+				streams.add(Stream.toTopicUri(streamId));
+			}
+		}
+
+		return streams;
+	}
+
+	/**
+	 * Returns the historic stream IDs without the {@code #stream} suffix to be used with EC and DSB.
+	 * 
+	 * @param query
+	 * @return
+	 */
+	private Set<String> getHistoricStreams(Query query) {
+		Set<String> streams = new HashSet<String>();
+		ValueOrganizerVisitor valueOrganizerVisitor = new ValueOrganizerVisitor();
+
+		for (Element element : query.getHistoricQuery()) {
+			element.visit(valueOrganizerVisitor);
+			if (valueOrganizerVisitor.getStreamURI() != null) {
+				String streamId = valueOrganizerVisitor.getStreamURI();
+				streams.add(Stream.toTopicUri(streamId));
 			}
 		}
 
@@ -109,7 +129,6 @@ public class StreamIdCollector {
 					}
 				}
 			}
-
 		}
 
 		public String getStreamURI() {
@@ -132,7 +151,7 @@ public class StreamIdCollector {
 
 	// Test if the type is http://events.event-processing.org/types/stream
 	private class TypeCheckVisitor extends GenericVisitor {
-		private String ok = "OK";
+		private final String ok = "OK";
 
 		@Override
 		public Object visitURI(Node_URI it, String uri) {

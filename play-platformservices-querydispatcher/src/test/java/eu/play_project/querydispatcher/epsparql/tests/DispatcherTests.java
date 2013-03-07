@@ -5,9 +5,12 @@ import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -16,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
-import com.hp.hpl.jena.sparql.serializer.Serializer;
 
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
@@ -41,7 +43,8 @@ public class DispatcherTests {
 	public void getIoStreamIds(){
 		logger = LoggerFactory.getLogger(DispatcherTests.class);
 		String queryString;
-		String[] expectedInputStreams = {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"};
+		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"}));
+		
 		
 		// Get query.
 		queryString = getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
@@ -58,9 +61,8 @@ public class DispatcherTests {
 		assertTrue(qd.getOutputStream().equals("http://streams.event-processing.org/ids/ContextualizedLatitudeFeed"));
 		
 		// Test input streams
-		for (int i = 0; i < qd.getInputStreams().size(); i++) {
-			assertTrue(qd.getInputStreams().get(i).equals(expectedInputStreams[i]));
-		}
+		assertTrue(qd.getInputStreams().equals(expectedInputStreams));
+
 	}
 	
 	@Test
@@ -153,7 +155,6 @@ public class DispatcherTests {
 
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
-		query.toString();
 
 		// Dispatch query
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
@@ -191,7 +192,7 @@ public class DispatcherTests {
 		streamIdCollector.getStreamIds(query, qd);
 
 		assertTrue(qd.getOutputStream().equals("http://streams.event-processing.org/ids/TaxiUCClic2Call"));
-		assertTrue(qd.getInputStreams().get(0).equals("http://streams.event-processing.org/ids/TaxiUCCall"));
+		assertTrue(qd.getInputStreams().contains("http://streams.event-processing.org/ids/TaxiUCCall"));
 	}
 	
 	@Test
@@ -205,11 +206,7 @@ public class DispatcherTests {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		
 		QueryTemplate qt = ab.createQueryTemplate(query);
-		
-		//System.out.println(qt.);
-		 
-		 
-	}
+}
 	
 	private String getSparqlQuery(String queryFile) {
 		try {

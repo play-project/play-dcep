@@ -77,16 +77,17 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     public static final int QueryTypeConstruct  = 222 ;
     public static final int QueryTypeDescribe   = 333 ;
     public static final int QueryTypeAsk        = 444 ;
-    int queryType = QueryTypeUnknown ; 
+    int queryType = QueryTypeUnknown ;
 
-    // Play extensions ----------------------------------    
+    // Play extensions ----------------------------------
     // Event Data
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private ArrayList<Element> eventQuery = new ArrayList<Element>() ;
-    private List<ElementEventBinOperator> eventBinOperator = new ArrayList<ElementEventBinOperator>();
+    private ArrayList<Element> historicQuery = new ArrayList<Element>() ;
+    private final List<ElementEventBinOperator> eventBinOperator = new ArrayList<ElementEventBinOperator>();
     private	String windowTime = "0"; //TODO For M12 testing. Will be extended.
-    private List<String[]> filter = new ArrayList<String[]>(); //TODO otimized for M12. More types in the future.
-    private com.hp.hpl.jena.sparql.expr.Expr testExp = null;
+    private final List<String[]> filter = new ArrayList<String[]>(); //TODO otimized for M12. More types in the future.
+    private final com.hp.hpl.jena.sparql.expr.Expr testExp = null;
     public List<ElementEventBinOperator> getEventBinOperator() {
 		return eventBinOperator;
 	}
@@ -107,7 +108,19 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 	public void addEventElement(Element element){
     	eventQuery.add(element);
     }
-  
+ 
+    public List<Element> getHistoricQuery() {
+		return historicQuery;
+	}
+
+	public void setHistoricQuery(ArrayList<Element> historicQuery) {
+		this.historicQuery = historicQuery;
+	}
+
+	public void addHistoricElement(Element element){
+		historicQuery.add(element);
+    }
+	
 	public void setWindowTime(String time){
 		int tmp = Integer.valueOf(time.subSequence(4, time.length()-18).toString()).intValue();
 		windowTime = tmp*60 + "";
@@ -123,7 +136,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 	}
 
     
-//=================================================================================   
+//=================================================================================
     
     // If no model is provided explicitly, the query engine will load
     // a model from the URL.  Never a list of zero items.
@@ -144,10 +157,10 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     
     // ORDER BY
     private List<SortCondition> orderBy       = null ;
-    public static final int ORDER_ASCENDING           = 1 ; 
+    public static final int ORDER_ASCENDING           = 1 ;
     public static final int ORDER_DESCENDING          = -1 ;
-    public static final int ORDER_DEFAULT             = -2 ;    // Not explicitly given. 
-    public static final int ORDER_UNKNOW              = -3 ; 
+    public static final int ORDER_DEFAULT             = -2 ;    // Not explicitly given.
+    public static final int ORDER_UNKNOW              = -3 ;
 
     // VALUES trailing clause
     protected TableData valuesDataBlock = null ;
@@ -186,7 +199,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     }
     
     // Allocate variables that are unique to this query.
-    private VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker) ;
+    private final VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarMarker) ;
     private Var allocInternVar() { return varAlloc.allocVar() ; }
     
     //private VarAlloc varAnonAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker) ;
@@ -213,7 +226,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     public boolean isUnknownType()              { return queryType == QueryTypeUnknown ; }
 
     public void setStrict(boolean isStrict)
-    { 
+    {
         strictQuery = isStrict ;
         
         if ( strictQuery )
@@ -247,7 +260,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 
     /** @param syntax The syntax to set. */
     public void setSyntax(Syntax syntax)
-    { 
+    {
         this.syntax = syntax ;
         if ( syntax != Syntax.syntaxSPARQL )
             strictQuery = false ;
@@ -255,11 +268,11 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 
     // ---- Limit/offset
     
-    public long getLimit()             { return resultLimit ; } 
+    public long getLimit()             { return resultLimit ; }
     public void setLimit(long limit)   { resultLimit = limit ; }
     public boolean hasLimit()          { return resultLimit != NOLIMIT ; }
     
-    public long getOffset()            { return resultOffset ; } 
+    public long getOffset()            { return resultOffset ; }
     public void setOffset(long offset) { resultOffset = offset ; }
     public boolean hasOffset()         { return resultOffset != NOLIMIT ; }
     
@@ -283,7 +296,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     }
     
     public void addOrderBy(Node var, int direction)
-    { 
+    {
         if ( ! var.isVariable() )
             throw new QueryException("Not a variable: "+var) ;
         SortCondition sc = new SortCondition(var, direction) ;
@@ -291,7 +304,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     }
     
     public void addOrderBy(String varName, int direction)
-    { 
+    {
         varName = Var.canonical(varName) ;
         SortCondition sc = new SortCondition(new ExprVar(varName), direction) ;
         addOrderBy(sc) ;
@@ -299,17 +312,17 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 
     public List<SortCondition> getOrderBy()           { return orderBy ; }
     
-    // ---- 
+    // ----
     
     /** Answer whether the query had SELECT/DESCRIBE/CONSTRUCT *
      * @return boolean as to whether a * result form was seen
-     */ 
+     */
     public boolean isQueryResultStar() { return queryResultStar ; }
 
     /** Set whether the query had SELECT/DESCRIBE *
-     * Strictly, this just means whether the projection is  
+     * Strictly, this just means whether the projection is
      * 
-     * @param isQueryStar 
+     * @param isQueryStar
      */
     public void setQueryResultStar(boolean isQueryStar)
     {
@@ -362,10 +375,10 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     
     public List<String> getGraphURIs() { return graphURIs ; }
 
-    /** Test whether the query mentions a URI in forming the default graph (FROM clause) 
+    /** Test whether the query mentions a URI in forming the default graph (FROM clause)
      * 
      * @param uri
-     * @return boolean  True if the URI used in a FROM clause 
+     * @return boolean  True if the URI used in a FROM clause
      */
     public boolean usesGraphURI(String uri) { return graphURIs.contains(uri) ; }
     
@@ -376,18 +389,18 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     
     public List<String> getNamedGraphURIs() { return namedGraphURIs ; }
 
-    /** Test whether the query mentions a URI for a named graph. 
+    /** Test whether the query mentions a URI for a named graph.
      * 
      * @param uri
-     * @return True if the URI used in a FROM NAMED clause 
+     * @return True if the URI used in a FROM NAMED clause
      */
     public boolean usesNamedGraphURI(String uri) { return namedGraphURIs.contains(uri) ; }
     
     /** Return true if the query has either some graph
      * URIs or some named graph URIs in its description.
      * This does not mean these URIs will be used - just that
-     * they are noted as part of the query. 
-     */ 
+     * they are noted as part of the query.
+     */
     
     public boolean hasDatasetDescription()
     {
@@ -398,7 +411,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
         return false ;
     }
     
-    /** Return a dataset description (FROM/FROM NAMED clauses) for the query. */  
+    /** Return a dataset description (FROM/FROM NAMED clauses) for the query. */
     public DatasetDescription getDatasetDescription()
     {
         DatasetDescription description = new DatasetDescription() ;
@@ -416,7 +429,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 
     /** Return a list of the variables requested (SELECT) */
     public List<String> getResultVars()
-    { 
+    {
         // Ensure "SELECT *" processed
         setResultVars() ;
         return Var.varNames(projectVars.getVars()) ;
@@ -424,7 +437,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     
     /** Return a list of the variables requested (SELECT) */
     public List<Var> getProjectVars()
-    { 
+    {
         // Ensure "SELECT *" processed
         setResultVars() ;
         return projectVars.getVars() ;
@@ -473,7 +486,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     
     public void addResultVar(Node v, Expr expr)
     {
-        Var var = null ; 
+        Var var = null ;
         if ( v == null )
             var = allocInternVar() ;
         else
@@ -494,7 +507,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     /** Add a named expression to a SELECT query */
     public void addResultVar(String varName, Expr expr)
     {
-        Var var = null ; 
+        Var var = null ;
         if ( varName == null )
             var = allocInternVar() ;
         else
@@ -535,7 +548,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
         if ( varExprList.contains(v) )
             // SELECT ?x (?a+?b AS ?x)
             // SELECT (2*?a AS ?x) (?a+?b AS ?x)
-            throw new QueryBuildException("Duplicate variable in result projection '"+v+"'") ;  
+            throw new QueryBuildException("Duplicate variable in result projection '"+v+"'") ;
         varExprList.add(v, expr) ;
     }
 
@@ -585,21 +598,21 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     // ---- Aggregates
 
     // Record allocated aggregations.
-    // Later: The same aggregation expression used in a query 
+    // Later: The same aggregation expression used in a query
     // will always lead to the same aggregator.
     // For now, allocate a fresh one each time (cause the calcutation
-    // to be done multiple times but (1) it's unusual to have repeated 
-    // aggregators normally and (2) the actual calculation is cheap. 
+    // to be done multiple times but (1) it's unusual to have repeated
+    // aggregators normally and (2) the actual calculation is cheap.
         
     // Unlike SELECT expressions, here the expression itself (E_Aggregator) knows its variable
     // Commonality?
     
-    private List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
-    // Using a LinkedhashMap does seem to give strong enugh hashCode equality. 
-    private Map<Var, ExprAggregator> aggregatorsMap = new HashMap<Var, ExprAggregator>() ;
+    private final List<ExprAggregator> aggregators = new ArrayList<ExprAggregator>() ;
+    // Using a LinkedhashMap does seem to give strong enugh hashCode equality.
+    private final Map<Var, ExprAggregator> aggregatorsMap = new HashMap<Var, ExprAggregator>() ;
     
     // Note any E_Aggregator created for reuse.
-    private Map<String, Var> aggregatorsAllocated = new HashMap<String, Var>() ; 
+    private final Map<String, Var> aggregatorsAllocated = new HashMap<String, Var>() ;
     
     public boolean hasAggregators() { return aggregators.size() != 0  ; }
     public List<ExprAggregator> getAggregators() { return aggregators ; }
@@ -610,10 +623,10 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
         // (is is that much harm to do twice?  Yes, if distinct.)
         String key = agg.key() ;
         
-        Var v = aggregatorsAllocated.get(key); 
+        Var v = aggregatorsAllocated.get(key);
         if ( v != null )
         {
-            ExprAggregator eAgg = aggregatorsMap.get(v) ; 
+            ExprAggregator eAgg = aggregatorsMap.get(v) ;
             if ( ! agg.equals(eAgg.getAggregator()) )
                 Log.warn(Query.class, "Internal inconsistency: Aggregator: "+agg) ;
             return eAgg ;
@@ -633,16 +646,16 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     public boolean hasValues()                { return valuesDataBlock != null ; }
     
     
-    /** 
-     * @deprecated Use hasValues() 
-     */ 
-    @Deprecated 
+    /**
+     * @deprecated Use hasValues()
+     */
+    @Deprecated
     public boolean hasBindings()                { return hasValues() ; }
     
     /** Binding variables
-     * @deprecated Use getValuesVariables() 
-     */ 
-    @Deprecated 
+     * @deprecated Use getValuesVariables()
+     */
+    @Deprecated
     public List<Var> getBindingVariables()      { return getValuesVariables() ; }
 
     /** @deprecated Use getValuesVariables() */
@@ -652,16 +665,16 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     public List<Var> getValuesVariables()     { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
     
     /** Binding values - null for a Node means undef
-     * @deprecated Use getBindingsData() 
-     */ 
-    @Deprecated 
+     * @deprecated Use getBindingsData()
+     */
+    @Deprecated
     public List<Binding> getBindingValues()     { return getBindingsData() ; }
 
-    /** @deprecated Use getValuesData() */ 
-    @Deprecated 
+    /** @deprecated Use getValuesData() */
+    @Deprecated
     public List<Binding> getBindingsData()      { return getValuesData() ; }
 
-    /** VALUES data - null for a Node means undef */ 
+    /** VALUES data - null for a Node means undef */
     public List<Binding> getValuesData()      { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
 
     /** @deprecated Use setValuesDataBlock */
@@ -688,7 +701,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
         {
             Iterator<Var> iter= valueRow.vars() ;
             for ( ; iter.hasNext() ; )
-            { 
+            {
                 Var v = iter.next() ;
                 if ( ! variables.contains(v) )
                     throw new QueryBuildException("Variable "+v+" not found in "+variables) ;
@@ -696,15 +709,15 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
         }
     }
     
-    // ---- CONSTRUCT 
+    // ---- CONSTRUCT
     
-    /** Get the template pattern for a construct query */ 
-    public Template getConstructTemplate() 
-    { 
+    /** Get the template pattern for a construct query */
+    public Template getConstructTemplate()
+    {
         return constructTemplate ;
     }
     
-    /** Set triple patterns for a construct query */ 
+    /** Set triple patterns for a construct query */
     public void setConstructTemplate(Template templ)  { constructTemplate = templ ; }
 
     // ---- DESCRIBE
@@ -725,10 +738,10 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 
     
     /** Get the result list (things wanted - not the results themselves)
-     *  of a DESCRIBE query. */ 
+     *  of a DESCRIBE query. */
     public List<Node> getResultURIs() { return resultNodes ; }
     
-    private boolean resultVarsSet = false ; 
+    private boolean resultVarsSet = false ;
     /** Fix up when the query has "*" (when SELECT * or DESCRIBE *)
      *  and for a construct query.  This operation is idempotent.
      */
@@ -746,7 +759,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
         }
         
         // May have been added via addResultVar(,Expr)
-//        if ( resultVars.size() != 0 ) 
+//        if ( resultVars.size() != 0 )
 //            return ;
         
         if ( isSelectType() )
@@ -857,7 +870,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     // ---- Query canonical syntax
     
     // Reverse of parsing : should produce a string that parses to an equivalent query
-    // "Equivalent" => gives the same results on any model  
+    // "Equivalent" => gives the same results on any model
     @Override
     public String toString()
     { return serialize() ; }
@@ -870,7 +883,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     private int hashcode = -1 ;
     
     /** Perform some check on the query
-     * @deprecated This call does do anything. 
+     * @deprecated This call does do anything.
      */
     
     @Deprecated
@@ -883,7 +896,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 
     @Override
     public int hashCode()
-    { 
+    {
         if ( hashcode == -1 )
         {
             hashcode = QueryHashCode.calc(this) ;
@@ -896,17 +909,17 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     /** Are two queries equals - tests shape and details.
      * Equality means that the queries do the same thing, including
      * same variables, in the same places.  Being unequals does
-     * <b>not</b> mean the queries do different things.  
+     * <b>not</b> mean the queries do different things.
      * 
      * For example, reordering a group or union
      * means that that a query is different.
-     *  
-     * Two instances of a query parsed from the same string are equal. 
+     * 
+     * Two instances of a query parsed from the same string are equal.
      */
     
     @Override
     public boolean equals(Object other)
-    { 
+    {
         if ( ! ( other instanceof Query ) )
             return false ;
         if ( this == other ) return true ;
@@ -914,7 +927,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     }
     
 //    public static boolean sameAs(Query query1, Query query2)
-//    { return query1.sameAs(query2) ; }  
+//    { return query1.sameAs(query2) ; }
 
     @Override
     public void output(IndentedWriter out)
