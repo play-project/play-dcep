@@ -76,6 +76,8 @@ public class Main {
 				queryDispatchApi.registerQuery(queryFileName, queryString);
 			} catch (QueryDispatchException e) {
 				logger.warn("Error registering query {} on startup: {}", queryFileName, e.getMessage());
+			} catch (NullPointerException e) {
+				logger.warn("Error registering query {} on startup: {}", queryFileName, e.getMessage());
 			}
 		}
 		
@@ -107,7 +109,7 @@ public class Main {
 
 	}
 	
-	private static String getSparqlQuerys(String queryFile) throws IOException{
+	private static String getSparqlQuerys(String queryFile) throws IOException {
 		InputStream is = Main.class.getClassLoader().getResourceAsStream(queryFile);
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		StringBuffer sb = new StringBuffer();
