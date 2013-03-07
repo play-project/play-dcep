@@ -33,7 +33,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	private final PrologSemWebLib semWebLib;
 	public static int eventConsumed = 0;
 	private static Logger logger = LoggerFactory.getLogger(JtalisInputProvider.class);
-	private final CircularFifoBuffer duplicatesCache = new CircularFifoBuffer(32);
+	private final CircularFifoBuffer duplicatesCache =  new CircularFifoBuffer(32);
 
 	public JtalisInputProvider(PrologSemWebLib semWebLib) {
 		super();
@@ -52,13 +52,15 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 		 * Do some checking for duplicates (memorizing a few recently seen
 		 * events)
 		 */
-		if (duplicatesCache.contains(eventId)) {
-			logger.info("DCEP Suppressed Duplicate Event: " +eventId);
-			return;
-		}
-		else {
-			logger.info("DCEP Entry " + eventId);
-			duplicatesCache.add(eventId);
+		synchronized (duplicatesCache) {
+			if (duplicatesCache.contains(eventId)) {
+				logger.info("DCEP Suppressed Duplicate Event: " + eventId);
+				return;
+			}
+			else {
+				logger.info("DCEP Entry " + eventId);
+				duplicatesCache.add(eventId);
+			}
 		}
 		
 		try {

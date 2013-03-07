@@ -33,8 +33,6 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 		}
 		
 	    try {
-		    logger.info("Got a notify...");
-		    
 		    // Forward the event to Detalis:
 		    this.dEtalis.publish(EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify)));
 		    
