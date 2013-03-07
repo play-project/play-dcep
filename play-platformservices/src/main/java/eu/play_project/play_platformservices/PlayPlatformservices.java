@@ -138,8 +138,16 @@ public class PlayPlatformservices implements QueryDispatchApi,
 					+ this.getClass().getSimpleName());
 		}
 		
+		//FIXME sobermeier find an other solution.
+		queryId =  queryId.replace(".", "").replace(":", "").replace("-", "");
+
 		// Parse query
-		Query q = QueryFactory.create(query, Syntax.syntaxEPSPARQL_20);
+		Query q;
+		try {
+			q = QueryFactory.create(query, Syntax.syntaxEPSPARQL_20);
+		} catch (com.hp.hpl.jena.query.QueryException e) {
+			throw new QueryDispatchException(e.getMessage());
+		}
 
 		// Generate CEP-language
 		eleGenerator.setPatternId(queryId); // TODO sobermeier: Remove in the future, ETALIS will do this

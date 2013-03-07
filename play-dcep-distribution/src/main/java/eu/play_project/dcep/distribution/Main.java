@@ -70,9 +70,9 @@ public class Main {
 		 */
 		for (String queryFileName : DcepConstants.getProperties().getProperty("dcep.startup.registerqueries").split(",")) {
 			queryFileName = queryFileName.trim();
-			String	queryString = getSparqlQuerys(queryFileName);
-			logger.info(queryString);
 			try {
+				String	queryString = getSparqlQuerys(queryFileName);
+				logger.info(queryString);
 				queryDispatchApi.registerQuery(queryFileName, queryString);
 			} catch (QueryDispatchException e) {
 				logger.warn("Error registering query {} on startup: {}", queryFileName, e.getMessage());
@@ -107,25 +107,19 @@ public class Main {
 
 	}
 	
-	private static String getSparqlQuerys(String queryFile){
-		try {
-			InputStream is = Main.class.getClassLoader().getResourceAsStream(queryFile);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			StringBuffer sb = new StringBuffer();
-			String line;
-			
-			while (null != (line = br.readLine())) {
-					sb.append(line);
-					sb.append("\n");
-			}
-			br.close();
-			is.close();
-
-			return sb.toString();
-
-		} catch (Exception e) {
-			e.printStackTrace();
+	private static String getSparqlQuerys(String queryFile) throws IOException{
+		InputStream is = Main.class.getClassLoader().getResourceAsStream(queryFile);
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		StringBuffer sb = new StringBuffer();
+		String line;
+		
+		while (null != (line = br.readLine())) {
+				sb.append(line);
+				sb.append("\n");
 		}
-		return "";
+		br.close();
+		is.close();
+
+		return sb.toString();
 	}
 }
