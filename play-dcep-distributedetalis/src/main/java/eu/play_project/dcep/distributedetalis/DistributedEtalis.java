@@ -109,7 +109,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			// FIXME stuehmer: revert to descriptive messages
 		}
 		
-		this.registeredQuerys.put("'" + epSparqlQuery.getQueryDetails().getQueryId() + "'", epSparqlQuery);
+		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(), epSparqlQuery);
 		// Deal with sliding time windows:
 		String windowDefinition = "";
 		if (!epSparqlQuery.getQueryDetails().getWindowTime().equals("")

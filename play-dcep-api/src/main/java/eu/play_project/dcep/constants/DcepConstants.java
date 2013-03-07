@@ -12,8 +12,7 @@ public class DcepConstants extends Constants {
 
 	public static Properties getProperties() {
 		if (properties == null) {
-			properties = Constants.getProperties(PROPERTIES,
-					Constants.getProperties(PROPERTIES_DEFAULTS));
+			properties = Constants.getProperties(PROPERTIES,Constants.getProperties(PROPERTIES_DEFAULTS));
 		}
 		return properties;
 	}

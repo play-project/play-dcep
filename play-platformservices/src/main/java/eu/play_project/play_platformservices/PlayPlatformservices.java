@@ -137,9 +137,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
-		
-		//FIXME sobermeier find an other solution.
-		queryId =  queryId.replace(".", "").replace(":", "").replace("-", "");
 
 		// Parse query
 		Query q;
@@ -160,8 +157,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
 		
 		//Generate historical query.
-		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
-		
+		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));	
 		epQuery.setConstructTemplate((new QueryTemplateGenerator()).createQueryTemplate(q));
 		
 		// Add EP-SPARQL query.
