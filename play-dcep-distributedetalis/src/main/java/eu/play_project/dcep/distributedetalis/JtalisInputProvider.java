@@ -6,6 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import jpl.PrologException;
 
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	private final PrologSemWebLib semWebLib;
 	public static int eventConsumed = 0;
 	private static Logger logger = LoggerFactory.getLogger(JtalisInputProvider.class);
+	private final CircularFifoBuffer duplicatesCache = new CircularFifoBuffer(32);
 
 	public JtalisInputProvider(PrologSemWebLib semWebLib) {
 		super();
@@ -43,10 +45,22 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	 * Push events to Jtalis.
 	 */
 	public void notify(CompoundEvent event) {
-		logger.info("DCEP Entry " + event.getGraph());
 		String eventType = EventCloudHelpers.getEventType(event);
 		String eventId = event.getGraph().toString();
 
+		/*
+		 * Do some checking for duplicates (memorizing a few recently seen
+		 * events)
+		 */
+		if (!duplicatesCache.contains(eventId)) {
+			logger.info("DCEP Suppressed Duplicate Event: " +eventId);
+			return;
+		}
+		else {
+			logger.info("DCEP Entry " + eventId);
+			duplicatesCache.add(eventId);
+		}
+		
 		try {
 			// Add RDF payload to Prolog:
 			semWebLib.addEvent(event);
