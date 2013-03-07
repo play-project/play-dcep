@@ -73,7 +73,9 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	public void bindFc(String clientItfName, Object serverItf) throws NoSuchInterfaceException, IllegalBindingException, IllegalLifeCycleException {
 		if (clientItfName.equals("DcepManagmentApi")) {
 			dcepManagmentApi = (DcepManagmentApi) serverItf;
-			restServer.setDcepManagement((DcepManagmentApi) serverItf);
+			if (restServer != null) {
+				restServer.setDcepManagement((DcepManagmentApi) serverItf);
+			}
 		}
 	}
 
