@@ -82,8 +82,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		
 			//measurementUnit.eventProduced(result, event.getProperties()[1].toString());
 			// event.getRuleID(); //TODO sobermeier use this.
-			
-			System.out.println(event.getRuleID() + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	
 			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
 			if(recipients.size()<1) logger.warn("No recipient for complex events.");
