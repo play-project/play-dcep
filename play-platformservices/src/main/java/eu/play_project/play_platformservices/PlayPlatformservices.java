@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
-import org.glassfish.jersey.internal.ProcessingException;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.BindingController;
 import org.objectweb.fractal.api.control.IllegalBindingException;
@@ -102,13 +101,13 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			}
 	
 			// Provide PublishApi as REST Webservice
-			try {
-				restServer = new PlayPlatformservicesRest();
-	        	logger.info(String.format("QueryDispatch REST service started with WADL available at "
-	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI));
-			} catch (ProcessingException e) {
-				logger.error("Exception while publishing QueryDispatch REST Service", e);
-			}
+//			try {
+//				restServer = new PlayPlatformservicesRest();
+//	        	logger.info(String.format("QueryDispatch REST service started with WADL available at "
+//	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI));
+//			} catch (ProcessingException e) {
+//				logger.error("Exception while publishing QueryDispatch REST Service", e);
+//			}
 			
 			this.init = true;
 		}

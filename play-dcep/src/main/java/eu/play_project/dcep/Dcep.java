@@ -22,6 +22,7 @@ import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
@@ -30,7 +31,6 @@ import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.configurations.DefaultConfiguration;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisVirtuosoConfig;
-import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -186,7 +186,7 @@ Serializable {
 
 	public void configDEtalisInstance(ConfigApi configApi) throws DistributedEtalisException {
 		// get property or set default:
-		String middleware = Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.middleware", "local");
+		String middleware = DcepConstants.getProperties().getProperty("dcep.middleware", "local");
 
 		if(middleware.equals("local")) {
 			configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));

@@ -18,7 +18,7 @@ import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.play_commons.constants.Constants;
+import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -69,7 +69,7 @@ public class Main {
 		/*
 		 *  Compile and Deploy Queries
 		 */
-		for (String queryFileName : Constants.getProperties("play-dcep-distribution.properties").getProperty("dcep.startup.registerqueries").split(",")) {
+		for (String queryFileName : DcepConstants.getProperties().getProperty("dcep.startup.registerqueries").split(",")) {
 			queryFileName = queryFileName.trim();
 			String	queryString = getSparqlQuerys(queryFileName);
 			logger.info(queryString);
