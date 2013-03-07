@@ -52,7 +52,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 		 * Do some checking for duplicates (memorizing a few recently seen
 		 * events)
 		 */
-		if (!duplicatesCache.contains(eventId)) {
+		if (duplicatesCache.contains(eventId)) {
 			logger.info("DCEP Suppressed Duplicate Event: " +eventId);
 			return;
 		}
