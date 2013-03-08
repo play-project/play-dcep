@@ -159,12 +159,18 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					+ " has not been initialized.");
 		}
 
-		logger.info("Removing event pattern at 'DistributedEtalis' Rule ID = "
-				+ queryId);
-		etalis.removeDynamicRule(queryId);
-		this.registeredQuerys.remove(queryId);
-		this.ecConnectionManager.unregisterEventPattern(registeredQuerys
-				.get(queryId));
+		if (this.registeredQuerys.containsKey(queryId)) {
+			logger.info("Removing event pattern at 'DistributedEtalis' Rule ID = "
+					+ queryId);
+			etalis.removeDynamicRule(queryId);
+			this.ecConnectionManager.unregisterEventPattern(registeredQuerys
+					.get(queryId));
+			this.registeredQuerys.remove(queryId);
+		}
+		else {
+			logger.warn("Event pattern to be removed was not found at 'DistributedEtalis' Rule ID = "
+					+ queryId);
+		}
 	}
 
 	@Override

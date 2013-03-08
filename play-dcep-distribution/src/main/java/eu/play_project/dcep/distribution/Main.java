@@ -91,7 +91,7 @@ public class Main {
 			logger.info("Terminate application");
 			logger.trace("Send stopFc to all components");
 			
-			// Stop is rcursive...
+			// Stop is recursive...
 			GCM.getGCMLifeCycleController(root).stopFc();
 			// Terminate is not recursive:
 			for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
@@ -100,11 +100,12 @@ public class Main {
 			GCM.getGCMLifeCycleController(root).terminateGCMComponent();
 			
 			// TODO investigate why there are still running threads at this time
+			System.exit(0);
 			
 		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 	}
