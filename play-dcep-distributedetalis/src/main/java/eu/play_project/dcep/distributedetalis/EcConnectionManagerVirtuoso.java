@@ -58,7 +58,8 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private final DistributedEtalis dEtalis;
 	private EcConnectionListenerVirtuoso dsbListener;
 	static final Properties constants = DcepConstants.getProperties();
-	public static String notificationReceiverEndpoint;
+	public static String notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint");
+	private Service notifyReceiverServer;
 
 
 	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws NamingException, DistributedEtalisException {
@@ -90,22 +91,22 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 	
 	private void init() throws DistributedEtalisException {
+		if (init) {
+			throw new IllegalStateException(this.getClass().getSimpleName() + " has ALREADY been initialized.");
+		}
 
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
-
-		notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint.local");
-		//notificationReceiverEndpoint += Math.abs(new Random().nextLong()); // generate one-time notifications endpoints
 		
 		this.rdfReceiver = new AbstractReceiver() {};
+		this.rdfReceiver.setDsbSubscribe(constants.getProperty(
+				"dsb.subscribe.endpoint"));
+		this.rdfReceiver.setDsbUnsubscribe(constants.getProperty(
+				"dsb.unsubscribe.endpoint"));
 		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
 		this.rdfSender.setDsbNotify(constants.getProperty(
 				"dsb.notify.endpoint"));
-		
-		
-        // instanciate the WSN service...
-        Service server = null;
 
-        try {
+		try {
         	this.dsbListener = new EcConnectionListenerVirtuoso(this.rdfReceiver);
         	this.dsbListener.setDetalis(this.dEtalis);
             
@@ -116,25 +117,47 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
             QName endpointName = new QName("http://docs.oasis-open.org/wsn/bw-2",
                     "NotificationConsumerPort");
             // expose the service
-            logger.info("Exposing notification endpoint at: " + notificationReceiverEndpoint);
+            String notificationReceiverEndpointLocal = constants.getProperty("dcep.notify.endpoint.local");
+            logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpoint, notificationReceiverEndpointLocal);
             NotificationConsumerService service = new NotificationConsumerService(interfaceName,
-                    serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpoint,
+                    serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpointLocal,
                     this.dsbListener);
             Exposer exposer = new CXFExposer();
-            server = exposer.expose(service);
-            server.start();
+            notifyReceiverServer = exposer.expose(service);
+            notifyReceiverServer.start();
 
         } catch (Exception e) {
-        	if (server != null) {
-        		server.stop();
-        	}
         	
+        	if (notifyReceiverServer != null) {
+        		notifyReceiverServer.stop();
+        	}
             throw new DistributedEtalisException("Error while starting DSB listener.", e);
         }
         
 		init = true;
 	}
 	
+	@Override
+	public void destroy() {
+		logger.info("Terminating {}.", this.getClass()
+				.getSimpleName());
+		logger.info("Unsubscribe from Topics");
+	
+		// Unsubscribe
+		for (String cloudId : subscriptions.keySet()) {
+			this.unsubscribe(cloudId, subscriptions.get(cloudId).sub);
+		}
+		
+		// As a fallback:
+		this.rdfReceiver.unsubscribeAll();
+		
+    	if (this.notifyReceiverServer != null) {
+    		this.notifyReceiverServer.stop();
+    	}
+
+		init = false;
+	}
+
 	public void putDataInCloud(String query, String cloudId) {
 		Connection con = null;
 
@@ -252,7 +275,6 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 			else {
 				logger.info("Subscribing to topic {}.", cloudId);
 				QName topic = getTopic(cloudId);
-				this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
 				String subId = this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
 				this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
 
@@ -282,18 +304,6 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 			}
 		} catch (NotificationException e) {
 			logger.error("Problem unsubscribing from topic {}: {}", cloudId, e.getMessage());
-		}
-	}
-	
-	@Override
-	public void destroy() {
-		logger.info("Terminating {}.", this.getClass()
-				.getSimpleName());
-		logger.info("Unsubscribe from Topics");
-
-		// Unsubscribe
-		for (String cloudId : subscriptions.keySet()) {
-			this.unsubscribe(cloudId, subscriptions.get(cloudId).sub);
 		}
 	}
 	
