@@ -15,7 +15,7 @@ import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 
-public class DetalisVirtuosoConfig implements Configuration, Serializable{
+public class DetalisVirtuosoConfig extends DefaultConfiguration implements Configuration, Serializable{
 
 	private static final long serialVersionUID = 5249777449637212881L;
 
@@ -49,6 +49,27 @@ public class DetalisVirtuosoConfig implements Configuration, Serializable{
 	
 			dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 			dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
+			
+			String[] methods = getPrologMethods("constructQueryImp.pl");
+			for (int i = 0; i < methods.length; i++) {
+				engine.execute("assert(" + methods[i] + ")");
+			}
+
+			methods = getPrologMethods("ReferenceCounting.pl");
+			for (int i = 0; i < methods.length; i++) {
+				engine.execute("assert(" + methods[i] + ")");
+			}
+
+			methods = getPrologMethods("Measurement.pl");
+			for (int i = 0; i < methods.length; i++) {
+				engine.execute("assert(" + methods[i] + ")");
+			}
+			
+			methods = getPrologMethods("Math.pl");
+			for (int i = 0; i < methods.length; i++) {
+				engine.execute("assert(" + methods[i] + ")");
+			}
+
 	
 			// Set ETALIS properties.
 			etalis.setEtalisFlags("save_ruleId", "on");
