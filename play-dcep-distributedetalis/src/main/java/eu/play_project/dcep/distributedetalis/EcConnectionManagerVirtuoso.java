@@ -144,12 +144,8 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		logger.info("Unsubscribe from Topics");
 	
 		// Unsubscribe
-		for (String cloudId : subscriptions.keySet()) {
-			this.unsubscribe(cloudId, subscriptions.get(cloudId).sub);
-		}
-		
-		// As a fallback:
 		this.rdfReceiver.unsubscribeAll();
+		subscriptions.clear();
 		
     	if (this.notifyReceiverServer != null) {
     		this.notifyReceiverServer.stop();
