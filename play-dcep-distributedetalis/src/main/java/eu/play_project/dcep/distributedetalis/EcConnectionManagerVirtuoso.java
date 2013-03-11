@@ -102,6 +102,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 				"dsb.subscribe.endpoint"));
 		this.rdfReceiver.setDsbUnsubscribe(constants.getProperty(
 				"dsb.unsubscribe.endpoint"));
+		// Use an arbitrary topic as default:
 		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
 		this.rdfSender.setDsbNotify(constants.getProperty(
 				"dsb.notify.endpoint"));
@@ -117,8 +118,8 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
             QName endpointName = new QName("http://docs.oasis-open.org/wsn/bw-2",
                     "NotificationConsumerPort");
             // expose the service
-            String notificationReceiverEndpointLocal = constants.getProperty("dcep.notify.endpoint.local");
-            logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpoint, notificationReceiverEndpointLocal);
+            final String notificationReceiverEndpointLocal = constants.getProperty("dcep.notify.endpoint.local");
+            logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpointLocal, notificationReceiverEndpoint);
             NotificationConsumerService service = new NotificationConsumerService(interfaceName,
                     serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpointLocal,
                     this.dsbListener);
