@@ -246,14 +246,6 @@
 				<artifactId>jetty-security</artifactId>
 				<version>8.1.7.v20120910</version>
 			</dependency>
-			<!-- Provide hardcoded copy of MapDB SNAPSHOT until EventCloud uses a stable version -->
-			<dependency>
-				<groupId>org.mapdb</groupId>
-				<artifactId>mapdb</artifactId>
-				<version>0.9-SNAPSHOT</version>
-				<scope>system</scope>
-				<systemPath>${project.basedir}/lib/mapdb-0.9-20121128.005552-13.jar</systemPath>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
