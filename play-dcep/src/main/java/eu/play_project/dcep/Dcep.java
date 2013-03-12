@@ -89,55 +89,55 @@ Serializable {
 		logger.debug("Pattern reached DCEP facade: "
 				+ epSparqlQuery.getEleQuery());
 
-		if(!init); init();
+		if(!init) init();
 		dEtalisManagment.registerEventPattern(epSparqlQuery);
 	}
 
 	@Override
 	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException{
-		if(!init); init();
+		if(!init) init();
 		return dEtalisManagment.getRegisteredEventPattern(queryId);
 	}
 
 	@Override
 	public Map<String, EpSparqlQuery> getRegisteredEventPatterns() {
-		if(!init); init();
+		if(!init) init();
 		return dEtalisManagment.getRegisteredEventPatterns();
 	}
 
 	@Override
 	public void unregisterEventPattern(String queryID) {
-		if(!init); init();
+		if(!init) init();
 		dEtalisManagment.unregisterEventPattern(queryID);
 	}
 
 	@Override
 	public NodeMeasuringResult measurePerformance(int period) {
-		if(!init); init();
+		if(!init) init();
 		return dEtalisMonitoring.measurePerformance(period);
 	}
 
 	@Override
 	public NodeMeasuringResult getMeasurementData() {
-		if(!init); init();
+		if(!init) init();
 		return dEtalisMonitoring.getMeasurementData();
 	}
 
 	@Override
 	public void publish(CompoundEvent event) {
-		if(!init); init();
+		if(!init) init();
 		dEtalisTest.publish(event);
 	}
 
 	@Override
 	public void attach(SimplePublishApi subscriber) {
-		if(!init); init();
+		if(!init) init();
 		dEtalisTest.attach(subscriber);
 	}
 
 	@Override
 	public void detach(SimplePublishApi subscriber) {
-		if(!init); init();
+		if(!init) init();
 		dEtalisTest.detach(subscriber);
 	}
 
@@ -146,7 +146,10 @@ Serializable {
 	 */
 	private boolean init() {
 
-		if (!init) {
+		if (init) {
+			logger.warn("{} has already been initialized. Skipping.", this.getClass().getSimpleName());
+		}
+		else {
 			Factory factory;
 
 			try {

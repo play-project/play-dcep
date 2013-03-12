@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
@@ -96,8 +97,9 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	
 			// Provide PublishApi as SOAP Webservice
 			try {
-				soapServer = Endpoint.publish(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint"), this);
-				logger.info("QueryDispatch SOAP service started.");
+				String address = Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint");
+				soapServer = Endpoint.publish(address, this);
+				logger.info("QueryDispatch SOAP service started at {}.", address);
 			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch SOAP Service", e);
 			}
@@ -157,7 +159,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
 		
 		//Generate historical query.
-		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));	
+		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
 		epQuery.setConstructTemplate((new QueryTemplateGenerator()).createQueryTemplate(q));
 		
 		// Add EP-SPARQL query.
@@ -167,8 +169,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			dcepManagmentApi.registerEventPattern(epQuery);
 		} catch (Exception e) {
 			logger.error("Error while registering query: " + queryId, e);
-			//throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e)); // FIXME stuehmer: revert to descriptive messages
-			throw new QueryDispatchException(String.format("Error while registering query ID '%s'", queryId));
+			throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage()));
 		}
 		return queryId;
 	}
@@ -187,19 +188,24 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 
 	@Override
-	public QueryDetails analyseQuery(String queryId, String query) {
+	public QueryDetails analyseQuery(String queryId, String query) throws QueryDispatchException {
 		if (!init) {
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
 		
 		// Parse query
-		Query q = QueryFactory.create(query, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
-
-		return createQueryDetails(queryId, q);
+		try {
+			Query q = QueryFactory.create(query, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+			return createQueryDetails(queryId, q);
+		}
+		catch (QueryException e) {
+			throw new QueryDispatchException(e.getMessage());
+		}
+		
 	}
 
-	private QueryDetails createQueryDetails(String queryId, Query query) {
+	private QueryDetails createQueryDetails(String queryId, Query query) throws QueryDispatchException {
 		if (!init) {
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
@@ -213,7 +219,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		qd.setWindowTime(query.getWindowTime());
 		
 		if (dcepManagmentApi.getRegisteredEventPatterns().containsKey(queryId)) {
-			throw new IllegalArgumentException("Query ID is alread used: " + queryId);
+			throw new QueryDispatchException("Query ID is alread used: " + queryId);
 		}
 
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
@@ -233,9 +239,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			return this.dcepManagmentApi.getRegisteredEventPattern(queryId)
 					.getEpSparqlQuery();
 		} catch (DcepManagementException e) {
-			// throw new QueryDispatchException(e.getMessage());
-			// FIXME stuehmer: revert to descriptive messages
-			throw new QueryDispatchException();
+			throw new QueryDispatchException(e.getMessage());
 		}
 	}
 
