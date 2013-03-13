@@ -6,7 +6,6 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.jaxb.Query;
@@ -15,8 +14,13 @@ public class ManualWebServiceTest {
 	
 	public static void  main(String[] args) throws QueryDispatchException {
 		URL wsdl = null;
+		// Testing now tries to use a localhost server:
+		//String address = Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint");
+		// Using the production server:
+		String address = "http://demo.play-project.eu:8084/play/QueryDispatchApi";
+		
 		try {
-			wsdl = new URL(Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint") + "?wsdl");
+			wsdl = new URL(address + "?wsdl");
 		} catch (MalformedURLException e) {
 		e.printStackTrace();
 		}
