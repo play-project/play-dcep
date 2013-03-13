@@ -8,11 +8,9 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>play-dcep</artifactId>
+	<artifactId>play-dcep-core</artifactId>
 	<packaging>jar</packaging>
 
-	<name>play-dcep</name>
-	<description></description>
 	<build>
 		<plugins>
 			<plugin>
@@ -51,7 +49,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices</artifactId>
+			<artifactId>play-platformservices-core</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<exclusions>

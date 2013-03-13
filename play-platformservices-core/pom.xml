@@ -9,11 +9,8 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>play-platformservices</artifactId>
+	<artifactId>play-platformservices-core</artifactId>
 	<packaging>jar</packaging>
-
-	<name>play-platformservices</name>
-	<description></description>
 
 	<properties>
 		<cxf.version>2.4.3</cxf.version>

@@ -13,12 +13,15 @@
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.2.1</version>
+        <version>1.3.0</version>
     </skin>
     <custom>
         <fluidoSkin>
             <sideBarEnabled>true</sideBarEnabled>
             <googlePlusOne />
+			<twitter>
+				<user>DistributedCEP</user>
+			</twitter>
 			<gitHub>
 				<projectId>play-project/play-dcep</projectId>
 				<ribbonOrientation>right</ribbonOrientation>
@@ -30,16 +33,17 @@
 
     <body>
     <head>
-		<link rel="meta" title="DOAP" href="doap_${project.artifactId}.rdf" type="application/rdf+xml"/>
+		<link rel="meta" title="DOAP" href="doap.rdf" type="application/rdf+xml"/>
     </head>
 
 	<breadcrumbs>
 	</breadcrumbs>
 
-		<!--
         <links>
-            <item name="akquinet" href="http://www.akquinet.de/en"/>
+            <item name="PLAY Project" href="http://www.play-project.eu/"/>
+            <item name="PLAY News" href="http://news.play-project.eu/"/>
         </links>
+ 		<!--
         <menu name="Regular Web Site">
             <item name="APT Format" href="format.html"/>
             <item name="Xdoc Example" href="xdoc.html"/>
