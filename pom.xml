@@ -8,7 +8,7 @@
 		<artifactId>play-parent</artifactId>
 		<version>1.0</version>
 	</parent>
-	
+
 	<groupId>org.ow2.play</groupId>
 	<artifactId>play-dcep-parent</artifactId>
 	<version>1.0-SNAPSHOT</version>
@@ -17,7 +17,7 @@
 	<name>play-dcep-parent</name>
 	<description></description>
 	<inceptionYear>2010</inceptionYear>
-	
+
 	<modules>
 		<module>play-platformservices</module>
 		<module>play-platformservices-api</module>
@@ -29,16 +29,17 @@
 		<module>play-dcep-distributedetalis</module>
 		<module>play-dcep-dcepmanager</module>
 		<module>play-dcep-distribution</module>
-		<!-- I removed this from the build because it takes so much time... please enter this directory manually :stuehmer -->
-		<!--<module>play-dcep-distribution-eventcloud-remote-tests</module>-->
+		<!-- I removed this from the build because it takes so much time... please 
+			enter this directory manually :stuehmer -->
+		<!--<module>play-dcep-distribution-eventcloud-remote-tests</module> -->
 	</modules>
-	
+
 	<scm>
 		<url>https://github.com/play-project/play-dcep</url>
 		<connection>scm:git:git://github.com/play-project/play-dcep.git</connection>
 		<developerConnection>scm:git:https://github.com/play-project/play-dcep.git</developerConnection>
 	</scm>
-	
+
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/play-project/play/issues?labels=dcep&amp;page=1&amp;state=open</url>
@@ -75,5 +76,95 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-doap-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>site</id>
+						<phase>site</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.7</version>
+				<configuration>
+					<message>Building site for ${project.version}</message>
+					<server>github</server>
+					<path>${project.distributionManagement.site.url}</path>
+					<merge>true</merge>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>site-deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<!-- Only deploy the Github site, skip the standard maven site -->
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+		<site>
+			<id>github-pages-site</id>
+			<name>Deployment through GitHub's site deployment plugin</name>
+			<url>site/${project.version}</url>
+		</site>
+	</distributionManagement>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.9</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-doap-plugin</artifactId>
+				<version>1.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>				
+			</plugin>
+ 		</plugins>
+	</reporting>
+
 </project>
