@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-epsparql</artifactId>
+			<artifactId>play-platformservices-bdpl</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
