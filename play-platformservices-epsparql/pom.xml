@@ -45,7 +45,6 @@
 							<goal>javacc</goal>
 						</goals>
 						<configuration>
-							<sourceDirectory>${basedir}/Grammar/</sourceDirectory>
 							<includes>
 								<include>**/*sparql_11_PLAY_construct-jena-arq-2.9.4.jj</include>
 							</includes>
@@ -90,4 +89,13 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javacc-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
