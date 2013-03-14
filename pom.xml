@@ -105,6 +105,7 @@
 					<server>github</server>
 					<path>${project.distributionManagement.site.url}</path>
 					<merge>true</merge>
+					<noJekyll>true</noJekyll>
 				</configuration>
 				<executions>
 					<execution>
