@@ -1,0 +1,7 @@
+com.hp.hpl.jena.query
+com.hp.hpl.jena.sparql.lang
+com.hp.hpl.jena.sparql.lang.EPSPARQL_20
+com.hp.hpl.jena.sparql.lang.sparql_11
+com.hp.hpl.jena.sparql.serializer
+com.hp.hpl.jena.sparql.syntax
+eu.play_platform.platformservices.epsparql
