@@ -57,12 +57,6 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-platformservices-querydispatcher</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-			<exclusion>
-				<artifactId>cxf-bundle-minimal</artifactId>
-				<groupId>org.apache.cxf</groupId>
-			</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
@@ -101,4 +95,23 @@
 		</dependency>
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.cxf.services.wsn</groupId>
+				<artifactId>cxf-services-wsn-core</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-bundle</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>cxf-bundle-minimal</artifactId>
+				<groupId>org.apache.cxf</groupId>
+				<version>${cxf.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

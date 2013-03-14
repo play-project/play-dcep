@@ -121,10 +121,6 @@
 					<artifactId>play-commons-constants</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
-				<exclusion>
-					<artifactId>cxf-bundle-minimal</artifactId>
-					<groupId>org.apache.cxf</groupId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
