@@ -14,7 +14,7 @@
 	<packaging>jar</packaging>
 	
 	<name>play-dcep-distribution</name>
-	<description>The DCEP distribution which produces a complete executable package with all dependencies.</description>
+	<description>The DCEP distribution which produces a complete executable package of DCEP and Platformservices with all dependencies.</description>
 	
 	<build>
 		<resources>
@@ -151,6 +151,10 @@
 					<artifactId>play-commons-constants</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>cxf-bundle</artifactId>
+					<groupId>org.apache.cxf</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
@@ -214,6 +218,7 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
