@@ -78,11 +78,19 @@ public class PlayPlatformservices implements QueryDispatchApi,
 				restServer.setDcepManagement((DcepManagmentApi) serverItf);
 			}
 		}
+		else {
+			throw new NoSuchInterfaceException(String.format("Interface '%s' not available at '%s'.", clientItfName, this.getClass().getSimpleName()));
+		}
 	}
 
 	@Override
 	public void unbindFc(String clientItfName) throws NoSuchInterfaceException, IllegalBindingException, IllegalLifeCycleException {
-
+		if (clientItfName.equals("DcepManagmentApi")) {
+			// do nothing, currently
+		}
+		else {
+			throw new NoSuchInterfaceException(String.format("Interface '%s' not available at '%s'.", clientItfName, this.getClass().getSimpleName()));
+		}
 	}
 
 	@Override
