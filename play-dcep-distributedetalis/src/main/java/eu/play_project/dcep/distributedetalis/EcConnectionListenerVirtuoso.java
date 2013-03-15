@@ -11,6 +11,7 @@ import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
 
 import eu.play_project.play_eventadapter.AbstractReceiver;
 import eu.play_project.play_eventadapter.NoRdfEventException;
+import fr.inria.eventcloud.api.CompoundEvent;
 
 class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializable {
 
@@ -33,8 +34,10 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 		}
 		
 	    try {
+	    	CompoundEvent event = EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify));
+	    	
 		    // Forward the event to Detalis:
-		    this.dEtalis.publish(EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify)));
+		    this.dEtalis.publish(event);
 		    
 		    // Store the event in Virtuoso:
 		    // FIXME stuehmer: call putData....()

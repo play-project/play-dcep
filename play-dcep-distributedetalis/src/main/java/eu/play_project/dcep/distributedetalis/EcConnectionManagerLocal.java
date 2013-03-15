@@ -23,13 +23,12 @@ import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
 public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 
 	private static final long serialVersionUID = -9212054663979899431L;
-	private Logger logger = LoggerFactory.getLogger(EcConnectionManagerLocal.class);
+	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerLocal.class);
 	private String inputRdfModelFileName;
 
 	public EcConnectionManagerLocal(String inputRdfModelFileName){
@@ -48,7 +47,8 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery) {}
 	
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId) throws EcConnectionmanagerException, MalformedSparqlQueryException {
+	public synchronized SelectResults getDataFromCloud(String query,
+			String cloudId) throws EcConnectionmanagerException {
 		// Create an empty model.
 		ModelSet rdf = EventHelpers.createEmptyModelSet();
 

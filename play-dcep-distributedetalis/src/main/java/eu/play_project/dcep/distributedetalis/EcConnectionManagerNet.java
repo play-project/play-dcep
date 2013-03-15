@@ -67,8 +67,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query,
-			String cloudId) throws EcConnectionmanagerException,
-			MalformedSparqlQueryException {
+			String cloudId) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
@@ -87,7 +86,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			throw e;
 		} catch (MalformedSparqlQueryException e) {
 			logger.error("Malformed sparql query. " + e.getMessage());
-			throw e;
+			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		ResultSetWrapper rw = response.getResult();
 		return new ResultRegistry(rw);

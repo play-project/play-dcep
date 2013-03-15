@@ -45,12 +45,11 @@ import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
-import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.utils.trigwriter.TriGWriter;
 
 public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
-	private final VirtuosoDataSource ds;
+	private final VirtuosoDataSource virtuoso;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
 	private boolean init = false;
 	private AbstractReceiver rdfReceiver;
@@ -73,16 +72,16 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 	
 	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws DistributedEtalisException {
-		ds = new VirtuosoDataSource();
-		ds.setServerName(server);
-		ds.setPortNumber(port);
-		ds.setUser(user);
-		ds.setPassword(pw);
+		virtuoso = new VirtuosoDataSource();
+		virtuoso.setServerName(server);
+		virtuoso.setPortNumber(port);
+		virtuoso.setUser(user);
+		virtuoso.setPassword(pw);
 		this.dEtalis = dEtalis;
 
-		// Test Virtuoso connection
+		// Test Virtuoso JDBC connection
 		try {
-			ds.getConnection().close();
+			virtuoso.getConnection().close();
 		} catch (SQLException e) {
 			throw new DistributedEtalisException("Could not connect to Virtuoso.", e);
 		}
@@ -156,24 +155,15 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 
 	public void putDataInCloud(String query, String cloudId) {
-		Connection con = null;
 
-		try {
-			con = ds.getConnection();
-			
-			//VirtGraph set = new VirtGraph (url, "dba", "dba");
-			// FIXME stuehmer: finish writing of historicl events to virtuoso
-			
-		} catch (SQLException e) {
-			logger.error("Error storing data in virtuoso: " + e.getMessage());
-		}
+//		VirtGraph graph = new VirtGraph(this.virtuoso);
+//		graph.
 
 	}
 
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
-			throws EcConnectionmanagerException, MalformedSparqlQueryException
-			{
+			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -183,7 +173,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		
 		Connection con = null;
 		try {
-			con = ds.getConnection();
+			con = virtuoso.getConnection();
 			Statement sta = con.createStatement();
 			ResultSet res = sta.executeQuery("sparql "+query);
 			

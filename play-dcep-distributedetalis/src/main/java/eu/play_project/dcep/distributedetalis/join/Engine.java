@@ -15,7 +15,6 @@ import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
-import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 
 /**
  * @author Ningyuan Pan
@@ -24,7 +23,7 @@ import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 public class Engine implements HistoricalData {
 
 	private final EcConnectionManager ecConnection;
-	private Logger logger;
+	private final Logger logger;
 
 	public Engine(EcConnectionManager ecm){
 		if(ecm == null)
@@ -85,12 +84,9 @@ public class Engine implements HistoricalData {
 		try {
 			rr = ecConnection.getDataFromCloud(hquery, stream);
 		} catch (EcConnectionmanagerException e) {
-			logger.error("Unknown event cloud in historic query.", e);
+			logger.error(e.getMessage(), e);
 			return false;
-		} catch (MalformedSparqlQueryException e) {
-			logger.error("Malformed historic query.", e);
-			return false;
-		} 
+		}
 
 		if(rr.getSize() == 0)
 			return false;
