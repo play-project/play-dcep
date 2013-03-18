@@ -9,6 +9,7 @@ import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.abstraction.Noti
 import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.utils.WsnbException;
 import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
 
+import eu.play_project.dcep.distributedetalis.utils.DsbHelpers;
 import eu.play_project.play_eventadapter.AbstractReceiver;
 import eu.play_project.play_eventadapter.NoRdfEventException;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -40,8 +41,7 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 		
 	    try {
 	    	CompoundEvent event = EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify));
-	    	// FIXME stuehmer:
-	    	String topic = notify.getNotificationMessage().get(0).getTopic().getContent();
+	    	String topic = DsbHelpers.topicToUri(notify.getNotificationMessage().get(0).getTopic());
 	    	logger.info("Received event {} on topic {} from the DSB.", event.getGraph(), topic);
 	    	
 		    // Forward the event to Detalis:
