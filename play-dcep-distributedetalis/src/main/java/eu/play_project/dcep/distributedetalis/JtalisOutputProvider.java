@@ -172,13 +172,13 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		EpSparqlQuery query = this.registeredQueries.get(event.getProperties()[1].toString());
 		if (query == null) {
 			logger.error("Query with ID {} was not found in registeredQueries.", event.getProperties()[1].toString());
-		} else if (query.gethistoricalQueries() != null && !query.gethistoricalQueries().isEmpty()) {
+		} else if (query.getHistoricalQueries() != null && !query.getHistoricalQueries().isEmpty()) {
 			
 			//Get variable bindings.
 			Map<String, List<String>> variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
 
 			//Get historical data to the given binding.
-			Map<String, List<String>> values = this.historicData.get(query.gethistoricalQueries(), variableBindings);
+			Map<String, List<String>> values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
 
 			if (values.isEmpty()) {
 				// there is no matching historic data so the event pattern is not fulfilled:

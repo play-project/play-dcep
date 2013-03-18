@@ -43,7 +43,7 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 	    try {
 	    	CompoundEvent event = EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify));
 	    	String topic = DsbHelpers.topicToUri(notify.getNotificationMessage().get(0).getTopic());
-	    	logger.info("Received event {} on topic {} from the DSB.", event.getGraph(), topic);
+	    	logger.debug("Received event {} on topic {} from the DSB.", event.getGraph(), topic);
 	    	
 		    // Forward the event to Detalis:
 		    this.dEtalis.publish(event);

@@ -167,7 +167,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
 		
 		//Generate historical query.
-		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
+		epQuery.setHistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
 		epQuery.setConstructTemplate((new QueryTemplateGenerator()).createQueryTemplate(q));
 		
 		// Add EP-SPARQL query.

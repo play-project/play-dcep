@@ -40,13 +40,6 @@ public class EpSparqlQuery implements Serializable {
 		return eleQuery;
 	}
 
-	public List<HistoricalQuery> gethistoricalQueries() {
-		return historicalQueries;
-	}
-	
-	public void sethistoricalQueries(List<HistoricalQuery> historicalQueries) {
-		this.historicalQueries = historicalQueries;
-	}
 	public QueryTemplate getConstructTemplate() {
 		if(constructTemplate == null){
 			throw new RuntimeException("No construct template found.");
