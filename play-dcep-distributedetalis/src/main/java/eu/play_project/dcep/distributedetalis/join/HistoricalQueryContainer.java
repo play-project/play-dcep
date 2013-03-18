@@ -22,11 +22,11 @@ public class HistoricalQueryContainer {
 	final static String STREAM = " :stream ";
 	//private static PutGetProxyRegister proxyRegis = PutGetProxyRegister.getInstance();
 	
-	private List<String> vvariables = new ArrayList<String>();
-	private Map<String, List<String>> map;
+	private final List<String> vvariables = new ArrayList<String>();
+	private final Map<String, List<String>> map;
 	private String query;
 	
-	private Logger logger = LoggerFactory.getLogger(HistoricalQueryContainer.class);
+	private final Logger logger = LoggerFactory.getLogger(HistoricalQueryContainer.class);
 	
 	public HistoricalQueryContainer(String query, Map<String, List<String>> variableBindings){
 		if(query == null)
@@ -50,7 +50,7 @@ public class HistoricalQueryContainer {
 		StringBuilder sparqlb = new StringBuilder(oquery);
 		index = oquery.indexOf(VALUES);
 		if(index != -1){
-			//TODO 
+			//TODO
 			throw new IllegalArgumentException("Original query already has VALUES block");
 		}
 		else {
@@ -101,7 +101,7 @@ public class HistoricalQueryContainer {
 	private boolean makeVariableList(){
 		boolean ret = false;
 		for(String variable : map.keySet()){
-			System.out.println("Add variable to list: " + variable);
+			logger.debug("Add variable to list: " + variable);
 			vvariables.add(variable);
 			ret = true;
 		}
@@ -109,7 +109,7 @@ public class HistoricalQueryContainer {
 	}
 	
 	/*
-	 * Make VALUES body of all combinations of values 
+	 * Make VALUES body of all combinations of values
 	 */
 	private StringBuilder makeBody(StringBuilder ret, StringBuilder p, int depth){
 		StringBuilder path = p;
@@ -136,8 +136,8 @@ public class HistoricalQueryContainer {
 		}
 		else{
 			pathMinusOne = path.toString();
-			System.out.println(vvariables.get(depth));
-			System.out.println(map.get(vvariables.get(depth)));
+			logger.debug(vvariables.get(depth));
+			logger.debug(map.get(vvariables.get(depth)).toString());
 			List<String> values = map.get(vvariables.get(depth));
 			if(values == null || values.isEmpty()){
 				path.append("UNDEF ");

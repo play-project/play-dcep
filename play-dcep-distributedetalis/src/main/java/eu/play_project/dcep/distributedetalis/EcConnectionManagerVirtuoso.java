@@ -178,6 +178,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		try {
 			con = virtuoso.getConnection();
 			Statement sta = con.createStatement();
+			logger.debug("Sending historical query to Virtuoso: \n" + query);
 			ResultSet res = sta.executeQuery("sparql "+query);
 			
 			ResultSetMetaData rmd = res.getMetaData();
