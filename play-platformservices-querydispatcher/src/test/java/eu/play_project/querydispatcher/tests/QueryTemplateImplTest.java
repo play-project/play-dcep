@@ -2,7 +2,6 @@ package eu.play_project.querydispatcher.tests;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -93,7 +92,7 @@ public class QueryTemplateImplTest {
 		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
 		
 		//Generate historical query.
-		epQuery.sethistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
+		epQuery.setHistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
 		epQuery.setConstructTemplate(eleGenerator.getQueryTemplate());
 		
 		System.out.println("FFF");

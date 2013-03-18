@@ -47,7 +47,7 @@
 //		InstantiatePlayPlatform();
 //
 //		// Get query.
-//		queryString = getSparqlQuerys("play-epsparql-contextualized-latitude-01-query.eprq");
+//		queryString = getSparqlQueries("play-epsparql-contextualized-latitude-01-query.eprq");
 //
 //
 //		System.out.println("SPARQL query:\n" + queryString);
@@ -122,7 +122,7 @@
 //				eventId + EVENT_ID_SUFFIX,
 //				// automatically write the rdf:type statement
 //				true);
-//		
+//
 //		// Run some setters of the event
 //		EventHelpers.addLocationToEvent(event, 7, 6);
 //		event.setUctelcoTwId("rolandstuehmer");
@@ -131,7 +131,7 @@
 //
 //		// Create a Calendar for the current date and time
 //		event.setEndTime(Calendar.getInstance());
-//		
+//
 //		// Push events.
 //		return EventCloudHelpers.toCompoundEvent(event);
 //	}
@@ -154,7 +154,7 @@
 //
 //	}
 //
-//	private String getSparqlQuerys(String queryFile) {
+//	private String getSparqlQueries(String queryFile) {
 //		try {
 //			InputStream is = this.getClass().getClassLoader().getResourceAsStream(queryFile);
 //			BufferedReader br = new BufferedReader(new InputStreamReader(is));

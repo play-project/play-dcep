@@ -43,7 +43,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 
 //	@Test
 	public void readQueryFromFileTest(){
-		System.out.println(getSparqlQuerys("play-epsparql-m12-jeans-example-query.eprq"));
+		System.out.println(getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq"));
 	}
 	
 	//@Test
@@ -55,9 +55,9 @@ public class ConnectPSandDCEPTest implements Serializable {
 		InstantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQuerys("play-epsparql-m12-jeans-example-query.eprq");
-		//queryString = getSparqlQuerys("play-epsparql-contextualized-latitude-01-query.eprq");
-		//queryString = getSparqlQuerys("play-epsparql-clic2call.eprq");
+		queryString = getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq");
+		//queryString = getSparqlQueries("play-epsparql-contextualized-latitude-01-query.eprq");
+		//queryString = getSparqlQueries("play-epsparql-clic2call.eprq");
 		
 		//System.out.println("SPARQL query:\n" + queryString);
 
@@ -180,7 +180,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 				.getFcInterface("DistributedEtalisTestApi"));
 	}
 	
-	private String getSparqlQuerys(String queryFile){
+	private String getSparqlQueries(String queryFile){
 		try {
 			InputStream is = this.getClass().getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br =new BufferedReader(new InputStreamReader(is));

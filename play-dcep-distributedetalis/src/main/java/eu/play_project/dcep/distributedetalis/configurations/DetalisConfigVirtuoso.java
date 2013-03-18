@@ -43,7 +43,7 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 			dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerVirtuoso(dEtalisConfigApi.getDistributedEtalis()));
 			dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 			dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
-					dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQuerys(),
+					dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQueries(),
 					dEtalisConfigApi.getEcConnectionManager()));
 	
 			dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());

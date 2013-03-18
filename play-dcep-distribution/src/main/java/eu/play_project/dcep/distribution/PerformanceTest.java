@@ -55,8 +55,8 @@ public class PerformanceTest {
 
 		// Get query.
 		queryString = getSparqlQuery("play-epsparql-m12-jeans-example-query.eprq");
-		//queryString = getSparqlQuerys("play-epsparql-contextualized-latitude-01-query.eprq");
-		//queryString = getSparqlQuerys("play-epsparql-clic2call.eprq");
+		//queryString = getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
+		//queryString = getSparqlQuery("play-epsparql-clic2call.eprq");
 		
 		//System.out.println("SPARQL query:\n" + queryString);
 

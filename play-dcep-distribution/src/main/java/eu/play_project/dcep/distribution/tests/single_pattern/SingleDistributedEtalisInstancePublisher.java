@@ -53,7 +53,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 
 		//Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQuerys("play-epsparql-clic2call.eprq")));
+		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("play-epsparql-clic2call.eprq")));
 
 		
 		// Publish some events to instance 1.
@@ -150,7 +150,7 @@ public class SingleDistributedEtalisInstancePublisher {
 			e.printStackTrace();
 		}
 	}
-	private static String getSparqlQuerys(String queryFile){
+	private static String getSparqlQueries(String queryFile){
 		try {
 			InputStream is = SingleDistributedEtalisInstancePublisher.class.getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));

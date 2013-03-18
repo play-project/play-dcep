@@ -49,7 +49,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private JtalisOutputProvider eventOutputProvider;
 	private JtalisInputProvider eventInputProvider;
 	private Logger logger;
-	private Map<String, EpSparqlQuery> registeredQuerys = Collections
+	private Map<String, EpSparqlQuery> registeredQueries = Collections
 			.synchronizedMap(new HashMap<String, EpSparqlQuery>());
 	private EcConnectionManager ecConnectionManager;
 	private MeasurementUnit measurementUnit;
@@ -102,14 +102,14 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 				.getQueryDetails().getQueryId());
 		logger.debug("ELE: " + epSparqlQuery.getEleQuery());
 
-		if(this.registeredQuerys.containsKey(epSparqlQuery.getQueryDetails().getQueryId())) {
+		if(this.registeredQueries.containsKey(epSparqlQuery.getQueryDetails().getQueryId())) {
 			String error = "Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId();
 			logger.error(error);
 			//throw new DcepManagementException(error);
 			// FIXME stuehmer: revert to descriptive messages
 		}
 		
-		this.registeredQuerys.put(epSparqlQuery.getQueryDetails().getQueryId(), epSparqlQuery);
+		this.registeredQueries.put(epSparqlQuery.getQueryDetails().getQueryId(), epSparqlQuery);
 		// Deal with sliding time windows:
 		String windowDefinition = "";
 		if (!epSparqlQuery.getQueryDetails().getWindowTime().equals("")
@@ -134,8 +134,8 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					+ " has not been initialized.");
 		}
 		
-		if (this.registeredQuerys.get(queryId) != null) {
-			return this.registeredQuerys.get(queryId);
+		if (this.registeredQueries.get(queryId) != null) {
+			return this.registeredQueries.get(queryId);
 		}
 		else {
 			throw new DcepManagementException("No event pattern is registered with id: " + queryId);
@@ -149,7 +149,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					+ " has not been initialized.");
 		}
 
-		return this.registeredQuerys;
+		return this.registeredQueries;
 	}
 
 	@Override
@@ -159,13 +159,13 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					+ " has not been initialized.");
 		}
 
-		if (this.registeredQuerys.containsKey(queryId)) {
+		if (this.registeredQueries.containsKey(queryId)) {
 			logger.info("Removing event pattern at 'DistributedEtalis' Rule ID = "
 					+ queryId);
 			etalis.removeDynamicRule(queryId);
-			this.ecConnectionManager.unregisterEventPattern(registeredQuerys
+			this.ecConnectionManager.unregisterEventPattern(registeredQueries
 					.get(queryId));
-			this.registeredQuerys.remove(queryId);
+			this.registeredQueries.remove(queryId);
 		}
 		else {
 			logger.warn("Event pattern to be removed was not found at 'DistributedEtalis' Rule ID = "
@@ -273,13 +273,13 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public Map<String, EpSparqlQuery> getRegisteredQuerys() {
-		return registeredQuerys;
+	public Map<String, EpSparqlQuery> getRegisteredQueries() {
+		return registeredQueries;
 	}
 
 	@Override
-	public void setRegisteredQuerys(Map<String, EpSparqlQuery> registeredQuerys) {
-		this.registeredQuerys = registeredQuerys;
+	public void setRegisteredQueries(Map<String, EpSparqlQuery> registeredQueries) {
+		this.registeredQueries = registeredQueries;
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public class RegisterQueriesTest {
 		InstantiatePlayPlatform();
 		for (String queryFileName : DcepConstants.getProperties().getProperty("dcep.startup.registerqueries").split(",")) {
 			queryFileName = queryFileName.trim();
-			String	queryString = getSparqlQuerys(queryFileName);
+			String	queryString = getSparqlQueries(queryFileName);
 
 			try {
 				queryDispatchApi.registerQuery("urn:bdpl:" + queryFileName, queryString);
@@ -75,7 +75,7 @@ public class RegisterQueriesTest {
 		}
 	}
 	
-	private String getSparqlQuerys(String queryFile){
+	private String getSparqlQueries(String queryFile){
 		try {
 			InputStream is = this.getClass().getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br =new BufferedReader(new InputStreamReader(is));

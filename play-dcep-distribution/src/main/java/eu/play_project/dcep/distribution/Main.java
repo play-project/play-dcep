@@ -74,7 +74,7 @@ public class Main {
 			for (String queryFileName : DcepConstants.getProperties().getProperty("dcep.startup.registerqueries").split(",")) {
 				queryFileName = queryFileName.trim();
 				try {
-					String	queryString = getSparqlQuerys(queryFileName);
+					String	queryString = getSparqlQueries(queryFileName);
 					logger.info(queryString);
 					queryDispatchApi.registerQuery(queryFileName, queryString);
 				} catch (QueryDispatchException e) {
@@ -125,7 +125,7 @@ public class Main {
 
 	}
 	
-	private static String getSparqlQuerys(String queryFile) throws IOException {
+	private static String getSparqlQueries(String queryFile) throws IOException {
 		InputStream is = Main.class.getClassLoader().getResourceAsStream(queryFile);
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		StringBuffer sb = new StringBuffer();

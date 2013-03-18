@@ -52,7 +52,7 @@ public class CommonsPatternTest {
 		InstantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQuerys("play-epsparql-clic2call.eprq");
+		queryString = getSparqlQueries("play-epsparql-clic2call.eprq");
 
 		// Compile query
 		String paternID = queryDispatchApi.registerQuery("abc", queryString);
@@ -110,7 +110,7 @@ public class CommonsPatternTest {
 		InstantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQuerys("play-epsparql-clic2call-plus-tweet.eprq");
+		queryString = getSparqlQueries("play-epsparql-clic2call-plus-tweet.eprq");
 
 		// Compile query
 		String paternID = queryDispatchApi.registerQuery("example", queryString);
@@ -221,7 +221,7 @@ public class CommonsPatternTest {
 		}
 	}
 	
-	private String getSparqlQuerys(String queryFile){
+	private String getSparqlQueries(String queryFile){
 		try {
 			InputStream is = this.getClass().getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br =new BufferedReader(new InputStreamReader(is));

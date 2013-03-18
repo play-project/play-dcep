@@ -51,8 +51,8 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
 
 		//Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
-		managementApiI2.registerEventPattern(generateEle(getSparqlQuerys("3timesA.eprq")));
+		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("3timesA.eprq")));
+		managementApiI2.registerEventPattern(generateEle(getSparqlQueries("3timesA.eprq")));
 
 		//TODO stuehmer:  Implemt simulation.
 		
@@ -129,7 +129,7 @@ public class SingleDistributedEtalisInstancePublisher {
 			e.printStackTrace();
 		}
 	}
-	private static String getSparqlQuerys(String queryFile){
+	private static String getSparqlQueries(String queryFile){
 		try {
 			InputStream is = SingleDistributedEtalisInstancePublisher.class.getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
