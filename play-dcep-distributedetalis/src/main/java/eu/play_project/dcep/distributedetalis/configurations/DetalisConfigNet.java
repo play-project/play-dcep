@@ -8,27 +8,22 @@ import java.util.regex.Pattern;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.distributedetalis.EcConnectionManagerNet;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
-import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.play_commons.constants.Constants;
 
+public class DetalisConfigNet implements Configuration, Serializable{
 
-
-public class DetalisLocalConfig implements Configuration, Serializable{
-
-	private static final long serialVersionUID = 1L;
-	private String inputRdfModelFile;
-	
-	public DetalisLocalConfig(String inputRdfModelFile){
-		this.inputRdfModelFile = inputRdfModelFile;
-	}
+	private static final long serialVersionUID = 2565049949514271475L;
 
 	@Override
-	public void configure(DEtalisConfigApi dEtalisConfigApi) {
+	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
 		// Init ETALIS
 		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -39,6 +34,7 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 			dEtalisConfigApi.setEtalis(etalis);
 		} catch (Exception e) {
 			dEtalisConfigApi.getLogger().error("Error initializing ETALIS", e);
+			throw new DistributedEtalisException("Error initializing ETALIS", e);
 		}
 		
 		// Load Semantic Web Library
@@ -47,16 +43,17 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 		semWebLib.init(etalis);
 		
 		dEtalisConfigApi.setEventInputProvider(new JtalisInputProvider(semWebLib));
-		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocal(inputRdfModelFile));
+		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerNet(Constants
+				.getProperties().getProperty("eventcloud.registry"), dEtalisConfigApi.getDistributedEtalis()));
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 		dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
-		dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQuerys(),
-		dEtalisConfigApi.getEcConnectionManager()));
+				dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQuerys(),
+				dEtalisConfigApi.getEcConnectionManager()));
 
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
-
+		//Load prolog methods.
 		String[] methods = getPrologMethods("constructQueryImp.pl");
 		for (int i = 0; i < methods.length; i++) {
 			engine.execute("assert(" + methods[i] + ")");
@@ -76,7 +73,7 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 		for (int i = 0; i < methods.length; i++) {
 			engine.execute("assert(" + methods[i] + ")");
 		}
-
+		
 		// Set ETALIS properties.
 		etalis.setEtalisFlags("save_ruleId", "on");
 		etalis.addEventTrigger("complex/_");
@@ -88,12 +85,12 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 
 
 		// Instatiate measurement unit.
-		// this.measurementUnit = new MeasurementUnit(this,	
+		// this.measurementUnit = new MeasurementUnit(this,
 	}
 	
-	private String[] getPrologMethods(String methodFile){
+	public static String[] getPrologMethods(String methodFile){
 		try {
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream(methodFile);
+			InputStream is = DetalisConfigNet.class.getClassLoader().getResourceAsStream(methodFile);
 			BufferedReader br =new BufferedReader(new InputStreamReader(is));
 			StringBuffer sb = new StringBuffer();
 			String line;
@@ -105,11 +102,10 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 					}
 				}
 			}
-			//System.out.println(sb.toString());
 			br.close();
 			is.close();
 			
-			String[] methods = sb.toString().split(Pattern.quote( "." ) ); 
+			String[] methods = sb.toString().split(Pattern.quote( "." ) );
 			return methods;
 
 		} catch (Exception e) {
@@ -118,5 +114,4 @@ public class DetalisLocalConfig implements Configuration, Serializable{
 		return null;
 	
 	}
-
 }

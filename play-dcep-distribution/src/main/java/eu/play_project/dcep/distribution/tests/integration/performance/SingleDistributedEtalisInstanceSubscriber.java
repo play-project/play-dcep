@@ -27,7 +27,7 @@ import org.objectweb.proactive.core.util.URIBuilder;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 
 public class SingleDistributedEtalisInstanceSubscriber {
 

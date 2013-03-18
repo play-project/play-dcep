@@ -32,7 +32,7 @@ import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -202,7 +202,7 @@ public class DcepTest implements Serializable {
 
 		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root
 				.getFcInterface("ConfigApi"));
-		configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-plus-tweet-historical-data.trig"));
+		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-plus-tweet-historical-data.trig"));
 
 		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
 				.getFcInterface("DcepManagmentApi"));

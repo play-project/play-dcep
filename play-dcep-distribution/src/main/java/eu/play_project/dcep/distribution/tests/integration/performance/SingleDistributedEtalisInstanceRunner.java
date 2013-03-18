@@ -24,7 +24,7 @@ import org.objectweb.proactive.core.node.NodeException;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 
 
 /**
@@ -54,7 +54,7 @@ public class SingleDistributedEtalisInstanceRunner {
 		
 		//Configure component.
 		ConfigApi configApi = ((ConfigApi)root.getFcInterface("ConfigApi"));
-		configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));
+		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
 		
 		
 		//Subscribe to print complex events to local console.

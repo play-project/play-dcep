@@ -28,7 +28,7 @@ import eu.play_project.dcep.distributedetalis.EventCloudHelpers;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
-import eu.play_project.dcep.distributedetalis.configurations.DefaultConfiguration;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -297,28 +297,28 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 	public void loadPrologMethods() throws InterruptedException{
 		if(ctx == null) instantiateJtalis();
 		
-		String[] methods = DefaultConfiguration.getPrologMethods("constructQueryImp.pl");
+		String[] methods = DetalisConfigNet.getPrologMethods("constructQueryImp.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = DefaultConfiguration.getPrologMethods("ReferenceCounting.pl");
+		methods = DetalisConfigNet.getPrologMethods("ReferenceCounting.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = DefaultConfiguration.getPrologMethods("Measurement.pl");
+		methods = DetalisConfigNet.getPrologMethods("Measurement.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = DefaultConfiguration.getPrologMethods("Math.pl");
+		methods = DetalisConfigNet.getPrologMethods("Math.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
@@ -474,13 +474,13 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 		this.ctx = new JtalisContextImpl(engine);
 
 		//Load prolog methods.
-		for (String method : DefaultConfiguration.getPrologMethods("constructQueryImp.pl")) {
+		for (String method : DetalisConfigNet.getPrologMethods("constructQueryImp.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
-		for (String method : DefaultConfiguration.getPrologMethods("ReferenceCounting.pl")) {
+		for (String method : DetalisConfigNet.getPrologMethods("ReferenceCounting.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
-		for (String method : DefaultConfiguration.getPrologMethods("Measurement.pl")) {
+		for (String method : DetalisConfigNet.getPrologMethods("Measurement.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
 	}

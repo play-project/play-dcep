@@ -28,9 +28,9 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
-import eu.play_project.dcep.distributedetalis.configurations.DefaultConfiguration;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisLocalConfig;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisVirtuosoConfig;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigVirtuoso;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -192,13 +192,13 @@ Serializable {
 		String middleware = DcepConstants.getProperties().getProperty("dcep.middleware", "local");
 
 		if(middleware.equals("local")) {
-			configApi.setConfig(new DetalisLocalConfig("play-epsparql-clic2call-historical-data.trig"));
+			configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
 		}
 		else if(middleware.equals("eventcloud")) {
-			configApi.setConfig(new DefaultConfiguration());
+			configApi.setConfig(new DetalisConfigNet());
 		}
 		else if(middleware.equals("virtuoso")) {
-			configApi.setConfig(new DetalisVirtuosoConfig());
+			configApi.setConfig(new DetalisConfigVirtuoso());
 		}
 		else {
 			logger.error("Specified middleware is not implemented: {}.", middleware);

@@ -13,7 +13,7 @@ import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 
-public class DetalisVirtuosoConfig extends DefaultConfiguration implements Configuration, Serializable{
+public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configuration, Serializable{
 
 	private static final long serialVersionUID = 5249777449637212881L;
 
