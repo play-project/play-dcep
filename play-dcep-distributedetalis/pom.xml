@@ -70,7 +70,6 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-dcep-api</artifactId>
 			<version>${project.version}</version>
-
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
@@ -101,13 +100,11 @@
 			<groupId>fr.inria.eventcloud</groupId>
 			<artifactId>eventcloud-utils-trigwriter</artifactId>
 		</dependency>
-		<!-- 
-		<dependency>
+ 		<dependency>
             <groupId>com.openlinksw.virtuoso</groupId>
             <artifactId>virt_jena</artifactId>
-            <version>6.1.6</version>
+            <version>6.1.5</version>
  		</dependency>
- 		-->
 	</dependencies>
 
 	<!-- this was an attampt to get jpl from the local prolog installation avoiding version mismatches:
@@ -140,11 +137,6 @@
 		<repository>
 			<id>mysema-source</id>
 			<url>http://source.mysema.com/maven2/releases</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>aksw</id>
-			<url>http://maven.aksw.org/archiva/repository/internal</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>

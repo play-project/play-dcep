@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.naming.NamingException;
 import javax.xml.namespace.QName;
 
 import org.petalslink.dsb.commons.service.api.Service;
@@ -26,7 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import virtuoso.jdbc3.VirtuosoDataSource;
+import virtuoso.jena.driver.VirtGraph;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
@@ -61,7 +62,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private Service notifyReceiverServer;
 
 
-	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws NamingException, DistributedEtalisException {
+	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws DistributedEtalisException {
 		this(
 				constants.getProperty("dcep.virtuoso.servername"),
 				Integer.parseInt(constants.getProperty("dcep.virtuoso.port")),
@@ -96,11 +97,10 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
 		
-		this.rdfReceiver = new AbstractReceiver() {};
-		this.rdfReceiver.setDsbSubscribe(constants.getProperty(
-				"dsb.subscribe.endpoint"));
-		this.rdfReceiver.setDsbUnsubscribe(constants.getProperty(
-				"dsb.unsubscribe.endpoint"));
+		this.rdfReceiver = new AbstractReceiver(
+				constants.getProperty("dsb.subscribe.endpoint"),
+				constants.getProperty("dsb.unsubscribe.endpoint")) {};
+				
 		// Use an arbitrary topic as default:
 		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
 		this.rdfSender.setDsbNotify(constants.getProperty(
@@ -150,15 +150,17 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
     	if (this.notifyReceiverServer != null) {
     		this.notifyReceiverServer.stop();
     	}
-
-		init = false;
+    	
+  		init = false;
 	}
 
-	public void putDataInCloud(String query, String cloudId) {
+	public void putDataInCloud(CompoundEvent event, String cloudId) {
 
-//		VirtGraph graph = new VirtGraph(this.virtuoso);
-//		graph.
-
+		VirtGraph graph = new VirtGraph(event.getGraph().toString(), this.virtuoso);
+		for (Quadruple e : event) {
+			graph.add(new Triple(e.getSubject(), e.getPredicate(), e.getObject()));
+		}
+		graph.close();
 	}
 
 	@Override

@@ -2,8 +2,6 @@ package eu.play_project.dcep.distributedetalis.configurations;
 
 import java.io.Serializable;
 
-import javax.naming.NamingException;
-
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerVirtuoso;
@@ -22,7 +20,8 @@ public class DetalisVirtuosoConfig extends DefaultConfiguration implements Confi
 	@Override
 	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
-		try {		// Init ETALIS
+		try {
+			// Init ETALIS
 			PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 			JtalisContextImpl etalis = null;
 			
@@ -83,8 +82,8 @@ public class DetalisVirtuosoConfig extends DefaultConfiguration implements Confi
 	
 			// Instatiate measurement unit.
 			// this.measurementUnit = new MeasurementUnit(this,
-		} catch (NamingException e) {
-			throw new DistributedEtalisException("Error configuring DistributesEtalis: " + e.getMessage(), e);
+		} catch (DistributedEtalisException e) {
+			throw new DistributedEtalisException("Error configuring DistributedEtalis: " + e.getMessage(), e);
 		}
 	}
 }
