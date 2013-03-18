@@ -24,11 +24,11 @@ import com.jtalis.core.event.AbstractJtalisEventProvider;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-import eu.play_project.dcep.distributedetalis.EventCloudHelpers;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import fr.inria.eventcloud.api.CompoundEvent;

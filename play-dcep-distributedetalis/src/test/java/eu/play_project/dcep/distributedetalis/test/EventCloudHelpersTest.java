@@ -15,7 +15,7 @@ import org.ontoware.rdf2go.impl.jena29.TypeConversion;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import eu.play_project.dcep.distributedetalis.EventCloudHelpers;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;

@@ -10,6 +10,7 @@ import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.utils.WsnbExcept
 import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
 
 import eu.play_project.dcep.distributedetalis.utils.DsbHelpers;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_eventadapter.AbstractReceiver;
 import eu.play_project.play_eventadapter.NoRdfEventException;
 import fr.inria.eventcloud.api.CompoundEvent;

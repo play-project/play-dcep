@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distributedetalis;
+package eu.play_project.dcep.distributedetalis.utils;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 

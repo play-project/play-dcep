@@ -15,6 +15,7 @@ import com.jtalis.core.event.JtalisInputEventProvider;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
