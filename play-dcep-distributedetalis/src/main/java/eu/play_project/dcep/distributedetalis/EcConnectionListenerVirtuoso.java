@@ -32,15 +32,23 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 			logger.error(msg);
 			throw new IllegalStateException(msg);
 		}
+		if (this.dEtalis.getEcConnectionManager() == null) {
+			String msg = "ecConnectionManager was not set in " + this.getClass().getSimpleName();
+			logger.error(msg);
+			throw new IllegalStateException(msg);
+		}
 		
 	    try {
 	    	CompoundEvent event = EventCloudHelpers.toCompoundEvent(this.rdfReceiver.parseRdf(notify));
+	    	// FIXME stuehmer:
+	    	String topic = notify.getNotificationMessage().get(0).getTopic().getContent();
+	    	logger.info("Received event {} on topic {} from the DSB.", event.getGraph(), topic);
 	    	
 		    // Forward the event to Detalis:
 		    this.dEtalis.publish(event);
 		    
 		    // Store the event in Virtuoso:
-		    // FIXME stuehmer: call putData....()
+		    ((EcConnectionManagerVirtuoso)this.dEtalis.getEcConnectionManager()).putDataInCloud(event, topic);
 		    
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
