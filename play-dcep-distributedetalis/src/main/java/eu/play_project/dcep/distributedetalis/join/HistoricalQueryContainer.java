@@ -1,6 +1,3 @@
-/**
- * 
- */
 package eu.play_project.dcep.distributedetalis.join;
 
 import java.util.ArrayList;
@@ -12,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Ningyuan Pan
- *
  */
 public class HistoricalQueryContainer {
 	final static String SELECT = "SELECT";
@@ -20,7 +16,6 @@ public class HistoricalQueryContainer {
 	final static String VALUES = "VALUES";
 	final static String GRAPH = "GRAPH";
 	final static String STREAM = " :stream ";
-	//private static PutGetProxyRegister proxyRegis = PutGetProxyRegister.getInstance();
 	
 	private final List<String> vvariables = new ArrayList<String>();
 	private final Map<String, List<String>> map;
@@ -42,8 +37,8 @@ public class HistoricalQueryContainer {
 		return query;
 	}
 	
-	/*
-	 * Add VALUES block into querys
+	/**
+	 * Add VALUES block into queries
 	 */
 	private String addVALUES(String oquery){
 		int count = 0, index = 0;
@@ -51,20 +46,23 @@ public class HistoricalQueryContainer {
 		index = oquery.indexOf(VALUES);
 		if(index != -1){
 			//TODO
-			throw new IllegalArgumentException("Original query already has VALUES block");
+			throw new IllegalArgumentException("Original query already has VALUES clause");
 		}
 		else {
 			index = oquery.indexOf(WHERE);
 			logger.debug("where index: "+index);
 		
-			// add vlues block in where block
-			if(index != -1){
+			// add VALUES block in WHERE block
+			if (index == -1){
+				throw new IllegalArgumentException("Original query has no WHERE clause");
+			}
+			else{
 				while(index < oquery.length()){
 					if(oquery.charAt(index) == '{'){
 						count++;
 					}
 					else if(oquery.charAt(index) == '}'){
-						//count--;
+						count--;
 						if(count == 0){
 							break;
 						}
@@ -78,7 +76,7 @@ public class HistoricalQueryContainer {
 		return sparqlb.toString();
 	}
 	
-	/*
+	/**
 	 * Make VALUES block using variables and its values
 	 */
 	private String makeVALUES(){
@@ -108,7 +106,7 @@ public class HistoricalQueryContainer {
 		return ret;
 	}
 	
-	/*
+	/**
 	 * Make VALUES body of all combinations of values
 	 */
 	private StringBuilder makeBody(StringBuilder ret, StringBuilder p, int depth){
@@ -154,29 +152,4 @@ public class HistoricalQueryContainer {
 		}
 		return ret;
 	}
-	
-	/*private String getAimStream(){
-		String ret = null;
-		StringBuilder sb = new StringBuilder();
-		int index = 0, size = STREAM.length();
-		char c;
-		
-		index = oquery.indexOf(STREAM, index);
-		while(index != -1){
-			index += size;
-			c = oquery.charAt(index++);
-			while(c != ' '){
-				if(c != '<' && c != '>'){
-					sb.append(c);
-				}
-				c = oquery.charAt(index++);
-			}
-			ret = sb.toString();
-			logger.info("Aim stream: "+ret);
-			sb.delete(0, sb.length());
-			index = oquery.indexOf(STREAM, index);
-		}
-		return ret;
-	}*/
-
 }
