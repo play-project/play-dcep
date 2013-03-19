@@ -9,7 +9,9 @@
     <logger name="org.objectweb.proactive" level="WARN" />
     <logger name="fr.inria" level="WARN" />
     <logger name="components.adl" level="WARN" />
-
+    <logger name="eu.play_project" level="DEBUG" />
+    <logger name="org.ow2.play" level="DEBUG" />
+    
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
