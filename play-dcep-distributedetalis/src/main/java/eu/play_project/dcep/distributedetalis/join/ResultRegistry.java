@@ -7,8 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.QuerySolution;
-
-import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
+import com.hp.hpl.jena.query.ResultSet;
 
 /**
  * This is a data structure that is used to represent a query result.
@@ -25,10 +24,10 @@ public class ResultRegistry implements SelectResults {
 	// result data
 	private List<List> result = new ArrayList<List>();
 	
-	private Logger logger = LoggerFactory.getLogger(ResultRegistry.class);
-	
-	public ResultRegistry(ResultSetWrapper rw){
-		makeResult(rw);
+	private final Logger logger = LoggerFactory.getLogger(ResultRegistry.class);
+
+	public ResultRegistry(ResultSet rs) {
+		makeResult(rs);
 	}
 	
 	public ResultRegistry(){
@@ -69,13 +68,13 @@ public class ResultRegistry implements SelectResults {
 	/*
 	 * Translate the ResultSetWrapper into List<List> as results
 	 */
-	private void makeResult(ResultSetWrapper rw){
-		if(rw == null){
+	private void makeResult(ResultSet rs){
+		if(rs == null){
 			this.variables = new ArrayList<String>(0);
 			this.size = 0;
 			return;
 		}
-		this.variables = rw.getResultVars();
+		this.variables = rs.getResultVars();
 		
 		//TODO size = 0??
 		// result has duplicated entries ???
@@ -85,8 +84,8 @@ public class ResultRegistry implements SelectResults {
 		int colNum = this.variables.size();
 		this.size = 0;
 		QuerySolution qs;
-		while(rw.hasNext()){
-			qs = rw.next();
+		while(rs.hasNext()){
+			qs = rs.next();
 			List<String> data = new ArrayList<String>(colNum);
 			for(int i = 0; i < colNum; i++){
 					//logger.debug("add: "+qs.get(variables.get(i)).toString());

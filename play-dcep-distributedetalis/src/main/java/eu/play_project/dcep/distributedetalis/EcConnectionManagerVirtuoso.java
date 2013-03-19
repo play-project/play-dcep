@@ -2,12 +2,7 @@ package eu.play_project.dcep.distributedetalis;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +21,12 @@ import org.w3c.dom.Element;
 
 import virtuoso.jdbc3.VirtuosoDataSource;
 import virtuoso.jena.driver.VirtGraph;
+import virtuoso.jena.driver.VirtuosoQueryExecution;
+import virtuoso.jena.driver.VirtuosoQueryExecutionFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.DatasetFactory;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 
@@ -170,46 +168,19 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
+
+		logger.debug("Sending historical query to Virtuoso: \n" + query);
 		
-		List<String> variables = new ArrayList<String>();
-		List<List> result = new ArrayList<List>();
-		
-		Connection con = null;
 		try {
-			con = virtuoso.getConnection();
-			Statement sta = con.createStatement();
-			logger.debug("Sending historical query to Virtuoso: \n" + query);
-			ResultSet res = sta.executeQuery("sparql "+query);
-			
-			ResultSetMetaData rmd = res.getMetaData();
-			int colNum = rmd.getColumnCount();
-			for(int i = 0; i < colNum; i++){
-				variables.add(rmd.getColumnName(i));
-			}
-			
-			//TODO result create, select variable analyze, create
-			while(res.next()){
-				ArrayList<String> data = new ArrayList<String>();
-				for(int i = 0; i < colNum; i++)
-					data.add(res.getString(i));
-				result.add(data);
-			}
-			
-		} catch (SQLException e) {
-			logger.error("Exception with Virtuoso", e);
-		} finally {
-			if(con != null)
-				try {
-					con.close();
-				} catch (SQLException e) {
-					logger.error("Connection Exception with Virtuoso", e);
-				}
+			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(
+					query, new VirtGraph(virtuoso));
+			ResultRegistry rr = new ResultRegistry(vqe.execSelect());
+			return rr;
 		}
-		
-		ResultRegistry rr = new ResultRegistry();
-		rr.setResult(result);
-		rr.setVariables(variables);
-		return rr;
+		catch (JenaException e) {
+			String msg = "Error retreiving historic data from Virtuoso: " + e.getMessage();
+			throw new EcConnectionmanagerException(msg, e);
+		}
 	}
 
 	private QName getTopic(String cloudId) {
