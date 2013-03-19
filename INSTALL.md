@@ -45,7 +45,25 @@ Add `--nodeps` to the rpm command if there is a problem with an old version of l
 yum install tomcat6 tomcat6-admin-webapps
 chkconfig tomcat6 on
 ```
-#### Virtuoso (>=6, optional)
+#### Virtuoso (>=6.1.6, optional)
+Build and install Virtuoso 6.1.6 from source package SRPM:
+```
+# Install build dependencies as root:
+sudo yum install gperf htmldoc pkgconfig pkgconfig mock libxml2-devel libiodbc-devel
+sudo useradd -s /sbin/nologin mockbuild
+# Build Virtuoso as non-root user:
+mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+echo '%_topdir %(echo $HOME)/rpmbuild' > ~/.rpmmacros
+cd /tmp
+wget http://ftp.pbone.net/mirror/download.fedora.redhat.com/pub/fedora/linux/updates/16/SRPMS/virtuoso-opensource-6.1.6-1.fc16.src.rpm
+rpmbuild --rebuild virtuoso-opensource-6.1.6-1.fc16.src.rpm
+cd ~/rpmbuild/RPMS/
+
+# Install Virtuoso as root:
+sudo rpm -Uvh */virtuoso-opensource-conductor-6.1.6*.rpm */virtuoso-opensource-6.1.6*.rpm */virtuoso-opensource-utils-6.1.6*.rpm
+```
+
+If the newer Virtuoso builds should appear e.g. in EPEL then the procedure becomes easier:
 ```
 rpm -i http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 yum install virtuoso-opensource virtuoso-opensource-conductor virtuoso-opensource-utils
