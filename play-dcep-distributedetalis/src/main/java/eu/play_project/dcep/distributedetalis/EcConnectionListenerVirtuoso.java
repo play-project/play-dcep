@@ -31,12 +31,10 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 	public void notify(Notify notify) throws WsnbException {
 		if (this.dEtalis == null) {
 			String msg = "Detalis was not set in " + this.getClass().getSimpleName();
-			logger.error(msg);
 			throw new IllegalStateException(msg);
 		}
 		if (this.dEtalis.getEcConnectionManager() == null) {
 			String msg = "ecConnectionManager was not set in " + this.getClass().getSimpleName();
-			logger.error(msg);
 			throw new IllegalStateException(msg);
 		}
 		
