@@ -2,7 +2,12 @@ package eu.play_project.dcep.distributedetalis;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +26,9 @@ import org.w3c.dom.Element;
 
 import virtuoso.jdbc3.VirtuosoDataSource;
 import virtuoso.jena.driver.VirtGraph;
-import virtuoso.jena.driver.VirtuosoQueryExecution;
-import virtuoso.jena.driver.VirtuosoQueryExecutionFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.DatasetFactory;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 
@@ -153,6 +155,12 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
   		init = false;
 	}
 
+	/**
+	 * Persist data in historic storage.
+	 * 
+	 * @param event event containing quadruples
+	 * @param cloudId the cloud ID to allow partitioning of storage
+	 */
 	public void putDataInCloud(CompoundEvent event, String cloudId) {
 
 		VirtGraph graph = new VirtGraph(event.getGraph().toString(), this.virtuoso);
@@ -162,6 +170,10 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		graph.close();
 	}
 
+	/**
+	 * Retreive data from historic storage using a SPARQL SELECT query. SPARQL 1.1
+	 * enhancements like the VALUES clause are allowed.
+	 */
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException {
@@ -170,19 +182,63 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		}
 
 		logger.debug("Sending historical query to Virtuoso: \n" + query);
+
+		// This has a conflict with Jena and needs to be resolved by a new vert_jena provider:
+//		try {
+//			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(
+//					query, new VirtGraph(virtuoso));
+//			ResultRegistry rr = new ResultRegistry(vqe.execSelect());
+//			return rr;
+//		}
+//		catch (JenaException e) {
+//			String msg = "Error retreiving historic data from Virtuoso: " + e.getMessage();
+//			throw new EcConnectionmanagerException(msg, e);
+//		}
 		
+		List<String> variables = new ArrayList<String>();
+		List<List> result = new ArrayList<List>();
+
+		Connection con = null;
 		try {
-			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(
-					query, new VirtGraph(virtuoso));
-			ResultRegistry rr = new ResultRegistry(vqe.execSelect());
-			return rr;
+			con = virtuoso.getConnection();
+			Statement sta = con.createStatement();
+			ResultSet res = sta.executeQuery("sparql "+query);
+
+			ResultSetMetaData rmd = res.getMetaData();
+			int colNum = rmd.getColumnCount();
+			for(int i = 1; i <= colNum; i++){
+				variables.add(rmd.getColumnName(i));
+			}
+
+			//TODO result create, select variable analyze, create
+			while(res.next()){
+				ArrayList<String> data = new ArrayList<String>();
+				for(int i = 1; i <= colNum; i++) {
+					data.add(res.getString(i));
+				}
+				result.add(data);
+			}
+
+		} catch (SQLException e) {
+			logger.error("Exception with Virtuoso", e);
+		} finally {
+			if(con != null)
+				try {
+					con.close();
+				} catch (SQLException e) {
+					logger.error("Connection Exception with Virtuoso", e);
+				}
 		}
-		catch (JenaException e) {
-			String msg = "Error retreiving historic data from Virtuoso: " + e.getMessage();
-			throw new EcConnectionmanagerException(msg, e);
-		}
+
+		ResultRegistry rr = new ResultRegistry();
+		rr.setResult(result);
+		rr.setVariables(variables);
+		return rr;
 	}
 
+	/**
+	 * Produce a topic {@linkplain QName} for a given cloud ID.
+	 */
 	private QName getTopic(String cloudId) {
 		int index = cloudId.lastIndexOf("/");
 		return new QName(cloudId.substring(0, index+1), cloudId.substring(index + 1), "s");
@@ -195,13 +251,15 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		}
 		
 		String cloudId = EventCloudHelpers.getCloudId(event);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
+        
+		// Send event to DSB:
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		TriGWriter.write(out, DatasetFactory.create(quadruplesToDatasetGraph(event.getQuadruples())));
-
 		Element notifPayload = EventFormatHelpers.wrapWithDomNativeMessageElement(new String(out.toByteArray()));
-		
 		this.rdfSender.notify(notifPayload, getTopic(cloudId));
+		
+		// Store event in Virtuoso:
+		this.putDataInCloud(event, cloudId);
 	}
 
 	@Override
@@ -224,6 +282,9 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		}
 	}
 
+	/**
+	 * Subscribe to a given topic on the DSB. Duplicate subscriptions are handled using counters.
+	 */
 	private void subscribe(String cloudId) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
@@ -246,6 +307,9 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		}
 	}
 
+	/**
+	 * Unsubscribe from a given topic on the DSB. Duplicate subscriptions are handled using counters.
+	 */
 	private void unsubscribe(String cloudId, String subId) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
