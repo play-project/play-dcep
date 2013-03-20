@@ -98,7 +98,7 @@ public class DetalisConfigNet implements Configuration, Serializable{
 			while (null != (line = br.readLine())) {
 				if (!(line.equals(" "))) {
 					if (!line.startsWith("%")) { // Ignore comments
-						sb.append(line);
+						sb.append(line.split("%")[0]); //Ignore rest of the line if comment starts.
 					}
 				}
 			}
