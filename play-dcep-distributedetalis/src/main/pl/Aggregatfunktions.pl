@@ -6,7 +6,7 @@ addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if valuelist 
 		aggregatDb(Id,List), putInList(List,[],Element,Lnew), assert(aggregatDb(Id,Lnew)), retractall(aggregatDb(Id,List)); % Add element to existing list.
 		assert(aggregatDb(Id,[Element]))). % Put element in new list.
 
-calcAverage(Id, WindowSize) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, (Time-WindowSize), 0, 0, Avg), write(Avg)). %Calc avg recursivly
+calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, (Time-WindowSize), 0, 0, Avg)). %Calc avg recursivly
 
 
 % Helpers
