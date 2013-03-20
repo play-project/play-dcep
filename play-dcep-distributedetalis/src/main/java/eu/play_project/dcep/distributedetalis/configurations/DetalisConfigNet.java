@@ -74,6 +74,12 @@ public class DetalisConfigNet implements Configuration, Serializable{
 			engine.execute("assert(" + methods[i] + ")");
 		}
 		
+		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
+			System.out.println(method);
+			engine.execute("assert(" + method + ")");
+		}
+		
+		
 		// Set ETALIS properties.
 		etalis.setEtalisFlags("save_ruleId", "on");
 		etalis.addEventTrigger("complex/_");

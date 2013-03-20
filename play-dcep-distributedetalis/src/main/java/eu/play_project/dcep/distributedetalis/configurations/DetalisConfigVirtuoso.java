@@ -68,6 +68,11 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 			for (int i = 0; i < methods.length; i++) {
 				engine.execute("assert(" + methods[i] + ")");
 			}
+			
+			for (String method : getPrologMethods("Aggregatfunktions.pl")) {
+				System.out.println(method);
+				engine.execute("assert(" + method + ")");
+			}
 
 	
 			// Set ETALIS properties.

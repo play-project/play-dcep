@@ -76,6 +76,11 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		for (int i = 0; i < methods.length; i++) {
 			engine.execute("assert(" + methods[i] + ")");
 		}
+		
+		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
+			System.out.println(method);
+			engine.execute("assert(" + method + ")");
+		}
 
 		// Set ETALIS properties.
 		etalis.setEtalisFlags("save_ruleId", "on");
