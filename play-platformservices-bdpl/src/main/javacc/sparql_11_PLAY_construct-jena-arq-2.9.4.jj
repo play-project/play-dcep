@@ -2020,7 +2020,7 @@ Element EpSparqlFilter() :
     ((ElementEventGraph)getQuery().getEventQuery().get(getQuery().getEventQuery().size()-1)).setFilterExp(filter);
   }
 
-  {return filter;}
+  {return filter;}
   
 //  < FILTER >
 //  (
