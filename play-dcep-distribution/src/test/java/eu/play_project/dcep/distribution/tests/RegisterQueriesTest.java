@@ -16,10 +16,16 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
+
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
+import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
 
 public class RegisterQueriesTest {
 	public static QueryDispatchApi queryDispatchApi;
@@ -32,7 +38,7 @@ public class RegisterQueriesTest {
 	/**
 	 * Load pattern which are loaded at DCEP startup.
 	 */
-	@Test
+	//@Test
 	public void registerCommonPatterns() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException{
 		
 		InstantiatePlayPlatform();
@@ -48,6 +54,19 @@ public class RegisterQueriesTest {
 		}
 	}
 	
+	@Test
+	public void parsSRBenchQueries(){
+		Query query = QueryFactory.create(getSparqlQuerys("q1.eprq"), Syntax.syntaxEPSPARQL_20);
+		
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		
+		visitor1.setPatternId("'http://patternId.example.com/123456'");
+
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+
+		System.out.println(etalisPattern);
+	}
 	public static void InstantiatePlayPlatform()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {

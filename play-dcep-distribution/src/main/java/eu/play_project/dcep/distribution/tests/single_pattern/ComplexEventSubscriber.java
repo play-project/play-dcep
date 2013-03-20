@@ -11,11 +11,15 @@ import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
+	private static final long serialVersionUID = 1L;
+	private int eventCounter = 0;
 
 	public ComplexEventSubscriber(){}
 
+	
 	@Override
 	public void publish(CompoundEvent event) {
-		System.out.println("New complex Event: " + event);
+		eventCounter++;
+		System.out.println("New complex Event " + eventCounter + ": " + event);
 	}
 }

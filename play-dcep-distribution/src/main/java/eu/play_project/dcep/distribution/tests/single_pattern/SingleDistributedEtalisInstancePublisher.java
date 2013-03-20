@@ -57,7 +57,7 @@ public class SingleDistributedEtalisInstancePublisher {
 
 		
 		// Publish some events to instance 1.
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1000000; i++) {
 			testApiI1.publish(createTaxiUCCallEvent(i + ""));
 			delay(2);
 		}
