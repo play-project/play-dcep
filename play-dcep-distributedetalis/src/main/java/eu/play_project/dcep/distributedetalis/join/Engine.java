@@ -70,7 +70,7 @@ public class Engine implements HistoricalData {
 			if(!addResultRegistry(stream, hq.getQuery(), rrs, svs, variableNames)){
 				return ret;
 			}
-			logger.debug("Historical query: {}",  hq.getQuery());
+			logger.debug("Historical query:\n{}",  hq.getQuery());
 		}
 
 		Core.make(svs, rrs);

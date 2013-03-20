@@ -188,7 +188,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				for (String varName : values.keySet()) {
 					vars += " " + varName;
 				}
-				logger.info("SHARED VARIABLES: " + vars);
+				logger.debug("SHARED VARIABLES: " + vars);
 				query.getConstructTemplate();
 				query.getConstructTemplate().fillTemplate(variableBindings, GRAPHNAME, EVENTID);
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(variableBindings, GRAPHNAME, EVENTID));
