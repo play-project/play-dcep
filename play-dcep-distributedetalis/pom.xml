@@ -103,7 +103,7 @@
  		<dependency>
             <groupId>com.openlinksw.virtuoso</groupId>
             <artifactId>virt_jena</artifactId>
-            <version>6.1.5</version>
+            <version>6.1.6</version>
  		</dependency>
 	</dependencies>
 
