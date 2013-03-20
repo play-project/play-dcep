@@ -57,7 +57,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
 
-		String[] methods = getPrologMethods("constructQueryImp.pl");
+		String[] methods = getPrologMethods("ComplexEventData.pl");
 		for (int i = 0; i < methods.length; i++) {
 			engine.execute("assert(" + methods[i] + ")");
 		}

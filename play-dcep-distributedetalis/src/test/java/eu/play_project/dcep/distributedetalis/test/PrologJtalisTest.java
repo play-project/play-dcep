@@ -301,7 +301,7 @@ public class PrologJtalisTest {
 	public void loadPrologMethods() throws InterruptedException{
 		if(ctx == null) instantiateJtalis();
 		
-		String[] methods = getPrologMethods("constructQueryImp.pl");
+		String[] methods = getPrologMethods("ComplexEventData.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
@@ -517,7 +517,7 @@ public class PrologJtalisTest {
 		this.ctx = new JtalisContextImpl(engine);
 
 		//Load prolog methods.
-		for (String method : getPrologMethods("constructQueryImp.pl")) {
+		for (String method : getPrologMethods("ComplexEventData.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
 		for (String method : getPrologMethods("ReferenceCounting.pl")) {
