@@ -78,8 +78,8 @@ public class PrologJtalisTest {
 		//ctx.pushEvent(new EtalisEvent("b", 1));
 	
 		delay();
-System.out.println("fffffffffffffffffff" + result);
-System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
+		System.out.println("fffffffffffffffffff" + result);
+		System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 
 		assertTrue(result.equals(new EtalisEvent("complexExample", 1,"id")));
 	}
@@ -210,7 +210,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 		 */
 		Query q = new Query(String.format("rdf(S,P,O,'\"%s\"')", eventId));
 		
-	//	assertTrue("The return answer from triplestore should be non-empty.", q.hasMoreElements());
+		//	assertTrue("The return answer from triplestore should be non-empty.", q.hasMoreElements());
 
 		if( q.hasMoreElements() ) {
 			Hashtable binding = (Hashtable) q.nextElement();
@@ -225,7 +225,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 	
 	
 	
-	// @Test TODO activate test.
+	// @Test TODO sobermeier activate test.
 	public void generateCartesinProductOfTriples(){
 		PlayJplEngineWrapper.getPlayJplEngineWrapper().executeGoal("generateConstructResult([s1,s2],[p],[o1,o2],testDb2)");;
 		
@@ -370,7 +370,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 //	}
 	
 	@Test
-	public void GetVariableValues(){
+	public void getVariableValues(){
 		
 		if(ctx==null){
 			this.init();
@@ -470,7 +470,7 @@ System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 	}
 	
 	private void init(){
-		PlayJplEngineWrapper engine = eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper.getPlayJplEngineWrapper();
+		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);
 
 		//Load prolog methods.
