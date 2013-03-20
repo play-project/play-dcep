@@ -5,10 +5,8 @@ import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -22,6 +20,7 @@ import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.StreamIdCollector;
@@ -37,36 +36,36 @@ public class QueryTemplateImplTest {
 		qt.appendLine(Node.createURI("urn:1"), Node.createURI(EVENT_ID_PLACEHOLDER), Node.createURI("urn:someuri"), Node.createLiteral("120"));
 		qt.appendLine(Node.createURI("urn:2"), Node.createVariable("a"), Node.createVariable("b"), Node.createVariable("c"));
 		
-		Map<String, List<String>> vb = new HashMap<String, List<String>>();
+		HistoricalData hd = new HistoricalData();
 		
 		List<String> bindAlice = new LinkedList<String>();
 		bindAlice.add("12345677");
-		vb.put("alice", bindAlice);
+		hd.put("alice", bindAlice);
 
 		List<String> bindBob = new LinkedList<String>();
 		bindBob.add("0000456");
 		bindBob.add("0000457");
-		vb.put("bob", bindBob);
+		hd.put("bob", bindBob);
 		
 		List<String> bindA = new LinkedList<String>();
 		bindA.add("horse");
 		bindA.add("cat");
 		bindA.add("mouse");
-		vb.put("a", bindA);
+		hd.put("a", bindA);
 		
 		List<String> bindB = new LinkedList<String>();
 		bindB.add("car");
 		bindB.add("truck");
-		vb.put("b", bindB);
+		hd.put("b", bindB);
 		
 		List<String> bindC = new LinkedList<String>();
 		bindC.add("table");
 		bindC.add("chair");
 		bindC.add("lamp");
 		bindC.add("door");
-		vb.put("c", bindC);
+		hd.put("c", bindC);
 		
-		List<Quadruple> result = qt.fillTemplate(vb, Node.createURI("urn:graphName"), Node.createURI("urn:event"));
+		List<Quadruple> result = qt.fillTemplate(hd, Node.createURI("urn:graphName"), Node.createURI("urn:event"));
 		Assert.assertEquals("We expected 27 results.", 27, result.size());
 		
 		System.out.println(new CompoundEvent(result));

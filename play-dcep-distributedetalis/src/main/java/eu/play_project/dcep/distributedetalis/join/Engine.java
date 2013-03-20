@@ -13,30 +13,32 @@ import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
-import eu.play_project.dcep.distributedetalis.api.HistoricalData;
+import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
+import eu.play_project.dcep.distributedetalis.api.VariableBindings;
+import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 
 /**
  * @author Ningyuan Pan
  *
  */
-public class Engine implements HistoricalData {
+public class Engine implements HistoricalDataEngine {
 
 	private final EcConnectionManager ecConnection;
 	private final Logger logger;
 
 	public Engine(EcConnectionManager ecm){
 		if(ecm == null)
-			throw new IllegalArgumentException("EcConnection should not be null");
+			throw new IllegalArgumentException("EcConnection must not be null");
 		ecConnection = ecm;
 		logger = LoggerFactory.getLogger(this.getClass());
 	}
 
 
 	@Override
-	public Map<String, List<String>> get(
+	public HistoricalData get(
 			List<HistoricalQuery> queries,
-			Map<String, List<String>> variableBindings) {
+			VariableBindings variableBindings) {
 
 		Map<String, String> q = new HashMap<String, String>();
 		Map<String, List<String>> v = new HashMap<String, List<String>>();
@@ -48,8 +50,8 @@ public class Engine implements HistoricalData {
 		return this.get(q, v, variableBindings);
 	}
 
-	public Map<String, List<String>> get(Map<String, String> queries, Map<String, List<String>> variableNames, Map<String, List<String>> variableBindings){
-		Map<String, List<String>> ret = new HashMap<String, List<String>>();
+	public HistoricalData get(Map<String, String> queries, Map<String, List<String>> variableNames, VariableBindings variableBindings){
+		HistoricalData ret = new HistoricalData();
 
 		// data structures used by core
 		List<SelectResults> rrs = new ArrayList<SelectResults>();
@@ -58,7 +60,7 @@ public class Engine implements HistoricalData {
 		// init data structures used by core
 		for(String stream : queries.keySet()){
 			String query = queries.get(stream);
-			Map<String, List<String>> vb = new HashMap<String, List<String>>();
+			VariableBindings vb = new VariableBindings();
 
 			List<String> vars = variableNames.get(stream);
 			for(String var : vars){

@@ -1,7 +1,6 @@
 package eu.play_project.play_platformservices.api;
 
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -16,9 +15,9 @@ import fr.inria.eventcloud.api.Quadruple;
 public interface QueryTemplate {
 	public void appendLine(Quadruple line);
 	public void appendLine(Node graph, Node subject, Node predicate, Node object);
+
 	/**
-	 * 
-	 * @param variableBindings Variablename flowed by a list with values.
+	 * @param historicalData Variable name followed by a list with values.
 	 */
-	public List<Quadruple> fillTemplate(Map<String, List<String>> variableBindings, Node graph, Node eventId);
+	public List<Quadruple> fillTemplate(HistoricalData historicalData, Node graph, Node eventId);
 }

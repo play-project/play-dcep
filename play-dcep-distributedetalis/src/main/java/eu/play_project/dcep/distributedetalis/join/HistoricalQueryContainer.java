@@ -7,6 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.distributedetalis.api.VariableBindings;
+
 /**
  * @author Ningyuan Pan
  */
@@ -23,7 +25,7 @@ public class HistoricalQueryContainer {
 	
 	private final Logger logger = LoggerFactory.getLogger(HistoricalQueryContainer.class);
 	
-	public HistoricalQueryContainer(String query, Map<String, List<String>> variableBindings){
+	public HistoricalQueryContainer(String query, VariableBindings variableBindings){
 		if(query == null)
 			throw new IllegalArgumentException("Original query should not be null");
 		map = variableBindings;

@@ -6,27 +6,31 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
 
 import eu.play_project.play_commons.eventtypes.EventHelpers;
+import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class QueryTemplateImpl implements QueryTemplate, Serializable {
+	private static final long serialVersionUID = 621378623731886535L;
 	List<Quadruple> templateQuads = new LinkedList<Quadruple>();
 	
+	@Override
 	public void appendLine(Node graph, Node subject, Node predicate, Node object) {
 		appendLine(new Quadruple(graph, subject, predicate, object));
 	}
 
+	@Override
 	public void appendLine(Quadruple line) {
 		templateQuads.add(line);
 	}
 
-	public List<Quadruple> fillTemplate(Map<String, List<String>> variableBindings, Node graph, Node eventId) {
+	@Override
+	public List<Quadruple> fillTemplate(HistoricalData historicalData, Node graph, Node eventId) {
 		
 		List<Quadruple> result = new LinkedList<Quadruple>();
 
@@ -42,7 +46,7 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 			}
 			
 			t.add(templArray);
-			result.addAll(fillTemplateHelper(t, variableBindings, 0));
+			result.addAll(fillTemplateHelper(t, historicalData, 0));
 		}
 			
 		return result;
@@ -56,7 +60,7 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 	 * @param t
 	 *            Set of (partially filled template lines from the previous
 	 *            step.
-	 * @param variableBindings
+	 * @param historicalData
 	 *            Variable names and their (multiple) values to be replaced in
 	 *            the template.
 	 * @param step
@@ -66,11 +70,11 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 	 * @return Returns a collection of quadruples fulfilling the variable
 	 *         values.
 	 */
-	private List<Quadruple> fillTemplateHelper(Set<Node[]> t, Map<String, List<String>> variableBindings, int step) {
+	private List<Quadruple> fillTemplateHelper(Set<Node[]> t, HistoricalData historicalData, int step) {
 		Set<Node[]> tNext = new HashSet<Node[]>();
 		for (Node[] tempLine : t) {
 			if (tempLine[step].isVariable()) {
-				for (String value : variableBindings.get(tempLine[step].getName())) {
+				for (String value : historicalData.get(tempLine[step].getName())) {
 					Node[] qNext = tempLine.clone();
 					qNext[step] = EventHelpers.toJenaNode(value);
 					tNext.add(qNext);
@@ -86,7 +90,7 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 		 */
 		if (step < 3) {
 			// Recursion to next step (e.g. moving on to filling triple subjects)
-			return fillTemplateHelper(tNext, variableBindings, step + 1);
+			return fillTemplateHelper(tNext, historicalData, step + 1);
 		}
 		/*
 		 *  ...or return results.

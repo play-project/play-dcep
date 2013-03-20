@@ -6,7 +6,6 @@ import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +24,15 @@ import com.jtalis.core.event.JtalisOutputEventProvider;
 
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
-import eu.play_project.dcep.distributedetalis.api.HistoricalData;
+import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.HistoricalData;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -45,7 +46,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	private final PlayJplEngineWrapper engine;
 	private final Set<SimplePublishApi> recipients;
 	private final Map<String, EpSparqlQuery> registeredQueries;
-	private final HistoricalData historicData;
+	private final HistoricalDataEngine historicData;
 	
 	private final static Node STARTTIME = TypeConversion.toJenaNode(Event.STARTTIME);
 	private final static Node ENDTIME = TypeConversion.toJenaNode(Event.ENDTIME);
@@ -175,10 +176,10 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		} else if (query.getHistoricalQueries() != null && !query.getHistoricalQueries().isEmpty()) {
 			
 			//Get variable bindings.
-			Map<String, List<String>> variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
+			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
 
 			//Get historical data to the given binding.
-			Map<String, List<String>> values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
+			HistoricalData values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
 
 			if (values.isEmpty()) {
 				// there is no matching historic data so the event pattern is not fulfilled:
@@ -189,9 +190,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 					vars += " " + varName;
 				}
 				logger.debug("SHARED VARIABLES: " + vars);
-				query.getConstructTemplate();
-				query.getConstructTemplate().fillTemplate(variableBindings, GRAPHNAME, EVENTID);
-				quadruples.addAll(query.getConstructTemplate().fillTemplate(variableBindings, GRAPHNAME, EVENTID));
+				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
 			}
 		}
 		
@@ -201,9 +200,9 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		return quadruples;
 	}
 	
-	public static Map<String, List<String>> getSharedVariablesValues(PlayJplEngineWrapper engine, String queryId) {
+	public static VariableBindings getSharedVariablesValues(PlayJplEngineWrapper engine, String queryId) {
 		// HashMap with values of variables.
-		Map<String, List<String>> variableValues = new HashMap<String, List<String>>();
+		VariableBindings variableValues = new VariableBindings();
 
 		try {
 			// Get variables and values
@@ -224,4 +223,5 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		
 		return variableValues;
 	}
+
 }
