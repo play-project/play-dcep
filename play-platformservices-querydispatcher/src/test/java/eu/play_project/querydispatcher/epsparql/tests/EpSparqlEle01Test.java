@@ -47,9 +47,10 @@ public class EpSparqlEle01Test {
 			System.out.println("Exception was thrown: " + e);
 			
 		}
+		AggregateFunctionsVisitor v = new AggregateFunctionsVisitor();
 		
 		for (Expr el : query.getHavingExprs()) {
-			el.visit(new AggregateFunctionsVisitor());
+			el.visit(v);
 		}
 
 //		// Use custom visitor
