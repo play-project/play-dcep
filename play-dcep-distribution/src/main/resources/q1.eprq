@@ -15,12 +15,13 @@ CONSTRUCT {
 WHERE {
 	WINDOW {
 		EVENT ?id1 {
-			?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>. 
-			?e2 om-owl:procedure ?sensor ;
-				a weather:WindSpeedObservation ;
-				om-owl:result ?result .
-			?result om-owl:floatValue ?value ;
-				om-owl:uom ?uom 
+			?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>.
+			?e2 om-owl:procedure ?sensor;
+				a om-owl:MeasureData;
+			 	om-owl:result ?result.
+ 			?result om-owl:floatValue ?value ;
+				om-owl:uom ?uom .
 			}
 	} ("PT60M"^^xsd:duration, sliding)
 }
+
