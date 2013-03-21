@@ -29,26 +29,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>fr.inria.eventcloud</groupId>
-			<artifactId>eventcloud-core</artifactId>
-			<exclusions>
-			<exclusion>
-				<artifactId>play-commons-constants</artifactId>
-				<groupId>eu.play-project</groupId>
-			</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfreceiver</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfsender</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-eventtypes</artifactId>
 			<exclusions>
@@ -77,14 +57,24 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.openlinksw</groupId>
-			<artifactId>virtjdbc3</artifactId>
-			<version>1.0</version>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-eventadapter-abstractrdfreceiver</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.ow2.petals.dsb</groupId>
-			<artifactId>dsb-notification-service</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-eventadapter-abstractrdfsender</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.inria.eventcloud</groupId>
+			<artifactId>eventcloud-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>play-commons-constants</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fr.inria.eventcloud</groupId>
@@ -99,6 +89,16 @@
 		<dependency>
 			<groupId>fr.inria.eventcloud</groupId>
 			<artifactId>eventcloud-utils-trigwriter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.petals.dsb</groupId>
+			<artifactId>dsb-notification-service</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.openlinksw</groupId>
+			<artifactId>virtjdbc3</artifactId>
+			<version>1.0</version>
 		</dependency>
  		<dependency>
             <groupId>com.openlinksw.virtuoso</groupId>
