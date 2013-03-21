@@ -184,7 +184,10 @@ void ConstructQuery() : { Template t ;
       { getQuery().setConstructTemplate(t) ; }
     ( DatasetClause() )*
     WhereClause()
-    SolutionModifier()
+    //(HavingClause())?
+{ allowAggregatesInExpressions = true ; }
+     ("HAVING" < LPAREN > "AVG(" ?t < RPAREN > ">=" "30" "^^xsd:float)"	BuiltInCall())? "< RPAREN > // (HavingClause())?
+  //  SolutionModifier() [PLAY] Ony   ( HavingClause() )?
     // Not empty construct Stefan
 // |
 //    // Abbreviated CONSTRUCT WHERE {}
@@ -263,14 +266,14 @@ void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp;}
 	(
 	  //  (<GRAPH> (< EVENT >)?) | (< EVENT > (<GRAPH>)?)
 	  //Realtime query with window.
-	   < BEGIN_WINDOW > <LBRACE> < EVENT > el = E()
+	   < BEGIN_WINDOW > <LBRACE> < EVENT > E()
 		<RBRACE> t = < WINDOWSIZE > { getQuery().setWindowTime(t.image);} < WINDOW_TYPE_SLIDING > <RPAREN>
 		WhereClauseH(t)
 	|
 		//Realtime query followd by optinal historic part.
-	   < EVENT > el = E() WhereClauseH(t)
+	   < EVENT > E() WhereClauseH(t)
 
-  )<RBRACE> 
+  )<RBRACE>
 }
 
 // Historical WhereClause. Default without <LBRACE > and < RBRACE >
@@ -280,13 +283,7 @@ void WhereClauseH(Token t) : { Element el ;}
    { startWherePattern() ; }
 	// Code from GroupGraphPattern()
 	(
-    { startSubSelect(t.beginLine, t.beginColumn) ; }
-    SubSelect()
-    {
-      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
-      el = new ElementSubQuery(q) ;
-    }
-   | el = GroupGraphPatternSub()
+     el = GroupGraphPatternSub()
    )
 
     //Set values.
@@ -2020,7 +2017,7 @@ Element EpSparqlFilter() :
     ((ElementEventGraph)getQuery().getEventQuery().get(getQuery().getEventQuery().size()-1)).setFilterExp(filter);
   }
 
-  {return filter;}
+  {return filter;}
   
 //  < FILTER >
 //  (
