@@ -2,9 +2,7 @@ package eu.play_project.querydispatcher.epsparql.tests;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +37,8 @@ import fr.inria.eventcloud.api.Quadruple;
 public class DispatcherTests {
 	private static Logger logger;
 
-	
 	@Test
-	public void getIoStreamIds(){
+	public void getIoStreamIds() throws IOException{
 		logger = LoggerFactory.getLogger(DispatcherTests.class);
 		String queryString;
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"}));
@@ -66,11 +64,10 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void getVariablesAndTypes(){
+	public void getVariablesAndTypes() throws IOException{
 		if(logger == null){
 			logger= LoggerFactory.getLogger(DispatcherTests.class);
 		}
-		
 		
 		// Get query.
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
@@ -103,7 +100,7 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void showRealtimeHistoricVariables(){
+	public void showRealtimeHistoricVariables() throws IOException{
 		if(logger == null){
 			logger= LoggerFactory.getLogger(DispatcherTests.class);
 		}
@@ -149,7 +146,7 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void dispatchQueryHistoricalMultipleClouds() {
+	public void dispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
 		String queryString = getSparqlQuery("EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq");
 
@@ -164,8 +161,8 @@ public class DispatcherTests {
 		String temperatureBstream = "PREFIX  : <http://events.event-processing.org/types/> \nPREFIX xsd : <http://events.event-processing.org/types/> \nPREFIX rdf : <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?pub_date ?e3 ?id3 \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :Temperature .\n    ?e3 :stream <http://streams.event-processing.org/ids/TemperatureB#stream> .\n    ?e3 :date ?pub_date\n  }} \n";
 		
 		//Test if generated select query is OK.
-		//assertTrue(queries.get(0).getQuery().equals(temperatureAstream));
-		//assertTrue(queries.get(1).getQuery().equals(temperatureBstream));
+		assertTrue(queries.get(0).getQuery().equals(temperatureAstream));
+		assertTrue(queries.get(1).getQuery().equals(temperatureBstream));
 		
 		
 		for (String varname : queries.get(0).getVariables()) {
@@ -174,10 +171,8 @@ public class DispatcherTests {
 
 	}
 	
-	
-	
 	@Test
-	public void dispatchMissedCallsPlusTwitterQuery(){
+	public void dispatchMissedCallsPlusTwitterQuery() throws IOException{
 		// Get query.
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
@@ -196,7 +191,7 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void testQueryTemplateGenerator(){
+	public void testQueryTemplateGenerator() throws IOException{
 		 QueryTemplateGenerator ab  =  new  QueryTemplateGenerator();
 		 
 		// Get query.
@@ -206,29 +201,8 @@ public class DispatcherTests {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		
 		QueryTemplate qt = ab.createQueryTemplate(query);
-}
-	
-	private String getSparqlQuery(String queryFile) {
-		try {
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream(queryFile);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			StringBuffer sb = new StringBuffer();
-			String line;
-
-			while (null != (line = br.readLine())) {
-				sb.append(line);
-				sb.append("\n");
-			}
-			// System.out.println(sb.toString());
-			br.close();
-			is.close();
-
-			return sb.toString();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
-
-}
+	
+	private String getSparqlQuery(String queryFile) throws IOException {
+		return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), "UTF-8");	}
+	}
