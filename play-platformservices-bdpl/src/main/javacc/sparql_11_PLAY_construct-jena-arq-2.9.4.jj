@@ -184,10 +184,7 @@ void ConstructQuery() : { Template t ;
       { getQuery().setConstructTemplate(t) ; }
     ( DatasetClause() )*
     WhereClause()
-    //(HavingClause())?
-// { allowAggregatesInExpressions = true ; }
-//     ("HAVING" < LPAREN > "AVG(" ?t < RPAREN > ">=" "30" "^^xsd:float)"	BuiltInCall())? "< RPAREN > // (HavingClause())?
-  //  SolutionModifier() [PLAY] Ony   ( HavingClause() )?
+    SolutionModifier()
     // Not empty construct Stefan
 // |
 //    // Abbreviated CONSTRUCT WHERE {}

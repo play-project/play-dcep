@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.lang.EPSPARQL_20.ParseException;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
@@ -25,6 +26,7 @@ import eu.play_project.play_platformservices_querydispatcher.Variable;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.VariableVisitor;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.AggregateFunctionsVisitor;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
@@ -36,27 +38,30 @@ public class EpSparqlEle01Test {
 	@Test
 	public void manualParserUsage(){
 
-		String queryString = "PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ ?x ?nice ?name. ?e rdf:type ?AlertEvent . } WHERE {EVENT ?id{?s ?p 1234. ?e rdf:type ?AlertEvent .}FILTER (?value5 > ?value4 && ?value5 < (?value1 + 10)) }";
+		String queryString = "PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>\nPREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>\nPREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>\nPREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\nPREFIX :        <http://events.event-processing.org/types/>\n\nCONSTRUCT {\n\t:e rdf:type :SRBench-q2.\n\t:e :stream <http://streams.event-processing.org/ids/Srbench#stream>. \n}\nWHERE {\n\tWINDOW {\n\t\tEVENT ?id1 {\n\t\t\t?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>. \n\t\t\t?e1 om-owl:procedure ?sensor ;\n               om-owl:observedProperty weather:WindSpeed ;\n               om-owl:result [ om-owl:floatValue ?value ] .\n\t\t\t}\n\t} (\"PT60M\"^^xsd:duration, sliding)\n}HAVING (AVG(?value) >= \"74\"^^xsd:float )";
 		Query query = null;
 		
 		try {
-			query = QueryFactory.create(queryString,
-					com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		} catch(Exception e){
 			System.out.println("Exception was thrown: " + e);
 			
 		}
-
-		// Use custom visitor
-		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
-
-		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
 		
+		for (Expr el : query.getHavingExprs()) {
+			el.visit(new AggregateFunctionsVisitor());
+		}
 
-		System.out.println(etalisPattern);
+//		// Use custom visitor
+//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+//
+//		visitor1.setPatternId("'http://patternId.example.com/123456'");
+//
+//		visitor1.generateQuery(query);
+//		String etalisPattern = visitor1.getEle();
+//		
+//
+//		System.out.println(etalisPattern);
 	}
 	
 	
