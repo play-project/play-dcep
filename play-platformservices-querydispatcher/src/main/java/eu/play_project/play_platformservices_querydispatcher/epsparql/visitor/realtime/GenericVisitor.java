@@ -21,6 +21,16 @@ import com.hp.hpl.jena.sparql.expr.ExprFunctionOp;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.ExprVisitor;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDT;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDuration;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
 import com.hp.hpl.jena.sparql.syntax.BooleanOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementAssign;
 import com.hp.hpl.jena.sparql.syntax.ElementBind;
@@ -47,7 +57,7 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 
 
 
-public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor{
+public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor, NodeValueVisitor{
 	Logger logger;
 
 	public GenericVisitor(){
@@ -260,6 +270,42 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor{
 	public void visit(ElementMinus arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		
+	}
+	@Override
+	public void visit(NodeValueBoolean nv) {
+		logger.debug("Visit " + nv.getClass().getName());		
+	}
+	@Override
+	public void visit(NodeValueDecimal nv) {
+		logger.debug("Visit " + nv.getClass().getName());
+	}
+	@Override
+	public void visit(NodeValueDouble nv) {
+		logger.debug("Visit " + nv.getClass().getName());
+	}
+	@Override
+	public void visit(NodeValueFloat nv) {
+		logger.debug("Visit " + nv.getClass().getName());
+	}
+	@Override
+	public void visit(NodeValueInteger nv) {
+		logger.debug("Visit " + nv.getClass().getName());
+	}
+	@Override
+	public void visit(NodeValueNode nv) {
+		logger.debug("Visit " + nv.getClass().getName());
+	}
+	@Override
+	public void visit(NodeValueString nv) {
+		logger.debug("Visit " + nv.getClass().getName());
+	}
+	@Override
+	public void visit(NodeValueDT nv) {
+		logger.debug("Visit " + nv.getClass().getName());
+	}
+	@Override
+	public void visit(NodeValueDuration nodeValueDuration) {
+		logger.debug("Visit " + nodeValueDuration.getClass().getName());
 	}
 
 }
