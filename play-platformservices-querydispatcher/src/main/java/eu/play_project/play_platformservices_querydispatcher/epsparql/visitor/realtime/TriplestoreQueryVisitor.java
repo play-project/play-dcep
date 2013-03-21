@@ -42,11 +42,11 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 public class TriplestoreQueryVisitor extends GenericVisitor implements ElementVisitor, NodeVisitor{
 	
 	private String triplestoreQuery;
-	private CentralCounter centralCounter;
+	private VarNameManager varNameManager;
 	
-	public TriplestoreQueryVisitor(CentralCounter centralCounter){
+	public TriplestoreQueryVisitor(VarNameManager varNameManager){
 		triplestoreQuery = "";
-		this.centralCounter = centralCounter;
+		this.varNameManager = varNameManager;
 	}
 
 	
@@ -119,7 +119,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor implements ElementVi
 			tmpTriplePath.getSubject().visitWith(this);
 			tmpTriplePath.getPredicate().visitWith(this);
 			tmpTriplePath.getObject().visitWith(this);
-			triplestoreQuery += centralCounter.getTriplestoreVariable() + ")"; 
+			triplestoreQuery += varNameManager.getTriplestoreVariable() + ")"; 
 			
 			if(iter.hasNext()){
 				triplestoreQuery += ", ";

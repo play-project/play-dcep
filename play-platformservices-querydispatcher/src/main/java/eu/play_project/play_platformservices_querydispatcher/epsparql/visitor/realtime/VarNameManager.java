@@ -1,27 +1,37 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
 import java.util.Stack;
-
-public class CentralCounter {
+/**
+ *Manage unique values for:
+ * 		 complex events (CEID)
+ * 		 triplestore variable (ViD)
+ * 		 Aggregate function db IDs.
+ * @author sobermei
+ *
+ */
+public class VarNameManager {
 	long ceid; //Complex event id variable.
 	long triplestoreVariable;
 	long absVariable;
 	long filterVar;
+	long aggrDbId;
 	Stack<Long> filterVars;
 	
 
-	static CentralCounter counter;
+	static VarNameManager counter;
 	
-	private CentralCounter(){
+	private VarNameManager(){
 		ceid = 0;
 		triplestoreVariable = 0;
 		absVariable = 0;
+		aggrDbId = 0;
 		filterVars = new Stack();
+		
 	}
 	
-	public static CentralCounter getCentralCounter(){
+	public static VarNameManager getCentralCounter(){
 		if(counter==null){
-			counter = new CentralCounter();
+			counter = new VarNameManager();
 		}
 		return counter;
 	}

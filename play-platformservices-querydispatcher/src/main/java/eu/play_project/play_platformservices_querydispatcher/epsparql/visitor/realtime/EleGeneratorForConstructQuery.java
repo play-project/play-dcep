@@ -1,6 +1,6 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
-import static eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.CentralCounter.getCentralCounter;
+import static eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.VarNameManager.getCentralCounter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,7 +25,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private Query inputQuery;
 	private String elePattern;
 	private Element currentElement = null;
-	private CentralCounter centralCounter;
+	private VarNameManager varNameManager;
 	private Iterator<Element> eventQueryIter;
 	private EventTypeVisitor eventTypeVisitor;
 	private BinOperatorVisitor binOperatorVisitor;
@@ -49,9 +49,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		eventQueryIter = inQuery.getEventQuery().iterator();
 		binOperatorIter = inQuery.getEventBinOperator().iterator();
 		simpleEventPatternVisitor =  new SimpleEventPatternVisitor();
-		centralCounter = getCentralCounter();
+		varNameManager = getCentralCounter();
 		eventTypeVisitor = new EventTypeVisitor();
-		triplestoreQueryVisitor = new TriplestoreQueryVisitor(centralCounter);
+		triplestoreQueryVisitor = new TriplestoreQueryVisitor(varNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
 		binOperatorVisitor =  new BinOperatorVisitor();
 		
@@ -73,7 +73,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void Complex() {
-		elePattern += "complex(" + centralCounter.getNextCeid() + "," + patternId + ") do (";
+		elePattern += "complex(" + varNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
 		//DecrementReferenceCounter();
@@ -97,7 +97,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 						+ ","
 						+ triple.getObject().visitWith(
 								generateConstructResultVisitor) + ","
-						+ centralCounter.getCeid() + ")";
+						+ varNameManager.getCeid() + ")";
 				if (iter.hasNext()) {
 					elePattern += ",";
 				}
@@ -162,7 +162,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		currentElement.visit(eventTypeVisitor);
 		elePattern += eventTypeVisitor.getEventType();
 		elePattern += "(";
-		String triplestoreVariable = centralCounter.getNextTriplestoreVariable();
+		String triplestoreVariable = varNameManager.getNextTriplestoreVariable();
 		elePattern += triplestoreVariable;
 		elePattern += ") 'WHERE' (";
 		AdditionalConditions();
@@ -183,7 +183,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void ReferenceCounter(){
-		elePattern += " incrementReferenceCounter(" + centralCounter.getTriplestoreVariable() + ")";
+		elePattern += " incrementReferenceCounter(" + varNameManager.getTriplestoreVariable() + ")";
 	}
 	
 	private void PerformanceMeasurement(){
@@ -205,7 +205,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 		
 	private void GenerateCEID(){
-		elePattern += "random(1000000, 9000000, " + centralCounter.getCeid() + ")";
+		elePattern += "random(1000000, 9000000, " + varNameManager.getCeid() + ")";
 	}
 
 	@Override

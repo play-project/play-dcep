@@ -19,13 +19,13 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 	Logger logger;
 	StringBuffer ele;
 	StringBuffer emptyStringBuffer;
-	CentralCounter cC;
+	VarNameManager cC;
 	Stack<String> stack;
 	boolean getStringFirstTime = false;
 
 	public FilterExpressionCodeGenerator() {
 		logger = LoggerFactory.getLogger(FilterExpressionCodeGenerator.class);
-		cC = CentralCounter.getCentralCounter();
+		cC = VarNameManager.getCentralCounter();
 		stack = new Stack<String>();
 		ele = new StringBuffer();
 		emptyStringBuffer = new StringBuffer();
