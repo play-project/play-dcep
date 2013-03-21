@@ -317,7 +317,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     /** Answer whether the query had SELECT/DESCRIBE/CONSTRUCT *
      * @return boolean as to whether a * result form was seen
      */
-    public boolean isQueryResultStar() { return queryResultStar ; }
+    public boolean isQueryResultStar() { return false;} //queryResultStar ; } //FIXME Solve it in an other way. (SELECT * not legal with GROUP BY)
 
     /** Set whether the query had SELECT/DESCRIBE *
      * Strictly, this just means whether the projection is
