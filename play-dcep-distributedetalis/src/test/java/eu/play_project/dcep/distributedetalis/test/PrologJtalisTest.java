@@ -4,12 +4,16 @@ import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import jpl.Query;
 import jpl.Term;
@@ -27,7 +31,6 @@ import com.jtalis.core.plengine.PrologEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
@@ -44,14 +47,15 @@ public class PrologJtalisTest {
 	 * Instantiate ETALIS
 	 * @throws InterruptedException
 	 */
-	@Test
+	//@Test
 	public void instantiateJtalis() throws InterruptedException{
 
 		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);
 		
-		ctx.getEngineWrapper().executeGoal("reset_ETALIS");
-		Thread.sleep(3000);
+		
+	//	ctx.getEngineWrapper().executeGoal("reset_ETALIS");
+		Thread.sleep(1000);
 		
 	}
 	
@@ -59,7 +63,7 @@ public class PrologJtalisTest {
 	/**
 	 * Instantiate ETALIS and register eventpatterns.
 	 */
-	@Test
+	//@Test
 	public void registerEventpatterns(){
 		
 		//Result should be overwritten by an complex event from etalis.
@@ -78,6 +82,7 @@ public class PrologJtalisTest {
 		//ctx.pushEvent(new EtalisEvent("b", 1));
 	
 		delay();
+
 		System.out.println("fffffffffffffffffff" + result);
 		System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 
@@ -87,7 +92,7 @@ public class PrologJtalisTest {
 	/**
 	 * No event will be generated because b appears to late.
 	 */
-	@Test
+	//@Test
 	public void registerEventpatternsWithWindow(){
 		//Result should not be overwritten by an complex event from etalis.
 		result = new EtalisEvent("complex", 42);
@@ -129,7 +134,7 @@ public class PrologJtalisTest {
 //		delay();
 //	}
 	
-	@Test
+	//@Test
 	public void instantiatePrologSemWebLib(){
 
 		prologSemWebLib = new PrologSemWebLib();
@@ -139,7 +144,7 @@ public class PrologJtalisTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void addEventsInTriplestore(){
 
 		// Create an event ID used in RDF context and RDF subject
@@ -175,7 +180,7 @@ public class PrologJtalisTest {
 	/**
 	 * Read data from prolog triplestore. (directly not using PrologSemWebLib class).
 	 */
-	@Test
+	//@Test
 	public void getEventsFromTriplestore(){
 		
 		/*
@@ -293,32 +298,39 @@ public class PrologJtalisTest {
 	 * Load methods from file and add it to prolog.
 	 * @throws InterruptedException
 	 */
-	@Test
+	//@Test
 	public void loadPrologMethods() throws InterruptedException{
 		if(ctx == null) instantiateJtalis();
 		
-		String[] methods = DetalisConfigNet.getPrologMethods("constructQueryImp.pl");
+		String[] methods = getPrologMethods("ComplexEventData.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = DetalisConfigNet.getPrologMethods("ReferenceCounting.pl");
+		methods = getPrologMethods("ReferenceCounting.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = DetalisConfigNet.getPrologMethods("Measurement.pl");
+		methods = getPrologMethods("Measurement.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
-		methods = DetalisConfigNet.getPrologMethods("Math.pl");
+		methods = getPrologMethods("Math.pl");
+		
+		for (int i = 0; i < methods.length; i++) {
+			System.out.println( methods[i]);
+			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
+		}
+		
+		methods = getPrologMethods("Aggregatfunktions.pl");
 		
 		for (int i = 0; i < methods.length; i++) {
 			System.out.println( methods[i]);
@@ -369,6 +381,7 @@ public class PrologJtalisTest {
 //		delay();
 //	}
 	
+
 	@Test
 	public void getVariableValues(){
 		
@@ -412,6 +425,38 @@ public class PrologJtalisTest {
 			}
 			
 		}
+	}
+	
+	@Test
+	public void AverageTest(){
+		if(ctx==null){
+			this.init();
+		}
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+		
+		
+		
+		//Get variables and values
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 9000000000, Avg)");
+
+		// HashMap with values of variables.
+		Map<String, List<String>> variabelValues = new HashMap<String, List<String>>();
+
+		// Get all values of a variable
+		for (Hashtable<String, Object> hashtable : result) {
+			System.out.println(hashtable.get("Avg"));
+			assertTrue(hashtable.get("Avg").toString().equals("1.000000001E9"));
+			
+		}
+
 	}
 	
 //	/**
@@ -474,14 +519,47 @@ public class PrologJtalisTest {
 		this.ctx = new JtalisContextImpl(engine);
 
 		//Load prolog methods.
-		for (String method : DetalisConfigNet.getPrologMethods("constructQueryImp.pl")) {
+		for (String method : getPrologMethods("ComplexEventData.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
-		for (String method : DetalisConfigNet.getPrologMethods("ReferenceCounting.pl")) {
+		for (String method : getPrologMethods("ReferenceCounting.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
-		for (String method : DetalisConfigNet.getPrologMethods("Measurement.pl")) {
+		for (String method : getPrologMethods("Measurement.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
+		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
+			System.out.println(method);
+			engine.execute("assert(" + method + ")");
+		}
+
+	}
+	
+	private String[] getPrologMethods(String methodFile){
+		try {
+			InputStream is = this.getClass().getClassLoader().getResourceAsStream(methodFile);
+			BufferedReader br =new BufferedReader(new InputStreamReader(is));
+			StringBuffer sb = new StringBuffer();
+			String line;
+			
+			while (null != (line = br.readLine())) {
+				if (!(line.equals(" "))) {
+					if (!line.startsWith("%")) { // Ignore comments
+						sb.append(line.split("%")[0]); //Ignore rest of the line if comment starts.
+					}
+				}
+			}
+			//System.out.println(sb.toString());
+			br.close();
+			is.close();
+			
+			String[] methods = sb.toString().split(Pattern.quote( "." ) );
+			return methods;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	
 	}
 }

@@ -21,29 +21,29 @@ public class NaturalJoiner {
 	/**
 	 * Natural join of two result r1 and r2 with their variable lists v1 and v2.
 	 * This method works on individual data and try to not affect higher data structure
-	 * @param r1 First result.
-	 * @param v1 Variable list of first result. After execution v1 becomes new 
+	 * @param list First result.
+	 * @param v1 Variable list of first result. After execution v1 becomes new
 	 * variable list of nature product.
-	 * @param r2
+	 * @param list2
 	 * @param v2
 	 * @return Nature join of r1 and r2.
 	 */
 	
 	// O(MAX(|v1||v2|, |r1||r2|||v1|+|v2||))
-	public List<List> naturalJoin(List<List> r1, List<String> v1, List<List>r2, List<String> v2){
+	public List<List> naturalJoin(List<List> list, List<String> v1, List<List> list2, List<String> v2){
 		List<List> ret = new ArrayList<List>();
 		joinVar(v1, v2);
 		
-		if(r1.size() == 0 || r2.size() == 0){
+		if(list.size() == 0 || list2.size() == 0){
 			System.out.println("\nCross Result: ");
 			return ret;
 		}
 		
-		for(int i = 0; i < r1.size(); i++){
-			List<String> rd1 = r1.get(i);
-			for(int j = 0; j < r2.size(); j++){
+		for(int i = 0; i < list.size(); i++){
+			List<String> rd1 = list.get(i);
+			for(int j = 0; j < list2.size(); j++){
 				boolean found = true;
-				List<String> rd2 = r2.get(j);
+				List<String> rd2 = list2.get(j);
 				for(int k = 0; k < size; k++){
 					if(!rd1.get(vp1[k]).equals(rd2.get(vp2[k]))){
 						found = false;
@@ -87,13 +87,13 @@ public class NaturalJoiner {
 	}
 	
 	// O(|v1||v2|)
-	// combine two variable lists into one in v1, which keep the sequence of 
+	// combine two variable lists into one in v1, which keep the sequence of
 	// natural join variable list same with result column
 	private void joinVar(List<String> v1, List<String> v2){
 		size = 0;
 		vp1 = new int [v1.size()];
 		vp2 = new int [v2.size()];
-		int v1s = v1.size(); 
+		int v1s = v1.size();
 		int v2s = v2.size()-1;
 		
 		boolean found = false;

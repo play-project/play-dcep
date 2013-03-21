@@ -34,6 +34,7 @@ public class EpsparqlTest {
 	public void testPositiveTests() {
 				
 		for (String fileName : new String[] {
+				"EP-SPARQL-Query-HAVING.eprq",
 				"EP-SPARQL-Query-CONSTRUCT-Query.eprq",
 				"EP-SPARQL-Query-Event-and-GRAPH.eprq",
 				"EP-SPARQL-Query-FILTER-contains-possition.eprq",

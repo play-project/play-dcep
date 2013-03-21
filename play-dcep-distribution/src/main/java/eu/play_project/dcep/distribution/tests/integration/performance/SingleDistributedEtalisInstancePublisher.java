@@ -46,7 +46,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 		
 		// Connect to DistributedEtalis instance 2.
-		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
+		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[2], args[3], "rmi", 1099).toString());
 		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
 		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
 

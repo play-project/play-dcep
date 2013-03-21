@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface SelectResults {
 
-	public abstract List<String> getVariables();
+	public List<String> getVariables();
 
-	public abstract List<List> getResult();
+	public List<List> getResult();
 
 	void setVariables(List<String> variables);
 

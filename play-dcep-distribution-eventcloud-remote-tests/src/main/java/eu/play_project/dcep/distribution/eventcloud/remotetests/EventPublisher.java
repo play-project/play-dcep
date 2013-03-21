@@ -7,7 +7,7 @@ import java.util.Calendar;
 import org.event_processing.events.types.UcTelcoCall;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
-import eu.play_project.dcep.distributedetalis.EventCloudHelpers;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import fr.inria.eventcloud.api.CompoundEvent;

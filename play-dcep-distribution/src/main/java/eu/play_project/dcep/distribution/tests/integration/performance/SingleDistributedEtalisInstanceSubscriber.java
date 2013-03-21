@@ -50,5 +50,10 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		//Subscribe
 		testApiI1.attach(new ComplexEventSubscriber());
 		testApiI2.attach(new ComplexEventSubscriber());
+		
+		System.out.println("Press 3x RETURN to shutdown the application");
+		System.in.read();
+		System.in.read();
+		System.in.read();
 	}
 }

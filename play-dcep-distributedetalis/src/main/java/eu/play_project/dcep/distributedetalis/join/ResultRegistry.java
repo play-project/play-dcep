@@ -88,7 +88,7 @@ public class ResultRegistry implements SelectResults {
 			qs = rs.next();
 			List<String> data = new ArrayList<String>(colNum);
 			for(int i = 0; i < colNum; i++){
-					//logger.debug("add: "+qs.get(variables.get(i)).toString());
+				//logger.debug("add: "+qs.get(variables.get(i)).toString());
 				data.add(qs.get(variables.get(i)).toString());
 			}
 			result.add(data);

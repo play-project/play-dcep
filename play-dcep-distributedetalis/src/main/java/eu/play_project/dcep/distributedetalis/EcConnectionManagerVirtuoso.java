@@ -183,7 +183,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 		logger.debug("Sending historical query to Virtuoso: \n" + query);
 
-		// This has a conflict with Jena and needs to be resolved by a new vert_jena provider:
+		// This has a conflict with Jena and needs to be resolved by a new virt_jena provider:
 //		try {
 //			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(
 //					query, new VirtGraph(virtuoso));
@@ -199,16 +199,18 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		List<List> result = new ArrayList<List>();
 
 		Connection con = null;
+		ResultSet res = null;
 		try {
 			con = virtuoso.getConnection();
 			Statement sta = con.createStatement();
-			ResultSet res = sta.executeQuery("sparql "+query);
+			res = sta.executeQuery("sparql "+query);
 
 			ResultSetMetaData rmd = res.getMetaData();
 			int colNum = rmd.getColumnCount();
 			for(int i = 1; i <= colNum; i++){
 				variables.add(rmd.getColumnName(i));
 			}
+			logger.debug("Vars: {}", variables);
 
 			//TODO result create, select variable analyze, create
 			while(res.next()){
@@ -217,17 +219,22 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 					data.add(res.getString(i));
 				}
 				result.add(data);
+				logger.debug("Data: {}", data);
 			}
 
 		} catch (SQLException e) {
-			logger.error("Exception with Virtuoso", e);
+			throw new EcConnectionmanagerException("Exception with Virtuoso.", e);
 		} finally {
-			if(con != null)
-				try {
-					con.close();
-				} catch (SQLException e) {
-					logger.error("Connection Exception with Virtuoso", e);
+			try {
+				if (res != null) {
+					res.close();
 				}
+				if(con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				// Do nothing
+			}
 		}
 
 		ResultRegistry rr = new ResultRegistry();

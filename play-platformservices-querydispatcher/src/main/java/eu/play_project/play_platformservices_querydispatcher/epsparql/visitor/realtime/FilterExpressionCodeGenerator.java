@@ -5,6 +5,8 @@ import java.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.sparql.expr.E_Now;
+import com.hp.hpl.jena.sparql.expr.ExprFunction0;
 import com.hp.hpl.jena.sparql.expr.ExprFunction1;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
@@ -107,7 +109,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			throw new RuntimeException("Operator not implemented " + func.getClass().getName());
 		}
 	}
-	
+
 	@Override
 	public void visit(ExprFunction1 func) {
 	
@@ -151,6 +153,22 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 
 	public void visit(NodeValue nv) {
 		stack.push(nv.toString());
+	}
+	
+	@Override
+	public void visit(ExprFunction0 func) {
+		if(func instanceof E_Now){
+			// TODO sobermeier implement it if needed.
+			// Use: parse_time('2009-09-19T23:55:00-04:00', R)...
+			// get_time(F).
+			System.out.println(func.getOpName());
+		}else{
+			logger.info(func.getClass().getName() + "will be ignored. No ELE code will be generated for this token." + this.getClass().getSimpleName());
+		}
+	}
+
+	public void visit(E_Now v){
+		System.out.println(v);
 	}
 
 

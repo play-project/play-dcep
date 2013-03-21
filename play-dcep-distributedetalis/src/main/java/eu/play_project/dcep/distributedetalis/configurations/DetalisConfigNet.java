@@ -54,7 +54,7 @@ public class DetalisConfigNet implements Configuration, Serializable{
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
 		//Load prolog methods.
-		String[] methods = getPrologMethods("constructQueryImp.pl");
+		String[] methods = getPrologMethods("ComplexEventData.pl");
 		for (int i = 0; i < methods.length; i++) {
 			engine.execute("assert(" + methods[i] + ")");
 		}
@@ -73,6 +73,12 @@ public class DetalisConfigNet implements Configuration, Serializable{
 		for (int i = 0; i < methods.length; i++) {
 			engine.execute("assert(" + methods[i] + ")");
 		}
+		
+		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
+			System.out.println(method);
+			engine.execute("assert(" + method + ")");
+		}
+		
 		
 		// Set ETALIS properties.
 		etalis.setEtalisFlags("save_ruleId", "on");
@@ -98,7 +104,7 @@ public class DetalisConfigNet implements Configuration, Serializable{
 			while (null != (line = br.readLine())) {
 				if (!(line.equals(" "))) {
 					if (!line.startsWith("%")) { // Ignore comments
-						sb.append(line);
+						sb.append(line.split("%")[0]); //Ignore rest of the line if comment starts.
 					}
 				}
 			}

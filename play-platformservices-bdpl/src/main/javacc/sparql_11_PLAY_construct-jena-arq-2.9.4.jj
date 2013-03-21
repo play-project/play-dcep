@@ -184,7 +184,10 @@ void ConstructQuery() : { Template t ;
       { getQuery().setConstructTemplate(t) ; }
     ( DatasetClause() )*
     WhereClause()
-    SolutionModifier()
+    //(HavingClause())?
+{ allowAggregatesInExpressions = true ; }
+     ("HAVING" < LPAREN > "AVG(" ?t < RPAREN > ">=" "30" "^^xsd:float)"	BuiltInCall())? "< RPAREN > // (HavingClause())?
+  //  SolutionModifier() [PLAY] Ony   ( HavingClause() )?
     // Not empty construct Stefan
 // |
 //    // Abbreviated CONSTRUCT WHERE {}
@@ -263,14 +266,14 @@ void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp;}
 	(
 	  //  (<GRAPH> (< EVENT >)?) | (< EVENT > (<GRAPH>)?)
 	  //Realtime query with window.
-	   < BEGIN_WINDOW > <LBRACE> < EVENT > el = F()
+	   < BEGIN_WINDOW > <LBRACE> < EVENT > E()
 		<RBRACE> t = < WINDOWSIZE > { getQuery().setWindowTime(t.image);} < WINDOW_TYPE_SLIDING > <RPAREN>
 		WhereClauseH(t)
 	|
 		//Realtime query followd by optinal historic part.
-	   < EVENT > el = F() WhereClauseH(t)
+	   < EVENT > E() WhereClauseH(t)
 
-  )<RBRACE> 
+  )<RBRACE>
 }
 
 // Historical WhereClause. Default without <LBRACE > and < RBRACE >
@@ -280,13 +283,7 @@ void WhereClauseH(Token t) : { Element el ;}
    { startWherePattern() ; }
 	// Code from GroupGraphPattern()
 	(
-    { startSubSelect(t.beginLine, t.beginColumn) ; }
-    SubSelect()
-    {
-      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
-      el = new ElementSubQuery(q) ;
-    }
-   | el = GroupGraphPatternSub()
+     el = GroupGraphPatternSub()
    )
 
     //Set values.
@@ -657,8 +654,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GraphGraphPattern()
  |
    el = ServiceGraphPattern()
- |
-   el = Filter()
  |
    el = Bind()
  |
@@ -1945,13 +1940,8 @@ Element EventClause() :
   Element el = null;
 }
 {
-  EPSparqlBinOperators()
-  (
-    B()
-  )
-  {
-    return el;
-  }
+  EPSparqlBinOperators() B()
+  {return el;}
 }
 // Aktuell
 // Binary operators for EP-SPARQL.
@@ -1996,16 +1986,10 @@ void B() :
 }
 {
   (
-    (
-      < EVENT > E() 
-    )
+    (< EVENT > E())
   |
-    (
-      (< LBRACE >) (< EVENT >) F() < RBRACE >
-    )
-    (
-      EventClause()
-    )?
+    ((< LBRACE >) (< EVENT >) E() < RBRACE >)
+    (EventClause())?
   )
 }
 
@@ -2014,23 +1998,13 @@ void E() :
   Element el = null;
 }
 {
-  EventGraphPattern() (EpSparqlFilter())?
-  (
-    EventClause()
-  )?
+  EventGraphPattern()
+  (EpSparqlFilter())?
+  (EventClause())?
 }
 
-Element F() :
-{
-  Element el = null;
-}
-{
-  el = EventGraphPattern() (EpSparqlFilter())? (EventClause())?
-  {
-    return el;
-  }
-}
-void EpSparqlFilter() :
+
+Element EpSparqlFilter() :
 {
 //  Expr c; Token varname; Token string;
 //  Element boolOperator = null;
@@ -2042,7 +2016,8 @@ void EpSparqlFilter() :
   {
     ((ElementEventGraph)getQuery().getEventQuery().get(getQuery().getEventQuery().size()-1)).setFilterExp(filter);
   }
-  
+
+  {return filter;}
   
 //  < FILTER >
 //  (

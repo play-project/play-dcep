@@ -72,7 +72,6 @@ public class Engine implements HistoricalDataEngine {
 			if(!addResultRegistry(stream, hq.getQuery(), rrs, svs, variableNames)){
 				return ret;
 			}
-			logger.debug("Historical query:\n{}",  hq.getQuery());
 		}
 
 		Core.make(svs, rrs);
@@ -111,7 +110,7 @@ public class Engine implements HistoricalDataEngine {
 		List<String> vars = rr.getVariables();
 		List<List> result = rr.getResult();
 
-		List<String> [] values = new ArrayList [vars.size()];
+		List<String>[] values = new ArrayList[vars.size()];
 		for(int i = 0; i < vars.size(); i++){
 			values[i] = new ArrayList<String>();
 			m.put(vars.get(i), values[i]);
