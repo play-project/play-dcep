@@ -55,13 +55,15 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 
 		// Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q1.eprq")));
+		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
 		//managementApiI1.registerEventPattern(generateEle(getSparqlQueries("play-epsparql-clic2call.eprq")));
-		System.out.println(getSparqlQueries("benchmarks/srbench/q1.eprq"));
+		System.out.println(getSparqlQueries("benchmarks/srbench/q2.eprq"));
 
+		
 		// Publish some events to instance 1.
 		for (org.ontoware.rdf2go.model.Model m : new SrbenchSimulator()) {
 			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
 			delay(2);
 		}
 	}

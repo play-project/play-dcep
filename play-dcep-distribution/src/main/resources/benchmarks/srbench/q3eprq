@@ -14,9 +14,10 @@ WHERE {
 	WINDOW {
 		EVENT ?id1 {
 			?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>. 
-			?e1 om-owl:procedure ?sensor ;
-               om-owl:observedProperty weather:WindSpeed ;
-               om-owl:result [ om-owl:floatValue ?value ] .
+			?e2 om-owl:procedure ?sensor ;
+				a weather:WindSpeedObservation; 
+				om-owl:observedProperty weather:_WindSpeed;
+				om-owl:result [ om-owl:floatValue ?value ].
 			}
 	} ("PT60M"^^xsd:duration, sliding)
 }HAVING ( AVG(?value) >= "74"^^xsd:float )
