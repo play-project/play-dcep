@@ -77,6 +77,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += "complex(" + varNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
+		Having();
 		//DecrementReferenceCounter();
 		elePattern += ")";
 	}
@@ -180,7 +181,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";
 			GenerateCEID();
-			//Having();
 		}
 	}
 	
