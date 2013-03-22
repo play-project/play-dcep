@@ -16,10 +16,12 @@ import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
+import org.ow2.play.srbench.SrbenchSimulator;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.rdf.model.Model;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
@@ -52,19 +54,19 @@ public class SingleDistributedEtalisInstancePublisher {
 		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface("DistributedEtalisTestApi"));
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 
-		//Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("play-epsparql-clic2call.eprq")));
+		// Register queries.
+		managementApiI1
+				.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q2.eprq")));
 
-		
 		// Publish some events to instance 1.
-		for (int i = 0; i < 1000000; i++) {
-			testApiI1.publish(createTaxiUCCallEvent(i + ""));
+		for (org.ontoware.rdf2go.model.Model m : new SrbenchSimulator()) {
+			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
 			delay(2);
 		}
 	}
-	
-	
-	public static CompoundEvent createEvent(String eventId, int value, String type) {
+
+	public static CompoundEvent createEvent(String eventId, int value,
+			String type) {
 
 		List quads = new ArrayList<Quadruple>();
 
