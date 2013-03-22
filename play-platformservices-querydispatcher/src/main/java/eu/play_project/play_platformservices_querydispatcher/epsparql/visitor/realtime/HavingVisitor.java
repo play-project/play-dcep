@@ -35,15 +35,12 @@ public class HavingVisitor extends GenericVisitor{
 		if (arg0 instanceof E_GreaterThanOrEqual) {
 			code.append(", greaterOrEqual(" + vm.getResultVar1() + ", " + vm.getResultVar2() + ")");
 		}
-		
-		System.out.println(code.toString());
 	}
 
 	@Override
 	public void visit(ExprAggregator arg0) {
 		//For not nested expressions. E.g. AVG(?value)
 		code.append("calcAverage(" + vm.getAggrDbId() + ", " + vm.getWindowTime() + ", " + vm.getResultVar1() + ")");
-		System.out.println(code.toString());
 	}
 	
 	@Override
