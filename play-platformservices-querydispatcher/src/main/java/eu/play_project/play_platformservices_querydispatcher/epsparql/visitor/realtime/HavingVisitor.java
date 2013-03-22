@@ -30,10 +30,8 @@ public class HavingVisitor extends GenericVisitor{
 	@Override
 	public void visit(ExprFunction2 arg0) {
 		arg0.getArg1().visit(this);
-		System.out.println("1");
 		vm.getNextResultVar2();
 		arg0.getArg2().visit(this);
-		System.out.println("3");
 
 		if (arg0 instanceof E_GreaterThanOrEqual) {
 			code.append(", greaterOrEqual(" + vm.getResultVar1() + ", " + vm.getResultVar2() + ")");

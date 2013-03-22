@@ -57,7 +57,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		// Register queries.
 		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
 		//managementApiI1.registerEventPattern(generateEle(getSparqlQueries("play-epsparql-clic2call.eprq")));
-		System.out.println(getSparqlQueries("benchmarks/srbench/q2.eprq"));
+		System.out.println(getSparqlQueries("benchmarks/srbench/q3.eprq"));
 
 		
 		// Publish some events to instance 1.
