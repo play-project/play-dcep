@@ -25,7 +25,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 
 	public FilterExpressionCodeGenerator() {
 		logger = LoggerFactory.getLogger(FilterExpressionCodeGenerator.class);
-		cC = VarNameManager.getCentralCounter();
+		cC = VarNameManager.getVarNameManager();
 		stack = new Stack<String>();
 		ele = new StringBuffer();
 		emptyStringBuffer = new StringBuffer();
@@ -75,15 +75,15 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			if(ele.length()>2) ele.append(","); // At the beginning of a string no ",". 
 			ele.append("less(" + stack.pop() + ", " + rightElem + ")");
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Subtract) {
-			ele.append("minus(" + stack.pop() + "," + rightElem + ", " + cC.nextFilterVar() + ")");
+			ele.append("minus(" + stack.pop() + "," + rightElem + ", " + cC.getNextFilterVar() + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Multiply) {
-			ele.append("multiply(" + stack.pop() + "," + rightElem + ", " + cC.nextFilterVar() + ")");
+			ele.append("multiply(" + stack.pop() + "," + rightElem + ", " + cC.getNextFilterVar() + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Divide) {
 			ele.append("/");
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Add) {
-			ele.append("plus(" + stack.pop() + "," + rightElem + ", " + cC.nextFilterVar() + ")");
+			ele.append("plus(" + stack.pop() + "," + rightElem + ", " + cC.getNextFilterVar() + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThanOrEqual) {
 			ele.append("graterOrEqual(" + stack.pop() + "," + rightElem + ")");
@@ -118,7 +118,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		if (func instanceof com.hp.hpl.jena.sparql.expr.E_NumAbs) {
 			logger.debug(" Visit1: " + func.getClass().getName());
 			ele.append(", abs(");
-			ele.append(stack.pop() + ", " + stack.push(cC.nextFilterVar()) + ")");
+			ele.append(stack.pop() + ", " + stack.push(cC.getNextFilterVar()) + ")");
 
 		} else {
 			throw new RuntimeException("Operator not implemented" + func.getClass().getName());

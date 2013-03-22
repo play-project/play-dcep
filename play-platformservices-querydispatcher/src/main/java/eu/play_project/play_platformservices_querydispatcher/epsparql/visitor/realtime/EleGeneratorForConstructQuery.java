@@ -1,6 +1,6 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
-import static eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.VarNameManager.getCentralCounter;
+import static eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.VarNameManager.getVarNameManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,6 +9,7 @@ import java.util.Map;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
@@ -30,9 +31,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private EventTypeVisitor eventTypeVisitor;
 	private BinOperatorVisitor binOperatorVisitor;
 	private FilterExpressionCodeGenerator filterExpressionVisitor;
+	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
 	private Iterator<ElementEventBinOperator> binOperatorIter;
-	private SimpleEventPatternVisitor simpleEventPatternVisitor;
 	private String patternId;
 	
 	//Helper methods.
@@ -48,15 +49,15 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		this.inputQuery = inQuery;
 		eventQueryIter = inQuery.getEventQuery().iterator();
 		binOperatorIter = inQuery.getEventBinOperator().iterator();
-		simpleEventPatternVisitor =  new SimpleEventPatternVisitor();
-		varNameManager = getCentralCounter();
+		varNameManager = getVarNameManager();
 		eventTypeVisitor = new EventTypeVisitor();
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(varNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
 		binOperatorVisitor =  new BinOperatorVisitor();
-		
+		havingVisitor =  new HavingVisitor();
 		queryTemplate = new QueryTemplateImpl();
 		
+		varNameManager.setWindowTime(inQuery.getWindowTime());
 		ElePattern();
 	}
 	
@@ -179,6 +180,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";
 			GenerateCEID();
+			Having();
 		}
 	}
 	
@@ -227,5 +229,19 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	public QueryTemplate getQueryTemplate() {
 		
 		return this.queryTemplate;
+	}
+	
+	
+	public void Having(){
+		
+		if(inputQuery.getHavingExprs() != null){
+			elePattern += ",";
+		}
+		
+		for (Expr el : inputQuery.getHavingExprs()) {
+			el.visit(havingVisitor);
+		}
+		
+		elePattern += havingVisitor.getCode().toString();
 	}
 }

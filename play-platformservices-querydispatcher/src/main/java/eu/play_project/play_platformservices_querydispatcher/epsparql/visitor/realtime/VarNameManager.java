@@ -15,6 +15,12 @@ public class VarNameManager {
 	long absVariable;
 	long filterVar;
 	long aggrDbId;
+	long resultVar1;
+	String resultVar1s;
+	long resultVar2;
+	String resultVar2s;
+	String windowTime;
+	
 	Stack<Long> filterVars;
 	
 
@@ -29,7 +35,7 @@ public class VarNameManager {
 		
 	}
 	
-	public static VarNameManager getCentralCounter(){
+	public static VarNameManager getVarNameManager(){
 		if(counter==null){
 			counter = new VarNameManager();
 		}
@@ -67,8 +73,60 @@ public class VarNameManager {
 		return "FilterVar" + filterVar + "";
 	}
 	
-	public String  nextFilterVar() {
+	public String  getNextFilterVar() {
 		return "FilterVar" + ++filterVar;
 	}
+	
+	public String getAggrDbId() {
+		return "dbId"+ aggrDbId;
+	}
+
+	public String getNextAggrDbId() {
+		return "dbId"+ aggrDbId++;
+	}
+	
+	public String getWindowTime() {
+		return windowTime;
+	}
+
+	public void setWindowTime(String windowTime) {
+		this.windowTime = windowTime;
+	}
+
+	public String getResultVar1() {
+		if(resultVar1s ==null){
+			return "Result1" + resultVar1;
+		}else{
+			return resultVar1s;
+		}
+	}
+
+	public String getNextResultVar1() {
+		resultVar1s = null;
+		return "Result1" + resultVar1++;
+	}
+
+	public String getResultVar2() {
+		if(resultVar2s ==null){
+			return "Result2" + resultVar2;
+		}else{
+			return resultVar2s;
+		}
+		
+	}
+
+	public String getNextResultVar2() {
+		resultVar2s = null;
+		return "Result2" + resultVar2++;
+	}
+
+	public void setResultVar1(String resultVar1) {
+		this.resultVar1s = resultVar1;
+	}
+
+	public void setResultVar2(String resultVar2) {
+		this.resultVar2s = resultVar2;
+	}
+
 	
 }

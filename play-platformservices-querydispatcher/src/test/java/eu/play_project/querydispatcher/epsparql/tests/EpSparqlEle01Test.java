@@ -26,7 +26,7 @@ import eu.play_project.play_platformservices_querydispatcher.Variable;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.VariableVisitor;
-import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.AggregateFunctionsVisitor;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
@@ -47,22 +47,22 @@ public class EpSparqlEle01Test {
 			System.out.println("Exception was thrown: " + e);
 			
 		}
-		AggregateFunctionsVisitor v = new AggregateFunctionsVisitor();
-		
-		for (Expr el : query.getHavingExprs()) {
-			el.visit(v);
-		}
-
-//		// Use custom visitor
-//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-//
-//		visitor1.setPatternId("'http://patternId.example.com/123456'");
-//
-//		visitor1.generateQuery(query);
-//		String etalisPattern = visitor1.getEle();
+//		HavingVisitor v = new HavingVisitor();
 //		
-//
-//		System.out.println(etalisPattern);
+//		for (Expr el : query.getHavingExprs()) {
+//			el.visit(v);
+//		}
+
+		// Use custom visitor
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		visitor1.setPatternId("'http://patternId.example.com/123456'");
+
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		
+
+		System.out.println(etalisPattern);
 	}
 	
 	
