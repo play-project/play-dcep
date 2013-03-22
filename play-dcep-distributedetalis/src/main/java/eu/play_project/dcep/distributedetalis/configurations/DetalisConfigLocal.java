@@ -88,7 +88,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		etalis.addEventTrigger("realtimeResult/2");
 		// etalis.setEtalisFlags("event_consumption_policy",
 		// "chronological");
-		// etalis.setEtalisFlags("logging","off");
+		// etalis.setEtalisFlags("logging","on");
 		// etalis.setEtalisFlags("java_notification","on");
 
 

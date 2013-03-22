@@ -180,7 +180,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";
 			GenerateCEID();
-			Having();
+			//Having();
 		}
 	}
 	

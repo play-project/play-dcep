@@ -17,7 +17,7 @@ WHERE {
 		EVENT ?id1 {
 			?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>. 
 			?e2 om-owl:procedure ?sensor ;
-				a weather:WindSpeedObservation ;
+				a weather:RelativeHumidityObservation ;
 				om-owl:result ?result .
 			?result om-owl:floatValue ?value ;
 				om-owl:uom ?uom 
