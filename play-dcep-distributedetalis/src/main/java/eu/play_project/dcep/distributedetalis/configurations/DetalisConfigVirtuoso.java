@@ -70,7 +70,6 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 			}
 			
 			for (String method : getPrologMethods("Aggregatfunktions.pl")) {
-				System.out.println(method);
 				engine.execute("assert(" + method + ")");
 			}
 

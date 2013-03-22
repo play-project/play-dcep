@@ -183,7 +183,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			GenerateCEID();
 		}
 	}
-	
+	private void SaveAggreagateValues(String varName){
+		StringBuffer code =  new StringBuffer();
+		code.append(" ,addAgregatValue(" + VarNameManager.getVarNameManager().getAggrDbId() + ", " + varName + ")");
+	}
 	private void ReferenceCounter(){
 		elePattern += " incrementReferenceCounter(" + varNameManager.getTriplestoreVariable() + ")";
 	}

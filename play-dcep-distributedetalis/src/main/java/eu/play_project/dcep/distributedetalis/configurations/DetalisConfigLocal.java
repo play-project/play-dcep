@@ -78,7 +78,6 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		}
 		
 		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
-			System.out.println(method);
 			engine.execute("assert(" + method + ")");
 		}
 
