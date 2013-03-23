@@ -23,7 +23,7 @@
 					<argLine>-Djava.security.manager
 						-Djava.security.policy=proactive.java.policy
 					</argLine>
-					 <skipTests>true</skipTests>
+					 <skipTests>false</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>
