@@ -3,7 +3,7 @@
 equal(A,B) :- (transformToNumber(A,A1), transformToNumber(B,B1), A1=B1).
 notEqual(A,B) :- (transformToNumber(A,A1), transformToNumber(B,B1), A1=\=B1).
 greater(A,B) :- (transformToNumber(A,A1), transformToNumber(B,B1), A1>B1).
-greaterOrEqual(A,B) :- (transformToNumber(A,A1), transformToNumber(B,B1), A1>=B1).
+greaterOrEqual(A,B) :- (transformToNumber(A,A1), transformToNumber(B,B1), write(A1), write(B1), nl, A1>=B1).
 less(A,B) :- (transformToNumber(A,A1), transformToNumber(B,B1), A1<B1).
 lessOrEqual(A,B) :- (transformToNumber(A,A1), transformToNumber(B,B1), A1=<B1).
 
