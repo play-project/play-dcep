@@ -16,6 +16,7 @@ import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
+import org.ow2.play.srbench.SrBenchExtendedSimulator;
 import org.ow2.play.srbench.SrbenchSimulator;
 
 import com.hp.hpl.jena.graph.Node;
@@ -55,11 +56,44 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 
 		// Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q2.eprq")));
+		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
+		//managementApiI1.registerEventPattern(generateEle(getSparqlQueries("play-epsparql-clic2call.eprq")));
+		System.out.println(getSparqlQueries("benchmarks/srbench/q3.eprq"));
 
+		int i =0;
 		// Publish some events to instance 1.
-		for (org.ontoware.rdf2go.model.Model m : new SrbenchSimulator()) {
+		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+			System.out.println(i++);
 			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
+			delay(2);
+		}
+		
+		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+			System.out.println(i++);
+			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
+			delay(2);
+		}
+		
+		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+			System.out.println(i++);
+			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
+			delay(2);
+		}
+		
+		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+			System.out.println(i++);
+			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
+			delay(2);
+		}
+		
+		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+			System.out.println(i++);
+			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
 			delay(2);
 		}
 	}

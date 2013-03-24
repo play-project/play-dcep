@@ -1,9 +1,12 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
 import com.hp.hpl.jena.sparql.expr.E_GreaterThanOrEqual;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 
+import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
 // Simple implementation only one avg.
@@ -39,12 +42,15 @@ public class HavingVisitor extends GenericVisitor{
 
 	@Override
 	public void visit(ExprAggregator arg0) {
+		System.out.println("Add to var list: " + arg0.getAggregator().getExpr().getVarName());
+		vm.addAggregatVar(arg0.getAggregator().getExpr().getVarName());
 		//For not nested expressions. E.g. AVG(?value)
 		code.append("calcAverage(" + vm.getAggrDbId() + ", " + vm.getWindowTime() + ", " + vm.getResultVar1() + ")");
 	}
 	
 	@Override
-	public void visit(NodeValueFloat nv) {
-		vm.setResultVar2(nv.toString());
+	public void visit(NodeValue arg0) {
+		vm.setResultVar2("'" + arg0.toString() + "'");
 	}
+	
 }

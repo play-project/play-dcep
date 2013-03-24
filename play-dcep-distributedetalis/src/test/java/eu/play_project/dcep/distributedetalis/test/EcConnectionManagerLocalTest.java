@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
@@ -21,8 +23,12 @@ import com.hp.hpl.jena.query.ResultSet;
 
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
+import eu.play_project.dcep.distributedetalis.api.VariableBindings;
+import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
+import eu.play_project.play_platformservices.api.HistoricalData;
+import eu.play_project.play_platformservices.api.HistoricalQuery;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
@@ -101,5 +107,28 @@ public class EcConnectionManagerLocalTest {
 		assertTrue(sr.getResult().get(0).get(4).equals("http://events.event-processing.org/ids/e5917518587088559184"));
 	}
 	
+	@Test
+	public void testHistoricalDataAndJoin() throws EcConnectionmanagerException, MalformedSparqlQueryException{
+		// Prepare some input objects
+		List<HistoricalQuery> list = new ArrayList<HistoricalQuery>();
+		HistoricalQuery hq = new HistoricalQuery();
+		hq.setCloudId("local");
+		hq.setQuery("PREFIX sioc: <http://rdfs.org/sioc/ns#> \nPREFIX : <http://events.event-processing.org/types/> \nPREFIX uctelco: <http://events.event-processing.org/uc/telco/> \nPREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> \nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e3 ?tweetTime ?firstEvent ?tweetContent ?id3 ?firstEvent \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :TwitterEvent .\n    ?e3 :stream <http://streams.event-processing.org/ids/TwitterFeed#stream> .\n    ?e3 :endTime ?tweetTime .\n    ?e3 :test ?firstEvent .\n    ?e3 sioc:content ?tweetContent\n\t FILTER ( ?tweetTime > ?firstEvent )\n    }} \n ");
+		list.add(hq);
+		VariableBindings variableBindings = new VariableBindings();
+		variableBindings.put("?e3", new ArrayList<String>());
+		variableBindings.put("?tweetTime", new ArrayList<String>());
+		variableBindings.put("?firstEvent", new ArrayList<String>());
+		variableBindings.put("?tweetContent", new ArrayList<String>());
+		variableBindings.put("?id3", new ArrayList<String>());
+		variableBindings.put("?firstEvent", new ArrayList<String>());
+			
+		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("play-epsparql-clic2call-historical-data.trig");
+		
+		Engine historicData = new Engine(ecm);
+		HistoricalData values = historicData.get(list, variableBindings);
+
+		System.out.println(values);
+	}
 
 }

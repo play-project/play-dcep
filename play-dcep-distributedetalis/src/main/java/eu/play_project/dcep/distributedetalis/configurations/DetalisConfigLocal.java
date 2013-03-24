@@ -1,13 +1,15 @@
 package eu.play_project.dcep.distributedetalis.configurations;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
@@ -15,6 +17,7 @@ import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
+import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 
 
 
@@ -22,9 +25,15 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private String inputRdfModelFile;
+	private Logger logger;
+	private static LoadPrologCode cl;
+	
+	public  DetalisConfigLocal(){}
 	
 	public DetalisConfigLocal(String inputRdfModelFile){
 		this.inputRdfModelFile = inputRdfModelFile;
+		logger = LoggerFactory.getLogger(DetalisConfigLocal.class);
+		cl = new LoadPrologCode();
 	}
 
 	@Override
@@ -57,29 +66,15 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
 
-		String[] methods = getPrologMethods("ComplexEventData.pl");
-		for (int i = 0; i < methods.length; i++) {
-			engine.execute("assert(" + methods[i] + ")");
-		}
-
-		methods = getPrologMethods("ReferenceCounting.pl");
-		for (int i = 0; i < methods.length; i++) {
-			engine.execute("assert(" + methods[i] + ")");
-		}
-
-		methods = getPrologMethods("Measurement.pl");
-		for (int i = 0; i < methods.length; i++) {
-			engine.execute("assert(" + methods[i] + ")");
-		}
-		
-		methods = getPrologMethods("Math.pl");
-		for (int i = 0; i < methods.length; i++) {
-			engine.execute("assert(" + methods[i] + ")");
-		}
-		
-		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
-			System.out.println(method);
-			engine.execute("assert(" + method + ")");
+		try {
+			cl.loadCode("ComplexEventData.pl", engine);
+			cl.loadCode("ReferenceCounting.pl", engine);
+			cl.loadCode("Measurement.pl", engine);
+			cl.loadCode("Math.pl", engine);
+			cl.loadCode("Aggregatfunktions.pl", engine);
+		} catch (IOException e) {
+			logger.error("It is not possible to load prolog code. " + e.getMessage());
+			e.printStackTrace();
 		}
 
 		// Set ETALIS properties.
@@ -88,7 +83,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		etalis.addEventTrigger("realtimeResult/2");
 		// etalis.setEtalisFlags("event_consumption_policy",
 		// "chronological");
-		// etalis.setEtalisFlags("logging","off");
+		// etalis.setEtalisFlags("logging","on");
 		// etalis.setEtalisFlags("java_notification","on");
 
 
@@ -96,32 +91,5 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		// this.measurementUnit = new MeasurementUnit(this,	
 	}
 	
-	private String[] getPrologMethods(String methodFile){
-		try {
-			InputStream is = this.getClass().getClassLoader().getResourceAsStream(methodFile);
-			BufferedReader br =new BufferedReader(new InputStreamReader(is));
-			StringBuffer sb = new StringBuffer();
-			String line;
-			
-			while (null != (line = br.readLine())) {
-				if (!(line.equals(" "))) {
-					if (!line.startsWith("%")) { // Ignore comments
-						sb.append(line.split("%")[0]); //Ignore rest of the line if comment starts.
-					}
-				}
-			}
-			//System.out.println(sb.toString());
-			br.close();
-			is.close();
-			
-			String[] methods = sb.toString().split(Pattern.quote( "." ) ); 
-			return methods;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	
-	}
-
 }

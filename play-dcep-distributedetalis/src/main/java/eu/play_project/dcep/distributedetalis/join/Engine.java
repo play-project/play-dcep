@@ -40,14 +40,14 @@ public class Engine implements HistoricalDataEngine {
 			List<HistoricalQuery> queries,
 			VariableBindings variableBindings) {
 
-		Map<String, String> q = new HashMap<String, String>();
-		Map<String, List<String>> v = new HashMap<String, List<String>>();
+		Map<String, String> historicalQueries = new HashMap<String, String>();
+		Map<String, List<String>> variableNames = new HashMap<String, List<String>>();
 		for (HistoricalQuery historicalQuery : queries) {
-			q.put(historicalQuery.getCloudId(), historicalQuery.getQuery());
-			v.put(historicalQuery.getCloudId(), historicalQuery.getVariables());
+			historicalQueries.put(historicalQuery.getCloudId(), historicalQuery.getQuery());
+			variableNames.put(historicalQuery.getCloudId(), historicalQuery.getVariables());
 		}
 
-		return this.get(q, v, variableBindings);
+		return this.get(historicalQueries, variableNames, variableBindings);
 	}
 
 	public HistoricalData get(Map<String, String> queries, Map<String, List<String>> variableNames, VariableBindings variableBindings){
@@ -58,6 +58,7 @@ public class Engine implements HistoricalDataEngine {
 		Map<String, SelectVariable> svs = new HashMap<String, SelectVariable>();
 
 		// init data structures used by core
+		// separate the variables per stream:
 		for(String stream : queries.keySet()){
 			String query = queries.get(stream);
 			VariableBindings vb = new VariableBindings();

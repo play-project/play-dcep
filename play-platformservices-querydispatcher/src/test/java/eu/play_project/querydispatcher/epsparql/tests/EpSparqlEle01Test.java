@@ -16,7 +16,6 @@ import org.junit.Test;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.lang.EPSPARQL_20.ParseException;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
@@ -93,7 +92,7 @@ public class EpSparqlEle01Test {
 
 	
 	@Test
-	public void showQdResult() throws ParseException {
+	public void showQdResult(){
 
 		String queryString;
 
@@ -113,7 +112,7 @@ public class EpSparqlEle01Test {
 	}
 	
 	@Test
-	public void showEleResult() throws ParseException {
+	public void showEleResult() {
 
 		String queryString;
 

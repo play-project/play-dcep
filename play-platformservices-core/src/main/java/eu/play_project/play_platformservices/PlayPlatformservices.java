@@ -221,8 +221,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		logger.info("Analysing query with ID " + queryId);
 		
-		QueryDetails qd = new QueryDetails();
-		qd.setQueryId(queryId);
+		QueryDetails qd = new QueryDetails(queryId);
 
 		qd.setWindowTime(query.getWindowTime());
 		

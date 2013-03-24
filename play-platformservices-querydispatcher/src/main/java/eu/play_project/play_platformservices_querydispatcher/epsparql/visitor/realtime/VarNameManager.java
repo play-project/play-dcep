@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 /**
  *Manage unique values for:
@@ -20,6 +22,7 @@ public class VarNameManager {
 	long resultVar2;
 	String resultVar2s;
 	String windowTime;
+	Map<String, Boolean> aggrVars;
 	
 	Stack<Long> filterVars;
 	
@@ -32,6 +35,7 @@ public class VarNameManager {
 		absVariable = 0;
 		aggrDbId = 0;
 		filterVars = new Stack();
+		aggrVars = new HashMap<String, Boolean>();
 		
 	}
 	
@@ -49,6 +53,14 @@ public class VarNameManager {
 	
 	public String getCeid(){
 		return "CEID" + ceid;
+	}
+	
+	public boolean isAggregatVar(String varName){
+		return aggrVars.containsKey(varName);
+	}
+	
+	public void addAggregatVar(String varName){
+		aggrVars.put(varName, new Boolean(true));
 	}
 	
 	public String getNextTriplestoreVariable(){

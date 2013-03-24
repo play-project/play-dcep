@@ -8,19 +8,12 @@ PREFIX :        <http://events.event-processing.org/types/>
 CONSTRUCT {
 	:e rdf:type :SRBench-q1 .
 	:e :stream <http://streams.event-processing.org/ids/Srbench#stream>.
-	:e om-owl:procedure ?sensor .
-	:e om-owl:floatValue ?value .
-	:e om-owl:uom ?uom 
 }
 WHERE {
 	WINDOW {
-		EVENT ?id1 {
+		EVENT weather:RainfallObservation STREAM :WeatherStream {
 			?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>. 
-			?e2 om-owl:procedure ?sensor ;
-				a weather:RelativeHumidityObservation ;
-				om-owl:result ?result .
-			?result om-owl:floatValue ?value ;
-				om-owl:uom ?uom 
+			?e2 a <http://events.event-processing.org/types/Event>.
 			}
 	} ("PT60M"^^xsd:duration, sliding)
 }

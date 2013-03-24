@@ -1,6 +1,5 @@
 package com.hp.hpl.jena.sparql.serializer;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class PlaySerializer extends Serializer{
         
         HistoricalGraphFormaterElement e = new HistoricalGraphFormaterElement(writer, cxt1);
         
-        serializeARQ(query, writer, 
+        serializeARQ(query, writer,
                      e,
                      new FmtExprSPARQL(writer, cxt1),
                      new FmtTemplate(writer, cxt2)) ;
@@ -53,7 +52,7 @@ public class PlaySerializer extends Serializer{
 				if (queries.get(key).contains("?" + var)) {
 					selectString += " ?" + var;
 					//Set variables.
-					hq.getVariables().add(" ?" + var);
+					hq.getVariables().add("?" + var);
 				}
 			}
 			// Set values.

@@ -85,11 +85,12 @@ public class HistoricalQueryContainer {
 		
 		StringBuilder ret = new StringBuilder();
 		if(makeVariableList()){
-			ret.append("\n VALUES (");
+			ret.append("\n VALUES ( ");
 			for(int i = 0; i < vvariables.size(); i++){
 				ret.append(vvariables.get(i));
+				ret.append(" ");
 			}
-			ret.append(" ) {\n");
+			ret.append(") {\n");
 			
 			ret = makeBody(ret, null, 0);
 			
