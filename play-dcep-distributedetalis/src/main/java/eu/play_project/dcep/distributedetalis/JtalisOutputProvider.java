@@ -211,7 +211,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			// Get all values of a variable
 			for (Hashtable<String, Object> resultTable : result) {
 				if (!variableValues.containsKey(resultTable.get("VarName").toString())) {
-					variableValues.put(resultTable.get("VarName").toString(), new ArrayList<String>());
+					variableValues.put(resultTable.get("VarName").toString(), new ArrayList<Object>());
 				}
 
 				// Add new value to list.

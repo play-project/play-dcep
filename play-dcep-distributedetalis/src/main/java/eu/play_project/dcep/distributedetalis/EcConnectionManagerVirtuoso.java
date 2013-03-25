@@ -214,9 +214,9 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 			//TODO result create, select variable analyze, create
 			while(res.next()){
-				ArrayList<String> data = new ArrayList<String>();
+				ArrayList<Object> data = new ArrayList<Object>();
 				for(int i = 1; i <= colNum; i++) {
-					data.add(res.getString(i));
+					data.add(res.getObject(i));
 				}
 				result.add(data);
 				logger.debug("Data: {}", data);

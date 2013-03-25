@@ -7,6 +7,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node_URI;
+
 import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 
 /**
@@ -16,11 +19,9 @@ public class HistoricalQueryContainer {
 	final static String SELECT = "SELECT";
 	final static String WHERE = "WHERE";
 	final static String VALUES = "VALUES";
-	final static String GRAPH = "GRAPH";
-	final static String STREAM = " :stream ";
 	
 	private final List<String> vvariables = new ArrayList<String>();
-	private final Map<String, List<String>> map;
+	private final Map<String, List<Object>> map;
 	private String query;
 	
 	private final Logger logger = LoggerFactory.getLogger(HistoricalQueryContainer.class);
@@ -47,7 +48,6 @@ public class HistoricalQueryContainer {
 		StringBuilder sparqlb = new StringBuilder(oquery);
 		index = oquery.indexOf(VALUES);
 		if(index != -1){
-			//TODO
 			throw new IllegalArgumentException("Original query already has VALUES clause");
 		}
 		else {
@@ -122,7 +122,7 @@ public class HistoricalQueryContainer {
 		}
 		else if(depth == 0){
 			path = new StringBuilder();
-			List<String> values = map.get(vvariables.get(depth));
+			List<Object> values = map.get(vvariables.get(depth));
 			if(values == null || values.isEmpty()){
 				path.append("( UNDEF ");
 				ret = makeBody(ret, path, depth+1);
@@ -130,7 +130,9 @@ public class HistoricalQueryContainer {
 			else{
 				for(int i = 0; i < values.size(); i++){
 					path.delete(0, path.length());
-					path.append("( "+values.get(i)+" ");
+					path.append("( ");
+					path.append(makeVal(values.get(i)));
+					path.append(" ");
 					ret = makeBody(ret, path, depth+1);
 				}
 			}
@@ -139,7 +141,7 @@ public class HistoricalQueryContainer {
 			pathMinusOne = path.toString();
 			logger.debug(vvariables.get(depth));
 			logger.debug("{}", map.get(vvariables.get(depth)));
-			List<String> values = map.get(vvariables.get(depth));
+			List<Object> values = map.get(vvariables.get(depth));
 			if(values == null || values.isEmpty()){
 				path.append("UNDEF ");
 				ret = makeBody(ret, path, depth+1);
@@ -148,11 +150,30 @@ public class HistoricalQueryContainer {
 				for(int i = 0; i < values.size(); i++){
 					path.delete(0, path.length());
 					path.append(pathMinusOne);
-					path.append(values.get(i)+" ");
+					path.append(makeVal(values.get(i)) + " ");
 					ret = makeBody(ret, path, depth+1);
 				}
 			}
 		}
 		return ret;
 	}
+	
+	/**
+	 * Covert a single value to String according to the value type.
+	 */
+	private String makeVal(Object value) {
+		if (value instanceof String) {
+			return "\"" + value + "\"";
+		}
+		else if (value instanceof Node_URI) {
+			return "<" + value.toString() + ">";
+		}
+		else if (value instanceof Node) {
+			return ((Node)value).toString(true);
+		}
+		else {
+			return value.toString();
+		}
+	}
+
 }

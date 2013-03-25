@@ -116,12 +116,12 @@ public class EcConnectionManagerLocalTest {
 		hq.setQuery("PREFIX sioc: <http://rdfs.org/sioc/ns#> \nPREFIX : <http://events.event-processing.org/types/> \nPREFIX uctelco: <http://events.event-processing.org/uc/telco/> \nPREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> \nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e3 ?tweetTime ?firstEvent ?tweetContent ?id3 ?firstEvent \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :TwitterEvent .\n    ?e3 :stream <http://streams.event-processing.org/ids/TwitterFeed#stream> .\n    ?e3 :endTime ?tweetTime .\n    ?e3 :test ?firstEvent .\n    ?e3 sioc:content ?tweetContent\n\t FILTER ( ?tweetTime > ?firstEvent )\n    }} \n ");
 		list.add(hq);
 		VariableBindings variableBindings = new VariableBindings();
-		variableBindings.put("?e3", new ArrayList<String>());
-		variableBindings.put("?tweetTime", new ArrayList<String>());
-		variableBindings.put("?firstEvent", new ArrayList<String>());
-		variableBindings.put("?tweetContent", new ArrayList<String>());
-		variableBindings.put("?id3", new ArrayList<String>());
-		variableBindings.put("?firstEvent", new ArrayList<String>());
+		variableBindings.put("?e3", new ArrayList<Object>());
+		variableBindings.put("?tweetTime", new ArrayList<Object>());
+		variableBindings.put("?firstEvent", new ArrayList<Object>());
+		variableBindings.put("?tweetContent", new ArrayList<Object>());
+		variableBindings.put("?id3", new ArrayList<Object>());
+		variableBindings.put("?firstEvent", new ArrayList<Object>());
 			
 		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("play-epsparql-clic2call-historical-data.trig");
 		
