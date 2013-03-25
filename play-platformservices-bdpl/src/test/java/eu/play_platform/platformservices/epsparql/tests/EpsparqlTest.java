@@ -27,13 +27,14 @@ public class EpsparqlTest {
 	
 	@Test
 	public void manualTest(){
-		QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxEPSPARQL_20);		
+		QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxEPSPARQL_20);
 	}
 		
 	@Test
 	public void testPositiveTests() {
 				
 		for (String fileName : new String[] {
+				"play-bdpl-personalmonitoring-01-slowdown-recom.eprq",
 				"EP-SPARQL-Query-HAVING.eprq",
 				"EP-SPARQL-Query-CONSTRUCT-Query.eprq",
 				"EP-SPARQL-Query-Event-and-GRAPH.eprq",
@@ -60,7 +61,8 @@ public class EpsparqlTest {
 				"play-epsparql-telco-recom.eprq",
 				"play-epsparql-telco-recom-tweets.eprq",
 				"play-epsparql-iccs-telco-02.eprq",
-				"play-epsparql-iccs-telco-02a.eprq"				}) {
+				"play-epsparql-iccs-telco-02a.eprq"
+				}) {
 			System.out.println("Testing queryfile: " + fileName);
 			try {
 				QueryFactory.create(getQuery(fileName)[0], Syntax.syntaxEPSPARQL_20);
@@ -82,7 +84,7 @@ public class EpsparqlTest {
 			System.out.println("Testing queryfile: " + fileName);
 			try {
 				query = getQuery(fileName);
-					System.out.println(query[0]);		
+					System.out.println(query[0]);
 				// Test if expeted exeption is given.
 				if(query[1]==null){
 					throw new Exception("No expected exception given in inputfile " + fileName + " \t e.g. @expectedException<java.lang.NullPointerException\\>");
@@ -109,8 +111,8 @@ public class EpsparqlTest {
 	/**
 	 * Return the query from given file. If given it returns the message of the expected exception.
 	 * @param queryFile
-	 * @return query[0] the query text, query[1] if given in input file the expected exception 
-	 * @throws IOException 
+	 * @return query[0] the query text, query[1] if given in input file the expected exception
+	 * @throws IOException
 	 */
 	public String[] getQuery(String queryFile) throws IOException {
 		System.out.println(queryFile );
@@ -172,7 +174,7 @@ public class EpsparqlTest {
 						filenames.add(files[i].getName());
 				
 					}
-				}	
+				}
 			}
 		}
 		return filenames;
