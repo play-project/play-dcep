@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution.tests.integration.performance;
+package eu.play_project.dcep.distribution.tests.srbench.performance;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

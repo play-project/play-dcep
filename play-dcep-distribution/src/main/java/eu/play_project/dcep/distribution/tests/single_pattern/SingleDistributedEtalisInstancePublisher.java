@@ -60,38 +60,8 @@ public class SingleDistributedEtalisInstancePublisher {
 		//managementApiI1.registerEventPattern(generateEle(getSparqlQueries("play-epsparql-clic2call.eprq")));
 		System.out.println(getSparqlQueries("benchmarks/srbench/q3.eprq"));
 
-		int i =0;
 		// Publish some events to instance 1.
 		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			System.out.println(i++);
-			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
-			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
-			delay(2);
-		}
-		
-		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			System.out.println(i++);
-			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
-			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
-			delay(2);
-		}
-		
-		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			System.out.println(i++);
-			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
-			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
-			delay(2);
-		}
-		
-		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			System.out.println(i++);
-			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
-			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
-			delay(2);
-		}
-		
-		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			System.out.println(i++);
 			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
 			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
 			delay(2);
