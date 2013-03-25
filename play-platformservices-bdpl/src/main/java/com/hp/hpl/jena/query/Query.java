@@ -21,6 +21,7 @@ package com.hp.hpl.jena.query;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,6 +29,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.xs.DurationDV;
+import org.apache.xerces.xs.datatypes.XSDateTime;
 import org.openjena.atlas.io.IndentedLineBuffer;
 import org.openjena.atlas.io.IndentedWriter;
 import org.openjena.atlas.io.Printable;
@@ -85,7 +89,8 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     private ArrayList<Element> eventQuery = new ArrayList<Element>() ;
     private ArrayList<Element> historicQuery = new ArrayList<Element>() ;
     private final List<ElementEventBinOperator> eventBinOperator = new ArrayList<ElementEventBinOperator>();
-    private	String windowTime = "0"; //TODO For M12 testing. Will be extended.
+    /** Length for time window in seconds */
+    private	String windowTime = "0";
     private final List<String[]> filter = new ArrayList<String[]>(); //TODO otimized for M12. More types in the future.
     private final com.hp.hpl.jena.sparql.expr.Expr testExp = null;
     public List<ElementEventBinOperator> getEventBinOperator() {
@@ -121,9 +126,23 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 		historicQuery.add(element);
     }
 	
-	public void setWindowTime(String time){
-		int tmp = Integer.valueOf(time.subSequence(4, time.length()-18).toString()).intValue();
-		windowTime = tmp*60 + "";
+	public void setWindowTime(String time) {
+		final String PREFIX = "(\"";
+		final String POSTFIX = "\"^^xsd:duration";
+		try {
+			String tmp = time.substring(time.indexOf(PREFIX)+PREFIX.length(), time.lastIndexOf(POSTFIX));
+			DurationDV dv = new DurationDV();
+			XSDateTime dt = (XSDateTime) dv.getActualValue(tmp, null);
+			long durationInMillis = dt.getDuration().getTimeInMillis(Calendar.getInstance());
+
+			windowTime = durationInMillis / 1000 + "";
+		} catch (InvalidDatatypeValueException e) {
+			throw new QueryException("Error while parsing duration of time window.");
+		}
+		
+		
+		
+
 	}
 	
 	public String getWindowTime(){

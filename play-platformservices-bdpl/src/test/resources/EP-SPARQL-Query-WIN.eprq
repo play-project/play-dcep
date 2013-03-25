@@ -10,5 +10,5 @@ CONSTRUCT {
 			EVENT ?id1{ ?company ?hasStockPrice ?price1}
 			SEQ
 			EVENT ?id2{ ?company ?hasStockPrice ?price2}
-		} ("PT12M"^^xsd:duration, sliding)
+		} ("PT12M10S"^^xsd:duration, sliding)
 	}	

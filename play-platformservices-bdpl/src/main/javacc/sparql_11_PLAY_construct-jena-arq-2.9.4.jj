@@ -264,7 +264,13 @@ void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp;}
 	  //  (<GRAPH> (< EVENT >)?) | (< EVENT > (<GRAPH>)?)
 	  //Realtime query with window.
 	   < BEGIN_WINDOW > <LBRACE> < EVENT > E()
-		<RBRACE> t = < WINDOWSIZE > { getQuery().setWindowTime(t.image);} < WINDOW_TYPE_SLIDING > <RPAREN>
+		<RBRACE> t = < WINDOWSIZE > {
+			try {
+				getQuery().setWindowTime(t.image);
+			} catch (QueryException e) {
+            	throwParseException(e.getMessage(), t.beginLine, t.beginColumn) ;
+            }			
+		} < WINDOW_TYPE_SLIDING > <RPAREN>
 		WhereClauseH(t)
 	|
 		//Realtime query followd by optinal historic part.
@@ -1710,7 +1716,7 @@ TOKEN [IGNORE_CASE] :
 | < SEQ : ("seq"){1} >
 | < OR : ("or"){1} >
 | < WINDOW_TYPE_SLIDING: "sliding" >
-| < WINDOWSIZE : "(\"PT" (["0"-"9"])+ "M\"^^xsd:duration, " >
+| < WINDOWSIZE : "(\"PT" (["0"-"9","H","M","S"])+ "\"^^xsd:duration, " >
 | < BEGIN_WINDOW : ("WINDOW"){1} >
 // | < DURATION : ("M^^xsd:duration"){1} >
 | < EQUALS : ("equals"){1} >
