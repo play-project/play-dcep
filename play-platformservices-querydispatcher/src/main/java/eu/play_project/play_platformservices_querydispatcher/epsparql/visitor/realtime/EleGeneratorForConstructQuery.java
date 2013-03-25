@@ -77,7 +77,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += "complex(" + varNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
-		//Having();
+		Having();
 		//DecrementReferenceCounter();
 		elePattern += ")";
 	}
@@ -237,8 +237,8 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	public void Having(){
 		
-		if(inputQuery.getHavingExprs() != null){
-			elePattern += ",";
+		if(!inputQuery.getHavingExprs().isEmpty()){
+			elePattern += ", ";
 		}
 		
 		for (Expr el : inputQuery.getHavingExprs()) {
