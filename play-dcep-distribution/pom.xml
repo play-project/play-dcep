@@ -35,39 +35,37 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-
-<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
-<!-- 				<configuration> -->
-<!-- 					<finalName>dcep</finalName> -->
-<!-- 					<descriptorRefs> -->
-<!-- 						<descriptorRef>jar-with-dependencies</descriptorRef> -->
-<!-- 					</descriptorRefs> -->
-<!-- 					<archive> -->
-<!-- 						<manifest> -->
-<!-- 							<addClasspath>true</addClasspath> -->
-<!--  							<mainClass>eu.play_project.dcep.distribution.Main</mainClass>  -->
-<!-- 							<mainClass>eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher</mainClass> -->
-<!--  							<mainClass>eu.play_project.dcep.distribution.tests.SingleDistributedEtalisInstanceRunner</mainClass>	  -->
-<!-- 						</manifest> -->
-<!-- 					</archive> -->
-<!-- 					<argLine>-Djava.security.manager -->
-<!-- 						-Djava.security.policy=proactive.java.policy -->
-<!-- 						-Dproactive.communication.protocol=pnp -->
-<!-- 						-Dproactive.pnp.port=9000 -->
-<!-- 						-Dproactive.http.port=9001 -->
-<!-- 						-Dproactive.rmi.port=1099 -->
-<!-- 					</argLine> -->
-<!-- 				</configuration> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>make-my-jar-with-dependencies</id> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>single</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<finalName>dcep</finalName>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher</mainClass>
+						</manifest>
+					</archive>
+					<argLine>-Djava.security.manager
+						-Djava.security.policy=proactive.java.policy
+						-Dproactive.communication.protocol=pnp
+						-Dproactive.pnp.port=9000
+						-Dproactive.http.port=9001
+						-Dproactive.rmi.port=1099
+					</argLine>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-my-jar-with-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
