@@ -1,12 +1,14 @@
 package eu.play_project.dcep.distribution.tests.srbench.performance;
 
+import java.io.Serializable;
+
 /**
  * Measure eventrate calculated by counting events and reading System.nanoTime().
  * @author sobermeier
  *
  */
 
-public class MeasurementUnit {
+public class MeasurementUnit implements Serializable{
 	
 	private long numberOfEvents = 0;
 	private long startTime = 0;

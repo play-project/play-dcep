@@ -56,9 +56,8 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
 
 		//Register queries.
-	//	managementApiI1.registerEventPattern(generateEle(getSparqlQueries("3timesA.eprq")));
-	//	managementApiI2.registerEventPattern(generateEle(getSparqlQueries("3timesA.eprq")));
-
+		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
+		managementApiI2.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
 		
 		meausrementUnit.calcRateForNEvents(100);
 		
@@ -75,9 +74,9 @@ public class SingleDistributedEtalisInstancePublisher {
 			for (CompoundEvent compoundEvent : buffer) {
 				testApiI1.publish(compoundEvent);
 				meausrementUnit.nexEvent();
-				//testApiI2.publish(compoundEvent);
-				//meausrementUnit.nexEvent();
-				//delay(1);
+				testApiI2.publish(compoundEvent);
+				meausrementUnit.nexEvent();
+				delay(200);
 			}
 		}
 
@@ -91,8 +90,8 @@ public class SingleDistributedEtalisInstancePublisher {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		//String patternId = "'http://patternID.example.com/" + Math.random() * 1000000 + "'";
-		String patternId = "'p1'";
+		String patternId = "http://patternID.example.com/" + Math.random() * 1000000;
+		//String patternId = "'p1'";
 		visitor1.setPatternId(patternId);
 
 		visitor1.generateQuery(query);

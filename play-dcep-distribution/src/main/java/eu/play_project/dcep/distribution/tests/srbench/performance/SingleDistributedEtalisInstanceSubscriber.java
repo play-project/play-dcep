@@ -48,8 +48,8 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
 		
 		//Subscribe
-		testApiI1.attach(new ComplexEventSubscriber(1));
-		testApiI2.attach(new ComplexEventSubscriber(2));
+		testApiI1.attach(new ComplexEventSubscriber());
+		testApiI2.attach(new ComplexEventSubscriber());
 		
 		System.out.println("Press 3x RETURN to shutdown the application");
 		System.in.read();
