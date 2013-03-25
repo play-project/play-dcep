@@ -77,7 +77,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += "complex(" + varNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
-		Having();
+		//Having();
 		//DecrementReferenceCounter();
 		elePattern += ")";
 	}
