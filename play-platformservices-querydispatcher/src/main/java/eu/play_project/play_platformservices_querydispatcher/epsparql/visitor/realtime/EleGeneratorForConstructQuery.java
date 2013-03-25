@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -20,7 +19,7 @@ import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTy
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.querydispatcher.epsparql.Test.helpers.GenerateConstructResultVisitor;
-import fr.inria.eventcloud.api.Quadruple;
+
 
 public class EleGeneratorForConstructQuery implements EleGenerator {
 	private Query inputQuery;
@@ -183,10 +182,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			GenerateCEID();
 		}
 	}
-	private void SaveAggreagateValues(String varName){
-		StringBuffer code =  new StringBuffer();
-		code.append(" ,addAgregatValue(" + VarNameManager.getVarNameManager().getAggrDbId() + ", " + varName + ")");
-	}
+
 	private void ReferenceCounter(){
 		elePattern += " incrementReferenceCounter(" + varNameManager.getTriplestoreVariable() + ")";
 	}
