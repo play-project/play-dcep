@@ -29,7 +29,13 @@ public class HistoricalQueryContainer {
 	public HistoricalQueryContainer(String query, VariableBindings variableBindings){
 		if(query == null)
 			throw new IllegalArgumentException("Original query should not be null");
-		map = variableBindings;
+		map = new VariableBindings();
+		for (String varName : variableBindings.keySet()) {
+			// Trasfer only variables with nonempty bindings:
+			if (variableBindings.get(varName) != null && !variableBindings.get(varName).isEmpty()) {
+				map.put(varName, variableBindings.get(varName));
+			}
+		}
 		if(map != null)
 			this.query = addVALUES(query);
 		else
@@ -90,11 +96,11 @@ public class HistoricalQueryContainer {
 				ret.append(vvariables.get(i));
 				ret.append(" ");
 			}
-			ret.append(") {\n");
+			ret.append(") {");
 			
 			ret = makeBody(ret, null, 0);
 			
-			ret.append("}");
+			ret.append("\n }\n");
 		}
 		return ret.toString();
 	}
@@ -117,20 +123,20 @@ public class HistoricalQueryContainer {
 		String pathMinusOne;
 		
 		if(depth == vvariables.size()){
-			path.append(") ");
+			path.append(")");
 			ret.append(path);
 		}
 		else if(depth == 0){
 			path = new StringBuilder();
 			List<Object> values = map.get(vvariables.get(depth));
 			if(values == null || values.isEmpty()){
-				path.append("( UNDEF ");
+				path.append("\n  ( UNDEF ");
 				ret = makeBody(ret, path, depth+1);
 			}
 			else{
 				for(int i = 0; i < values.size(); i++){
 					path.delete(0, path.length());
-					path.append("( ");
+					path.append("\n  ( ");
 					path.append(makeVal(values.get(i)));
 					path.append(" ");
 					ret = makeBody(ret, path, depth+1);

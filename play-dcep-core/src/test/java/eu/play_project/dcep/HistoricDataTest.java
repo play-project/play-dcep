@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.Node;
@@ -25,7 +26,12 @@ public class HistoricDataTest {
 	@Test
 	public void testHistoricData() throws IOException {
 		
-		Engine historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
+		final String TEST_URI = "http://events.event-processing.org/ids/e5917518587088559184";
+		
+		
+		Engine historicData;
+		VariableBindings variableBindings;
+		HistoricalData values;
 		
 		String queryFile = "play-bdpl-personalmonitoring.eprq";
 		String query = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), "UTF-8");
@@ -46,16 +52,37 @@ public class HistoricDataTest {
 		// Add EP-SPARQL query.
 		epQuery.setEpSparqlQuery(query);
 		
-		VariableBindings variableBindings = new VariableBindings();
+		variableBindings = new VariableBindings();
 		variableBindings.put("?tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
-		variableBindings.put("?id2", Arrays.asList(new Object[] {Node.createURI("http://events.event-processing.org/ids/e5917518587088559184")}));
+		variableBindings.put("?id2", Arrays.asList(new Object[] {Node.createURI(TEST_URI)}));
 
 		//Get historical data to the given binding.
-		HistoricalData values = historicData.get(epQuery.getHistoricalQueries(), variableBindings);
+		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
+		values = historicData.get(epQuery.getHistoricalQueries(), variableBindings);
 		
 		for (String varName : values.keySet()) {
 			System.out.format("Bindings for %s: %s\n", varName, values.get(varName));
 		}
+		
+		Assert.assertTrue("A result including the specified binding was expected.", values.get("id2").contains(TEST_URI));
+
+		
+		/*
+		 * Do a second run, this time with an unmatchable binding (expecting empty results):
+		 */
+		variableBindings = new VariableBindings();
+		variableBindings.put("?tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
+		variableBindings.put("?id2", Arrays.asList(new Object[] {Node.createURI(TEST_URI + "error")}));
+
+		//Get historical data to the given binding.
+		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
+		values = historicData.get(epQuery.getHistoricalQueries(), variableBindings);
+		
+		for (String varName : values.keySet()) {
+			System.out.format("Bindings for %s: %s\n", varName, values.get(varName));
+		}
+		
+		Assert.assertTrue("An empty result was expected for the specified bindings.", values.isEmpty());
 
 	}
 }
