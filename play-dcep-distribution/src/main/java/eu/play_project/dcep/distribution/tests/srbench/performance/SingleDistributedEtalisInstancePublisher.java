@@ -62,16 +62,22 @@ public class SingleDistributedEtalisInstancePublisher {
 		
 		meausrementUnit.calcRateForNEvents(100);
 		
+		//Generate and buffer events.
 		LinkedList<CompoundEvent> buffer = new LinkedList<CompoundEvent>();
-		
+
 		// Publish some events
+		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+			buffer.add(EventCloudHelpers.toCompoundEvent(m));
+		}
+
+		// Send bufferd events.
 		for (int i = 0; i < 1000; i++) {
-			for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-				testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			for (CompoundEvent compoundEvent : buffer) {
+				testApiI1.publish(compoundEvent);
 				meausrementUnit.nexEvent();
-				testApiI2.publish(EventCloudHelpers.toCompoundEvent(m));
-				meausrementUnit.nexEvent();
-				delay(5);
+				//testApiI2.publish(compoundEvent);
+				//meausrementUnit.nexEvent();
+				//delay(1);
 			}
 		}
 
