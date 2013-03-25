@@ -2,15 +2,16 @@ package eu.play_project.dcep.distribution.tests;
 
 import org.junit.Test;
 
-import eu.play_project.dcep.distribution.tests.single_pattern.Measurement;
+import eu.play_project.dcep.distribution.tests.srbench.performance.MeasurementUnit;
+
 
 public class MeasurementTests {
 	
 	@Test
 	public void runMeasuremntMethod(){
-		Measurement m = new Measurement();
+		MeasurementUnit m = new MeasurementUnit();
 		
-		m.calcRateForNevents(10);
+		m.calcRateForNEvents(10);
 		
 		for (int i = 0; i < 600; i++) {
 			m.nexEvent();

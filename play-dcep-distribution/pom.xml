@@ -45,7 +45,8 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher</mainClass>
+							<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstancePublisher</mainClass>
+<!-- 							<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner</mainClass> -->
 						</manifest>
 					</archive>
 					<argLine>-Djava.security.manager

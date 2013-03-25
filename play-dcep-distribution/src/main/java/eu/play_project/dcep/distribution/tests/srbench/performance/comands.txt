@@ -1,0 +1,6 @@
+#Start engine 1
+  ./cep-engine.sh detalis1.dcep.s-node.de
+#Start engine 2
+  ./cep-engine.sh detalis2.dcep.s-node.de
+#Start publisher
+  ./publisher.sh detalis1.dcep.s-node.de dEtalis1 detalis2.dcep.s-node.de dEtalis1

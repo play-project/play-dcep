@@ -54,7 +54,7 @@ public class RegisterQueriesTest {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void parsSRBenchQueries(){
 		Query query = QueryFactory.create(getSparqlQueries("benchmarks/srbench/q2.eprq"), Syntax.syntaxEPSPARQL_20);
 		

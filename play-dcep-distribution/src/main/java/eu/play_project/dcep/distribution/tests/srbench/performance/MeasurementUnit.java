@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distribution.tests.single_pattern;
+package eu.play_project.dcep.distribution.tests.srbench.performance;
 
 /**
  * Measure eventrate calculated by counting events and reading System.nanoTime().
@@ -6,7 +6,7 @@ package eu.play_project.dcep.distribution.tests.single_pattern;
  *
  */
 
-public class Measurement {
+public class MeasurementUnit {
 	
 	private long numberOfEvents = 0;
 	private long startTime = 0;
@@ -17,7 +17,7 @@ public class Measurement {
 		numberOfEvents = 0;
 	}
 	
-	public void calcRateForNevents(long n){
+	public void calcRateForNEvents(long n){
 		this.n = n;
 		startNewMeasuringPeriod();
 	}
@@ -39,7 +39,7 @@ public class Measurement {
 	}
 	
 	public double getEventsPerSecond(){
-		return numberOfEvents / ((System.nanoTime() - startTime)/1000000000);	
+		return numberOfEvents / ((System.nanoTime() - startTime)/1000000000.0);	
 	}
 
 }
