@@ -12,14 +12,15 @@ import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 
-	public ComplexEventSubscriber(){}
 	MeasurementUnit mu; 
-
+	
+	ComplexEventSubscriber(){}
+	
 	@Override
 	public void publish(CompoundEvent event) {
-		if(mu == null){
+		if(mu==null){
 			mu = new MeasurementUnit();
-			mu.calcRateForNEvents(100);
+			mu.calcRateForNEvents(2);
 		}
 		mu.nexEvent();
 	}

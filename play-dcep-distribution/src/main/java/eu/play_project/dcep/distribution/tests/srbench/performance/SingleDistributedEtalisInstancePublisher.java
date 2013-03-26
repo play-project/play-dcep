@@ -69,7 +69,7 @@ public class SingleDistributedEtalisInstancePublisher {
 			buffer.add(EventCloudHelpers.toCompoundEvent(m));
 		}
 
-		// Send bufferd events.
+		// Send buffered events.
 		for (int i = 0; i < 1000; i++) {
 			for (CompoundEvent compoundEvent : buffer) {
 				testApiI1.publish(compoundEvent);
