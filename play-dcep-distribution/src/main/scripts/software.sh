@@ -12,7 +12,7 @@ installBasicSoftware(){
 	apt-get -y update
 	
 	#Install tools.
-	apt-get -y install screen vim maven2 subversion sun-java6-jdk
+	apt-get -y install screen vim maven2 subversion sun-java6-jdk ntpdate
 	update-alternatives --set java /usr/lib/jvm/java-6-sun/jre/bin/java
 	export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/
 }
