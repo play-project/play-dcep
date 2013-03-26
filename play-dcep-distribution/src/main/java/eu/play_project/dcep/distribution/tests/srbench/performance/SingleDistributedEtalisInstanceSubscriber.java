@@ -28,10 +28,12 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.distribution.tests.single_pattern.ComplexEventSubscriber;
 
 public class SingleDistributedEtalisInstanceSubscriber {
 
-	private static ComplexEventSubscriber subscriber = null;
+	private static ComplexEventSubscriber subscriber1 = null;
+	private static ComplexEventSubscriber subscriber2 = null;
 	private static DistributedEtalisTestApi testApiI1;
 	private static DistributedEtalisTestApi testApiI2;
 
@@ -48,8 +50,10 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
 		
 		//Subscribe
-		testApiI1.attach(new ComplexEventSubscriber());
-		testApiI2.attach(new ComplexEventSubscriber());
+		subscriber1 = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
+		subscriber2 = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
+		testApiI1.attach(subscriber1);
+		testApiI2.attach(subscriber2);
 		
 		System.out.println("Press 3x RETURN to shutdown the application");
 		System.in.read();

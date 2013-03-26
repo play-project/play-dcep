@@ -76,7 +76,7 @@ public class SingleDistributedEtalisInstancePublisher {
 				meausrementUnit.nexEvent();
 				testApiI2.publish(compoundEvent);
 				meausrementUnit.nexEvent();
-				delay(200);
+				delay(5);
 			}
 		}
 

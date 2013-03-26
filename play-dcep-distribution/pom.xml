@@ -151,6 +151,12 @@
 					<artifactId>cxf-bundle</artifactId>
 					<groupId>org.apache.cxf</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>
+						proactive-programming-mao-bundle
+					</artifactId>
+					<groupId>org.objectweb.proactive</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
@@ -217,6 +223,11 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-test-srbench-simulator</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.objectweb.proactive</groupId>
+			<artifactId>proactive-programming</artifactId>
+			<version>5.1.0</version>
 		</dependency>
 	</dependencies>
 	

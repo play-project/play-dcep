@@ -59,15 +59,15 @@ public class SingleDistributedEtalisInstanceRunner {
 		
 		
 		//Subscribe to print complex events to local console.
-		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
-		try {
-			subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
-		} catch (ActiveObjectCreationException e) {
-			e.printStackTrace();
-		} catch (NodeException e) {
-			e.printStackTrace();
-		}
-		testApi.attach(subscriber);
+//		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi"));
+//		try {
+//			subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
+//		} catch (ActiveObjectCreationException e) {
+//			e.printStackTrace();
+//		} catch (NodeException e) {
+//			e.printStackTrace();
+//		}
+//		testApi.attach(subscriber);
 		
 		System.out.println("Press 3x RETURN to shutdown the application");
 		System.in.read();
