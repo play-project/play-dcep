@@ -16,6 +16,7 @@ import org.ontoware.rdf2go.model.node.URI;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import eu.play_project.play_commons.constants.Stream;
+import eu.play_project.play_commons.eventtypes.EventTypeMetadata;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -57,7 +58,7 @@ public class EventCloudHelpers {
 
 	/**
 	 * Print the member event IDs (if present in the complex event) as
-	 * a space-separated string. This method will be replaced when the 
+	 * a space-separated string. This method will be replaced when the
 	 * :members feature becomes a first-class feature of DCEP.
 	 * @param m
 	 * @return
@@ -74,7 +75,7 @@ public class EventCloudHelpers {
 	    		if (endIndex > 0 ) {
 	    			member = member.substring(0, endIndex);
 	    		}
-	    		members += member + " ";		
+	    		members += member + " ";
 			}
 		}
 		return members;
@@ -83,11 +84,10 @@ public class EventCloudHelpers {
 	/**
 	 * Returns the RDF event type as URI string. This method tries to find {@code rdf:type}
 	 * statements with the proper event ID as subject. If this fails it falls back to arbitrary
-	 * {@code rdf:type} statements in the event and finally defaults to the basic event type of 
+	 * {@code rdf:type} statements in the event and finally defaults to the basic event type of
 	 * {@linkplain Event.RDFS_CLASS}
 	 * 
-	 * @param event
-	 * @return
+	 * @see EventTypeMetadata#getEventType(Model)
 	 */
 	public static String getEventType(CompoundEvent event) {
 		com.hp.hpl.jena.graph.Node primaryType = null;

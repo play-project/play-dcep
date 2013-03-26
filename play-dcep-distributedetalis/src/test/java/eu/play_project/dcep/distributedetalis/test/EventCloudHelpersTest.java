@@ -26,7 +26,7 @@ public class EventCloudHelpersTest {
 	private final Node GRAPHNAME = Node.createURI(eventId);
 	// Subjects
 	private final Node SUBJECT = Node.createURI(eventId + EVENT_ID_SUFFIX);
-	private final Node OTHER_SUBJECT = Node.createURI(eventId + EVENT_ID_SUFFIX);
+	private final Node OTHER_SUBJECT = Node.createURI(eventId + "bogus");
 	
 	// Predicates
 	private final Node STREAM = TypeConversion.toJenaNode(Event.STREAM);
@@ -44,13 +44,13 @@ public class EventCloudHelpersTest {
 		List<Quadruple> quadruple = new ArrayList<Quadruple>();
 
 		quadruple.add(new Quadruple(
-				GRAPHNAME, 
+				GRAPHNAME,
 				SUBJECT,
 				RDF.type.asNode(),
 				EVENT_TYPE_1));
 
 		quadruple.add(new Quadruple(
-				GRAPHNAME, 
+				GRAPHNAME,
 				OTHER_SUBJECT,
 				RDF.type.asNode(),
 				EVENT_TYPE_2));
@@ -68,7 +68,7 @@ public class EventCloudHelpersTest {
 		List<Quadruple> quadruple = new ArrayList<Quadruple>();
 
 		quadruple.add(new Quadruple(
-				GRAPHNAME, 
+				GRAPHNAME,
 				OTHER_SUBJECT,
 				RDF.type.asNode(),
 				EVENT_TYPE_2));
@@ -87,7 +87,7 @@ public class EventCloudHelpersTest {
 		List<Quadruple> quadruple = new ArrayList<Quadruple>();
 
 		quadruple.add(new Quadruple(
-				GRAPHNAME, 
+				GRAPHNAME,
 				OTHER_SUBJECT,
 				RDF.first.asNode(), // arbitrary predicate
 				EVENT_TYPE_2));
@@ -105,7 +105,7 @@ public class EventCloudHelpersTest {
 		List<Quadruple> quadruple = new ArrayList<Quadruple>();
 
 		quadruple.add(new Quadruple(
-				GRAPHNAME, 
+				GRAPHNAME,
 				SUBJECT,
 				STREAM,
 				Node.createURI(Stream.ActivityEventStream.getUri())));
