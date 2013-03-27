@@ -30,7 +30,7 @@ public class MeasurementUnit implements Serializable{
 		numberOfEvents++;
 		
 		if((numberOfEvents%n)==0){
-			System.out.println(getEventsPerSecond());
+			System.out.println(System.currentTimeMillis() + "\t" +getEventsPerSecond());
 			startTime = System.nanoTime();
 			numberOfEvents = 0;
 		}

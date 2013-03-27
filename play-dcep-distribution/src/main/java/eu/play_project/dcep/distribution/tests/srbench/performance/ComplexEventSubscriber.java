@@ -45,9 +45,9 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
-
+				long time = System.currentTimeMillis();
 				// Print time pent in system.
-				System.out.println((System.currentTimeMillis()) - date.getTime());
+				System.out.println(time + "\t" + (System.currentTimeMillis() - date.getTime()));
 			}
 		}
 	}

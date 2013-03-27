@@ -60,10 +60,9 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI2.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
 		
 		meausrementUnit.calcRateForNEvents(100);
-int i =0 ;
+
 		// Publish some events
 		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			System.out.println(++i);
 			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
 			meausrementUnit.nexEvent();
 			testApiI2.publish(EventCloudHelpers.toCompoundEvent(m));
