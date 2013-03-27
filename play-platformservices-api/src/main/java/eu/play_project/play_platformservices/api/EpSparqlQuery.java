@@ -67,4 +67,9 @@ public class EpSparqlQuery implements Serializable {
 		this.eleQuery = eleQuery;
 	}
 	
+	@Override
+	public String toString() {
+		return getEpSparqlQuery();
+	}
+	
 }

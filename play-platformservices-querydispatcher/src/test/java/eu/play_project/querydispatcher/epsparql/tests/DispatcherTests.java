@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.Assert;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -42,7 +44,7 @@ public class DispatcherTests {
 		logger = LoggerFactory.getLogger(DispatcherTests.class);
 		String queryString;
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"}));
-		
+		String expectedOutputStream = "http://streams.event-processing.org/ids/ContextualizedLatitudeFeed";
 		
 		// Get query.
 		queryString = getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
@@ -51,12 +53,14 @@ public class DispatcherTests {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
 	
-		//
 		QueryDetails qd = new QueryDetails();
 		streamIdCollector.getStreamIds(query, qd);
+		
+		// Test toString() implementation
+		Assert.assertTrue(qd.toString().contains(expectedOutputStream));
 
 		// Test output stream
-		assertTrue(qd.getOutputStream().equals("http://streams.event-processing.org/ids/ContextualizedLatitudeFeed"));
+		assertTrue(qd.getOutputStream().equals(expectedOutputStream));
 		
 		// Test input streams
 		assertTrue(qd.getInputStreams().equals(expectedInputStreams));

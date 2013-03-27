@@ -84,4 +84,17 @@ public class QueryDetails implements Serializable {
 	public String getWindowTime() {
 		return windowTime;
 	}
+	
+	@Override
+	public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("queryId=").append(queryId).append(", ");
+        sb.append("inputStreams=").append(inputStreams).append(", ");
+        sb.append("outputStream=").append(outputStream).append(", ");
+        sb.append("historicStreams=").append(historicStreams).append(", ");
+        sb.append("windowTime=").append(windowTime);
+        sb.append("}");
+		return sb.toString();
+	}
 }
