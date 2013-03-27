@@ -71,7 +71,32 @@ public class EventCloudHelpers {
 		for (Quadruple quadruple : event) {
 			if (quadruple.getPredicate().toString().equals(Event.MEMBERS.toString())) {
 	    		String member = quadruple.getObject().toString();
-	    		int endIndex = member.lastIndexOf(eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX);
+	    		int endIndex = member.lastIndexOf(EVENT_ID_SUFFIX);
+	    		if (endIndex > 0 ) {
+	    			member = member.substring(0, endIndex);
+	    		}
+	    		members += member + " ";
+			}
+		}
+		return members;
+	}
+
+	/**
+	 * Print the member event IDs (if present in the complex event) as
+	 * a space-separated string. This method will be replaced when the
+	 * :members feature becomes a first-class feature of DCEP.
+	 * @param m
+	 * @return
+	 * @deprecated This will be removed when :members feature becomes a built-in
+	 * feature of DCEP.
+	 */
+	@Deprecated
+	public static String getMembers(Model event) {
+		String members = "";
+		for (Statement statement : event) {
+			if (statement.getPredicate().toString().equals(Event.MEMBERS.toString())) {
+	    		String member = statement.getObject().toString();
+	    		int endIndex = member.lastIndexOf(EVENT_ID_SUFFIX);
 	    		if (endIndex > 0 ) {
 	    			member = member.substring(0, endIndex);
 	    		}

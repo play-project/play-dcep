@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jws.WebService;
+import javax.ws.rs.ProcessingException;
 import javax.xml.ws.Endpoint;
 
 import org.objectweb.fractal.api.NoSuchInterfaceException;
@@ -74,9 +75,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	public void bindFc(String clientItfName, Object serverItf) throws NoSuchInterfaceException, IllegalBindingException, IllegalLifeCycleException {
 		if (clientItfName.equals("DcepManagmentApi")) {
 			dcepManagmentApi = (DcepManagmentApi) serverItf;
-			if (restServer != null) {
-				restServer.setDcepManagement((DcepManagmentApi) serverItf);
-			}
 		}
 		else {
 			throw new NoSuchInterfaceException(String.format("Interface '%s' not available at '%s'.", clientItfName, this.getClass().getSimpleName()));
@@ -113,13 +111,13 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			}
 	
 			// Provide PublishApi as REST Webservice
-//			try {
-//				restServer = new PlayPlatformservicesRest();
-//	        	logger.info(String.format("QueryDispatch REST service started with WADL available at "
-//	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI));
-//			} catch (ProcessingException e) {
-//				logger.error("Exception while publishing QueryDispatch REST Service", e);
-//			}
+			try {
+				restServer = new PlayPlatformservicesRest(this);
+	        	logger.info(String.format("QueryDispatch REST service started with WADL available at "
+	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI));
+			} catch (ProcessingException e) {
+				logger.error("Exception while publishing QueryDispatch REST Service", e);
+			}
 			
 			this.init = true;
 		}
@@ -225,7 +223,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 		qd.setWindowTime(query.getWindowTime());
 		
-		if (dcepManagmentApi.getRegisteredEventPatterns().containsKey(queryId)) {
+		if (dcepManagmentApi != null && dcepManagmentApi.getRegisteredEventPatterns().containsKey(queryId)) {
 			throw new QueryDispatchException("Query ID is alread used: " + queryId);
 		}
 
@@ -236,15 +234,15 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 	
 	@Override
-	public String getRegisteredQuery(String queryId)
+	public eu.play_project.play_platformservices.jaxb.Query getRegisteredQuery(String queryId)
 			throws QueryDispatchException {
 		if (!init) {
 			throw new IllegalStateException("Component not initialized: "
 					+ this.getClass().getSimpleName());
 		}
 		try {
-			return this.dcepManagmentApi.getRegisteredEventPattern(queryId)
-					.getEpSparqlQuery();
+			return new eu.play_project.play_platformservices.jaxb.Query(
+					this.dcepManagmentApi.getRegisteredEventPattern(queryId));
 		} catch (DcepManagementException e) {
 			throw new QueryDispatchException(e.getMessage());
 		}
@@ -262,16 +260,8 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		Map<String, EpSparqlQuery> queries = dcepManagmentApi
 				.getRegisteredEventPatterns();
 
-		if (queries != null) {
-			for (String queryId : queries.keySet()) {
-				eu.play_project.play_platformservices.jaxb.Query query = new eu.play_project.play_platformservices.jaxb.Query();
-				query.id = queryId;
-				query.content = queries.get(queryId).getEpSparqlQuery();
-
-				results.add(query);
-			}
-		} else {
-			results = new ArrayList<eu.play_project.play_platformservices.jaxb.Query>();
+		for (String queryId : queries.keySet()) {
+			results.add(new eu.play_project.play_platformservices.jaxb.Query(queries.get(queryId)));
 		}
 
 		return results;

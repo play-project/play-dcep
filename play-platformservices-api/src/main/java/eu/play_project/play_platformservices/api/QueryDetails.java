@@ -3,6 +3,8 @@ package eu.play_project.play_platformservices.api;
 import java.io.Serializable;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Represents informations extracted from a EP-SPARQL 2.0 query.
  * With this informations no additional parsing is required to deal with a query in this system.
@@ -11,6 +13,7 @@ import java.util.Set;
  * @author Roland Stühmer
  *
  */
+@XmlRootElement
 public class QueryDetails implements Serializable {
 	private static final long serialVersionUID = -8156425318534996557L;
 	private String queryId;
