@@ -12,6 +12,14 @@ import eu.play_project.play_platformservices.api.EpSparqlQuery;
  */
 @XmlRootElement
 public class Query {
+	
+	public Query() {};
+	
+	public Query(EpSparqlQuery epSparqlQuery) {
+		this.id = epSparqlQuery.getQueryDetails().getQueryId();
+		this.content = epSparqlQuery.getEpSparqlQuery();
+	};
+	
 
     public String name;
 

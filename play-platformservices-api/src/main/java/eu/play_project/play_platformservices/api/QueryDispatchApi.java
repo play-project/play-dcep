@@ -41,12 +41,12 @@ public interface QueryDispatchApi {
 	public QueryDetails analyseQuery(String queryId, String query) throws QueryDispatchException;
 
 	/**
-	 * Get a registered query identified by it's query ID which was used when
+	 * Get a registered query identified by its query ID which was used when
 	 * registering it.
 	 * 
 	 * @throws QueryDispatchException if there is no query for the given ID
 	 */
-	public String getRegisteredQuery(String queryId) throws QueryDispatchException;
+	public Query getRegisteredQuery(String queryId) throws QueryDispatchException;
 
 	/**
 	 * Get all currently registered queries.
