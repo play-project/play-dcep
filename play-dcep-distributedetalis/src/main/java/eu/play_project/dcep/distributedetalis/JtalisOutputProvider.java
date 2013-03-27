@@ -84,8 +84,10 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			//measurementUnit.eventProduced(result, event.getProperties()[1].toString());
 			// event.getRuleID(); //TODO sobermeier use this.
 	
-			if(((i++)%500) == 0) logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
+			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
+			
 			if(recipients.size()<1) logger.warn("No recipient for complex events.");
+			
 			for (SimplePublishApi recipient : recipients) {
 				recipient.publish(result);
 			}
@@ -94,6 +96,9 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled." );
 			}else if(e instanceof java.io.UTFDataFormatException){ //FIXME find the reason for this exception.
 				logger.error("It is not possible to deliver this event. " + e.getMessage() + "\n" + event);
+				e.printStackTrace();
+			}else{
+				logger.error("Exception appeard: " + e.getMessage());
 				e.printStackTrace();
 			}
 			
