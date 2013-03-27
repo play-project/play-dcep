@@ -8,6 +8,7 @@ import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,28 +70,33 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	public void shutdown() {
 		shutdownEtalis = true;
 	}
-	
+	int i = 0;
 	@Override
 	public void outputEvent(EtalisEvent event) {
 		//FIXME sobermeier: separate measurement events (e.g. without using "complex")
 
 		try {
 			List<Quadruple> quadruples = this.getEventData(engine, event);
-		
+					 
 			// Publish complex event
 			CompoundEvent result = new CompoundEvent(quadruples);
-		
+
 			//measurementUnit.eventProduced(result, event.getProperties()[1].toString());
 			// event.getRuleID(); //TODO sobermeier use this.
 	
-			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
+			if(((i++)%500) == 0) logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
 			if(recipients.size()<1) logger.warn("No recipient for complex events.");
-			
 			for (SimplePublishApi recipient : recipients) {
 				recipient.publish(result);
 			}
-		} catch (RetractEventException e) {
-			logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled." );
+		} catch (Exception e) {
+			if(e instanceof RetractEventException){
+				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled." );
+			}else if(e instanceof java.io.UTFDataFormatException){ //FIXME find the reason for this exception.
+				logger.error("It is not possible to deliver this event. " + e.getMessage() + "\n" + event);
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	
