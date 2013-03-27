@@ -14,6 +14,8 @@ public class MeasurementUnit implements Serializable{
 	private long startTime = 0;
 	private long n;
 	
+	public MeasurementUnit(){}
+	
 	public void startNewMeasuringPeriod(){
 		startTime = System.nanoTime();
 		numberOfEvents = 0;
@@ -28,7 +30,7 @@ public class MeasurementUnit implements Serializable{
 		numberOfEvents++;
 		
 		if((numberOfEvents%n)==0){
-			System.out.println(getEventsPerSecond());
+			System.out.println(System.currentTimeMillis() + "\t" +getEventsPerSecond());
 			startTime = System.nanoTime();
 			numberOfEvents = 0;
 		}

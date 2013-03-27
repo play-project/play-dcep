@@ -60,26 +60,14 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI2.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
 		
 		meausrementUnit.calcRateForNEvents(100);
-		
-		//Generate and buffer events.
-		LinkedList<CompoundEvent> buffer = new LinkedList<CompoundEvent>();
 
 		// Publish some events
 		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			buffer.add(EventCloudHelpers.toCompoundEvent(m));
+			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			meausrementUnit.nexEvent();
+			testApiI2.publish(EventCloudHelpers.toCompoundEvent(m));
+			meausrementUnit.nexEvent();
 		}
-
-		// Send bufferd events.
-		for (int i = 0; i < 1000; i++) {
-			for (CompoundEvent compoundEvent : buffer) {
-				testApiI1.publish(compoundEvent);
-				meausrementUnit.nexEvent();
-				testApiI2.publish(compoundEvent);
-				meausrementUnit.nexEvent();
-				delay(200);
-			}
-		}
-
 	}
 	
 	

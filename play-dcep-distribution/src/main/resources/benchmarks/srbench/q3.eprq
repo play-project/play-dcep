@@ -7,8 +7,9 @@ PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
 PREFIX :        <http://events.event-processing.org/types/>
 
 CONSTRUCT {
-	:e rdf:type :SRBench-q2.
-	:e :stream <http://streams.event-processing.org/ids/Srbench#stream>. 
+	:e rdf:type :SRBench-q3.
+	:e :stream <http://streams.event-processing.org/ids/Srbench#stream>.
+	:e :sedTime ?time
 }
 WHERE {
 	WINDOW {
@@ -18,6 +19,7 @@ WHERE {
 				a weather:WindSpeedObservation; 
 				om-owl:observedProperty weather:_WindSpeed;
 				om-owl:result [ om-owl:floatValue ?value ].
+			?e1 :endTime ?time
 			}
 	} ("PT600000M"^^xsd:duration, sliding)
 }HAVING ( AVG(?value) >= "5"^^xsd:float )

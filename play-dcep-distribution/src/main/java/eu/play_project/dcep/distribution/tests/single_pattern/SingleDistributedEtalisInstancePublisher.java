@@ -7,8 +7,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.event_processing.events.types.UcTelcoCall;
@@ -63,10 +66,10 @@ public class SingleDistributedEtalisInstancePublisher {
 		// Publish some events to instance 1.
 		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
 			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
-			//System.out.println(EventCloudHelpers.toCompoundEvent(m));
 			delay(2);
 		}
 	}
+
 
 	public static CompoundEvent createEvent(String eventId, int value,
 			String type) {
