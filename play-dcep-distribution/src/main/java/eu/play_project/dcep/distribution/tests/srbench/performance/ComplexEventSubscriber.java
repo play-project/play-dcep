@@ -23,31 +23,42 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 	public void publish(CompoundEvent event) {
 		if(mu==null){
 			mu = new MeasurementUnit();
-			mu.calcRateForNEvents(2);
+			mu.calcRateForNEvents(10);
 		}
 		//mu.nexEvent();
 		printTimeSpentInSystem(event);
 	}
-	
+	int eventCounter = 0;
 	public void printTimeSpentInSystem(CompoundEvent event) {
+		if ((eventCounter++ % 500) == 0) {
+			for (Quadruple quadruple : event) {
+				// Use endTime
+				if (quadruple
+						.getPredicate()
+						.toString()
+						.equals("http://events.event-processing.org/types/sedTime")) {
 
-		for (Quadruple quadruple : event) {
-			// Use endTime
-			if (quadruple.getPredicate().toString().equals("http://events.event-processing.org/types/sedTime")) {
-
-				// Get time and pars it.
-				SimpleDateFormat sdf = new SimpleDateFormat(
-						eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601);
-				Date date = null;
-				try {
-					date = sdf
-							.parse(quadruple.getObject().toString().replace("\"", "").replace("^^http://www.w3.org/2001/XMLSchema#dateTime",""));
-				} catch (ParseException e1) {
-					e1.printStackTrace();
+					// Get time and pars it.
+					SimpleDateFormat sdf = new SimpleDateFormat(
+							eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601);
+					Date date = null;
+					try {
+						date = sdf
+								.parse(quadruple
+										.getObject()
+										.toString()
+										.replace("\"", "")
+										.replace(
+												"^^http://www.w3.org/2001/XMLSchema#dateTime",
+												""));
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
+					long time = System.currentTimeMillis();
+					// Print time pent in system.
+					System.out.println(time + "\t"
+							+ (System.currentTimeMillis() - date.getTime()));
 				}
-				long time = System.currentTimeMillis();
-				// Print time pent in system.
-				System.out.println(time + "\t" + (System.currentTimeMillis() - date.getTime()));
 			}
 		}
 	}
