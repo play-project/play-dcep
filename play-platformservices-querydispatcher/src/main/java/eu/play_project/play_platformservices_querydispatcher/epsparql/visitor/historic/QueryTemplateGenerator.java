@@ -1,8 +1,6 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.historic;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -42,20 +40,7 @@ public class QueryTemplateGenerator {
 			object = gtv.getTemplate().getObject();
 
 			queryTemplate.appendLine(new Quadruple(graph, subject, predicate, object));
-
 		}
-
 		return queryTemplate;
-
 	}
-	
-	private boolean containsSharedVariables(Query query){
-		
-		Map<String, Integer> vars = new HashMap<String, Integer>();
-		
-		query.getConstructTemplate();
-		
-		return false;
-	}
-
 }
