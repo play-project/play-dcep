@@ -114,14 +114,14 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				EVENTPATTERN,
 				//Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getRuleID()))); // FIXME sobermeier
 				Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
-//FIXME sobermeier Find out why method cannot be found. (com.jtalis.core.event.EtalisEvent.getTimeStarts())
-//		quadruples.add(new Quadruple(
-//				GRAPHNAME,
-//				EVENTID,
-//				STARTTIME,
-//				Node.createLiteral(
-//						DateFormatUtils.format(event.getTimeStarts(), DATE_FORMAT_8601),
-//						XSDDatatype.XSDdateTime)));
+
+		quadruples.add(new Quadruple(
+				GRAPHNAME,
+				EVENTID,
+				STARTTIME,
+				Node.createLiteral(
+						DateFormatUtils.format(event.getTimeStarts(), DATE_FORMAT_8601),
+						XSDDatatype.XSDdateTime)));
 
 		quadruples.add(new Quadruple(
 				GRAPHNAME,
