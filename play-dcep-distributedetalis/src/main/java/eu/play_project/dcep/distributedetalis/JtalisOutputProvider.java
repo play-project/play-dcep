@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static eu.play_project.play_commons.constants.Namespace.EVENTS;
@@ -52,9 +53,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	private final static Node ENDTIME = TypeConversion.toJenaNode(Event.ENDTIME);
 	private final static Node EVENTPATTERN = TypeConversion.toJenaNode(Event.EVENTPATTERN);
 	private final static Node SOURCE = TypeConversion.toJenaNode(Event.SOURCE);
-	
-	private static final String DATE_FORMAT_8601 = eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
-	                                               
 
 	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, EpSparqlQuery> registeredQueries, EcConnectionManager ecConnectionManager) {
 		this.engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
