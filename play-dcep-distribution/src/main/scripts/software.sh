@@ -33,7 +33,7 @@ installCEP_Engine(){
 	# Get and start CEP-Engine
 	mkdir $INSTALL_DIR
 	cd    $INSTALL_DIR
-	wget  $TOOL_URL/cep-engine.jar
+	wget  $TOOL_URL/dEtalis.jar
 	chmod u+x cep-engine.jar
 	wget $TOOL_URL/proactive.java.policy
 	wget $TOOL_URL/prologMethods.tar
@@ -46,7 +46,7 @@ installCEP_Engine(){
 getTool(){
 	mkdir $INSTALL_DIR
 	cd    $INSTALL_DIR
-	wget  $TOOL_URL/${1}.jar
+	wget  $TOOL_URL/dEtalis.jar.jar
 	wget  $TOOL_URL/${1}.sh
 	wget  $TOOL_URL/proactive.java.policy
 	chmod u+x $INSTALL_DIR/${1}.sh
