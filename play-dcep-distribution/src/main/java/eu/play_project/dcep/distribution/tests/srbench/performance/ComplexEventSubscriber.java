@@ -23,7 +23,7 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 	public void publish(CompoundEvent event) {
 		if(mu==null){
 			mu = new MeasurementUnit();
-			mu.calcRateForNEvents(10);
+			mu.calcRateForNEvents(300);
 		}
 		//mu.nexEvent();
 		printTimeSpentInSystem(event);

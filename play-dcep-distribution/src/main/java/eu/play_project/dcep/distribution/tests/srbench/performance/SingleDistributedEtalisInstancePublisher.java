@@ -63,27 +63,29 @@ public class SingleDistributedEtalisInstancePublisher {
 
 		meausrementUnit.calcRateForNEvents(500);
 
-		// Publish some events
-		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			CompoundEvent event = EventCloudHelpers.toCompoundEvent(m);
-			testApiI1.publish(event);
-			meausrementUnit.nexEvent();
-			delay(10);
-			testApiI2.publish(event);
-			meausrementUnit.nexEvent();
-		}
+//		// Publish some events
+//		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+//			CompoundEvent event = EventCloudHelpers.toCompoundEvent(m);
+//			testApiI1.publish(event);
+//			meausrementUnit.nexEvent();
+//			delay(10);
+//			testApiI2.publish(event);
+//			meausrementUnit.nexEvent();
+//		}
+		
 		long eventId = 100;
 		boolean destination1 = true;
+
 		for (int i = 0; i < 50000; i++) {
-			if (destination1) {
+		//	if (destination1) {
 				testApiI1.publish(createEvent((eventId++) + ""));
 				meausrementUnit.nexEvent();
 				destination1 = false;
-			} else {
-				testApiI2.publish(createEvent((eventId++) + ""));
-				meausrementUnit.nexEvent();
-				destination1 = true;
-			}
+//			} else {
+//				testApiI2.publish(createEvent((eventId++) + ""));
+//				meausrementUnit.nexEvent();
+//				destination1 = true;
+//			}
 			delay(10);
 		}
 	}

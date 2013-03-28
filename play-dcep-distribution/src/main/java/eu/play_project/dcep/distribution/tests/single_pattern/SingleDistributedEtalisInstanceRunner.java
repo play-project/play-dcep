@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distribution.tests.single_pattern;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -34,7 +35,7 @@ public class SingleDistributedEtalisInstanceRunner {
 	private static ComplexEventSubscriber subscriber = null;
 	private static DistributedEtalisTestApi testApi;
 	
-	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, RemoteException, ProActiveException, DistributedEtalisException {
+	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, ProActiveException, DistributedEtalisException, IOException {
 		
 		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue("proactive.java.policy");
 		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
@@ -65,6 +66,11 @@ public class SingleDistributedEtalisInstanceRunner {
 //			e.printStackTrace();
 //		}
 //		testApi.attach(subscriber);
+		
+		System.out.println("Press 3x RETURN to shutdown the application");
+		System.in.read();
+		System.in.read();
+		System.in.read();
 	}
 
 }

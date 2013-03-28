@@ -65,43 +65,12 @@ public class SingleDistributedEtalisInstancePublisher {
 
 		// Publish some events to instance 1.
 		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			//testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+			testApiI1.publish(createEvent(Math.random() + ""));
 			delay(2);
 		}
 	}
 
-
-	public static CompoundEvent createEvent(String eventId, int value,
-			String type) {
-
-		List quads = new ArrayList<Quadruple>();
-
-		 Quadruple q1 = new Quadruple(
-				 Node.createURI("http://prefix.example.com/" + eventId),
-				 Node.createURI("http://prefix.example.com/e1"),
-				 Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-				 Node.createURI("http://prefix.example.com/" + type));
-
-
-		Quadruple q2 = new Quadruple(
-				Node.createURI("http://prefix.example.com/" + eventId), 
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://prefix.example.com/value"), 
-				Node.createURI(System.currentTimeMillis() + ""));
-
-
-//		Quadruple q3 = new Quadruple(
-//				Node.createURI("http://prefix.example.com/" + eventId), 
-//				Node.createURI("http://prefix.example.com/e1"),
-//				Node.createURI("http://prefix.example.com/math/value"), 
-//				Node.createURI(value + ""));
-
-		quads.add(q1);
-	//	quads.add(q3);
-		quads.add(q2);
-
-		return new CompoundEvent(quads);
-	}
 
 	private static EpSparqlQuery generateEle(String queryString) {
 		// Parse query
@@ -181,4 +150,72 @@ public class SingleDistributedEtalisInstancePublisher {
 		return null;
 	
 	}
+	public static CompoundEvent createEvent(String eventId) {
+
+		List quads = new ArrayList<Quadruple>();
+
+		 Quadruple q1 = new Quadruple(
+				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 Node.createURI("http://prefix.example.com/e1"),
+				 Node.createURI("http://events.event-processing.org/types/stream"),
+				 Node.createURI("http://streams.event-processing.org/ids/Srbench#stream"));
+		 
+		 Quadruple q3 = new Quadruple(
+				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 Node.createURI("http://prefix.example.com/e2"),
+				 Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#WindSpeedObservation"));
+		 
+		 Quadruple q4 = new Quadruple(
+				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 Node.createURI("http://prefix.example.com/e2"),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#observedProperty"),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#_WindSpeed"));
+		 
+		 Quadruple q5 = new Quadruple(
+				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 Node.createURI("http://prefix.example.com/e2"),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#result"),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"));
+		 
+		 Quadruple q6 = new Quadruple(
+				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
+				 Node.createURI("10.0"));
+		 
+		 Quadruple q7 = new Quadruple(
+				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 Node.createURI("http://prefix.example.com/e1"),
+				 Node.createURI("http://events.event-processing.org/types/endTime"),
+				 Node.createURI(new SimpleDateFormat(eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601).format(new Date())));
+		 
+		 Quadruple q8 = new Quadruple(
+				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 Node.createURI("http://prefix.example.com/e2"),
+				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#procedure"),
+				 Node.createURI("http://sensor.example.com/S1"));
+
+
+		
+
+
+//		Quadruple q3 = new Quadruple(
+//				Node.createURI("http://prefix.example.com/" + eventId), 
+//				Node.createURI("http://prefix.example.com/e1"),
+//				Node.createURI("http://prefix.example.com/math/value"), 
+//				Node.createURI(value + ""));
+
+		quads.add(q1);
+	//	quads.add(q2);
+		quads.add(q3);
+		quads.add(q4);
+		quads.add(q5);
+		quads.add(q6);
+		quads.add(q7);
+		quads.add(q8);
+
+		return new CompoundEvent(quads);
+	}
 }
+
