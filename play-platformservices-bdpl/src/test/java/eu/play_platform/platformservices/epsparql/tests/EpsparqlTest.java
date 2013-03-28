@@ -34,7 +34,6 @@ public class EpsparqlTest {
 	public void testPositiveTests() {
 				
 		for (String fileName : new String[] {
-				"play-bdpl-personalmonitoring-01-slowdown-recom.eprq",
 				"EP-SPARQL-Query-HAVING.eprq",
 				"EP-SPARQL-Query-CONSTRUCT-Query.eprq",
 				"EP-SPARQL-Query-Event-and-GRAPH.eprq",
@@ -61,7 +60,11 @@ public class EpsparqlTest {
 				"play-epsparql-telco-recom.eprq",
 				"play-epsparql-telco-recom-tweets.eprq",
 				"play-epsparql-iccs-telco-02.eprq",
-				"play-epsparql-iccs-telco-02a.eprq"
+				"play-epsparql-iccs-telco-02a.eprq",
+				"play-bdpl-personalmonitoring-01-slowdown-recom.eprq",
+				"play-bdpl-personalmonitoring-02-slowdown-recom-two-events.eprq",
+				"play-bdpl-personalmonitoring-03-related-location.eprq",
+				"play-bdpl-personalmonitoring-04-slowdown-recom-three-events.eprq",
 				}) {
 			System.out.println("Testing queryfile: " + fileName);
 			try {
