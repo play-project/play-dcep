@@ -77,15 +77,15 @@ public class SingleDistributedEtalisInstancePublisher {
 		boolean destination1 = true;
 
 		for (int i = 0; i < 50000; i++) {
-		//	if (destination1) {
+			if (destination1) {
 				testApiI1.publish(createEvent((eventId++) + ""));
 				meausrementUnit.nexEvent();
 				destination1 = false;
-//			} else {
-//				testApiI2.publish(createEvent((eventId++) + ""));
-//				meausrementUnit.nexEvent();
-//				destination1 = true;
-//			}
+			} else {
+				testApiI2.publish(createEvent((eventId++) + ""));
+				meausrementUnit.nexEvent();
+				destination1 = true;
+			}
 			delay(10);
 		}
 	}
