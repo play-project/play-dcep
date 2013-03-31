@@ -261,7 +261,6 @@ void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp;}
 {
    (<WHERE>)? t = <LBRACE>
 	(
-	  //  (<GRAPH> (< EVENT >)?) | (< EVENT > (<GRAPH>)?)
 	  //Realtime query with window.
 	   < BEGIN_WINDOW > <LBRACE> < EVENT > E()
 		<RBRACE> t = < WINDOWSIZE > {
@@ -271,12 +270,13 @@ void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp;}
             	throwParseException(e.getMessage(), t.beginLine, t.beginColumn) ;
             }			
 		} < WINDOW_TYPE_SLIDING > <RPAREN>
-		WhereClauseH(t)
 	|
-		//Realtime query followd by optinal historic part.
-	   < EVENT > E() WhereClauseH(t)
+		//Realtime query without windows.
+	   < EVENT > E()	)
+	// Historical query is optional.
+	WhereClauseH(t)
 
-  )<RBRACE>
+  <RBRACE>
 }
 
 // Historical WhereClause. Default without <LBRACE > and < RBRACE >
@@ -601,7 +601,6 @@ Element GroupGraphPattern() : { Element el = null ; Token t ; }
 // ---- General Graph Pattern 
 Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
 {
-  t = <LBRACE>
   (
     { startSubSelect(t.beginLine, t.beginColumn) ; }
     SubSelect()
@@ -611,7 +610,6 @@ Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
     }
   | el = GroupGraphPatternSub()
   )
-  <RBRACE>
     { return el ; }
 }
 Element GroupGraphPatternSub() : { Element el = null ; }
@@ -639,7 +637,7 @@ Element GroupGraphPatternSub() : { Element el = null ; }
     )?
   )*
       { endGroup(elg) ; }
-      { getQuery().addHistoricElement(elg) ; return elg ; }
+      { return elg ; }
 }
 Element TriplesBlock(ElementPathBlock acc) : { }
 {
@@ -667,6 +665,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GraphGraphPattern()
  |
    el = ServiceGraphPattern()
+ |
+   el = Filter()
  |
    el = Bind()
  |
