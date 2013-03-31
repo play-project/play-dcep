@@ -282,16 +282,8 @@ void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp;}
 // Historical WhereClause. Default without <LBRACE > and < RBRACE >
 void WhereClauseH(Token t) : { Element el ;}
 {
-
    { startWherePattern() ; }
-	// Code from GroupGraphPattern()
-	(
-     el = GroupGraphPatternSub()
-   )
-
-    //Set values.
-	{ getQuery().setQueryPattern(el) ; }
-   
+	el = GroupGraphPatternNoBraces(t) { getQuery().setQueryPattern(el) ; }
    { finishWherePattern() ; }
 }
  
@@ -590,6 +582,24 @@ void TriplesTemplate(TripleCollector acc) : { }
 }
 // ---- General Graph Pattern 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
+{
+  t = <LBRACE>
+  (
+    { startSubSelect(t.beginLine, t.beginColumn) ; }
+    SubSelect()
+    {
+      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
+      el = new ElementSubQuery(q) ;
+    }
+  | el = GroupGraphPatternSub()
+  )
+  <RBRACE>
+    { return el ; }
+}
+
+// PLAY GroupGraphPattern() without braces.
+// ---- General Graph Pattern 
+Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
 {
   t = <LBRACE>
   (
