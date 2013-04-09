@@ -1,17 +1,18 @@
 % Increment counter for given event id.
-incrementReferenceCounter(ID):- (id(ID, ID2, X), X2 is X + 1,retractall(id(ID, ID2, X)), assert(id(ID, ID2, X2))).
+incrementReferenceCounter(ID):- (referenceCounter(ID, ID2, X), X2 is X + 1,retractall(referenceCounter(ID, ID2, X)), assert(referenceCounter(ID, ID2, X2))).
 
 % Decrement counter for given event id.
-decrementReferenceCounter(ID):- (id(ID, ID2, X), X2 is X - 1,retractall(id(ID, ID2, X)), assert(id(ID, ID2, X2))).
+decrementReferenceCounter(ID):- (referenceCounter(ID, ID2, X), X2 is X - 1,retractall(referenceCounter(ID, ID2, X)), assert(referenceCounter(ID, ID2, X2))).
 
-% Represents the id of the last inserted event.
-%assert(lastsentEvent(0)).
+% Set id of last Event. New id must be > than the old id.
+setLastInsertedEvent(Id):- (retractall(lastInsertedEvent(_)), assert(lastInsertedEvent(Id))).
 
 % Remove elements if counter == 0
-collectGarbage(ID) :- (id(ID,_ID2 ,X), X==0, rdf_retractall(_S,_P,_O,ID), retractall(id(ID, _ID2, X)); true).
+collectGarbage(ID) :- (referenceCounter(ID,_ID2 ,X), X==0, rdf_retractall(_S,_P,_O,ID), retractall(referenceCounter(ID, _ID2, X)); true).
 
 %Delte unused triples.
-collectGarbage :- (forall(id(_ID, ID2, _X), ((lastsentEvent(C), (ID2<C)) -> (write('K ID2  '), write(ID2) , write('\n')); (write('G ID2  '), write(ID2), write('\n')) ))).
+%Related event was fired and counter == 0.
+collectGarbage :- (forall(referenceCounter(_ID, ID2, _X), (lastInsertedEvent(Id3), (ID2=<Id3), referenceCounter(_ID, ID2, X), (X == 0)) -> retract(referenceCounter(_D1, ID2, _I2)); (true))).
 
 transformToNumber(A, B):- catch(atom_number(A, B), _Exception, B is A).
 

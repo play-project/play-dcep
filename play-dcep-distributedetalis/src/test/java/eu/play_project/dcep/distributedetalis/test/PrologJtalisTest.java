@@ -1,6 +1,7 @@
 package eu.play_project.dcep.distributedetalis.test;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -454,9 +455,84 @@ public class PrologJtalisTest {
 		for (Hashtable<String, Object> hashtable : result) {
 			System.out.println(hashtable.get("Avg"));
 			assertTrue(hashtable.get("Avg").toString().equals("1.000000001E9"));
-			
 		}
 
+	}
+	
+	@Test
+	public void deleteUnusedTripleStoresTest(){
+		if(ctx==null){
+			this.init();
+		}
+		PlayJplEngineWrapper e = ((PlayJplEngineWrapper)ctx.getEngineWrapper());
+		
+		// Add reference counters.
+		// referenceCounter(EventId, CountEventId, RefCounter).
+		// Counter is 0. Data relates to events which was not consumed or related event is still waiting to be fired.
+		e.execute("assert(referenceCounter(a,1,0))");
+		e.execute("assert(referenceCounter(b,2,0))");
+		e.execute("assert(referenceCounter(c,3,0))");
+		e.execute("assert(referenceCounter(d,4,0))");
+		e.execute("assert(referenceCounter(e,5,0))");
+		e.execute("assert(referenceCounter(f,6,0))");
+		e.execute("assert(referenceCounter(g,7,0))");
+		e.execute("assert(referenceCounter(h,8,0))");
+		e.execute("assert(referenceCounter(i,9,0))");
+		
+		// Counter is > 0. Related event was consumed.
+		e.execute("assert(referenceCounter(j,-1,5))");
+		e.execute("assert(referenceCounter(k,-2,9))");
+		e.execute("assert(referenceCounter(l,-3,2))");
+		e.execute("assert(referenceCounter(m,-4,1))");
+		
+		
+		// Last inserted event by event execution worker.
+		e.execute("setLastInsertedEvent(4)");
+		
+		// Delete all event with are older than 4 and counter is 0.
+		// Is triggered by garbage collection event.
+		e.execute("collectGarbage");
+		
+		//Get variables and values
+		Hashtable<String, Object>[] result = e.execute("referenceCounter(EventId, CountEventId, RefCounter)");
+
+		// All events older than 4 were deleted.
+		assertEquals(result[0].get("EventId").toString()     , "e");
+		assertEquals(result[0].get("CountEventId").toString(), "5");
+		assertEquals(result[0].get("RefCounter").toString(),   "0");
+		
+		assertEquals(result[1].get("EventId").toString()     , "f");
+		assertEquals(result[1].get("CountEventId").toString(), "6");
+		assertEquals(result[1].get("RefCounter").toString(),   "0");
+		
+		assertEquals(result[2].get("EventId").toString()     , "g");
+		assertEquals(result[2].get("CountEventId").toString(), "7");
+		assertEquals(result[2].get("RefCounter").toString(),   "0");
+		
+		assertEquals(result[3].get("EventId").toString()     , "h");
+		assertEquals(result[3].get("CountEventId").toString(), "8");
+		assertEquals(result[3].get("RefCounter").toString(),   "0");
+		
+		assertEquals(result[4].get("EventId").toString()     , "i");
+		assertEquals(result[4].get("CountEventId").toString(), "9");
+		assertEquals(result[4].get("RefCounter").toString(),   "0");
+		
+		// Referenced triple store still exist.
+		assertEquals(result[5].get("EventId").toString()     , "j");
+		assertEquals(result[5].get("CountEventId").toString(), "-1");
+		assertEquals(result[5].get("RefCounter").toString(),   "5");
+		
+		assertEquals(result[6].get("EventId").toString()     , "k");
+		assertEquals(result[6].get("CountEventId").toString(), "-2");
+		assertEquals(result[6].get("RefCounter").toString(),   "9");
+		
+		assertEquals(result[7].get("EventId").toString()     , "l");
+		assertEquals(result[7].get("CountEventId").toString(), "-3");
+		assertEquals(result[7].get("RefCounter").toString(),   "2");
+		
+		assertEquals(result[8].get("EventId").toString()     , "m");
+		assertEquals(result[8].get("CountEventId").toString(), "-4");
+		assertEquals(result[8].get("RefCounter").toString(),   "1");
 	}
 	
 //	/**
@@ -528,10 +604,10 @@ public class PrologJtalisTest {
 		for (String method : getPrologMethods("Measurement.pl")) {
 			engine.execute("assert(" + method + ")");
 		}
-		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
-			System.out.println(method);
-			engine.execute("assert(" + method + ")");
-		}
+//		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
+//			System.out.println(method);
+//			engine.execute("assert(" + method + ")");
+//		}
 
 	}
 	
