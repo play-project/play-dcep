@@ -11,6 +11,7 @@ import fr.inria.eventcloud.api.Quadruple;
 public class PrologSemWebLib implements UsePrologSemWebLib {
 	private JtalisContextImpl ctx;
 	int oldValue =0;
+	long internalEventId = 0;
 	
 	@Override
 	public void init(JtalisContextImpl ctx) {
@@ -76,7 +77,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 			}
 		}
 		// Add GC counter.
-		gcDataAdded = ctx.getEngineWrapper().executeGoal("assert(id('" + event.getGraph() + "', 0))");
+		gcDataAdded = ctx.getEngineWrapper().executeGoal("assert(referenceCounter('" + event.getGraph() + "', " + internalEventId + ", -1))");
 		
 		if (!gcDataAdded) {
 			throw new DistributedEtalisException("Failed to insert garbage collection information in Prolog.");
