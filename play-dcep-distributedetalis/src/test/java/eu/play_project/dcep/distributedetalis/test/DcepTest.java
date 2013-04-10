@@ -60,6 +60,7 @@ public class DcepTest implements Serializable {
 		/*
 		 *  Register a pattern:
 		 */
+		logger.info("Register pattern.");
 		dcepManagmentApi
 				.registerEventPattern(new EpSparqlQuery(
 						new QueryDetails("queryId42"),
@@ -69,6 +70,7 @@ public class DcepTest implements Serializable {
 		/*
 		 * Push an event:
 		 */
+		logger.info("Push events");
 		Quadruple event = new Quadruple(Node.createURI("id4710"),
 				Node.createURI("http://play-project.eu/Karlsruhe"),
 				Node.createURI("http://play-project.eu/is/CepResult"),
@@ -84,6 +86,7 @@ public class DcepTest implements Serializable {
 		/*
 		 * Check results:
 		 */
+		logger.info("Check results.");
 		Quadruple eventR = new Quadruple(Node.createURI("http://events.event-processing.org/ids/id4710"),
 				Node.createURI("http://play-project.eu/Karlsruhe"),
 				Node.createURI("http://play-project.eu/is/CepResult"),
@@ -100,6 +103,7 @@ public class DcepTest implements Serializable {
 	@After
 	public void shutDownComponents() {
 		
+		logger.info("Terminate components");
 		try {
 			// Stop is recursive...
 			GCM.getGCMLifeCycleController(root).stopFc();
@@ -113,11 +117,10 @@ public class DcepTest implements Serializable {
 		}
 		
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Before
