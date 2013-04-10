@@ -2,7 +2,7 @@
 incrementReferenceCounter(ID):- (referenceCounter(ID, ID2, X), X2 is X + 1,retractall(referenceCounter(ID, ID2, X)), assert(referenceCounter(ID, ID2, X2))).
 
 % Decrement counter for given event id.
-decrementReferenceCounter(ID):- (referenceCounter(ID, ID2, X), X2 is X - 1,retractall(referenceCounter(ID, ID2, X)), assert(referenceCounter(ID, ID2, X2))).
+decrementReferenceCounter(ID):- (referenceCounter(ID, ID2, X), X2 is X - 1,retractall(referenceCounter(ID, ID2, X)), assert(referenceCounter(ID, ID2, X2)), collectGarbage(ID)).
 
 % Set id of last Event. New id must be > than the old id.
 setLastInsertedEvent(Id):- (retractall(lastInsertedEvent(_)), assert(lastInsertedEvent(Id))).
