@@ -48,7 +48,7 @@ public class DcepTest implements Serializable {
 
 
 	@Test
-	public void pushQuadEvents() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException {
+	public void pushQuadEvents() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException, InterruptedException {
 		
 		/*
 		 *  Check if you get a reference to PublishApi and ManagementApi:
@@ -60,45 +60,41 @@ public class DcepTest implements Serializable {
 		/*
 		 *  Register a pattern:
 		 */
-		dcepManagmentApi.registerEventPattern(new EpSparqlQuery(
-				new QueryDetails("queryId42"),
-				"complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1), (xpath(element(sparqlFilter, [keyWord=O], []), //sparqlFilter(contains(@keyWord,'42')), _)))"));
+		dcepManagmentApi
+				.registerEventPattern(new EpSparqlQuery(
+						new QueryDetails("queryId42"),
+						"complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1), (xpath(element(sparqlFilter, [keyWord=O], []), //sparqlFilter(contains(@keyWord,'42')), _)))"));
 		// "complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))"));
 
 		/*
-		 *  Push an event:
+		 * Push an event:
 		 */
 		Quadruple event = new Quadruple(Node.createURI("id4710"),
 				Node.createURI("http://play-project.eu/Karlsruhe"),
 				Node.createURI("http://play-project.eu/is/CepResult"),
 				Node.createURI("http://play-project.eu/42"));
-		for (int i = 0; i < 2; i++) {
-			ArrayList<Quadruple> list = new ArrayList<Quadruple>();
-			list.add(event);
-			try {
-				distributedEtalisTestApi.publish(new CompoundEvent(list));
-			} catch (Exception e) {
-				fail(e.getMessage());
-			}
 
+		ArrayList<Quadruple> list = new ArrayList<Quadruple>();
+		list.add(event);
 
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			dcepManagmentApi.unregisterEventPattern("queryId42");
-		}
+		distributedEtalisTestApi.publish(new CompoundEvent(list));
+
+		Thread.sleep(1000);
 
 		/*
 		 * Check results:
 		 */
+		Quadruple eventR = new Quadruple(Node.createURI("http://events.event-processing.org/ids/id4710"),
+				Node.createURI("http://play-project.eu/Karlsruhe"),
+				Node.createURI("http://play-project.eu/is/CepResult"),
+				Node.createURI("http://play-project.eu/42"));
+
 		if (subscriber.getComplexEvents() != null) {
-			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples().get(4).equals(event));
+			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples().get(4).equals(eventR));
 		} else {
 			System.out.println("ERROR: No complex events in test 'checkComplexEvents()'.");
 			fail();
-		}
+		}	
 	}
 
 	@After
@@ -170,6 +166,5 @@ public class DcepTest implements Serializable {
 		}
 
 		distributedEtalisTestApi.attach(subscriber);
-
 	}
 }

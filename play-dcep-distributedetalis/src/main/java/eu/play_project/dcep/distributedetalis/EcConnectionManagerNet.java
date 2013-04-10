@@ -245,8 +245,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 
 	@Override
 	public void destroy() {
-		logger.info("Terminating {}.", this.getClass()
-				.getSimpleName());
+		logger.info("Terminating {}.", this.getClass().getSimpleName());
 		logger.info("Unsubscribe from Event Clouds");
 
 		// Unsubscribe

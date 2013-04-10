@@ -92,7 +92,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		
 		// Register event pattern.
 		//Set new ID, but no complex event will be produced.
-		etalis.addDynamicRuleWithId("GarbageCollectionPattern", "complex <- gc(ID) where (setLastInsertedEvent(ID),false)");
+		//etalis.addDynamicRuleWithId("GarbageCollectionPattern", "complex <- gc(ID) where (setLastInsertedEvent(ID),false)");
 	}
 	
 	

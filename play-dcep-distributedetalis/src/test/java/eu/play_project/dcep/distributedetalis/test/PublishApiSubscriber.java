@@ -31,7 +31,6 @@ public class PublishApiSubscriber implements SimplePublishApi, Serializable {
 
 	@Override
 	public void publish(CompoundEvent arg0) {
-		System.out.println("Complex event:  " + arg0.toString());
 		complexEvents.add(arg0);
 	}
 
