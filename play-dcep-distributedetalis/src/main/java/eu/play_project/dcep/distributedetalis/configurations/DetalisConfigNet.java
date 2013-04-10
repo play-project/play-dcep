@@ -90,6 +90,10 @@ public class DetalisConfigNet implements Configuration, Serializable{
 
 		// Instatiate measurement unit.
 		// this.measurementUnit = new MeasurementUnit(this,
+		
+		// Register event pattern.
+		//Set new ID, but no complex event will be produced.
+		etalis.addDynamicRuleWithId("GarbageCollectionPattern", "complex <- gc(ID) where (setLastInsertedEvent(ID),false)");
 	}
 	
 	public static String[] getPrologMethods(String methodFile){

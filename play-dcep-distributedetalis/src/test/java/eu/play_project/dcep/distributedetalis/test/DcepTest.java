@@ -48,7 +48,8 @@ public class DcepTest implements Serializable {
 
 
 	@Test
-	public void pushQuadEvents() {
+	public void pushQuadEvents() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException {
+		
 		/*
 		 *  Check if you get a reference to PublishApi and ManagementApi:
 		 */
@@ -93,8 +94,7 @@ public class DcepTest implements Serializable {
 		 * Check results:
 		 */
 		if (subscriber.getComplexEvents() != null) {
-			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples()
-					.get(4).equals(event));
+			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples().get(4).equals(event));
 		} else {
 			System.out.println("ERROR: No complex events in test 'checkComplexEvents()'.");
 			fail();
@@ -154,12 +154,10 @@ public class DcepTest implements Serializable {
 		distributedEtalisTestApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
 				.getFcInterface("DistributedEtalisTestApi"));
 
-		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root
-				.getFcInterface("ConfigApi"));
+		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root.getFcInterface("ConfigApi"));
 		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-plus-tweet-historical-data.trig"));
 
-		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
-				.getFcInterface("DcepManagmentApi"));
+		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
 
 		// Subscribe to get complex events.
 		try {
