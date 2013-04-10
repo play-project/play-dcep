@@ -77,7 +77,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
 		Having();
-		//DecrementReferenceCounter();
+		DecrementReferenceCounter();
 		elePattern += ")";
 	}
 
@@ -153,7 +153,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void DecrementReferenceCounter(){
-		//TODO sobermeier do it for all triples
 		elePattern +=  ",decrementReferenceCounter(ViD1)";
 	}
 	private void SimpleEventPattern() {
