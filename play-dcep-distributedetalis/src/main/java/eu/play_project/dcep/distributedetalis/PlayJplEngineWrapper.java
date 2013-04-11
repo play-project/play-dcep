@@ -104,7 +104,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	public Hashtable<String, Object>[] getTriplestoreData(String triplestoreID) {
 		
 		//Get data from triplestore
-		Hashtable<String, Object>[] result = this.execute("rdfTest(_S,_P,_O, " + triplestoreID + ")");
+		Hashtable<String, Object>[] result = this.execute("rdfTest(S,P,O, " + triplestoreID + ")");
 		
 		// Free space
 		this.executeGoal("retractall(rdfTest(_S,_P,_O, " + triplestoreID + "))");
