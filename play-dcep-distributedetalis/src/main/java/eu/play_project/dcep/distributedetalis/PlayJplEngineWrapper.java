@@ -104,10 +104,10 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	public Hashtable<String, Object>[] getTriplestoreData(String triplestoreID) {
 		
 		//Get data from triplestore
-		Hashtable<String, Object>[] result = this.execute("rdfTest(S,P,O, " + triplestoreID + ")");
+		Hashtable<String, Object>[] result = this.execute("rdfTest(_S,_P,_O, " + triplestoreID + ")");
 		
 		// Free space
-		this.executeGoal("retractall(rdfTest(S,P,O, " + triplestoreID + "))");
+		this.executeGoal("retractall(rdfTest(_S,_P,_O, " + triplestoreID + "))");
 		
 		return result;
 	}
@@ -125,33 +125,6 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 		return result;
 	}
 	
-	public void collectGarbage() {
-		String collectComand = "";
-		StringBuffer getEventIds = new StringBuffer();
-		
-		//TODO do it in prolog.
-		getEventIds.append("id(ID,V)");
-		
-		Hashtable<String, Object>[] result = this.execute((getEventIds.toString()));
-
-		//Print eventIDs and reference counters. Nice debugging view.
-//		logger.info("\n\n\n\n\n");
-//		for (Hashtable<String, Atom> hashtable : result) {
-//			logger.info(hashtable.get("ID") + "\t" + hashtable.get("V"));
-//		}
-//		logger.info("--------------------------------------------------------------------------------");
-		
-		//Get IDs and give it to the garbage collector
-		for (Hashtable<String, Object> hashtable : result) {
-			if(((jpl.Integer)hashtable.get("V")).intValue() == 10){
-				collectComand = "collectGarbage(";
-				collectComand += hashtable.get("ID").toString();
-				collectComand += ")";
-				// logger.info("Collect: " + hashtable.get("ID") + "\t" + hashtable.get("V"));
-				this.executeGoal(collectComand.toString());
-			}
-		}
-	}
 	
 	@Override
 	public boolean consult(String file) {
@@ -165,8 +138,8 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 
 	@Override
 	public boolean assertFromFile(String file) {
-
-		return this.executeGoal("assert(" + "dd" +")");
+		return false;
 	}
-	
 }
+
+	

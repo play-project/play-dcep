@@ -202,10 +202,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
 			}
 		}
-		
-		//Remove unused triples from prolog
-		engine.collectGarbage();
-		
+
 		return quadruples;
 	}
 	
