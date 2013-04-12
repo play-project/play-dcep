@@ -22,8 +22,7 @@ getNextO(S,P,[C|L]) :-  (writeInDB(S,P,C), getNextO(S,P,L)).
 % writeInDB(S,P,O):- write('write Result'),currentDB(DB), assert(rdfTest(S,P,O,DB)). % for testing
 
  writeInDB(S,P,O):- (currentDB(DB), assert(rdfTest(S,P,O,DB))).
-% With debugging output.
-% writeInDB(S,P,O):- (currentDB(DB), assert(rdfTest(S,P,O,DB)), write('Used stack: '), statistics(globalused, STACK),  write(STACK), write(' Used heap: '), statistics(heapused, HEAP) , write(HEAP), write('GC collected heap: '),statistics(garbage_collection, SIZE), write(SIZE), write('\n'), write(' Number of triples: '), rdf_statistics(triples(Count)), write(Count), write('\n\n'), garbage_collect_atoms, garbage_collect).
+
  
 
 
