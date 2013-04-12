@@ -61,11 +61,12 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 			
 			//Load prolog methods.
 			try {
-				cl.loadCode("ComplexEventData.pl", engine);
 				cl.loadCode("ReferenceCounting.pl", engine);
-				cl.loadCode("Measurement.pl", engine);
-				cl.loadCode("Math.pl", engine);
 				cl.loadCode("Aggregatfunktions.pl", engine);
+				cl.loadCode("ComplexEventData.pl", engine);
+				cl.loadCode("Measurement.pl", engine);
+				cl.loadCode("Statistics.pl", engine);
+				cl.loadCode("Math.pl", engine);
 			} catch (IOException e) {
 				logger.error("It is not possible to load prolog code. " + e.getMessage());
 				e.printStackTrace();
