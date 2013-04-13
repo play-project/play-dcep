@@ -70,6 +70,9 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 			} catch (IOException e) {
 				logger.error("It is not possible to load prolog code. " + e.getMessage());
 				e.printStackTrace();
+			}catch(Exception e){
+				logger.error("It is not possible to load prolog code. " + e.getMessage());
+				e.printStackTrace();
 			}
 
 	

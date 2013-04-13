@@ -26,7 +26,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 	private static final long serialVersionUID = 1L;
 	private String inputRdfModelFile;
 	private Logger logger;
-	private static LoadPrologCode cl;
+	private static transient LoadPrologCode cl;
 	
 	public  DetalisConfigLocal(){}
 	
@@ -74,6 +74,9 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 			cl.loadCode("Statistics.pl", engine);
 			cl.loadCode("Math.pl", engine);
 		} catch (IOException e) {
+			logger.error("It is not possible to load prolog code. " + e.getMessage());
+			e.printStackTrace();
+		}catch(Exception e){
 			logger.error("It is not possible to load prolog code. " + e.getMessage());
 			e.printStackTrace();
 		}
