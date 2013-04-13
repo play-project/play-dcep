@@ -77,6 +77,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
 		Having();
+		//PrintStatisticsData();
 		DecrementReferenceCounter();
 		elePattern += ")";
 	}
@@ -154,6 +155,11 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	private void DecrementReferenceCounter(){
 		elePattern +=  ",decrementReferenceCounter(ViD1)";
+	}
+	
+	//Call prolog methods which echos statistics data to the console.
+	private void PrintStatisticsData(){
+		elePattern += ", printRdfStat, printRefCountN";
 	}
 	private void SimpleEventPattern() {
 	
