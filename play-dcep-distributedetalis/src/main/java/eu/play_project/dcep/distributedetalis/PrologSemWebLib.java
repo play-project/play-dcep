@@ -9,9 +9,9 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class PrologSemWebLib implements UsePrologSemWebLib {
-	private JtalisContextImpl ctx;
+	private static JtalisContextImpl ctx;
 	int oldValue =0;
-	long internalEventId = 0;
+	long internalEventId = 0; // Ordered event ids. id_0 < id_1 < id2 ...
 	
 	@Override
 	public void init(JtalisContextImpl ctx) {
@@ -78,6 +78,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 		}
 		// Add GC counter.
 		gcDataAdded = ctx.getEngineWrapper().executeGoal("assert(referenceCounter('" + event.getGraph() + "', " + internalEventId + ", -1))");
+		internalEventId++;
 		
 		if (!gcDataAdded) {
 			throw new DistributedEtalisException("Failed to insert garbage collection information in Prolog.");
