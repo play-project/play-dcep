@@ -1,6 +1,8 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 /**
@@ -14,6 +16,7 @@ import java.util.Stack;
 public class VarNameManager {
 	long ceid; //Complex event id variable.
 	long triplestoreVariable;
+	long startTriplestoreVariableCurrentQuery; // Store first triplestore variable of the query.
 	long absVariable;
 	long filterVar;
 	long aggrDbId;
@@ -44,6 +47,32 @@ public class VarNameManager {
 			counter = new VarNameManager();
 		}
 		return counter;
+	}
+	
+	/**
+	 * Sometimes it is necessary to know all triplestore variables of one query.
+	 * With this method the current state will be persisted.
+	 * Now it is possible to redrive all triplestore variables from this point with getAllTripleStoreVariablesOfThisQuery() .
+	 */
+
+	public void newQuery(){
+		startTriplestoreVariableCurrentQuery = triplestoreVariable;
+		startTriplestoreVariableCurrentQuery++; // newQuery is called before current triplestoreVariable is generated. Precalculate value.
+	}
+	
+	/**
+	 * Generate a list of all triplestore variables of the current query.
+	 * All variables after calling newQuery() are in this list.
+	 * @return Triplestor variables of current Query.
+	 */
+	public List<String> getAllTripleStoreVariablesOfThisQuery(){
+		LinkedList<String> vars = new LinkedList<String>();
+		for (int startTriplestoreVariableCurrentQuery = 0; startTriplestoreVariableCurrentQuery <= triplestoreVariable; startTriplestoreVariableCurrentQuery++) {
+			vars.add("ViD" + triplestoreVariable);
+		}
+		
+		return vars;
+		
 	}
 	
 	public String getNextCeid(){

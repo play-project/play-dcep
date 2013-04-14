@@ -4,6 +4,7 @@ import static eu.play_project.play_platformservices_querydispatcher.epsparql.vis
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Triple;
@@ -49,6 +50,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		eventQueryIter = inQuery.getEventQuery().iterator();
 		binOperatorIter = inQuery.getEventBinOperator().iterator();
 		varNameManager = getVarNameManager();
+		varNameManager.newQuery();
 		eventTypeVisitor = new EventTypeVisitor();
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(varNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
@@ -77,7 +79,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
 		Having();
-		//PrintStatisticsData();
+		PrintStatisticsData();
 		DecrementReferenceCounter();
 		elePattern += ")";
 	}
@@ -154,7 +156,13 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void DecrementReferenceCounter(){
-		elePattern +=  ",decrementReferenceCounter(ViD1)";
+		StringBuffer tmp = new StringBuffer();
+		
+		for (String var : varNameManager.getAllTripleStoreVariablesOfThisQuery()) {
+			tmp.append(", decrementReferenceCounter( "+ var + ")");
+		}
+		
+		elePattern += tmp.toString();
 	}
 	
 	//Call prolog methods which echos statistics data to the console.
