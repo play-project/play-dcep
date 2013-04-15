@@ -596,18 +596,18 @@ public class PrologJtalisTest {
 
 		//Load prolog methods.
 		for (String method : getPrologMethods("ComplexEventData.pl")) {
-			engine.execute("assert(" + method + ")");
+			engine.execute("assert((" + method + "))");
 		}
 		for (String method : getPrologMethods("ReferenceCounting.pl")) {
-			engine.execute("assert(" + method + ")");
+			engine.execute("assert((" + method + "))");
 		}
 		for (String method : getPrologMethods("Measurement.pl")) {
-			engine.execute("assert(" + method + ")");
+			engine.execute("assert((" + method + "))");
 		}
-//		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
-//			System.out.println(method);
-//			engine.execute("assert(" + method + ")");
-//		}
+		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
+			engine.execute("assert((" + method + "))");
+			System.out.println(method);
+		}
 
 	}
 	
