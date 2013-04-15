@@ -67,7 +67,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
 			//testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
 			testApiI1.publish(createEvent(Math.random() + ""));
-			delay(2);
+			delay(20);
 		}
 	}
 

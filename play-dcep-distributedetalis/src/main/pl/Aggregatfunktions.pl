@@ -12,10 +12,10 @@ calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvg
 % Helpers
 agregateListExists(Id) :- (catch(aggregatDb(Id,_List), _Exception, false)). % Check if data structure exists.
 
-calcAvgIter([], Id, _WindowEnd, Sum, N, Result):- ((Result is Sum/N)).
+calcAvgIter([], Id, _WindowEnd, Sum, N, Result):- ((Result is (Sum/N))).
 calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- (transformToNumber(H, Hn), transformToNumber(WindowEnd, WindowEndN), (Hn >= WindowEndN) ->
-			calcAvgIter(T, Id, WindowEnd, (Sum + Hn), (N + 1), Result);
-			calcAvgIter([], Id, WindowEnd, (Sum + Hn), (N + 1), Result)). % Stop recursion if value is out of window.
+			transformToNumber(H, Hn), calcAvgIter(T, Id, WindowEnd, (Sum + Hn), (N + 1), Result);
+			transformToNumber(H, Hn), calcAvgIter([], Id, WindowEnd, (Sum + Hn), (N + 1), Result)). % Stop recursion if value is out of window.
 %assert(aggregatDb(Id,H)), retractall(aggregatDb(Id,[H|T])),
 % Organize values in increasing order.
 putInList([],Left,Element, Result) :- (append(Left, [Element], Result)). % Element is last element in list. 

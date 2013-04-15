@@ -22,7 +22,6 @@ public class LoadPrologCode {
 		
 		//Add methods to engine.
 		for (String code : methods) {
-			System.out.println(code);
 			engine.execute("assert((" + code + "))");
 		}
 	}

@@ -13,4 +13,4 @@ printRdfStat :- write('Number of triples: '), rdf_statistics(triples(Count)), wr
 %---------
 
 % Increment value in predicate statClounter\1.
-increment(_V) :- statClounter(N), (Np1 is N + 1), retractall(statClounter(_)), assert(statClounter(Np1)).
+increment(_V) :- statClounter(N), (Np1 is (N + 1)), retractall(statClounter(_)), assert(statClounter(Np1)).

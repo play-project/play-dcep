@@ -54,7 +54,6 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	}
 	
 	public boolean execute(com.jtalis.core.plengine.logic.Term term) {
-
 		return engine.execute(term);
 	}
 

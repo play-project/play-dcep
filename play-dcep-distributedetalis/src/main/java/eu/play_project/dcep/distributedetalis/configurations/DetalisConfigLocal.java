@@ -81,15 +81,23 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 			e.printStackTrace();
 		}
 
-		// Set ETALIS properties.
-		etalis.setEtalisFlags("save_ruleId", "on");
-		etalis.addEventTrigger("complex/_");
-		etalis.addEventTrigger("realtimeResult/2");
-		// etalis.setEtalisFlags("event_consumption_policy",
-		// "chronological");
-		// etalis.setEtalisFlags("logging","on");
-		// etalis.setEtalisFlags("java_notification","on");
+		try {
+			// Set ETALIS properties.
+			etalis.setEtalisFlags("save_ruleId", "on");
+			etalis.addEventTrigger("complex/_");
+			etalis.addEventTrigger("realtimeResult/2");
+			// etalis.setEtalisFlags("event_consumption_policy","chronological");
+			// etalis.setEtalisFlags("logging","on");
+			etalis.setEtalisFlags("store_fired_events_java", "off");
+			etalis.setEtalisFlags("garbage_control", "garbage_control");
+			etalis.setEtalisFlags("garbage_window", "1");
+			etalis.setEtalisFlags("garbage_window_step", "1");
+			// etalis.setEtalisFlags("java_notification","on");
+		} catch (Exception e) {
 
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 
 		// Instatiate measurement unit.
 		// this.measurementUnit = new MeasurementUnit(this);	
