@@ -429,7 +429,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTest(){
+	public void AverageTest() throws InterruptedException{
 		if(ctx==null){
 			this.init();
 		}
@@ -444,18 +444,20 @@ public class PrologJtalisTest {
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
 		
 		
-		
 		//Get variables and values
 		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 9000000000, Avg)");
-
-		// HashMap with values of variables.
-		Map<String, List<String>> variabelValues = new HashMap<String, List<String>>();
 
 		// Get all values of a variable
 		for (Hashtable<String, Object> hashtable : result) {
 			System.out.println(hashtable.get("Avg"));
 			assertTrue(hashtable.get("Avg").toString().equals("1.000000001E9"));
 		}
+		
+		//Check if all temp values are deleted.
+		Thread.sleep(400);
+		Hashtable<String, Object>[] values = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("aggregatDb(A, B)");
+		
+		assertTrue(values.length == 0);
 
 	}
 	
