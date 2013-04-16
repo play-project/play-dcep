@@ -76,7 +76,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		long eventId = 100;
 		boolean destination1 = true;
 
-		for (int i = 0; i < 2000000; i++) {
+		for (int i = 0; i < 1000000; i++) {
 			if (destination1) {
 				testApiI1.publish(createEvent((eventId++) + ""));
 				meausrementUnit.nexEvent();
@@ -86,7 +86,7 @@ public class SingleDistributedEtalisInstancePublisher {
 				meausrementUnit.nexEvent();
 				destination1 = true;
 			}
-			//delay(1);
+			delay(2);
 		}
 	}
 	
