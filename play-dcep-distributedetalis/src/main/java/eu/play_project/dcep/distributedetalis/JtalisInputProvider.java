@@ -59,7 +59,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 				return;
 			}
 			else {
-				logger.info("DCEP Entry " + eventId);
+				//logger.info("DCEP Entry " + eventId);
 				duplicatesCache.add(eventId);
 			}
 		}

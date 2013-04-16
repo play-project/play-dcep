@@ -79,7 +79,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
 		Having();
-		PrintStatisticsData();
+		//PrintStatisticsData();
 		DecrementReferenceCounter();
 		elePattern += ")";
 	}

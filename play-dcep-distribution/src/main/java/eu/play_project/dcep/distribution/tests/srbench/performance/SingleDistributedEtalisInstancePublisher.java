@@ -53,13 +53,13 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 		
 		// Connect to DistributedEtalis instance 2.
-//		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[2], args[3], "rmi", 1099).toString());
-//		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
-//		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
+		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[2], args[3], "rmi", 1099).toString());
+		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
+		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
 
 		// Register queries.
 		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
-//		managementApiI2.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
+		managementApiI2.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
 
 		meausrementUnit.calcRateForNEvents(500);
 
@@ -76,17 +76,17 @@ public class SingleDistributedEtalisInstancePublisher {
 		long eventId = 100;
 		boolean destination1 = true;
 
-		for (int i = 0; i < 1000000; i++) {
-			//if (destination1) {
+		for (int i = 0; i < 2000000; i++) {
+			if (destination1) {
 				testApiI1.publish(createEvent((eventId++) + ""));
 				meausrementUnit.nexEvent();
 				destination1 = false;
-//			} else {
-//				testApiI2.publish(createEvent((eventId++) + ""));
-//				meausrementUnit.nexEvent();
-//				destination1 = true;
-//			}
-			delay(7);
+			} else {
+				testApiI2.publish(createEvent((eventId++) + ""));
+				meausrementUnit.nexEvent();
+				destination1 = true;
+			}
+			//delay(1);
 		}
 	}
 	

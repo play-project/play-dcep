@@ -8,7 +8,11 @@ addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if valuelist 
 
 calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
 
-
+% Safe value if it is the smallest value ever given.
+storeMin(Id, Value) :- (catch(minValue(Id, V_old), E, assertMinVal(E, Id, Value)) -> % If value exists check if it is smaller than the saved value.
+			(true);
+			(minValue(Id, V_old), ((V_old < Value) -> (retract(minValue(Id, _V)), assert(minValue(Id, Value))); true))). 
+assertMinVal(E,Id, Value) :- (assert(minValue(Id, V)),false).
 % Helpers
 agregateListExists(Id) :- (catch(aggregatDb(Id,_List), _Exception, false)). % Check if data structure exists.
 
@@ -22,7 +26,8 @@ putInList([],Left,Element, Result) :- (append(Left, [Element], Result)). % Eleme
 putInList([H|T],LeftBuffer, Element, Result) :- ((transformToNumber(Element, ElementN), transformToNumber(H, Hn), ElementN>=Hn) -> 
 	append(LeftBuffer, ([Element|([H|T])]),Result); %Put in front
 	append(LeftBuffer, [H], Left), (putInList(T, Left, Element, Result))).
-%assert(aggregatDb(1,[])).
+
+
 
 %Debug versions.
 %calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, (Time-WindowSize), 0, 0, Avg), write('Average is: '), write(Avg), nl).

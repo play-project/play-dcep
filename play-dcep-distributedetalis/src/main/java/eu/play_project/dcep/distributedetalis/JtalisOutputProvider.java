@@ -84,7 +84,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			//measurementUnit.eventProduced(result, event.getProperties()[1].toString());
 			// event.getRuleID(); //TODO sobermeier use this.
 	
-			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
+			//logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
 			
 			if(recipients.size()<1) logger.warn("No recipient for complex events.");
 			
@@ -126,21 +126,21 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				//Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getRuleID()))); // FIXME sobermeier
 				Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
 
-		quadruples.add(new Quadruple(
-				GRAPHNAME,
-				EVENTID,
-				STARTTIME,
-				Node.createLiteral(
-						DateFormatUtils.format(event.getTimeStarts(), DATE_FORMAT_8601),
-						XSDDatatype.XSDdateTime)));
-
-		quadruples.add(new Quadruple(
-				GRAPHNAME,
-				EVENTID,
-				ENDTIME,
-				Node.createLiteral(
-						DateFormatUtils.format(event.getTimeEnds(), DATE_FORMAT_8601),
-						XSDDatatype.XSDdateTime)));
+//		quadruples.add(new Quadruple(
+//				GRAPHNAME,
+//				EVENTID,
+//				STARTTIME,
+//				Node.createLiteral(
+//						DateFormatUtils.format(event.getTimeStarts(), DATE_FORMAT_8601),
+//						XSDDatatype.XSDdateTime)));
+//FIXME sobermeier serialisazion problem. Vesco has the same problem.
+//		quadruples.add(new Quadruple(
+//				GRAPHNAME,
+//				EVENTID,
+//				ENDTIME,
+//				Node.createLiteral(
+//						DateFormatUtils.format(event.getTimeEnds(), DATE_FORMAT_8601),
+//						XSDDatatype.XSDdateTime)));
 
 		quadruples.add(new Quadruple(
 				GRAPHNAME,
