@@ -1,7 +1,7 @@
 #! /bin/sh
 #Scipt to install requierd software to run PLAY cep-components on a Debian machine.
 
-TOOL_URL=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play
+TOOL_URL=https://github.com/play-project/play-dcep/tree/master/play-dcep-distribution/src/main/scripts
 INSTALL_DIR=/opt/play/
 IPv6_PREFIX=2001:6f8:100d:b::
 
@@ -73,7 +73,6 @@ case "$1" in
   cep-engine)
 	installBasicSoftware
 	installCEP_Engine
-	installSRBench
 	setIP_Adress "$2"
   ;;
   measure)
