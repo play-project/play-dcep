@@ -58,9 +58,6 @@ setIP_Adress(){
         ip -6 route add default via 2001:6f8:100d:b::ffff
 }
 
-installSRBench(){
-
-}
 
 case "$1" in
   publisher)
