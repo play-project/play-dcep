@@ -11,15 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.event_processing.events.types.Event;
 import org.ontoware.rdf2go.impl.jena29.TypeConversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.event.JtalisOutputEventProvider;
 
+import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601; 
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
@@ -123,21 +126,21 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				//Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getRuleID()))); // FIXME sobermeier
 				Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
 
-//		quadruples.add(new Quadruple(
-//				GRAPHNAME,
-//				EVENTID,
-//				STARTTIME,
-//				Node.createLiteral(
-//						DateFormatUtils.format(event.getTimeStarts(), DATE_FORMAT_8601),
-//						XSDDatatype.XSDdateTime)));
-//FIXME sobermeier serialisazion problem. Vesco has the same problem.
-//		quadruples.add(new Quadruple(
-//				GRAPHNAME,
-//				EVENTID,
-//				ENDTIME,
-//				Node.createLiteral(
-//						DateFormatUtils.format(event.getTimeEnds(), DATE_FORMAT_8601),
-//						XSDDatatype.XSDdateTime)));
+		quadruples.add(new Quadruple(
+				GRAPHNAME,
+				EVENTID,
+				STARTTIME,
+				Node.createLiteral(
+						DateFormatUtils.format(event.getTimeStarts(), DATE_FORMAT_8601),
+						XSDDatatype.XSDdateTime)));
+
+		quadruples.add(new Quadruple(
+				GRAPHNAME,
+				EVENTID,
+				ENDTIME,
+				Node.createLiteral(
+						DateFormatUtils.format(event.getTimeEnds(), DATE_FORMAT_8601),
+						XSDDatatype.XSDdateTime)));
 
 		quadruples.add(new Quadruple(
 				GRAPHNAME,
