@@ -1,6 +1,5 @@
 package eu.play_project.dcep.distributedetalis;
 
-import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static eu.play_project.play_commons.constants.Namespace.EVENTS;
@@ -8,18 +7,15 @@ import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.event_processing.events.types.Event;
 import org.ontoware.rdf2go.impl.jena29.TypeConversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.event.JtalisOutputEventProvider;
@@ -84,7 +80,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			//measurementUnit.eventProduced(result, event.getProperties()[1].toString());
 			// event.getRuleID(); //TODO sobermeier use this.
 	
-			//logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
+			// Do not remove this line, needed for logs. :stuehmer
+			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
 			
 			if(recipients.size()<1) logger.warn("No recipient for complex events.");
 			
