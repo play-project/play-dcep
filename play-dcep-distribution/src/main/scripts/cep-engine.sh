@@ -1,4 +1,4 @@
-cd /opt/play/
+cd /opt/cep-engine
 
 #Update time
 ntpdate 0.de.pool.ntp.org 1.de.pool.ntp.org 2.de.pool.ntp.org
