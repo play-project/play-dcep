@@ -110,14 +110,20 @@ public class EventProducerThread implements Runnable {
 				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
 				Node.createURI("10.0"));
 
+//		Quadruple q7 = new Quadruple(
+//				Node.createURI("http://events.event-processing.org/eventId/"
+//						+ eventId),
+//				Node.createURI("http://prefix.example.com/e1"),
+//				Node.createURI("http://events.event-processing.org/types/endTime"),
+//				Node.createURI(new SimpleDateFormat(
+//						eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601)
+//						.format(new Date())));
 		Quadruple q7 = new Quadruple(
 				Node.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
 				Node.createURI("http://prefix.example.com/e1"),
 				Node.createURI("http://events.event-processing.org/types/endTime"),
-				Node.createURI(new SimpleDateFormat(
-						eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601)
-						.format(new Date())));
+				Node.createURI(System.currentTimeMillis() + ""));
 
 		Quadruple q8 = new Quadruple(
 				Node.createURI("http://events.event-processing.org/eventId/"
