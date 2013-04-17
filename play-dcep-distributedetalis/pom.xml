@@ -149,7 +149,6 @@
 				<configuration>
 					<argLine>-Djava.security.manager
 						-Djava.security.policy=src/main/resources/proactive.java.policy</argLine>
-					<skipTests>false</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>
