@@ -59,7 +59,8 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 				return;
 			}
 			else {
-				//logger.info("DCEP Entry " + eventId);
+				// Do not remove this line, needed for logs. :stuehmer
+				logger.info("DCEP Entry " + eventId);
 				duplicatesCache.add(eventId);
 			}
 		}
