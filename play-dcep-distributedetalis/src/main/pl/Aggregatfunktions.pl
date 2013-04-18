@@ -9,14 +9,23 @@ addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if valuelist 
 calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
 
 % Safe value if it is the smallest value ever given.
+% Distinction between different sorages is done bay Id.
 storeMin(Id, Value) :- (catch(minValue(Id, V_old), E, assertMinVal(E, Id, Value)) -> % If value exists check if it is smaller than the saved value.
-			(true);
-			(minValue(Id, V_old), ((V_old < Value) -> (retract(minValue(Id, _V)), assert(minValue(Id, Value))); true))). 
-assertMinVal(E,Id, Value) :- (assert(minValue(Id, V)),false).
+			(minValue(Id, V_old), ((V_old >= Value) -> (retract(minValue(Id, _V)), assert(minValue(Id, Value))); true));
+			true). 
+assertMinVal(_E,Id, Value) :- (assert(minValue(Id, Value)),false).
+
+% Safe value if it is the bigest value ever given.
+% Distinction between different sorages is done bay Id.
+storeMax(Id, Value) :- (catch(maxValue(Id, V_old), E, assertMaxVal(E, Id, Value)) -> % If value exists check if it is bigger than the saved value.
+			(maxValue(Id, V_old), ((V_old =< Value) -> (retract(maxValue(Id, _V)), assert(maxValue(Id, Value))); true));
+			true). 
+assertMaxVal(_E,Id, Value) :- (assert(maxValue(Id, Value)),false).
+
 % Helpers
 agregateListExists(Id) :- (catch(aggregatDb(Id,_List), _Exception, false)). % Check if data structure exists.
 
-calcAvgIter([], Id, _WindowEnd, Sum, N, Result):- ((Result is (Sum/N))).
+calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):- ((Result is (Sum/N))).
 calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- (transformToNumber(H, Hn), transformToNumber(WindowEnd, WindowEndN), (Hn >= WindowEndN) ->
 			transformToNumber(H, Hn), calcAvgIter(T, Id, WindowEnd, (Sum + Hn), (N + 1), Result);
 			transformToNumber(H, Hn), calcAvgIter([], Id, WindowEnd, (Sum + Hn), (N + 1), Result)). % Stop recursion if value is out of window.
