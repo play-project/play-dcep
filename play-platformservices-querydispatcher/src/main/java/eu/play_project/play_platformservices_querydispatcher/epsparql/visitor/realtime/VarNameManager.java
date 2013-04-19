@@ -25,7 +25,7 @@ public class VarNameManager {
 	long resultVar2;
 	String resultVar2s;
 	Map<String, Boolean> aggrVars;
-	
+	String windowTime;
 	Stack<Long> filterVars;
 	
 
@@ -158,6 +158,14 @@ public class VarNameManager {
 
 	public void setResultVar2(String resultVar2) {
 		this.resultVar2s = resultVar2;
+	}
+
+	public String getWindowTime() {
+		return windowTime;
+	}
+
+	public void setWindowTime(String windowTime) {
+		this.windowTime = windowTime;
 	}
 
 	

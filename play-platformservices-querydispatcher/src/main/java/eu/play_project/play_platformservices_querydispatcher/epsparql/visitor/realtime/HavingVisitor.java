@@ -42,7 +42,6 @@ public class HavingVisitor extends GenericVisitor{
 
 	@Override
 	public void visit(ExprAggregator arg0) {
-		System.out.println("Add to var list: " + arg0.getAggregator().getExpr().getVarName());
 		vm.addAggregatVar(arg0.getAggregator().getExpr().getVarName());
 		//For not nested expressions. E.g. AVG(?value)
 		code.append("calcAverage(" + vm.getAggrDbId() + ", " + vm.getWindowTime() + ", " + vm.getResultVar1() + ")");

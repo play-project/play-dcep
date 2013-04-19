@@ -13,9 +13,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
-import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
-import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
@@ -60,6 +58,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		binOperatorIter = inQuery.getEventBinOperator().iterator();
 		varNameManager = getVarNameManager();
 		varNameManager.newQuery(); // Rest varNameManager.
+		varNameManager.setWindowTime(inQuery.getWindow().getValue());
 		// Instantiate visitors.
 		eventTypeVisitor = new EventTypeVisitor();
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(varNameManager);

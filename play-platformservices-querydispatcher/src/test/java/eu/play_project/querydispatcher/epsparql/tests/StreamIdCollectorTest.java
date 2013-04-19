@@ -35,7 +35,6 @@ public class StreamIdCollectorTest {
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId(queryId);
 
-		qd.setWindowTime(q.getWindowTime());
 
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
 		streamIdCollector.getStreamIds(q, qd);
