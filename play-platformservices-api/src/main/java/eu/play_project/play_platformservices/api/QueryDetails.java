@@ -21,6 +21,7 @@ public class QueryDetails implements Serializable {
 	private String outputStream;
 	private Set<String> historicStreams;
 	private String etalisProperty;
+	private String tumblingWindow;
 	private String windowTime = "";
 	
 	public QueryDetails(){}
@@ -108,5 +109,13 @@ public class QueryDetails implements Serializable {
 
 	public void setEtalisProperty(String etalisProperty) {
 		this.etalisProperty = etalisProperty;
+	}
+
+	public String getTumblingWindow() {
+		return tumblingWindow;
+	}
+
+	public void setTumblingWindow(String tumblingWindow) {
+		this.tumblingWindow = tumblingWindow;
 	}
 }

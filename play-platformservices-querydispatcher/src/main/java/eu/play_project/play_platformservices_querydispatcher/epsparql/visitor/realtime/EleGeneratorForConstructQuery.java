@@ -4,7 +4,6 @@ import static eu.play_project.play_platformservices_querydispatcher.epsparql.vis
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Triple;
@@ -14,7 +13,9 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
+import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
+import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
@@ -24,16 +25,24 @@ import eu.play_project.querydispatcher.epsparql.Test.helpers.GenerateConstructRe
 
 public class EleGeneratorForConstructQuery implements EleGenerator {
 	private Query inputQuery;
-	private String elePattern;
+	// Contains the generated code.
+	private String elePattern; 
+	// Currently selected element in the tree.
 	private Element currentElement = null;
+	// Manages variables which are globally unique.
 	private VarNameManager varNameManager;
+	// Returns one triple after the other.
 	private Iterator<Element> eventQueryIter;
+	// Return operators used in the query. E.g. SEQ, AND, OR ... In the order they are used in the query.
+	private Iterator<ElementEventBinOperator> binOperatorIter;
+	// Detect the type of an event.
 	private EventTypeVisitor eventTypeVisitor;
+	//Visitors to generate code.
 	private BinOperatorVisitor binOperatorVisitor;
 	private FilterExpressionCodeGenerator filterExpressionVisitor;
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
-	private Iterator<ElementEventBinOperator> binOperatorIter;
+	
 	private String patternId;
 	
 	//Helper methods.
@@ -50,15 +59,17 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		eventQueryIter = inQuery.getEventQuery().iterator();
 		binOperatorIter = inQuery.getEventBinOperator().iterator();
 		varNameManager = getVarNameManager();
-		varNameManager.newQuery();
+		varNameManager.newQuery(); // Rest varNameManager.
+		// Instantiate visitors.
 		eventTypeVisitor = new EventTypeVisitor();
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(varNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
 		binOperatorVisitor =  new BinOperatorVisitor();
 		havingVisitor =  new HavingVisitor();
+		
 		queryTemplate = new QueryTemplateImpl();
 		
-		varNameManager.setWindowTime(inQuery.getWindowTime());
+		// Start code generation.
 		ElePattern();
 	}
 	
@@ -73,7 +84,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			SimpleEventPattern();
 		}
 	}
-	
+
 	private void Complex() {
 		elePattern += "complex(" + varNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();

@@ -9,4 +9,8 @@ public abstract class Window {
 	protected String value;
 	
 	public abstract void accept(ElementWindowVisitor v);
+	
+	public String getValue(){
+		return value;
+	}
 }

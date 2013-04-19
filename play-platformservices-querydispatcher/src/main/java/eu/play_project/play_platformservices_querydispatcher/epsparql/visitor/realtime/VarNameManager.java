@@ -24,7 +24,6 @@ public class VarNameManager {
 	String resultVar1s;
 	long resultVar2;
 	String resultVar2s;
-	String windowTime;
 	Map<String, Boolean> aggrVars;
 	
 	Stack<Long> filterVars;
@@ -37,7 +36,7 @@ public class VarNameManager {
 		triplestoreVariable = 0;
 		absVariable = 0;
 		aggrDbId = 0;
-		filterVars = new Stack();
+		filterVars = new Stack<Long>();
 		aggrVars = new HashMap<String, Boolean>();
 		
 	}
@@ -124,14 +123,6 @@ public class VarNameManager {
 
 	public String getNextAggrDbId() {
 		return "dbId"+ aggrDbId++;
-	}
-	
-	public String getWindowTime() {
-		return windowTime;
-	}
-
-	public void setWindowTime(String windowTime) {
-		this.windowTime = windowTime;
 	}
 
 	public String getResultVar1() {

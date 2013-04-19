@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
+import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.play_commons.constants.Constants;
@@ -36,6 +37,7 @@ import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.StreamIdCollector;
+import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.WindowVisitor;
 
 @WebService(
 		serviceName = "QueryDispatchApi",
@@ -155,7 +157,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		}
 
 		// Generate CEP-language
-		eleGenerator.setPatternId(queryId); // TODO sobermeier: Remove in the future, ETALIS will do this
+		eleGenerator.setPatternId(queryId);
 		eleGenerator.generateQuery(q);
 
 		logger.info("Registering query with ID " + queryId);
@@ -213,20 +215,23 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 	private QueryDetails createQueryDetails(String queryId, Query query) throws QueryDispatchException {
 		if (!init) {
-			throw new IllegalStateException("Component not initialized: "
-					+ this.getClass().getSimpleName());
+			throw new IllegalStateException("Component not initialized: " + this.getClass().getSimpleName());
 		}
 		
 		logger.info("Analysing query with ID " + queryId);
 		
 		QueryDetails qd = new QueryDetails(queryId);
 
-		qd.setWindowTime(query.getWindowTime());
+		// Set properties for windows in QueryDetails
+		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);
+		query.getWindow().accept(windowVisitor);
 		
+		// Check if id is alredy used.
 		if (dcepManagmentApi != null && dcepManagmentApi.getRegisteredEventPatterns().containsKey(queryId)) {
 			throw new QueryDispatchException("Query ID is alread used: " + queryId);
 		}
 
+		// Set stream ids in QueryDetails.
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
 		streamIdCollector.getStreamIds(query, qd);
 

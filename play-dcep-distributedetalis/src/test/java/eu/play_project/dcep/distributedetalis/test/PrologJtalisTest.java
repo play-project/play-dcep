@@ -84,7 +84,6 @@ public class PrologJtalisTest {
 	
 		delay();
 
-		System.out.println("fffffffffffffffffff" + result);
 		System.out.println(new EtalisEvent("complexExample", 1,"'id'"));
 
 		assertTrue(result.equals(new EtalisEvent("complexExample", 1,"id")));
