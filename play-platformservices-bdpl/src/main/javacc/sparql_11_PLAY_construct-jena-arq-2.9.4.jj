@@ -269,7 +269,7 @@ void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp;}
 			} catch (QueryException e) {
             	throwParseException(e.getMessage(), t.beginLine, t.beginColumn) ;
             }			
-		} < WINDOW_TYPE_SLIDING > <RPAREN>
+		} (< WINDOW_TYPE_SLIDING > | < WINDOW_TYPE_TUMBLING >) <RPAREN>
 	|
 		//Realtime query without windows.
 	   < EVENT > E()	)
@@ -1726,6 +1726,7 @@ TOKEN [IGNORE_CASE] :
 | < SEQ : ("seq"){1} >
 | < OR : ("or"){1} >
 | < WINDOW_TYPE_SLIDING: "sliding" >
+| < WINDOW_TYPE_TUMBLING: "tumbling" >
 | < WINDOWSIZE : "(\"PT" (["0"-"9","H","M","S"])+ "\"^^xsd:duration, " >
 | < BEGIN_WINDOW : ("WINDOW"){1} >
 // | < DURATION : ("M^^xsd:duration"){1} >

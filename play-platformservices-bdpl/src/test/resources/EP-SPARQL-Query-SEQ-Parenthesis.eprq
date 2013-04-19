@@ -5,12 +5,13 @@ PREFIX :    <http://play-project.eu/default>
 CONSTRUCT{ 
 			:e rdf:type :Example .
 			?a ?b ?c 
-		}
-	WHERE{
-			 EVENT ?g {?company ?hasStockprice ?price1 }
-		SEQ{ EVENT ?a {?company ?hasAcquired ?othercompany}
-			EQUALSOPTIONAL 
-			EVENT ?f{ ?company ?hasStockPrice ?price2 }} 
+}
+WHERE{
+	EVENT ?g {?company ?hasStockprice ?price1 }
+	SEQ
+	{ EVENT ?a {?company ?hasAcquired ?othercompany}
+		EQUALSOPTIONAL 
+		EVENT ?f{ ?company ?hasStockPrice ?price2 }} 
 			SEQ EVENT ?f{ ?company ?hasStockPrice ?price2 }
 			SEQ EVENT ?f{ ?company dc:hasStockPrice ?price2 }
 		EQUALS EVENT ?f{ ?company ?hasStockPrice ?price2 }

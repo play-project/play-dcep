@@ -4,11 +4,11 @@ PREFIX : <http://play-project.eu/default>
 CONSTRUCT { 
 		:e rdf:type :Finance.
 		?company ?hasStockPrice ?price2
-	}
-	WHERE{
-		WINDOW{
-			EVENT ?id1{ ?company ?hasStockPrice ?price1}
-			SEQ
-			EVENT ?id2{ ?company ?hasStockPrice ?price2}
-		} ("PT12M10S"^^xsd:duration, sliding)
-	}	
+}
+WHERE{
+	WINDOW{
+		EVENT ?id1{ ?company ?hasStockPrice ?price1}
+		SEQ
+		EVENT ?id2{ ?company ?hasStockPrice ?price2}
+	}("PT12M10S"^^xsd:duration, tumbling)
+}	
