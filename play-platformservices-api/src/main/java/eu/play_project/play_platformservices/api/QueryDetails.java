@@ -20,6 +20,7 @@ public class QueryDetails implements Serializable {
 	private Set<String> inputStreams;
 	private String outputStream;
 	private Set<String> historicStreams;
+	private String etalisProperty;
 	private String windowTime = "";
 	
 	public QueryDetails(){}
@@ -99,5 +100,13 @@ public class QueryDetails implements Serializable {
         sb.append("windowTime=").append(windowTime);
         sb.append("}");
 		return sb.toString();
+	}
+
+	public String getEtalisProperty() {
+		return etalisProperty;
+	}
+
+	public void setEtalisProperty(String etalisProperty) {
+		this.etalisProperty = etalisProperty;
 	}
 }
