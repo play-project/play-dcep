@@ -112,8 +112,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		}
 		
 		this.registeredQueries.put(epSparqlQuery.getQueryDetails().getQueryId(), epSparqlQuery);
+		
 		logger.debug("Register query: " + epSparqlQuery.getEleQuery());
+		
 		etalis.addDynamicRuleWithId("'" + epSparqlQuery.getQueryDetails().getQueryId() + "'" + epSparqlQuery.getQueryDetails().getEtalisProperty(), epSparqlQuery.getEleQuery());
+		// Start tumbling window. (If a tumbling window was defined.) 
+		etalis.getEngineWrapper().executeGoal(epSparqlQuery.getQueryDetails().getTumblingWindow());
 
 		this.ecConnectionManager.registerEventPattern(epSparqlQuery);
 	}
