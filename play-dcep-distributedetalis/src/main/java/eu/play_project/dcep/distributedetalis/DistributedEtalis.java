@@ -14,6 +14,8 @@ import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import arq.query;
+
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.api.DcepManagementException;
@@ -110,19 +112,8 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		}
 		
 		this.registeredQueries.put(epSparqlQuery.getQueryDetails().getQueryId(), epSparqlQuery);
-		// Deal with sliding time windows:
-		String windowDefinition = "";
-		if (!epSparqlQuery.getQueryDetails().getWindowTime().equals("")
-				&& !epSparqlQuery.getQueryDetails().getWindowTime().equals("0")) {
-			windowDefinition = "([property(event_rule_window, "
-					+ epSparqlQuery.getQueryDetails().getWindowTime() + ")])";
-			logger.info("Adding ETALIS rule with time window "
-					+ windowDefinition);
-		}
 		logger.debug("Register query: " + epSparqlQuery.getEleQuery());
-		etalis.addDynamicRuleWithId("'"
-				+ epSparqlQuery.getQueryDetails().getQueryId() + "'"
-				+ windowDefinition, epSparqlQuery.getEleQuery());
+		etalis.addDynamicRuleWithId("'" + epSparqlQuery.getQueryDetails().getQueryId() + "'" + epSparqlQuery.getQueryDetails().getEtalisProperty(), epSparqlQuery.getEleQuery());
 
 		this.ecConnectionManager.registerEventPattern(epSparqlQuery);
 	}
