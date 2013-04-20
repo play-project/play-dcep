@@ -28,6 +28,9 @@ public class QueryDetails implements Serializable {
 	
 	public QueryDetails(String queryId){
 		this.queryId = queryId;
+		// Init with valid values which have no functional effect.
+		etalisProperty = "";
+		tumblingWindow = "true";
 	}
 	
 	public String getQueryId() {

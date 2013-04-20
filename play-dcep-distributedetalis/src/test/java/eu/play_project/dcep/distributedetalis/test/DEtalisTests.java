@@ -48,7 +48,7 @@ public class DEtalisTests implements Serializable {
 
 
 	@Test
-	public void pushQuadEvents() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException, InterruptedException {
+	public void basicDEtalisComponentTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException, InterruptedException {
 		
 		/*
 		 *  Check if you get a reference to PublishApi and ManagementApi:
