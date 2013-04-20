@@ -28,7 +28,7 @@ public class WindowVisitor implements ElementWindowVisitor {
 
 	@Override
 	public void visit(TumblingWindow tumblingWindow) {
-		qd.setTumblingWindow("tumbling_window(" + qd.getQueryId() + ", "+ tumblingWindow.getValue() + ")");
+		qd.setTumblingWindow("tumbling_window('" + qd.getQueryId() + "', "+ tumblingWindow.getValue() + ")");
 		qd.setEtalisProperty("");
 	}
 }
