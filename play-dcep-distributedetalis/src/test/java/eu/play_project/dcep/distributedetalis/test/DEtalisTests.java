@@ -36,7 +36,7 @@ import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
-public class DcepTest implements Serializable {
+public class DEtalisTests implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private static DistributedEtalisTestApi distributedEtalisTestApi;
@@ -44,7 +44,7 @@ public class DcepTest implements Serializable {
 	private static PublishApiSubscriber subscriber = null;
 	private static ConfigApi configApi = null;
 	static Component root;
-	private final Logger logger = LoggerFactory.getLogger(DcepTest.class);
+	private final Logger logger = LoggerFactory.getLogger(DEtalisTests.class);
 
 
 	@Test
