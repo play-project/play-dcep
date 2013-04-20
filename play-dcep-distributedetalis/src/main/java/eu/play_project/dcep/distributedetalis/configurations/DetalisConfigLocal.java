@@ -65,13 +65,13 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
 
-
 		try {
 			cl.loadCode("ReferenceCounting.pl", engine);
 			cl.loadCode("Aggregatfunktions.pl", engine);
 			cl.loadCode("ComplexEventData.pl", engine);
 			cl.loadCode("Measurement.pl", engine);
 			cl.loadCode("Statistics.pl", engine);
+			cl.loadCode("Windows.pl", engine);
 			cl.loadCode("Math.pl", engine);
 		} catch (IOException e) {
 			logger.error("It is not possible to load prolog code. " + e.getMessage());
