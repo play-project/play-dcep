@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/proactive/core/component/adl/xml/proactive.dtd">
-<definition name="EcDcepPsTest">
+<definition name="PsDcepComponent">
   <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
   <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi" role="server"/>
   

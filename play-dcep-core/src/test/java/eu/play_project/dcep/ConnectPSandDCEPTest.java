@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.event_processing.events.types.FacebookStatusFeedEvent;
+import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
@@ -41,12 +42,12 @@ public class ConnectPSandDCEPTest implements Serializable {
 	static Component root;
 	public static boolean test;
 
-//	@Test
+	@Test
 	public void readQueryFromFileTest(){
 		System.out.println(getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq"));
 	}
 	
-	//@Test
+	@Test
 	public void instantiatePlayPlatformTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
@@ -171,7 +172,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 
-		root = (Component) factory.newComponent("EcDcepPsTest", context);
+		root = (Component) factory.newComponent("PsDcepComponent", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root

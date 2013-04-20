@@ -47,8 +47,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	private Logger logger;
 	
 
-	public EcConnectionManagerNet() {
-	}
+	public EcConnectionManagerNet() {}
 
 	public EcConnectionManagerNet(String eventCloudRegistry,
 			DistributedEtalis dEtalis) {
