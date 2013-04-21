@@ -1,0 +1,43 @@
+#
+# Title: M12 Jeans Example
+#
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX user:   <http://graph.facebook.com/schema/user#>
+PREFIX s:      <http://streams.event-processing.org/ids/>
+PREFIX :       <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :FacebookCepResult .
+	:e :stream <http://streams.event-processing.org/ids/FacebookCepResults#stream> .
+	:e user:name ?friend1 , ?friend2 , ?friend3 .
+	:e :status ?about1 , ?about2 , ?about3 .
+	:e :members ?e1, ?e2, ?e3 .
+}
+WHERE {
+	WINDOW {
+		EVENT ?id1 {
+			?e1 rdf:type :FacebookStatusFeedEvent .
+			?e1 :stream <http://streams.event-processing.org/ids/FacebookStatusFeed#stream> .
+			?e1 :status ?about1 .
+			?e1 user:name ?friend1 .
+			}
+			FILTER contains(?about1, "JEANS")
+		SEQ
+		EVENT ?id2 {
+			?e2 rdf:type :FacebookStatusFeedEvent .
+			?e2 :stream <http://streams.event-processing.org/ids/FacebookStatusFeed#stream> .
+			?e2 :status ?about2 .
+			?e2 user:name ?friend2 .
+			}
+			FILTER contains(?about2, "JEANS")
+		SEQ
+		EVENT ?id3 {
+			?e3 rdf:type :FacebookStatusFeedEvent .
+			?e3 :stream <http://streams.event-processing.org/ids/FacebookStatusFeed#stream> .
+			?e3 :status ?about3 .
+			?e3 user:name ?friend3 .
+			}
+			FILTER contains(?about3, "JEANS")
+	} ("PT1S"^^xsd:duration, tumbling)
+}
