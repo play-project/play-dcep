@@ -29,7 +29,7 @@ public class SimplePublishApiSubscriber implements SimplePublishApi, Serializabl
 	}
 
 	public void publish(CompoundEvent arg0) {
-		logger.info("New complex  event" + arg0 + "\nIn " + this.getClass().getSimpleName());
+		//logger.info("New complex  event" + arg0 + "\nIn " + this.getClass().getSimpleName());
 		complexEvents.add(arg0);
 	}
 

@@ -42,7 +42,6 @@ public class SubscriberPerformanceTest implements SimplePublishApi, Serializable
 		//System.out.println("New event in " + this.getClass().getSimpleName() + arg0.toString());
 		counter++;
 		//System.out.println("o = " + counter);
-		System.out.println(arg0);
 		if (counter % 1000 == 0) {
 			System.out.println((counter) + " " + (System.currentTimeMillis() - timeTmp));
 			timeTmp = System.currentTimeMillis();
