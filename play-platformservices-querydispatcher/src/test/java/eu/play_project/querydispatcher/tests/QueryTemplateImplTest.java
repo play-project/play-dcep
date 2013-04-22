@@ -104,8 +104,6 @@ public class QueryTemplateImplTest {
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId(queryId);
 
-		qd.setWindowTime(query.getWindow().getValue());
-
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
 		streamIdCollector.getStreamIds(query, qd);
 

@@ -22,7 +22,6 @@ public class QueryDetails implements Serializable {
 	private Set<String> historicStreams;
 	private String etalisProperty;
 	private String tumblingWindow;
-	private String windowTime = "";
 	
 	public QueryDetails(){}
 	
@@ -79,20 +78,6 @@ public class QueryDetails implements Serializable {
 		this.historicStreams = historicStreams;
 	}
 	
-	/**
-	 * Set the window length in seconds.
-	 */
-	public void setWindowTime(String windowTime) {
-		this.windowTime = windowTime;
-	}
-
-	/**
-	 * Get the window length in seconds.
-	 */
-	public String getWindowTime() {
-		return windowTime;
-	}
-	
 	@Override
 	public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -101,7 +86,6 @@ public class QueryDetails implements Serializable {
         sb.append("inputStreams=").append(inputStreams).append(", ");
         sb.append("outputStream=").append(outputStream).append(", ");
         sb.append("historicStreams=").append(historicStreams).append(", ");
-        sb.append("windowTime=").append(windowTime);
         sb.append("}");
 		return sb.toString();
 	}
