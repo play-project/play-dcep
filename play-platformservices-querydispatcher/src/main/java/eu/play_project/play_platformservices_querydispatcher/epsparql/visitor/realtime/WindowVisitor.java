@@ -1,6 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
 import eu.play_platform.platformservices.epsparql.syntax.windows.types.CountWindow;
+import eu.play_platform.platformservices.epsparql.syntax.windows.types.DummyWindow;
 import eu.play_platform.platformservices.epsparql.syntax.windows.types.SlidingWindow;
 import eu.play_platform.platformservices.epsparql.syntax.windows.types.TumblingWindow;
 import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
@@ -29,6 +30,12 @@ public class WindowVisitor implements ElementWindowVisitor {
 	@Override
 	public void visit(TumblingWindow tumblingWindow) {
 		qd.setTumblingWindow("tumbling_window('" + qd.getQueryId() + "', "+ tumblingWindow.getValue() + ")");
+		qd.setEtalisProperty("");
+	}
+
+	@Override
+	public void visit(DummyWindow dummyWindow) {
+		qd.setTumblingWindow("true");
 		qd.setEtalisProperty("");
 	}
 }

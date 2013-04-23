@@ -58,6 +58,7 @@ import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
 import eu.play_platform.platformservices.epsparql.syntax.windows.Window;
+import eu.play_platform.platformservices.epsparql.syntax.windows.types.DummyWindow;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn
@@ -92,7 +93,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     private ArrayList<Element> eventQuery = new ArrayList<Element>() ;
     private ArrayList<Element> historicQuery = new ArrayList<Element>() ;
     private final List<ElementEventBinOperator> eventBinOperator = new ArrayList<ElementEventBinOperator>();
-    private Window window;
+    private Window window = new DummyWindow();
 
 
     public List<ElementEventBinOperator> getEventBinOperator() {
