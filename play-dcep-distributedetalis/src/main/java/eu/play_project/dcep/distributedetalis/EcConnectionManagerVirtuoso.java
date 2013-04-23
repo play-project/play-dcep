@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import javax.xml.namespace.QName;
 
+import org.ontoware.rdf2go.impl.jena29.TypeConversion;
 import org.petalslink.dsb.commons.service.api.Service;
 import org.petalslink.dsb.notification.commons.NotificationException;
 import org.petalslink.dsb.notification.service.NotificationConsumerService;
@@ -24,10 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
-import virtuoso.jdbc3.VirtuosoDataSource;
-import virtuoso.jena.driver.VirtGraph;
+import virtuoso.jdbc4.VirtuosoDataSource;
 
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
@@ -51,7 +50,7 @@ import fr.inria.eventcloud.utils.trigwriter.TriGWriter;
 
 public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
-	private final VirtuosoDataSource virtuoso;
+	private Connection virtuosoConnection;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
 	private boolean init = false;
 	private AbstractReceiver rdfReceiver;
@@ -74,7 +73,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 	
 	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws DistributedEtalisException {
-		virtuoso = new VirtuosoDataSource();
+		VirtuosoDataSource virtuoso = new VirtuosoDataSource();
 		virtuoso.setServerName(server);
 		virtuoso.setPortNumber(port);
 		virtuoso.setUser(user);
@@ -84,6 +83,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		// Test Virtuoso JDBC connection
 		try {
 			virtuoso.getConnection().close();
+			virtuosoConnection = virtuoso.getConnection();
 		} catch (SQLException e) {
 			throw new DistributedEtalisException("Could not connect to Virtuoso.", e);
 		}
@@ -163,12 +163,25 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	 */
 	public void putDataInCloud(CompoundEvent event, String cloudId) {
 
-		VirtGraph graph = new VirtGraph(event.getGraph().toString(), this.virtuoso);
-		for (Quadruple e : event) {
-			graph.add(new Triple(e.getSubject(), e.getPredicate(), e.getObject()));
+		StringBuilder s = new StringBuilder();
+		s.append("SPARQL INSERT INTO GRAPH <").append(event.getGraph().toString()).append("> {\n");
+		for (Quadruple quadruple : event) {
+			s.append(TypeConversion.toRDF2Go(quadruple.getSubject()).toSPARQL()).append(" ");
+			s.append(TypeConversion.toRDF2Go(quadruple.getPredicate()).toSPARQL()).append(" ");
+			s.append(TypeConversion.toRDF2Go(quadruple.getObject()).toSPARQL()).append(" . \n");
 		}
-		graph.close();
-	}
+		s.append("}\n");
+		String query = s.toString();
+		
+		logger.debug("Putting event in cloud " + cloudId + ":\n" + query);
+		try {
+			Statement st = virtuosoConnection.createStatement();
+			st.executeUpdate(query);
+		} catch (SQLException e) {
+			logger.error("Error putting an event into Virtuoso.", e);
+		}
+		
+   	}
 
 	/**
 	 * Retreive data from historic storage using a SPARQL SELECT query. SPARQL 1.1
@@ -183,25 +196,13 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 		logger.debug("Sending historical query to Virtuoso: \n" + query);
 
-		// This has a conflict with Jena and needs to be resolved by a new virt_jena provider:
-//		try {
-//			VirtuosoQueryExecution vqe = VirtuosoQueryExecutionFactory.create(
-//					query, new VirtGraph(virtuoso));
-//			ResultRegistry rr = new ResultRegistry(vqe.execSelect());
-//			return rr;
-//		}
-//		catch (JenaException e) {
-//			String msg = "Error retreiving historic data from Virtuoso: " + e.getMessage();
-//			throw new EcConnectionmanagerException(msg, e);
-//		}
-		
 		List<String> variables = new ArrayList<String>();
 		List<List> result = new ArrayList<List>();
 
 		Connection con = null;
 		ResultSet res = null;
 		try {
-			con = virtuoso.getConnection();
+			con = virtuosoConnection;
 			Statement sta = con.createStatement();
 			res = sta.executeQuery("sparql "+query);
 

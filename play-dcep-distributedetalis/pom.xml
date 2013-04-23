@@ -97,14 +97,9 @@
 		</dependency>
 		<dependency>
 			<groupId>com.openlinksw</groupId>
-			<artifactId>virtjdbc3</artifactId>
+			<artifactId>virtjdbc4</artifactId>
 			<version>1.0</version>
 		</dependency>
- 		<dependency>
-            <groupId>com.openlinksw.virtuoso</groupId>
-            <artifactId>virt_jena</artifactId>
-            <version>6.1.6</version>
- 		</dependency>
 	</dependencies>
 
 	<!-- this was an attampt to get jpl from the local prolog installation avoiding version mismatches:
