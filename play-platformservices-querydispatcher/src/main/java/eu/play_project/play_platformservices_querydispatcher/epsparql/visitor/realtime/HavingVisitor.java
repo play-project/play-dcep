@@ -1,14 +1,9 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
 import com.hp.hpl.jena.sparql.expr.E_GreaterThanOrEqual;
-import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
-
-import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
 // Simple implementation only one avg.
 public class HavingVisitor extends GenericVisitor{
 	private StringBuffer code;

@@ -1,20 +1,17 @@
 package eu.play_project.dcep.distribution.tests.srbench.performance;
 
 import java.io.Serializable;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
 
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.Quadruple;
-import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
 	MeasurementUnit mu; 
 	
 	public ComplexEventSubscriber(){}

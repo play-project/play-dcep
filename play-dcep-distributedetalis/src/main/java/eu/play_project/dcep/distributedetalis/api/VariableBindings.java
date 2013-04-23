@@ -14,6 +14,6 @@ import java.util.List;
  */
 
 public class VariableBindings extends HashMap<String, List<Object>> {
-	private static final long serialVersionUID = -7694752146628934047L;
+	private static final long serialVersionUID = 100L;
 
 }

@@ -47,12 +47,13 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 		Query q = new Query(command);
 		
 		// Possibly faster and thread safe.
-		result = (Hashtable<String, Object>[]) q.allSolutions();
+		result = q.allSolutions();
 
 		//q.close();
 		return result;
 	}
 	
+	@Override
 	public boolean execute(com.jtalis.core.plengine.logic.Term term) {
 		return engine.execute(term);
 	}
@@ -130,7 +131,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	    Query consult_query =
 	            new Query(
 	                "consult",
-	                (jpl.Term[]) new Term[] {(Term) new Atom(file)}
+	                new Term[] {new Atom(file)}
 	            );
 		return consult_query.hasSolution();
 	}

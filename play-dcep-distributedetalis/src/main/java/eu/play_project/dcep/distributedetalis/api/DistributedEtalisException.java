@@ -2,7 +2,7 @@ package eu.play_project.dcep.distributedetalis.api;
 
 public class DistributedEtalisException extends Exception {
 
-	private static final long serialVersionUID = -4375925562436280537L;
+	private static final long serialVersionUID = 100L;
 
 	public DistributedEtalisException() {
 		super();

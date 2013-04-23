@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class QueryDetails implements Serializable {
-	private static final long serialVersionUID = -8156425318534996557L;
+	private static final long serialVersionUID = 100L;
 	private String queryId;
 	private Set<String> inputStreams;
 	private String outputStream;

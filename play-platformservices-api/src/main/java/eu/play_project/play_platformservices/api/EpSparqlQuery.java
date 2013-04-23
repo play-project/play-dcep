@@ -5,7 +5,7 @@ import java.util.List;
 
 public class EpSparqlQuery implements Serializable {
 
-	private static final long serialVersionUID = -3987453668321624829L;
+	private static final long serialVersionUID = 100L;
 
 	private QueryDetails queryDetails;
 	private String epSparqlQuery;

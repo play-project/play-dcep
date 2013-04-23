@@ -10,7 +10,6 @@ import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.lang.EPSPARQL_20.SPARQLParserEPSPARQL_20;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 

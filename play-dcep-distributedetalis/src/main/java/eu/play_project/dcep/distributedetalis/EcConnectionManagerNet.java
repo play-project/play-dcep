@@ -32,7 +32,7 @@ import fr.inria.eventcloud.factories.ProxyFactory;
 public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		EcConnectionManager {
 
-	private static final long serialVersionUID = -368781636399635332L;
+	private static final long serialVersionUID = 100L;
 
 	private String eventCloudRegistryUrl;
 
@@ -265,7 +265,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	 */
 	private class SubscriptionUsage implements Serializable {
 
-		private static final long serialVersionUID = -6063251924935507681L;
+		private static final long serialVersionUID = 100L;
 
 		public SubscriptionUsage(Subscription sub) {
 			this.sub = sub;
@@ -325,7 +325,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	}
 	
 	public class EcConnectionListenerNet2 extends CompoundEventNotificationListener implements Serializable {
-		private static final long serialVersionUID = 8630112375640830481L;
+		private static final long serialVersionUID = 100L;
 
 		// For ProActive:
 		public EcConnectionListenerNet2(){}

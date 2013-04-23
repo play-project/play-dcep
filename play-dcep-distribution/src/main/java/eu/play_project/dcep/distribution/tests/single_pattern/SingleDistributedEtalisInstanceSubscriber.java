@@ -1,7 +1,6 @@
 package eu.play_project.dcep.distribution.tests.single_pattern;
 
 import java.io.IOException;
-import java.rmi.registry.LocateRegistry;
 
 import javax.naming.NamingException;
 

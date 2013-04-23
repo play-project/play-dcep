@@ -47,7 +47,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		ComponentInitActive, ComponentEndActive, BindingController,
 		Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 
 	private EleGenerator eleGenerator;
 	private DcepManagmentApi dcepManagmentApi;

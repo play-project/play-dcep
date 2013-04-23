@@ -14,8 +14,6 @@ import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import arq.query;
-
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.api.DcepManagementException;
@@ -45,7 +43,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		DistributedEtalisTestApi, ComponentInitActive, ComponentEndActive,
 		ConfigApi, DEtalisConfigApi, Serializable {
 
-	private static final long serialVersionUID = -4521383169150547552L;
+	private static final long serialVersionUID = 100L;
 	private String name;
 	private JtalisContextImpl etalis; // ETALIS Object
 	private JtalisOutputProvider eventOutputProvider;

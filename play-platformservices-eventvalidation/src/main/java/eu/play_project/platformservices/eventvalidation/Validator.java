@@ -33,7 +33,7 @@ public class Validator {
 	public Validator() {
 		this.propertyTestResults.put(Event.ENDTIME.toString(), false);
 		this.propertyTestResults.put(Event.STREAM.toString(), false);
-		this.propertyTestResults.put(Event.TYPE.toString(), false);
+		this.propertyTestResults.put(org.ontoware.rdfreactor.schema.rdfs.Resource.TYPE.toString(), false);
 
 		this.otherTestResults.put("EventIdTest", false);
 		// Avoiding negation as failure:
@@ -124,7 +124,7 @@ public class Validator {
 			this.propertyTestResults.put(p, true);
 		}
 
-		if (p.equals(Event.TYPE.toString())) {
+		if (p.equals(org.ontoware.rdfreactor.schema.rdfs.Resource.TYPE.toString())) {
 			this.otherTestResults.put("EventIdTest", s.equals(g + EVENT_ID_SUFFIX));
 		}
 		return this;

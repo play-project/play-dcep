@@ -36,7 +36,7 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class DcepTest implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	public static SimplePublishApi dcepPublishApi;
 	public static eu.play_project.dcep.api.DcepManagmentApi dcepManagmentApi;
 	public static DistributedEtalisTestApi dcepTestApi;

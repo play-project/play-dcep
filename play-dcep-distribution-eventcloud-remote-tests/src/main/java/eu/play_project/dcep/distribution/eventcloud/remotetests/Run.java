@@ -1,9 +1,7 @@
 package eu.play_project.dcep.distribution.eventcloud.remotetests;
 
 import java.io.IOException;
-import java.util.Scanner;
 
-import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_commons.constants.Stream;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 

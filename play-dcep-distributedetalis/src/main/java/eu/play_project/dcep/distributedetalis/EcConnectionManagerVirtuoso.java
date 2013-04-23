@@ -345,7 +345,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	 */
 	private class SubscriptionUsage implements Serializable {
 		
-		private static final long serialVersionUID = -6063251924935507681L;
+		private static final long serialVersionUID = 100L;
 		
 		public SubscriptionUsage(String sub) {
 			this.sub = sub;

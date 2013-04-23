@@ -3,6 +3,10 @@ package eu.play_project.dcep.api.measurement;
 import java.io.Serializable;
 
 public abstract class MeasuringResult implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
 	private String name;
 	protected int measuringPeriod =0;
 	private int numberOfComponentInputEvetns =0;

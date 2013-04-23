@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class NodeMeasuringResult extends MeasuringResult implements Comparable<NodeMeasuringResult>{
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private List<PatternMeasuringResult> measuredValues; //PatternID number of processed events.
 	private Map<String, LoadTimeSeries> ltsMap;
 	private List<LoadTimeSeries> ltsList;

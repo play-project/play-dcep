@@ -1,10 +1,8 @@
 package eu.play_project.play_platformservices.api;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a SPARQL 1.1 query to get data from a triplestore.
@@ -14,7 +12,7 @@ import java.util.Map;
  */
 public class HistoricalQuery implements Serializable{
 	
-	private static final long serialVersionUID = -2262012857089333774L;
+	private static final long serialVersionUID = 100L;
 	private String cloudId;
 	private String query;
 	private List<String> variables;

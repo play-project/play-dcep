@@ -2,7 +2,7 @@ package eu.play_project.dcep;
 
 public class DcepException extends Exception {
 
-	private static final long serialVersionUID = 8999118584899535074L;
+	private static final long serialVersionUID = 100L;
 
 	public DcepException() {
 	}

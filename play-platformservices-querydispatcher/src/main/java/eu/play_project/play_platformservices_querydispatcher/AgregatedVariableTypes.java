@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
-import org.slf4j.Logger;
+
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.VariableQuadrupleVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.C_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.H_Quadruple;

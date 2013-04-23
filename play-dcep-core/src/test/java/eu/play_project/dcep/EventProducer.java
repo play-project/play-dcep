@@ -17,7 +17,7 @@ import fr.inria.eventcloud.api.PublishApi;
 
 public class EventProducer implements Serializable{
 
-	private static final long serialVersionUID = 2179301964522742234L;
+	private static final long serialVersionUID = 100L;
 	PublishApi dcepPublishApi;
 	ArrayList<CompoundEvent> events = null;
 

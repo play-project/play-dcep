@@ -73,6 +73,7 @@ public class MeasureProcessingTime implements MeasurementState{
 		}
 	}
 	
+	@Override
 	public void measuringPeriodIsUp() {
 		logger.debug("Switch state");
 		logger.info(measurementEventCounter + "Measurements received. " + MeasurementUnit.mEvents * eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit.eventsPeriod + "Events expected.");

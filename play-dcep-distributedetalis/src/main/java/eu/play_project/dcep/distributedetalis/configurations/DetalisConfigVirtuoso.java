@@ -20,7 +20,7 @@ import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologC
 
 public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configuration, Serializable{
 
-	private static final long serialVersionUID = 5249777449637212881L;
+	private static final long serialVersionUID = 100L;
 	private Logger logger;
 	private static LoadPrologCode cl;
 

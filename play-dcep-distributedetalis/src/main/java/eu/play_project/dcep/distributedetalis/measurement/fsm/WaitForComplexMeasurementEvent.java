@@ -94,6 +94,7 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 				
 	}
 
+	@Override
 	public void measuringPeriodIsUp() {
 		
 	}

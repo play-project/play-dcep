@@ -16,7 +16,7 @@ import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class PerformanceTestListener implements PublishApi, Serializable{
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private long t1;
 	ArrayList<CompoundEvent> complexEvents = new ArrayList<CompoundEvent>();
 	long counter = -1;

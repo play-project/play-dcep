@@ -1,6 +1,10 @@
 package eu.play_project.dcep.api.measurement;
 
 public class PatternMeasuringResult extends MeasuringResult implements Comparable<PatternMeasuringResult>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
 	//Pattern name.
 	private String name; 
 	private int processedEvents;
@@ -17,9 +21,11 @@ public class PatternMeasuringResult extends MeasuringResult implements Comparabl
 		this.processedEvents = processedEvents;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}

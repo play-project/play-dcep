@@ -10,6 +10,10 @@ import java.io.Serializable;
 
 public class MeasurementUnit implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
 	private long numberOfEvents = 0;
 	private long startTime = 0;
 	private long n;

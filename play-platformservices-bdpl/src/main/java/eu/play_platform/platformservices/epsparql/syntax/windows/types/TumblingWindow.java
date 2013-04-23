@@ -7,8 +7,6 @@ import org.apache.xerces.impl.dv.xs.DurationDV;
 import org.apache.xerces.xs.datatypes.XSDateTime;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.query.QueryException;
-
 import eu.play_platform.platformservices.epsparql.syntax.windows.Window;
 import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
 /**

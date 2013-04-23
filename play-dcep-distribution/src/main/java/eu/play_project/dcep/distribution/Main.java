@@ -6,13 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-import org.etsi.uri.gcm.api.control.GCMLifeCycleController;
 import org.etsi.uri.gcm.util.GCM;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
+import org.objectweb.fractal.api.control.LifeCycleController;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class Main {
 			while (!init) {
 				boolean overallInitStatus = true;
 				for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
-					overallInitStatus = overallInitStatus && GCM.getGCMLifeCycleController(subcomponent).getFcState().equals(GCMLifeCycleController.STARTED);
+					overallInitStatus = overallInitStatus && GCM.getGCMLifeCycleController(subcomponent).getFcState().equals(LifeCycleController.STARTED);
 				}
 				if (overallInitStatus == true) {
 					init = true;

@@ -2,7 +2,7 @@ package eu.play_project.dcep.distributedetalis.api;
 
 public class EcConnectionmanagerException extends Exception {
 
-	private static final long serialVersionUID = 9068296223733710934L;
+	private static final long serialVersionUID = 100L;
 
 	public EcConnectionmanagerException() {
 		super();

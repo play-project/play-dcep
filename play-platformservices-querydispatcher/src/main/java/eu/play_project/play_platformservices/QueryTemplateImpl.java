@@ -16,7 +16,12 @@ import eu.play_project.play_platformservices.api.QueryTemplate;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class QueryTemplateImpl implements QueryTemplate, Serializable {
-	private static final long serialVersionUID = 621378623731886535L;
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
 	List<Quadruple> templateQuads = new LinkedList<Quadruple>();
 	
 	@Override

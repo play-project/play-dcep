@@ -35,7 +35,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 
 
 public class ConnectPSandDCEPTest implements Serializable {
-	private static final long serialVersionUID = -2703025479714729397L;
+	private static final long serialVersionUID = 100L;
 	public static QueryDispatchApi queryDispatchApi;
 	public static DistributedEtalisTestApi testApi;
 	boolean start = false;

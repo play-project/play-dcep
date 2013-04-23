@@ -25,7 +25,7 @@ import eu.play_project.play_commons.constants.Constants;
 
 public class DetalisConfigNet implements Configuration, Serializable{
 
-	private static final long serialVersionUID = 2565049949514271475L;
+	private static final long serialVersionUID = 100L;
 	private Logger logger;
 	private static LoadPrologCode cl;
 	

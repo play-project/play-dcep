@@ -9,7 +9,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 
 public class PublishApiSubscriber implements SimplePublishApi, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	ArrayList<CompoundEvent> complexEvents = new ArrayList<CompoundEvent>();
 	long counter = -1;
 	int numberOfExpectedComplexEvents = 0;

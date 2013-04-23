@@ -1,6 +1,7 @@
 package eu.play_project.distributedetalis.join.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;

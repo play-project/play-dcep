@@ -1,7 +1,5 @@
 package eu.play_project.dcep.distribution.tests.srbench.performance;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 
 import com.hp.hpl.jena.graph.Node;

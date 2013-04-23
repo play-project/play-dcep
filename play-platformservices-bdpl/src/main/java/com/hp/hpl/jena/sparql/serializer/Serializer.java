@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.serializer;
 
 import java.io.OutputStream;
-import java.util.Map;
 
 import org.openjena.atlas.io.IndentedLineBuffer;
 import org.openjena.atlas.io.IndentedWriter;

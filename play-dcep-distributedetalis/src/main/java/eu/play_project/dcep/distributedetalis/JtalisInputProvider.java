@@ -26,7 +26,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 public class JtalisInputProvider implements JtalisInputEventProvider,
 		Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	BlockingQueue<EtalisEvent> events = null; // Contains events till ETALIS has consumed them.
 	BlockingQueue<EtalisEvent> meausrementEvents = null; //Contains measurement events. They are preferred to the other events.
 	boolean shutdownEtalis = false; // If true ETALIS will shutdown.

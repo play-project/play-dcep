@@ -15,7 +15,7 @@ import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class SimplePublishApiSubscriber implements SimplePublishApi, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	ArrayList<CompoundEvent> complexEvents = new ArrayList<CompoundEvent>();
 	Logger logger;
 
@@ -28,6 +28,7 @@ public class SimplePublishApiSubscriber implements SimplePublishApi, Serializabl
 		return complexEvents;
 	}
 
+	@Override
 	public void publish(CompoundEvent arg0) {
 		//logger.info("New complex  event" + arg0 + "\nIn " + this.getClass().getSimpleName());
 		complexEvents.add(arg0);

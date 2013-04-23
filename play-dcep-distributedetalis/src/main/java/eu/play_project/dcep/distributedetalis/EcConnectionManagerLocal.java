@@ -27,7 +27,7 @@ import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
 public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 
-	private static final long serialVersionUID = -9212054663979899431L;
+	private static final long serialVersionUID = 100L;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerLocal.class);
 	private String inputRdfModelFileName;
 

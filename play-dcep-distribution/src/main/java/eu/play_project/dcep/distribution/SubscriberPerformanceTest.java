@@ -2,7 +2,6 @@ package eu.play_project.dcep.distribution;
 
 
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class SubscriberPerformanceTest implements PublishApi, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private long t1;
 	ArrayList<CompoundEvent> complexEvents = new ArrayList<CompoundEvent>();
 	long counter = -1;

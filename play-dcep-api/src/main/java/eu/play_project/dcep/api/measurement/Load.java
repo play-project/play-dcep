@@ -5,6 +5,10 @@ import java.util.List;
 
 public class Load extends MeasuringResult implements Comparable<Load> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
 	private double totalLoad;
 	private long numberOfEventsProcessed;
 	private String name;
@@ -47,10 +51,12 @@ public class Load extends MeasuringResult implements Comparable<Load> {
 		this.numberOfEventsProcessed = numberOfEventsProcessed;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}

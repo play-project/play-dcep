@@ -15,7 +15,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	
 	@Override
 	public void init(JtalisContextImpl ctx) {
-		this.ctx = ctx;
+		PrologSemWebLib.ctx = ctx;
 		// Load SWI-Prolog Semantic Web Library
 		ctx.getEngineWrapper().executeGoal("[library(semweb/rdf_db)]");
 		ctx.getEngineWrapper().executeGoal("[library(xpath)]");

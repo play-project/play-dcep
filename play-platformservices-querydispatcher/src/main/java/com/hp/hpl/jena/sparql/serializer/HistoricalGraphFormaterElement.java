@@ -3,17 +3,11 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.objectweb.fractal.api.control.SuperController;
 import org.openjena.atlas.io.IndentedLineBuffer;
 import org.openjena.atlas.io.IndentedWriter;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.path.PathWriter;
-import com.hp.hpl.jena.sparql.serializer.FormatterElement;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 

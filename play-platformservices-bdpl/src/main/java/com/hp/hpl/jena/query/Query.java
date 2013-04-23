@@ -72,7 +72,12 @@ import eu.play_platform.platformservices.epsparql.syntax.windows.Window;
  */
 public class Query extends Prologue implements Cloneable, Printable, Serializable //TODO is not serializable. sobermeier look at it.
 {
-    static { ARQ.init() ; /* Ensure everything has started properly */ }
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
+
+	static { ARQ.init() ; /* Ensure everything has started properly */ }
     
     public static final int QueryTypeUnknown    = -123 ;
     public static final int QueryTypeSelect     = 111 ;

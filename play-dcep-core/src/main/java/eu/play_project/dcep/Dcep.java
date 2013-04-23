@@ -28,8 +28,8 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigVirtuoso;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -46,7 +46,7 @@ public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
 ComponentInitActive, ComponentEndActive, DistributedEtalisTestApi,
 Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private DistributedEtalisTestApi dEtalisTest;
 	private DcepMonitoringApi dEtalisMonitoring;
 	private DcepManagmentApi dEtalisManagment;

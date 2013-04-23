@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.jtalis.core.JtalisContextImpl;
 
-import eu.play_project.dcep.distributedetalis.DistributedEtalis;
+import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
-import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
@@ -23,7 +22,7 @@ import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologC
 
 public class DetalisConfigLocal implements Configuration, Serializable{
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private String inputRdfModelFile;
 	private Logger logger;
 	private static transient LoadPrologCode cl;

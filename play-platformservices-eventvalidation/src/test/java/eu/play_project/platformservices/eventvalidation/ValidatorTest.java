@@ -14,6 +14,7 @@ import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.model.node.impl.DatatypeLiteralImpl;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 import org.ontoware.rdf2go.vocabulary.XSD;
+import org.ontoware.rdfreactor.schema.rdfs.Resource;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
@@ -173,7 +174,7 @@ public class ValidatorTest {
 		}
 		
 		this.validator.checkQuadruple(
-				GRAPH_URI, SUBJECT_URI, Event.TYPE, 
+				GRAPH_URI, SUBJECT_URI, Resource.TYPE, 
 				new URIImpl("http://events.event-processing.org/types/DummyType"));
 		try {
 			assertTrue(this.validator.isValid());

@@ -38,7 +38,7 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class DEtalisTests implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private static DistributedEtalisTestApi distributedEtalisTestApi;
 	private static DcepManagmentApi dcepManagmentApi = null;
 	private static PublishApiSubscriber subscriber = null;

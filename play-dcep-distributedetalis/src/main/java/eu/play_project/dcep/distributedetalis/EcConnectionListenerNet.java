@@ -7,7 +7,7 @@ import fr.inria.eventcloud.api.SubscriptionId;
 import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;
 
 public class EcConnectionListenerNet extends CompoundEventNotificationListener implements Serializable {
-	private static final long serialVersionUID = 8630112375640830481L;
+	private static final long serialVersionUID = 100L;
 
 	// For ProActive:
 	public EcConnectionListenerNet(){}

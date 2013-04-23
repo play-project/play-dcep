@@ -15,6 +15,7 @@ storeMin(Id, Value) :- (catch(minValue(Id, V_old), E, assertMinVal(E, Id, Value)
 			true). 
 assertMinVal(_E,Id, Value) :- (assert(minValue(Id, Value)),false).
 
+
 % Safe value if it is the bigest value ever given.
 % Distinction between different sorages is done bay Id.
 storeMax(Id, Value) :- (catch(maxValue(Id, V_old), E, assertMaxVal(E, Id, Value)) -> % If value exists check if it is bigger than the saved value.

@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static eu.play_project.play_commons.constants.Namespace.EVENTS;
@@ -22,7 +23,6 @@ import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.event.JtalisOutputEventProvider;
 
-import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601; 
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
@@ -39,7 +39,7 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private static Logger logger = LoggerFactory.getLogger(JtalisOutputProvider.class);
 
 	boolean shutdownEtalis = false; // If true ETALIS will shutdown.

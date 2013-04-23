@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class LoadTimeSeries extends MeasuringResult implements Collection<Double>, List<Double>, Comparable<LoadTimeSeries>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
 	private List<Double> datastructure;
 	private String name;
 	private int possitonInDatascructure;
@@ -173,6 +177,7 @@ public class LoadTimeSeries extends MeasuringResult implements Collection<Double
 	/**
 	 * @return the patternName
 	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -181,6 +186,7 @@ public class LoadTimeSeries extends MeasuringResult implements Collection<Double
 	/**
 	 * @param patternName the patternName to set
 	 */
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}

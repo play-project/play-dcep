@@ -14,7 +14,7 @@ import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
 public class SubscriberPerformanceTest implements SimplePublishApi, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 100L;
 	private long t1;
 	private ConnectPSandDCEPTest master;
 	ArrayList<CompoundEvent> complexEvents = new ArrayList<CompoundEvent>();
@@ -38,6 +38,7 @@ public class SubscriberPerformanceTest implements SimplePublishApi, Serializable
 		return complexEvents;
 	}
 
+	@Override
 	public void publish(CompoundEvent arg0) {
 		//System.out.println("New event in " + this.getClass().getSimpleName() + arg0.toString());
 		counter++;
