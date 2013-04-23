@@ -26,7 +26,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>eu.play_project.dcep.distribution.eventcloud.remotetests.HistoricalQuery</mainClass>
+							<mainClass>eu.play_project.dcep.distribution.eventcloud.remotetests.Run</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
