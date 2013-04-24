@@ -1,11 +1,15 @@
 package eu.play_project.dcep.distributedetalis.test;
 
+import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
+import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
+import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -19,22 +23,32 @@ import java.util.regex.Pattern;
 import jpl.Query;
 import jpl.Term;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.event_processing.events.types.AvgTempEvent;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.JtalisContextImpl;
 import com.jtalis.core.event.AbstractJtalisEventProvider;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
+import eu.play_project.dcep.constants.DcepConstants;
+import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
+import eu.play_project.dcep.distributedetalis.RetractEventException;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
+import eu.play_project.dcep.distributedetalis.api.VariableBindings;
+import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
+import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.HistoricalData;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -230,45 +244,44 @@ public class PrologJtalisTest {
 	
 	
 	
-	// @Test TODO sobermeier activate test.
-	public void generateCartesinProductOfTriples(){
-		PlayJplEngineWrapper.getPlayJplEngineWrapper().executeGoal("generateConstructResult([s1,s2],[p],[o1,o2],testDb2)");;
+	// @Test FIXME find problem for AssertinError.
+	public void generateCartesinProductOfTriples() throws IOException, RetractEventException, InterruptedException{
+		LoadPrologCode lpc = new LoadPrologCode();
+		lpc.loadCode("ComplexEventData.pl", PlayJplEngineWrapper.getPlayJplEngineWrapper());
 		
-		// Test event
-		EtalisEvent event = new EtalisEvent("a", "testDb2");
-		event.setRuleID("498929293");
-		//TODO No static variable
-		CompoundEvent result = null; //= new CompoundEvent(JtalisOuitputProvider.getEventData(PlayJplEngineWrapper.getPlayJplEngineWrapper(), event));
+		PlayJplEngineWrapper.getPlayJplEngineWrapper().executeGoal("generateConstructResult(['s1','s2'],['p1'],['o1','o2'],testDb2)");
+
+		CompoundEvent result = new CompoundEvent(getEventData(PlayJplEngineWrapper.getPlayJplEngineWrapper(), "testDb2"));
 		
 		// Event to compare with result
 		List<Quadruple> quadruple = new ArrayList<Quadruple>();
 		
 		Quadruple q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
-				Node.createURI("s1"),
-                Node.createURI("p"),
-                Node.createURI("o1"));
+				Node.createURI("'s1'"),
+                Node.createURI("'p1'"),
+                Node.createURI("'o1'"));
+		quadruple.add(q1);
+		
+		 q1 = new Quadruple(
+				Node.createURI("'testDb2'"),
+				Node.createURI("'s1'"),
+                Node.createURI("'p1'"),
+                Node.createURI("'o2'"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
-				Node.createURI("s1"),
-                Node.createURI("p"),
-                Node.createURI("o2"));
+				Node.createURI("'s2'"),
+                Node.createURI("'p1'"),
+                Node.createURI("'o1'"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
 				Node.createURI("'testDb2'"),
-				Node.createURI("s2"),
-                Node.createURI("p"),
-                Node.createURI("o1"));
-		quadruple.add(q1);
-		
-		q1 = new Quadruple(
-				Node.createURI("'testDb2'"),
-				Node.createURI("s2"),
-                Node.createURI("p"),
-                Node.createURI("o2"));
+				Node.createURI("'s2'"),
+                Node.createURI("'p1'"),
+                Node.createURI("'o1'"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
@@ -281,15 +294,15 @@ public class PrologJtalisTest {
 		CompoundEvent original = new CompoundEvent(quadruple);
 
 		
-		System.out.println(result);
+		//System.out.println(result);
 		
-		System.out.println((result.getTriples().get(3) + "\t" + original.getTriples().get(0)));
+		System.out.println((result.get(3) + "\t" + original.get(0)));
 
-		assertTrue(result.getTriples().get(3).equals(original.getTriples().get(0)));
-		assertTrue(result.getTriples().get(4).equals(original.getTriples().get(1)));
-		assertTrue(result.getTriples().get(5).equals(original.getTriples().get(2)));
-		assertTrue(result.getTriples().get(6).equals(original.getTriples().get(3)));
-		assertFalse(result.getTriples().get(4).equals(original.getTriples().get(4)));
+		assertTrue(result.get(3).equals(original.get(0)));
+		assertTrue(result.get(4).equals(original.get(1)));
+		assertTrue(result.get(5).equals(original.get(2)));
+		assertTrue(result.get(6).equals(original.get(3)));
+		assertFalse(result.get(4).equals(original.get(4)));
 		
 		delay();
 	}
@@ -638,5 +651,45 @@ public class PrologJtalisTest {
 		}
 		return null;
 	
+	}
+	
+	/**
+	 * Get event data from Prolog.
+	 */
+	public List<Quadruple> getEventData(PlayJplEngineWrapper engine, String patternId) throws RetractEventException {
+		List<Quadruple> quadruples = new ArrayList<Quadruple>();
+		
+		String eventId = EVENTS.getUri() + patternId;
+	
+		final Node GRAPHNAME = Node.createURI(eventId);
+		final Node EVENTID = Node.createURI(eventId + EVENT_ID_SUFFIX);
+
+		
+		/*
+		 * Add payload data to event:
+		 */
+		Hashtable<String, Object>[] triples =  engine.getTriplestoreData(patternId);
+
+		for(Hashtable<String, Object> item : triples) {
+			// Remove single quotes around Prolog strings
+			String subject = item.get("S").toString();
+			subject = subject.substring(1, subject.length() - 1);
+			String predicate = item.get("P").toString();
+			predicate = predicate.substring(1, predicate.length() - 1);
+			String object = item.get("O").toString();
+			if (object.startsWith("'") && object.endsWith("'")) {
+				object = object.substring(1, object.length() - 1);
+			}
+
+			Node objectNode = EventHelpers.toJenaNode(object);
+			
+			quadruples.add(new Quadruple(
+					GRAPHNAME,
+					// Replace dummy event id placeholder with actual unique id for complex event:
+					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : Node.createURI(subject)),
+	                Node.createURI(predicate),
+	                objectNode));
+		}		
+		return quadruples;
 	}
 }

@@ -147,7 +147,7 @@ public class MeasureProcessingTime implements MeasurementState{
 
 		// Calc processint time for one event
 		Long currentTime = System.nanoTime();
-		for (Triple quadruple : event.getTriples()) {
+		for (Quadruple quadruple : event) {
 			if (quadruple.getPredicate().toString().equals("http://play-project.eu/timeOneEvent")) {
 				singleEventTime = currentTime - Long.valueOf(quadruple.getObject().toString());
 				singleEventTime = (singleEventTime/ MeasurementUnit.mEvents);

@@ -31,7 +31,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	public Boolean addEvent(CompoundEvent event) throws DistributedEtalisException {
 		Boolean dataAddedToTriplestore = true;
 		Boolean gcDataAdded = true;
-		for(Triple quadruple : event.getTriples()){
+		for(Quadruple quadruple : event){
 			if(dataAddedToTriplestore){
 				// TODO use prolog type system
 				Node o = quadruple.getObject();
