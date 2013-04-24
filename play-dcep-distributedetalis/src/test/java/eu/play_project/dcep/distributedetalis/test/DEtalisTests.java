@@ -93,7 +93,7 @@ public class DEtalisTests implements Serializable {
 				Node.createURI("http://play-project.eu/42"));
 
 		if (subscriber.getComplexEvents() != null) {
-			assertTrue(subscriber.getComplexEvents().get(0).getQuadruples().get(4).equals(eventR));
+			assertTrue(subscriber.getComplexEvents().get(0).getTriples().get(4).equals(eventR));
 		} else {
 			System.out.println("ERROR: No complex events in test 'checkComplexEvents()'.");
 			fail();

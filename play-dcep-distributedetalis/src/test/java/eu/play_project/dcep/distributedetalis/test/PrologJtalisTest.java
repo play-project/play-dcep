@@ -283,13 +283,13 @@ public class PrologJtalisTest {
 		
 		System.out.println(result);
 		
-		System.out.println((result.getQuadruples().get(3) + "\t" + original.getQuadruples().get(0)));
+		System.out.println((result.getTriples().get(3) + "\t" + original.getTriples().get(0)));
 
-		assertTrue(result.getQuadruples().get(3).equals(original.getQuadruples().get(0)));
-		assertTrue(result.getQuadruples().get(4).equals(original.getQuadruples().get(1)));
-		assertTrue(result.getQuadruples().get(5).equals(original.getQuadruples().get(2)));
-		assertTrue(result.getQuadruples().get(6).equals(original.getQuadruples().get(3)));
-		assertFalse(result.getQuadruples().get(4).equals(original.getQuadruples().get(4)));
+		assertTrue(result.getTriples().get(3).equals(original.getTriples().get(0)));
+		assertTrue(result.getTriples().get(4).equals(original.getTriples().get(1)));
+		assertTrue(result.getTriples().get(5).equals(original.getTriples().get(2)));
+		assertTrue(result.getTriples().get(6).equals(original.getTriples().get(3)));
+		assertFalse(result.getTriples().get(4).equals(original.getTriples().get(4)));
 		
 		delay();
 	}

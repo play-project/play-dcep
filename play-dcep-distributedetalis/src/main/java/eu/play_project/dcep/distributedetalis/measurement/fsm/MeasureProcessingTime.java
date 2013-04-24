@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
@@ -146,7 +147,7 @@ public class MeasureProcessingTime implements MeasurementState{
 
 		// Calc processint time for one event
 		Long currentTime = System.nanoTime();
-		for (Quadruple quadruple : event.getQuadruples()) {
+		for (Triple quadruple : event.getTriples()) {
 			if (quadruple.getPredicate().toString().equals("http://play-project.eu/timeOneEvent")) {
 				singleEventTime = currentTime - Long.valueOf(quadruple.getObject().toString());
 				singleEventTime = (singleEventTime/ MeasurementUnit.mEvents);
