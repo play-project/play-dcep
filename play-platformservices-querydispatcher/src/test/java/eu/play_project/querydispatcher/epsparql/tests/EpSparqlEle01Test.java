@@ -23,7 +23,7 @@ import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTy
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.FilterExpressionCodeGenerator;
-import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
+
 
 //import eu.play_project.querydispatcher.epsparql.tests.helpers.FilterExpressionCodeGenerator;
 
@@ -186,19 +186,6 @@ public class EpSparqlEle01Test {
 		assertTrue(eventTypes.get("tweetContent").equals(AgregatedEventType.CH));
 	}
 	
-	public boolean testEtalisPatter(String pattern){
-		boolean result = true;
-		try{
-			PlayEleParser parser = new PlayEleParser(new ByteArrayInputStream(pattern.getBytes()));
-			parser.Start();
-		}catch(Exception e){
-			e.printStackTrace();
-			result = false;
-			e.printStackTrace();
-		}
-		return result;
-	}
-
 	/**
 	 * Return the query from given file. If given it returns the message of the
 	 * expected exception.
