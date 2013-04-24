@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.hp.hpl.jena.query.Syntax;
 
+
 /** original code - contribution from Olaf Hartig */
 
 
@@ -42,8 +43,8 @@ public class ParserRegistry
     
     private ParserRegistry() { }
     
-    private static synchronized void init()
-    {
+    private static synchronized void init(){
+    	
         ParserRegistry reg = new ParserRegistry() ;
         
         reg.add(Syntax.syntaxSPARQL_10, 
@@ -72,7 +73,8 @@ public class ParserRegistry
             @Override
             public boolean accept(Syntax syntax ) { return Syntax.syntaxEPSPARQL_20.equals(syntax) ; } 
             @Override
-            public Parser create ( Syntax syntax ) { return new ParserEP_SPARQL_20() ; } }) ;
+            public Parser create ( Syntax syntax ) { return new ParserEP_SPARQL_20()
+            ; } }) ;
         
 	// Defend against concurrent start up (even if not synchronised).
         // Protects against, not fixes, the problem.
