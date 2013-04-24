@@ -199,7 +199,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 					+ " has not been initialized.");
 		}
 
-		Subscription sub = Subscription.any();
+		Subscription sub = Subscription.acceptAll();
 
 		try {
 			if (this.subscriptions.containsKey(getInputCloud(cloudId))) {

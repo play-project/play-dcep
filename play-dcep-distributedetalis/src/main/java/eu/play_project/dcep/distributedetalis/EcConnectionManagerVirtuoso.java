@@ -262,7 +262,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
         
 		// Send event to DSB:
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		TriGWriter.write(out, DatasetFactory.create(quadruplesToDatasetGraph(event.getQuadruples())));
+		TriGWriter.write(out, DatasetFactory.create(quadruplesToDatasetGraph(event)));
 		Element notifPayload = EventFormatHelpers.wrapWithDomNativeMessageElement(new String(out.toByteArray()));
 		this.rdfSender.notify(notifPayload, getTopic(cloudId));
 		
@@ -367,7 +367,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
      *            the collection of the quadruples
      * @return the corresponding data set graph
      */
-    private static DatasetGraph quadruplesToDatasetGraph(List<Quadruple> quads) {
+    private static DatasetGraph quadruplesToDatasetGraph(CompoundEvent quads) {
         DatasetGraph dsg = DatasetGraphFactory.createMem();
         for (Quadruple q : quads) {
             if (q.getPredicate() != PublishSubscribeConstants.EVENT_NB_QUADRUPLES_NODE) {
