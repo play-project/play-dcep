@@ -40,13 +40,13 @@
 				<version>2.6</version>
 				<executions>
 					<execution>
-						<id>javacc-ep-sparql</id>
+						<id>javacc-bdpl</id>
 						<goals>
 							<goal>javacc</goal>
 						</goals>
 						<configuration>
 							<includes>
-								<include>**/*sparql_11_PLAY_construct-jena-arq-2.9.4.jj</include>
+								<include>**/*sparql_11_BDPL-jena-arq-2.9.4.jj</include>
 							</includes>
 						</configuration>
 					</execution>

@@ -33,7 +33,7 @@ options
 //  DEBUG_PARSER          = true ;
 //  DEBUG_TOKEN_MANAGER   = true ;
 }
-PARSER_BEGIN(SPARQLParserEP_SPARQL_20)
+PARSER_BEGIN(SPARQLParserBDPL)
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -67,7 +67,7 @@ import com.hp.hpl.jena.sparql.modify.request.* ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.EPSPARQLParser11Base;
 import eu.play_platform.platformservices.epsparql.syntax.windows.types.*;
 import eu.play_platform.platformservices.epsparql.syntax.windows.Window;
-public class SPARQLParserEP_SPARQL_20 extends EPSPARQLParser11Base
+public class SPARQLParserBDPL extends EPSPARQLParser11Base
 {
     boolean allowAggregatesInExpressions = false ;
     boolean predicate;
@@ -75,7 +75,7 @@ public class SPARQLParserEP_SPARQL_20 extends EPSPARQLParser11Base
 	// Stack mathStack =  new Stack();
 }
 
-PARSER_END(SPARQLParserEP_SPARQL_20)
+PARSER_END(SPARQLParserBDPL)
 // // Common top for single entry point.
 // void Top(): {}
 // {
