@@ -16,7 +16,7 @@ import org.junit.Test;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
-import eu.play_platform.platformservices.epsparql.VariableTypes;
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.Join;
 import eu.play_project.play_platformservices_querydispatcher.Variable;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.VariableVisitor;
@@ -35,7 +35,7 @@ public class JoinTest {
 //				"				}";
 //		//queryString = getQuery("EP-SPARQL-Query-Event-and-GRAPH.eprq");
 //		
-//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 //		System.out.println(query);
 //	}
 	
@@ -56,12 +56,12 @@ public class JoinTest {
 				"						GRAPH ?id{?s ?o ?o}}";
 
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		VariableVisitor visitor = new VariableVisitor();
 		
-		Map<String, List<Variable>>   resultVars = visitor.getVariables(query, eu.play_platform.platformservices.epsparql.VariableTypes.realtimeType);
-		visitor.getVariables(query, eu.play_platform.platformservices.epsparql.VariableTypes.constructType, resultVars);
-		visitor.getVariables(query, eu.play_platform.platformservices.epsparql.VariableTypes.historicType, resultVars);
+		Map<String, List<Variable>>   resultVars = visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.realtimeType);
+		visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.constructType, resultVars);
+		visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.historicType, resultVars);
 		
 		for(String key:resultVars.keySet()){
 			System.out.print(key + " Type is: " );
@@ -87,13 +87,13 @@ public class JoinTest {
 				"						GRAPH ?id{?s ?o ?o FILTER (?f > \"1\")}}";
 
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		VariableVisitor visitor = new VariableVisitor();
 		String[] expectedResults = {"f", "id", "s"}; // Variables which occours in historic and realtime part.
 		
-		Map<String, List<Variable>>   resultVars = visitor.getVariables(query, eu.play_platform.platformservices.epsparql.VariableTypes.realtimeType);
-		visitor.getVariables(query, eu.play_platform.platformservices.epsparql.VariableTypes.constructType, resultVars);
-		visitor.getVariables(query, eu.play_platform.platformservices.epsparql.VariableTypes.historicType, resultVars);
+		Map<String, List<Variable>>   resultVars = visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.realtimeType);
+		visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.constructType, resultVars);
+		visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.historicType, resultVars);
 		int i=0;
 		for(String key:resultVars.keySet()){
 			for (Variable var : resultVars.get(key)) {
@@ -117,10 +117,10 @@ public class JoinTest {
 		
 		//Define variables
 		ArrayList<Variable> valueListR = new ArrayList<Variable>();
-		valueListR.add(new Variable("a", eu.play_platform.platformservices.epsparql.VariableTypes.realtimeType, "vr1"));
+		valueListR.add(new Variable("a", eu.play_platform.platformservices.bdpl.VariableTypes.realtimeType, "vr1"));
 		
 		ArrayList<Variable> valueListS = new ArrayList<Variable>();
-		Variable varS =  new Variable("a", eu.play_platform.platformservices.epsparql.VariableTypes.historicType, "vs1");
+		Variable varS =  new Variable("a", eu.play_platform.platformservices.bdpl.VariableTypes.historicType, "vs1");
 		varS.addValue("vs2");
 		varS.addValue("vs3");
 		varS.addValue("vs4");

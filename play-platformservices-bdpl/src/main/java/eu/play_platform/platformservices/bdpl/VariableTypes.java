@@ -1,4 +1,4 @@
-package eu.play_platform.platformservices.epsparql;
+package eu.play_platform.platformservices.bdpl;
 /**
  * A variable can appear in historic,  realtime or both parts of an query.
  * They have different types to identify them.

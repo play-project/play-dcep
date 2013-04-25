@@ -23,7 +23,7 @@ public class MeasurementTest {
 //	
 //	private static EpSparqlQuery  generateEle(String queryString){
 //		// Parse query
-//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 //		// Use custom visitor
 //		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 //		visitor1.setPatternId("'http://patternId.example.com/123456'");

@@ -30,7 +30,7 @@ public class StreamIdCollectorTest {
 		
 		assertNotNull("Testing Query was not found on classpath", queryString);
 		
-		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId(queryId);
@@ -60,7 +60,7 @@ public class StreamIdCollectorTest {
 		
 		assertNotNull("Testing Query was not found on classpath", queryString);
 		
-		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId(queryId);

@@ -36,7 +36,7 @@ public class EpSparqlEle01Test {
 		Query query = null;
 		
 		try {
-			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		} catch(Exception e){
 			System.out.println("Exception was thrown: " + e);
 			
@@ -67,7 +67,7 @@ public class EpSparqlEle01Test {
 		//queryString = "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
 		System.out.println(queryString);
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 
 		System.out.println("Querry \n" +query);
@@ -95,7 +95,7 @@ public class EpSparqlEle01Test {
 		queryString = getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
 
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
@@ -115,7 +115,7 @@ public class EpSparqlEle01Test {
 		queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		System.out.println(queryString);
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 
 		
@@ -133,7 +133,7 @@ public class EpSparqlEle01Test {
 		String queryString = "PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ ?x ?nice ?name. ?e rdf:type ?AlertEvent } WHERE {EVENT ?id{?e1 ?location \"abc\". ?e rdf:type ?AlertEvent} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
 		Query query = null;
 		try{
-			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		}catch(Exception e){
 			
 		}
@@ -152,7 +152,7 @@ public class EpSparqlEle01Test {
 //	@Test
 //	public void dispatchQuery(){
 //		String queryString = "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
-//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 //		
 //		VariableVisitor visitor = new VariableVisitor();
 //	
@@ -168,7 +168,7 @@ public class EpSparqlEle01Test {
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 		// Get types.
 		Map<String, AgregatedEventType> eventTypes = aTypes.detectType(query);

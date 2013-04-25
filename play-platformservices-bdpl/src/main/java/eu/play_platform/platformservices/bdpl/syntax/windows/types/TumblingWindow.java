@@ -1,5 +1,4 @@
-package eu.play_platform.platformservices.epsparql.syntax.windows.types;
-
+package eu.play_platform.platformservices.bdpl.syntax.windows.types;
 
 import java.util.Calendar;
 
@@ -8,25 +7,19 @@ import org.apache.xerces.impl.dv.xs.DurationDV;
 import org.apache.xerces.xs.datatypes.XSDateTime;
 import org.slf4j.LoggerFactory;
 
-import eu.play_platform.platformservices.epsparql.syntax.windows.Window;
-import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
-
+import eu.play_platform.platformservices.bdpl.syntax.windows.Window;
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 /**
- * Represents a parsed sliding window expression.
+ * Represents a parsed tumbling window expression.
  * @author sobermeier
  *
  */
-public class SlidingWindow extends Window{
+public class TumblingWindow extends Window{
 	
-	@Override
-	public void accept(ElementWindowVisitor v) {
-		v.visit(this);
-	}
-
-	public SlidingWindow(String value) {
+	public TumblingWindow(String value) {
 		
-		logger = LoggerFactory.getLogger(SlidingWindow.class);
-
+		logger = LoggerFactory.getLogger(TumblingWindow.class);
+		
 		// Pars and store value.
 		final String PREFIX = "(\"";
 		final String POSTFIX = "\"^^xsd:duration";
@@ -45,4 +38,10 @@ public class SlidingWindow extends Window{
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void accept(ElementWindowVisitor v) {
+		v.visit(this);
+	}
+
 }

@@ -79,7 +79,7 @@ public class QueryTemplateImplTest {
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
 		// Parse query
-		Query q = QueryFactory.create(queryString, Syntax.syntaxEPSPARQL_20);
+		Query q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
 
 		// Generate CEP-language
 		eleGenerator.setPatternId("'" + "123" + "'"); // TODO sobermeier: Remove in the future, ETALIS will do this

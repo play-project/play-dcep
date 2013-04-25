@@ -1,4 +1,4 @@
-# This pattern will be valid some time but for now it throws: @expectedException<com.hp.hpl.jena.sparql.lang.EPSPARQL_20.ParseException: Encountered " "str" "STR "" at line 14, column 51.>.
+# This pattern will be valid some time but for now it throws: @expectedException<com.hp.hpl.jena.sparql.lang.BDPL.ParseException: Encountered " "str" "STR "" at line 14, column 51.>.
 PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
 PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

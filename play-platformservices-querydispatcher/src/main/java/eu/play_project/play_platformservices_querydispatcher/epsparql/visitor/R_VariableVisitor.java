@@ -12,7 +12,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
-import eu.play_platform.platformservices.epsparql.VariableTypes;
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.GenericVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.C_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.H_Quadruple;

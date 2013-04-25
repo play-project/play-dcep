@@ -34,8 +34,8 @@ public class Syntax extends Symbol
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_11") ;
 	
 	 /** The syntax defined in PLAY Project */
-    public static final Syntax syntaxEPSPARQL_20
-                = new Syntax("http://play-project.eu/2011/03/query/syntaxEPSPARQL_20"); 
+    public static final Syntax syntaxBDPL
+                = new Syntax("http://play-project.eu/2011/03/query/syntaxBDPL"); 
     
     
     
@@ -110,7 +110,7 @@ public class Syntax extends Symbol
         if ( sym.equals(syntaxSPARQL_10) )   return syntaxSPARQL_10 ;
         if ( sym.equals(syntaxSPARQL_11) )   return syntaxSPARQL_11 ;
         if ( sym.equals(syntaxAlgebra) )     return syntaxAlgebra ;
-		if ( sym.equals(syntaxEPSPARQL_20))  return syntaxEPSPARQL_20;
+		if ( sym.equals(syntaxBDPL))  return syntaxBDPL;
         return null ;
     }
     

@@ -6,7 +6,7 @@ import java.util.List;
 import com.hp.hpl.jena.graph.NodeVisitor;
 import com.hp.hpl.jena.graph.Node_Variable;
 
-import eu.play_platform.platformservices.epsparql.VariableTypes;
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.api.QueryDispatechElement;
 import eu.play_project.play_platformservices_querydispatcher.api.QueryDispatechElementVisitor;
 

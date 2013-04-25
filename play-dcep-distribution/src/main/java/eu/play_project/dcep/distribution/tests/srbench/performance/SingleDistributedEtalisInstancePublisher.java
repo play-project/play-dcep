@@ -60,7 +60,7 @@ public class SingleDistributedEtalisInstancePublisher {
 
 	private static EpSparqlQuery generateEle(String queryString) {
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		String patternId = "http://patternID.example.com/" + Math.random() * 1000000;

@@ -3,7 +3,7 @@ package eu.play_project.play_platformservices_querydispatcher;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.play_platform.platformservices.epsparql.VariableTypes;
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 
 public class Variable {
 	String name;

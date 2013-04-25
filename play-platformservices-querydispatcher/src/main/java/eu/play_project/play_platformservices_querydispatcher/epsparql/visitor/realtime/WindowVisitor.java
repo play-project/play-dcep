@@ -1,10 +1,10 @@
 package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
 
-import eu.play_platform.platformservices.epsparql.syntax.windows.types.CountWindow;
-import eu.play_platform.platformservices.epsparql.syntax.windows.types.DummyWindow;
-import eu.play_platform.platformservices.epsparql.syntax.windows.types.SlidingWindow;
-import eu.play_platform.platformservices.epsparql.syntax.windows.types.TumblingWindow;
-import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.play_platformservices.api.QueryDetails;
 
 public class WindowVisitor implements ElementWindowVisitor {

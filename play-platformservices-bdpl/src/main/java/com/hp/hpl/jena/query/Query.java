@@ -57,8 +57,8 @@ import com.hp.hpl.jena.sparql.syntax.PatternVars;
 import com.hp.hpl.jena.sparql.syntax.Template;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 
-import eu.play_platform.platformservices.epsparql.syntax.windows.Window;
-import eu.play_platform.platformservices.epsparql.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.Window;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
 
 /** The data structure for a query as presented externally.
  *  There are two ways of creating a query - use the parser to turn

@@ -132,7 +132,7 @@ public class Serializer
             return ;
         }
         
-		if (outSyntax.equals(Syntax.syntaxEPSPARQL_20))
+		if (outSyntax.equals(Syntax.syntaxBDPL))
         {
             serializeSPARQL_11(query, writer) ;
             writer.flush() ;

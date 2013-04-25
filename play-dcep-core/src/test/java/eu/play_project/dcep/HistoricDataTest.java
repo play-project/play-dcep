@@ -38,7 +38,7 @@ public class HistoricDataTest {
 		String queryId = queryFile;
 		
 		Query q;
-		q = QueryFactory.create(query, Syntax.syntaxEPSPARQL_20);
+		q = QueryFactory.create(query, Syntax.syntaxBDPL);
 
 
 		// Add queryDetails

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
-import eu.play_platform.platformservices.epsparql.VariableTypes;
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.Variable;
 import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.GenericVisitor;
 

@@ -25,7 +25,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
-import eu.play_platform.platformservices.epsparql.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.play_commons.constants.Constants;
@@ -151,7 +151,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		// Parse query
 		Query q;
 		try {
-			q = QueryFactory.create(query, Syntax.syntaxEPSPARQL_20);
+			q = QueryFactory.create(query, Syntax.syntaxBDPL);
 		} catch (com.hp.hpl.jena.query.QueryException e) {
 			throw new QueryDispatchException(e.getMessage());
 		}
@@ -204,7 +204,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		// Parse query
 		try {
-			Query q = QueryFactory.create(query, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+			Query q = QueryFactory.create(query, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 			return createQueryDetails(queryId, q);
 		}
 		catch (QueryException e) {

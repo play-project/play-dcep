@@ -27,7 +27,7 @@ public class EpsparqlTest {
 	
 	@Test
 	public void manualTest(){
-		QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxEPSPARQL_20);
+		QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxBDPL);
 	}
 		
 	@Test
@@ -69,7 +69,7 @@ public class EpsparqlTest {
 				}) {
 			System.out.println("Testing queryfile: " + fileName);
 			try {
-				QueryFactory.create(getQuery(fileName)[0], Syntax.syntaxEPSPARQL_20);
+				QueryFactory.create(getQuery(fileName)[0], Syntax.syntaxBDPL);
 			} catch (IOException e) {
 				fail("Could not read query file: " + fileName);
 			} catch (QueryException e) {
@@ -95,7 +95,7 @@ public class EpsparqlTest {
 				}
 				
 				try {
-					//QueryFactory.create(query[0], Syntax.syntaxEPSPARQL_20); // TODO test whats wrong
+					//QueryFactory.create(query[0], Syntax.syntaxBDPL); // TODO test whats wrong
 	
 				} catch (QueryParseException e) {
 					if (!e.getMessage().contains(query[1])) { // Test if expected exception

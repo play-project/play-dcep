@@ -53,7 +53,7 @@ PARSER_BEGIN(SPARQLParserBDPL)
  */
 
 // Basic grammar from: http://svn.apache.org/repos/asf/jena/tags/jena-2.7.4/jena-arq/Grammar/sparql_11.jj
-package com.hp.hpl.jena.sparql.lang.EPSPARQL_20 ;
+package com.hp.hpl.jena.sparql.lang.BDPL ;
 import java.util.Stack;
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
@@ -64,10 +64,10 @@ import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
 import com.hp.hpl.jena.update.* ;
 import com.hp.hpl.jena.sparql.modify.request.* ;
-import com.hp.hpl.jena.sparql.lang.sparql_11.EPSPARQLParser11Base;
-import eu.play_platform.platformservices.epsparql.syntax.windows.types.*;
-import eu.play_platform.platformservices.epsparql.syntax.windows.Window;
-public class SPARQLParserBDPL extends EPSPARQLParser11Base
+import com.hp.hpl.jena.sparql.lang.sparql_11.BDPL_SPARQLParser11Base;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.*;
+import eu.play_platform.platformservices.bdpl.syntax.windows.Window;
+public class SPARQLParserBDPL extends BDPL_SPARQLParser11Base
 {
     boolean allowAggregatesInExpressions = false ;
     boolean predicate;

@@ -68,12 +68,12 @@ public class ParserRegistry
             @Override
             public Parser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
 
- 		reg.add(Syntax.syntaxEPSPARQL_20, 
+ 		reg.add(Syntax.syntaxBDPL, 
                 new ParserFactory() {
             @Override
-            public boolean accept(Syntax syntax ) { return Syntax.syntaxEPSPARQL_20.equals(syntax) ; } 
+            public boolean accept(Syntax syntax ) { return Syntax.syntaxBDPL.equals(syntax) ; } 
             @Override
-            public Parser create ( Syntax syntax ) { return new ParserEP_SPARQL_20()
+            public Parser create ( Syntax syntax ) { return new ParserBDPL()
             ; } }) ;
         
 	// Defend against concurrent start up (even if not synchronised).

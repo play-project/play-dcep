@@ -10,22 +10,22 @@ import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.lang.EPSPARQL_20.SPARQLParserEP_SPARQL_20;
+import com.hp.hpl.jena.sparql.lang.BDPL.SPARQLParserBDPL;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Template;
 
-public class ParserEP_SPARQL_20 extends ParserSPARQL11{
-	private interface Action { void exec(SPARQLParserEP_SPARQL_20 parser) throws Exception ; }
+public class ParserBDPL extends ParserSPARQL11{
+	private interface Action { void exec(SPARQLParserBDPL parser) throws Exception ; }
 
 	    
 	    @Override
 	    protected Query parse$(final Query query, String queryString)
 	    {
-	    	query.setSyntax(Syntax.syntaxEPSPARQL_20);
+	    	query.setSyntax(Syntax.syntaxBDPL);
 
 	        Action action = new Action() {
 	            @Override
-	            public void exec(SPARQLParserEP_SPARQL_20 parser) throws Exception
+	            public void exec(SPARQLParserBDPL parser) throws Exception
 	            {
 	                parser.QueryUnit() ;
 	            }
@@ -41,7 +41,7 @@ public class ParserEP_SPARQL_20 extends ParserSPARQL11{
 	        final Query query = new Query () ;
 	        Action action = new Action() {
 	            @Override
-	            public void exec(SPARQLParserEP_SPARQL_20 parser) throws Exception
+	            public void exec(SPARQLParserBDPL parser) throws Exception
 	            {
 	                Element el = parser.GroupGraphPattern() ;
 	                query.setQueryPattern(el) ;
@@ -56,7 +56,7 @@ public class ParserEP_SPARQL_20 extends ParserSPARQL11{
 	        final Query query = new Query () ;
 	        Action action = new Action() {
 	            @Override
-	            public void exec(SPARQLParserEP_SPARQL_20 parser) throws Exception
+	            public void exec(SPARQLParserBDPL parser) throws Exception
 	            {
 	                Template t = parser.ConstructTemplate() ;
 	                query.setConstructTemplate(t) ;
@@ -71,7 +71,7 @@ public class ParserEP_SPARQL_20 extends ParserSPARQL11{
 	    private static void perform(Query query, String string, Action action)
 	    {
 	        Reader in = new StringReader(string) ;
-	        SPARQLParserEP_SPARQL_20 parser = new SPARQLParserEP_SPARQL_20(in) ;
+	        SPARQLParserBDPL parser = new SPARQLParserBDPL(in) ;
 
 	        try {
 	            query.setStrict(true) ;

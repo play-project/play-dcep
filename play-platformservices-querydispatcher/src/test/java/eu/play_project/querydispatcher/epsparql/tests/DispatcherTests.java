@@ -50,7 +50,7 @@ public class DispatcherTests {
 		queryString = getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
 		
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
 	
 		QueryDetails qd = new QueryDetails();
@@ -77,7 +77,7 @@ public class DispatcherTests {
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		
 		VariableQuadrupleVisitor vqv = new VariableQuadrupleVisitor();
@@ -114,7 +114,7 @@ public class DispatcherTests {
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		
 		VariableQuadrupleVisitor vqv = new VariableQuadrupleVisitor();
@@ -155,7 +155,7 @@ public class DispatcherTests {
 		String queryString = getSparqlQuery("EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq");
 
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		// Dispatch query
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
@@ -181,7 +181,7 @@ public class DispatcherTests {
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 		System.out.println(query);
 		
@@ -202,7 +202,7 @@ public class DispatcherTests {
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 			
 		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxEPSPARQL_20);
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 		QueryTemplate qt = ab.createQueryTemplate(query);
 	}

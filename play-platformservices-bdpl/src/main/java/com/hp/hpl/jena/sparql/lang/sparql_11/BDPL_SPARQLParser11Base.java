@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.sparql.lang.sparql_11;
 import com.hp.hpl.jena.sparql.lang.ParserQueryBase;
-import com.hp.hpl.jena.sparql.lang.EPSPARQL_20.SPARQLParserEP_SPARQL_20Constants;
+import com.hp.hpl.jena.sparql.lang.BDPL.SPARQLParserBDPLConstants;
 
 
-public class EPSPARQLParser11Base
+public class BDPL_SPARQLParser11Base
         extends ParserQueryBase
-        implements SPARQLParserEP_SPARQL_20Constants
+        implements SPARQLParserBDPLConstants
 {
 }
