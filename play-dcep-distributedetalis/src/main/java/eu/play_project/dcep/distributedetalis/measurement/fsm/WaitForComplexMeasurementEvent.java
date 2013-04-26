@@ -8,7 +8,6 @@ import com.hp.hpl.jena.graph.Triple;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.Quadruple;
 
 public class WaitForComplexMeasurementEvent implements MeasurementState{
 	private int measurementEventCounter = 0;

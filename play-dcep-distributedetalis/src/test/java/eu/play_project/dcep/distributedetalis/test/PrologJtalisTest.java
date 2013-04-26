@@ -1,6 +1,5 @@
 package eu.play_project.dcep.distributedetalis.test;
 
-import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static eu.play_project.play_commons.constants.Namespace.EVENTS;
@@ -23,32 +22,24 @@ import java.util.regex.Pattern;
 import jpl.Query;
 import jpl.Term;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.event_processing.events.types.AvgTempEvent;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.JtalisContextImpl;
 import com.jtalis.core.event.AbstractJtalisEventProvider;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.RetractEventException;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
-import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
-import eu.play_project.play_platformservices.api.HistoricalData;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 

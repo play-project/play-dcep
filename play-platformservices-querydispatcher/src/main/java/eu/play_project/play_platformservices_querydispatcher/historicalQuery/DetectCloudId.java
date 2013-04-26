@@ -1,7 +1,12 @@
 package eu.play_project.play_platformservices_querydispatcher.historicalQuery;
 
 
-
+/**
+ * Every query contains source and destination cloud ids.
+ * This visitor will return them.
+ * @author sobermeier
+ *
+ */
 public class DetectCloudId {
 	
 	//States

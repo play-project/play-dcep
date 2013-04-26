@@ -50,8 +50,8 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 
 
 /**
- * 
- * @author sobermei
+ * This visitor generates no code. The visited node name is given to info logger.
+ * @author sobermeier
  *
  */
 public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,  NodeValueVisitor {

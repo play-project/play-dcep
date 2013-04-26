@@ -1,7 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;

@@ -20,7 +20,11 @@ import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTy
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.querydispatcher.epsparql.Test.helpers.GenerateConstructResultVisitor;
 
-
+/**
+ * This class coordinates the code generation for the CEP-Engine.
+ * @author sobermeier
+ *
+ */
 public class EleGeneratorForConstructQuery implements EleGenerator {
 	private Query inputQuery;
 	// Contains the generated code.
