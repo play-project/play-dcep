@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.historic;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic;
 
 import java.util.Iterator;
 
@@ -8,7 +8,7 @@ import com.hp.hpl.jena.query.Query;
 
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
-import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.GenerateConstructResulTemplatetVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResulTemplatetVisitor;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class QueryTemplateGenerator {

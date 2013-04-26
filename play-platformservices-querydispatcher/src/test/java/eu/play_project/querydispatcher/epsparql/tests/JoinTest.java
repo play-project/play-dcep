@@ -19,7 +19,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.Join;
 import eu.play_project.play_platformservices_querydispatcher.Variable;
-import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.VariableVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.VariableVisitor;
 
 
 public class JoinTest {

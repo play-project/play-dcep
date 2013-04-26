@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;

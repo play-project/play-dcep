@@ -37,7 +37,7 @@
 //import com.hp.hpl.jena.sparql.util.FmtUtils;
 //
 //import eu.play_project.play_platformservices_querydispatcher.Variable;
-//import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.VariableVisitor;
+//import eu.play_project.play_platformservices_querydispatcher.bpl.visitor.VariableVisitor;
 //
 //
 ///** Serialize a query into SPARQL or ARQ formats */

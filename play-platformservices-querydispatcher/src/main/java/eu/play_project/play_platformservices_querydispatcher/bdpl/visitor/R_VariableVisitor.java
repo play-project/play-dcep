@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
-import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.GenericVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.C_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.H_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.P_Quadruple;

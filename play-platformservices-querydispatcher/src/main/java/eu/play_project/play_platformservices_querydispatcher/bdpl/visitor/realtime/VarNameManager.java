@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
 import java.util.HashMap;
 import java.util.LinkedList;

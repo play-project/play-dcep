@@ -1,6 +1,6 @@
-package eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
-import static eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.VarNameManager.getVarNameManager;
+import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager.getVarNameManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;

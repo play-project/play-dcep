@@ -14,7 +14,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_platformservices.api.QueryDetails;
-import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.StreamIdCollector;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 
 public class StreamIdCollectorTest {
 
