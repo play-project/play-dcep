@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.VariableQuadrupleVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.VariableQuadrupleVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.C_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.H_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.R_Quadruple;
