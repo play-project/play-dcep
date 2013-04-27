@@ -17,10 +17,6 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class QueryTemplateImpl implements QueryTemplate, Serializable {
 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 100L;
 	List<Quadruple> templateQuads = new LinkedList<Quadruple>();
 	

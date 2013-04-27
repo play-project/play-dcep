@@ -4,6 +4,7 @@ import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.Triple;
@@ -13,18 +14,18 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
-import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes;
-import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.BinOperatorVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResultVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
-import eu.play_project.querydispatcher.epsparql.Test.helpers.GenerateConstructResultVisitor;
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 
 /**
@@ -51,17 +52,18 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private FilterExpressionCodeGenerator filterExpressionVisitor;
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
+	private VariableTypeManager vtm;
 	
 	private String patternId;
 	
 	//Helper methods.
-	private Map<String, AgregatedEventType> variableAgregatedType;
+	//private Map<String, AgregatedEventType> variableAgregatedType;
 	private QueryTemplate queryTemplate;
 
 	@Override
 	public void generateQuery(Query inQuery) {
 		//Detect eventtypes
-		variableAgregatedType = new AgregatedVariableTypes().detectType(inQuery);
+		//variableAgregatedType = new AgregatedVariableTypes().detectType(inQuery);
 
 		elePattern = "";
 		this.inputQuery = inQuery;
@@ -78,6 +80,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		havingVisitor =  new HavingVisitor();
 		
 		queryTemplate = new QueryTemplateImpl();
+		
+		// Collect basic informations.
+		vtm =  new VariableTypeManager(inQuery);
 		
 		// Start code generation.
 		ElePattern();
@@ -133,23 +138,19 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private boolean containsSharedVariablesTest(Triple triple){
 		boolean result = false;
 		if(triple.getSubject().isVariable()){
-			if(variableAgregatedType.keySet().contains(triple.getSubject().toString().substring(1))){
-				if(variableAgregatedType.get(triple.getSubject().toString().substring(1)).equals(AgregatedEventType.CRH) || variableAgregatedType.get(triple.getSubject().toString().substring(1)).equals(AgregatedEventType.RH)){
-					result = true;
-				}
+			if(vtm.isType(triple.getSubject().getName(), VariableTypes.REALTIME_TYPE) && vtm.isType(triple.getSubject().getName(), VariableTypes.HISTORIC_TYPE)){
+				return true;
 			}
-
-		}else if(triple.getPredicate().isVariable()){
-			if(variableAgregatedType.keySet().contains(triple.getPredicate().toString().substring(1))){
-				if(variableAgregatedType.get(triple.getPredicate().toString().substring(1)).equals(AgregatedEventType.CRH) || variableAgregatedType.get(triple.getPredicate().toString().substring(1)).equals(AgregatedEventType.RH)){
-					result = true;
-				}
+			
+		}
+		if(triple.getPredicate().isVariable()){
+			if(vtm.isType(triple.getPredicate().getName(), VariableTypes.REALTIME_TYPE) && vtm.isType(triple.getPredicate().getName(), VariableTypes.HISTORIC_TYPE)){
+				return true;
 			}
-		}else if(triple.getObject().isVariable()){
-			if(variableAgregatedType.keySet().contains(triple.getObject().toString().substring(1))){
-				if(variableAgregatedType.get(triple.getObject().toString().substring(1)).equals(AgregatedEventType.CRH) || variableAgregatedType.get(triple.getObject().toString().substring(1)).equals(AgregatedEventType.RH)){
-					result = true;
-				}
+		}
+		if(triple.getObject().isVariable()){
+			if(vtm.isType(triple.getObject().getName(), VariableTypes.REALTIME_TYPE) && vtm.isType(triple.getObject().getName(), VariableTypes.HISTORIC_TYPE)){
+				return true;
 			}
 		}
 		return result;
@@ -158,21 +159,13 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	public void SaveSharedVariabelValues() {
 		StringBuffer tmpEle = new StringBuffer();
 
-		Iterator<String> iter = variableAgregatedType.keySet().iterator();
-
-		while (iter.hasNext()) {
-			String key = iter.next();
-
-			// Check if variable is in real time and historical part.
-			if (variableAgregatedType.get(key).equals(AgregatedEventType.RH) || variableAgregatedType.get(key).equals(AgregatedEventType.CRH)) {
-				if (!elePattern.endsWith(",")) {
-					elePattern += ",";
-				}
-				tmpEle.append("variabeValuesAdd(" + patternId + ",'" + key + "'," + "V" + key + ")");
+		List<String> vars = vtm.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
+		for (String var : vars) {
+			if (!elePattern.endsWith(",")) {
+				elePattern += ",";
 			}
-
+			tmpEle.append("variabeValuesAdd(" + patternId + ",'" + var + "'," + "V" + var + ")");
 		}
-
 		elePattern += tmpEle.toString();
 	}
 	
@@ -260,7 +253,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 	@Override
 	public QueryTemplate getQueryTemplate() {
-		
 		return this.queryTemplate;
 	}
 	

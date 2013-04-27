@@ -1,4 +1,4 @@
-package eu.play_project.querydispatcher.epsparql.Test.helpers;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
 import com.hp.hpl.jena.graph.NodeVisitor;
 import com.hp.hpl.jena.graph.Node_ANY;

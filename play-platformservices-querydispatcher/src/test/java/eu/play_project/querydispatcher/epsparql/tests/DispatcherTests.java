@@ -24,12 +24,9 @@ import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryTemplate;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.VariableQuadrupleVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
-import eu.play_project.play_platformservices_querydispatcher.types.C_Quadruple;
-import eu.play_project.play_platformservices_querydispatcher.types.H_Quadruple;
-import eu.play_project.play_platformservices_querydispatcher.types.R_Quadruple;
+
 import fr.inria.eventcloud.api.Quadruple;
 /**
  * 
@@ -79,28 +76,6 @@ public class DispatcherTests {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		
-		VariableQuadrupleVisitor vqv = new VariableQuadrupleVisitor();
-		
-		Map<String, List<Quadruple>> variables = vqv.getVariables(query);
-		
-		//Print all variables and triples in which they occur.
-		for(String key:variables.keySet()){
-			logger.debug("Variable " + key + " occurs in: ");
-
-			for (Quadruple quadruple : variables.get(key)) {
-				//logger.debug(quadruple.toString());
-				logger.debug("Type is: " +quadruple.getClass().getName());
-				
-				//Change Values
-				if(quadruple.getClass().isInstance(H_Quadruple.class)){
-
-				//Node node = quadruple.getObject(). ;
-				//	node = Node.createURI("http");
-				}
-			}
-			System.out.println();
-		}
 	}
 	
 	@Test
@@ -116,37 +91,7 @@ public class DispatcherTests {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		
-		VariableQuadrupleVisitor vqv = new VariableQuadrupleVisitor();
-		
-		Map<String, List<Quadruple>> variables = vqv.getVariables(query);
-		
-		System.out.println(vqv);
-		
-		//Result map.
-		Map<String,Integer> variableAbsolutType = new HashMap<String, Integer>();
-		
-		//Print all variables and triples in which they occur.
-		for(String key:variables.keySet()){
-			logger.debug("Variable " + key + " occurs in: ");
-			int type = 0;
-			for (Quadruple quadruple : variables.get(key)) {
-				logger.debug("Type is: " + quadruple.getClass().getName());
-
-				if(quadruple instanceof C_Quadruple){
-					type += 1;
-				}
-				if(quadruple instanceof R_Quadruple){
-					type += 2;
-				}
-				if(quadruple instanceof H_Quadruple){
-					type += 4;
-				}
-			}
-			System.out.println(type);
-			System.out.println();
-		}
-		
+			//TODO reimplement it
 	}
 	
 	@Test

@@ -1,0 +1,90 @@
+package eu.play_project.play_platformservices_querydispatcher.types;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import com.hp.hpl.jena.query.Query;
+
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general.VariableVisitor;
+
+
+/**
+ * Contains type informations about variables.
+ * @author sobermeier
+ *
+ */
+public class VariableTypeManager {
+	
+	Map<String, Integer> variables;
+	Query query;
+	
+	public VariableTypeManager(Query q){
+		variables = new HashMap<String, Integer>();
+		this.query = q;
+	}
+	
+	public void collectVars(){
+		VariableVisitor vv = new VariableVisitor();
+		
+		vv.collectVariables(query);
+	}
+
+	/**
+	 * Add new variable to list or update existing variable.
+	 */
+	public void addVariable(String varName, int type){
+		if(variables.containsKey(varName)){
+			variables.put(varName, variables.get(varName) + type);
+		}else{
+			variables.put(varName, type);
+		}
+	}
+
+	
+	/**
+	 * Check if variable is of the given type.
+	 * @param varName Varname.
+	 * @return True if corresponding variable to given name is of given type. Else it is false.
+	 */
+	public boolean isType(String varName, int type){
+		Integer varType = variables.get(varName);
+		return !((varType &= (type)) == 0);
+	}
+
+	/**
+	 * Get type of variable with name stored in varName.
+	 */
+	public Integer getType(String varName){
+		return variables.get(varName);
+	}
+	
+	/**
+	 * Returns all variables with given type.
+	 */
+	public List<String> getVariables(int type){
+		List<String> vars =  new LinkedList<String>();
+		for (String var : variables.keySet()) {
+			if(this.isType(var, type)){
+				vars.add(var);
+			}
+		}
+		return vars;
+	}
+	
+	/**
+	 * Returns all variables with given type1 and type2.
+	 */
+	public List<String> getVariables(int type1, int type2){
+		List<String> vars =  new LinkedList<String>();
+		for (String var : variables.keySet()) {
+			if(this.isType(var, type1)){
+				if(this.isType(var, type2)){
+					vars.add(var);
+				}
+			}
+		}
+		return vars;
+	}
+}

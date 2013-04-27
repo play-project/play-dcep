@@ -1,11 +1,8 @@
 package eu.play_project.querydispatcher.epsparql.tests;
 
 import static org.junit.Assert.*;
-
 import java.util.List;
-
 import org.junit.Test;
-
 import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
@@ -16,11 +13,11 @@ public class TypeSystemTests {
 	 */
 	@Test
 	public void findType(){
-		VariableTypeManager vm = new VariableTypeManager();
+		VariableTypeManager vm = new VariableTypeManager(null);
 		
 		// Set types.
 		vm.addVariable("a", VariableTypes.CONSTRUCT_TYPE);
-		vm.addType("a", VariableTypes.AVG_TYPE);
+		vm.addVariable("a", VariableTypes.AVG_TYPE);
 		
 		// Check if it is possible to retrieve informations.
 		assertTrue(vm.isType("a", VariableTypes.CONSTRUCT_TYPE));
@@ -33,20 +30,20 @@ public class TypeSystemTests {
 	
 	@Test
 	public void getAllVariablesOfOneType(){
-		VariableTypeManager vm = new VariableTypeManager();
+		VariableTypeManager vm = new VariableTypeManager(null);
 		
 		// Set types.
 		vm.addVariable("a", VariableTypes.CONSTRUCT_TYPE);
 		vm.addVariable("a", VariableTypes.REALTIME_TYPE);
-		vm.addType("a", VariableTypes.AVG_TYPE);
+		vm.addVariable("a", VariableTypes.AVG_TYPE);
 		
 		vm.addVariable("b", VariableTypes.CONSTRUCT_TYPE);
 		vm.addVariable("b", VariableTypes.REALTIME_TYPE);
-		vm.addType("b", VariableTypes.MIN_TYPE);
+		vm.addVariable("b", VariableTypes.MIN_TYPE);
 		
 		vm.addVariable("c", VariableTypes.CONSTRUCT_TYPE);
 		vm.addVariable("c", VariableTypes.REALTIME_TYPE);
-		vm.addType("c", VariableTypes.MAX_TYPE);
+		vm.addVariable("c", VariableTypes.MAX_TYPE);
 		
 		List<String> vars = vm.getVariables(VariableTypes.REALTIME_TYPE);
 		assertTrue(vars.size()==3);

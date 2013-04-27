@@ -1,0 +1,29 @@
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd:       <http://www.w3.org/2001/XMLSchema>
+PREFIX user:   <http://graph.facebook.com/schema/user#>
+PREFIX :       <http://events.event-processing.org/types/>
+ 
+CONSTRUCT {    :e rdf:type :FacebookCepResult.
+               :e user:name ?friend1.
+               :e user:name ?friend2.
+               :e :discussionTopic ?about1.
+}
+WHERE{
+        WINDOW{
+            EVENT ?id1{
+                ?e1 rdf:type :FacebookStatusFeedEvent.
+                ?e1 :status ?about1.
+                ?e1 :name ?friend1.
+                ?e1 :temperature ?t1
+                }
+                FILTER contains(?about1, "JEANS")
+            SEQ
+            EVENT ?id1{
+                ?e1 rdf:type :FacebookStatusFeedEvent.
+                ?e1 :status ?about1.
+                ?e1 :name ?friend2.
+                ?e1 :temperature ?t2
+                }
+                FILTER contains(?about1, "JEANS")
+        } ("PT30M"^^xsd:duration, sliding)
+} HAVING(AVG(?t1 - ?t2) >= "30"^^xsd:float)
