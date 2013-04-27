@@ -1,7 +1,7 @@
 % Calulate average (Arithmetic mean) of the values in the last period.
 % Author: Stefan Obermeier
 
-%Add new value to list.
+%Add new value to list. Average will be calculated by using values from this list.
 addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if valuelist exists.
 		aggregatDb(Id,List), putInList(List,[],Element,Lnew), retractall(aggregatDb(Id,List)), assert(aggregatDb(Id,Lnew)); % Add element to existing list.
 		assert(aggregatDb(Id,[Element]))). % Put element in new list.
@@ -24,7 +24,7 @@ storeMin(Id, Value) :- (catch(minValue(Id, V_old), E, assertMinVal(E, Id, Value)
 assertMinVal(_E,Id, Value) :- (assert(minValue(Id, Value)),false).
 
 
-% Safe value if it is the bigest value ever given.
+% Safe value if it is the biggest value ever given.
 % Distinction between different sorages is done bay Id.
 storeMax(Id, Value) :- (catch(maxValue(Id, V_old), E, assertMaxVal(E, Id, Value)) -> % If value exists check if it is bigger than the saved value.
 			(maxValue(Id, V_old), ((V_old =< Value) -> (retract(maxValue(Id, _V)), assert(maxValue(Id, Value))); true));
@@ -47,6 +47,19 @@ putInList([H|T],LeftBuffer, Element, Result) :- ((transformToNumber(Element, Ele
 	append(LeftBuffer, [H], Left), (putInList(T, Left, Element, Result))).
 
 
+% The idea behind this methods is a little bit like the GoV strategy pattern.
+% The user knows the interface executeFunction(+Id, +In, -Result). Depending on the given Id
+% different code is executed.
+
+% Add new function (strategy). It can be executed with executeFunction(+Id, +ValueList, -Result).
+% In the function the result has to be stored in variable named Result.
+% Values stored in variable In can be used in the function.
+assertFunction(Id, Exp) :- assert(function(Id, In, Result) :- (Exp)).
+
+% Execute function with id given in variable Id. 
+% Parameters in variable In will be used. 
+%The result of the calculation is stored in variable Result.
+executeFunction(Id, In, Result):- (function(Id, In, Result)).
 
 
 %Debug versions.
