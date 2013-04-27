@@ -4,10 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -21,13 +19,13 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
-
-import fr.inria.eventcloud.api.Quadruple;
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 /**
  * 
  * @author sobermeier
@@ -75,23 +73,41 @@ public class DispatcherTests {
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		
+		VariableTypeManager vtm = new VariableTypeManager(query);
+		
+		vtm.collectVars();
+		
+		List<String> vars = vtm.getVariables(VariableTypes.CONSTRUCT_TYPE);
+		assertTrue(vars.size() == 5);
+		assertTrue(vars.contains("e1"));
+		assertTrue(vars.contains("e2"));
+		assertTrue(vars.contains("bob"));
+		assertTrue(vars.contains("alice"));
+		assertTrue(vars.contains("tweetContent"));
 
-	}
-	
-	@Test
-	public void showRealtimeHistoricVariables() throws IOException{
-		if(logger == null){
-			logger= LoggerFactory.getLogger(DispatcherTests.class);
-		}
-		
-		
-		// Get query.
-		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
-		
-		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		vars = vtm.getVariables(VariableTypes.REALTIME_TYPE);
+		assertTrue(vars.size() == 8);
+		assertTrue(vars.contains("id1"));
+		assertTrue(vars.contains("e1"));
+		assertTrue(vars.contains("e2"));
+		assertTrue(vars.contains("alice"));
+		assertTrue(vars.contains("bob"));
+		assertTrue(vars.contains("direction"));
+		assertTrue(vars.contains("firstEvent"));
+		assertTrue(vars.contains("id2"));
 
-			//TODO reimplement it
+
+		vars = vtm.getVariables(VariableTypes.HISTORIC_TYPE);
+		System.out.println(vars.size());
+		assertTrue(vars.size() == 5);
+		assertTrue(vars.contains("id3"));
+		assertTrue(vars.contains("e3"));
+		assertTrue(vars.contains("tweetTime"));
+		assertTrue(vars.contains("firstEvent"));
+		assertTrue(vars.contains("tweetContent"));
+
+
 	}
 	
 	@Test
