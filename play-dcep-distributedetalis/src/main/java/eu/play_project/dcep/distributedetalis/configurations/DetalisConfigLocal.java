@@ -70,6 +70,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 			cl.loadCode("ComplexEventData.pl", engine);
 			cl.loadCode("Measurement.pl", engine);
 			cl.loadCode("Statistics.pl", engine);
+			cl.loadCode("Helpers.pl", engine);
 			cl.loadCode("Windows.pl", engine);
 			cl.loadCode("Math.pl", engine);
 		} catch (IOException e) {
