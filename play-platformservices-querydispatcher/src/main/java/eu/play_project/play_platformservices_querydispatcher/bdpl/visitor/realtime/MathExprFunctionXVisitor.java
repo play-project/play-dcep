@@ -139,7 +139,7 @@ public class MathExprFunctionXVisitor extends GenericVisitor {
 	}
 	
 	public void visit1(ExprAggregator arg0) {
-		varNameManager.addAggregatVar(arg0.getAggregator().getExpr().getVarName());
+
 		// For not nested expressions. E.g. AVG(?value)
 		code.append("calcAverage(" + varNameManager.getAggrDbId() + ", "
 				+ varNameManager.getWindowTime() + ", " + varNameManager.getResultVar1() + ")");

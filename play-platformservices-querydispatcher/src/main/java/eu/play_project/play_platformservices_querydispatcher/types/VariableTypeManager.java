@@ -26,7 +26,7 @@ public class VariableTypeManager {
 	}
 	
 	public void collectVars(){
-		VariableVisitor vv = new VariableVisitor();
+		VariableVisitor vv = new VariableVisitor(this);
 		
 		vv.collectVariables(query);
 	}
@@ -36,7 +36,9 @@ public class VariableTypeManager {
 	 */
 	public void addVariable(String varName, int type){
 		if(variables.containsKey(varName)){
-			variables.put(varName, variables.get(varName) + type);
+			if(!isType(varName,type)){
+				variables.put(varName, variables.get(varName) + type);
+			}
 		}else{
 			variables.put(varName, type);
 		}

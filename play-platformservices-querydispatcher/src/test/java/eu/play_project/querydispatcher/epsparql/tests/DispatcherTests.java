@@ -106,8 +106,6 @@ public class DispatcherTests {
 		assertTrue(vars.contains("tweetTime"));
 		assertTrue(vars.contains("firstEvent"));
 		assertTrue(vars.contains("tweetContent"));
-
-
 	}
 	
 	@Test

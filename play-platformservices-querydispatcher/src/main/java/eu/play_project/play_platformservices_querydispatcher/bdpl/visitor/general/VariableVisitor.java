@@ -1,13 +1,15 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node_ANY;
+import com.hp.hpl.jena.graph.Node_Blank;
+import com.hp.hpl.jena.graph.Node_Literal;
+import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -24,7 +26,7 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
 
 /**
  * Visit all part of a query and collect variables.
- * Variables will be labeld, depending where they were found
+ * Variables will be labeled, depending where they were found
  * 
  * @author sobermeier
  * 
@@ -33,6 +35,9 @@ public class VariableVisitor extends GenericVisitor {
 	VariableTypeManager vm;
 	int state; // Represents the part which is currently visited.
 
+	public VariableVisitor(VariableTypeManager vm){
+		this.vm = vm;
+	}
 	
 	public void collectVariables(Query query){
 		
@@ -61,12 +66,18 @@ public class VariableVisitor extends GenericVisitor {
 		//Variables in having exp.
 		for (Expr expr : query.getHavingExprs()) {
 			for (Var var : expr.getVarsMentioned()) {
-				vm.addVariable(var.getName(), VariableTypes.MIN_TYPE);
+				//TODO visit all types.
+				vm.addVariable(var.getName(), VariableTypes.AVG_TYPE);
 			}
 		}
 	}
 
-	
+	// Set type.
+	@Override
+	public Object visitVariable(Node_Variable it, String name) {
+		vm.addVariable(name, state);
+		return it;
+	}
 
 	@Override
 	public void visit(ElementNamedGraph el) {
@@ -104,4 +115,26 @@ public class VariableVisitor extends GenericVisitor {
 		el.getGraphNameNode().visitWith(this);
 		el.getElement().visit(this);
 	}
+
+	// Do nothing for this types.
+	@Override
+	public Object visitAny(Node_ANY arg0) {
+		return arg0;
+	}
+
+	@Override
+	public Object visitBlank(Node_Blank arg0, AnonId id) {
+		return arg0;
+	}
+
+	@Override
+	public Object visitLiteral(Node_Literal arg0, LiteralLabel lit) {
+		return arg0;
+	}
+
+	@Override
+	public Object visitURI(Node_URI it, String uri) {
+		return it;
+	}
+
 }

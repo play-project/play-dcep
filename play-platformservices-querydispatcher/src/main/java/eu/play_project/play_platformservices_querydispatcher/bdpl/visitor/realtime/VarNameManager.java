@@ -5,6 +5,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import com.hp.hpl.jena.query.Query;
+
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 /**
  *Manage unique values for:
  * 		 complex events (CEID)
@@ -14,6 +18,7 @@ import java.util.Stack;
  *
  */
 public class VarNameManager {
+	private static VariableTypeManager vtm;
 	long ceid; //Complex event id variable.
 	long triplestoreVariable;
 	long startTriplestoreVariableCurrentQuery; // Store first triplestore variable of the query.
@@ -38,6 +43,7 @@ public class VarNameManager {
 		aggrDbId = 0;
 		filterVars = new Stack<Long>();
 		aggrVars = new HashMap<String, Boolean>();
+		vtm = new VariableTypeManager(null);
 		
 	}
 	
@@ -46,6 +52,18 @@ public class VarNameManager {
 			counter = new VarNameManager();
 		}
 		return counter;
+	}
+	
+	public static void initVariableTypeManage(Query q){
+		vtm = new VariableTypeManager(q);
+	}
+	
+	public static VariableTypeManager getVariableTypeManage(){
+		if(vtm==null){
+			throw new RuntimeException("Init VariableTypeManager first");
+		}else{
+			return vtm;
+		}
 	}
 	
 	/**
@@ -81,14 +99,6 @@ public class VarNameManager {
 	
 	public String getCeid(){
 		return "CEID" + ceid;
-	}
-	
-	public boolean isAggregatVar(String varName){
-		return aggrVars.containsKey(varName);
-	}
-	
-	public void addAggregatVar(String varName){
-		aggrVars.put(varName, new Boolean(true));
 	}
 	
 	public String getNextTriplestoreVariable(){

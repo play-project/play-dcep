@@ -5,7 +5,6 @@ import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
@@ -54,6 +53,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
 	private VariableTypeManager vtm;
 	
+	
 	private String patternId;
 	
 	//Helper methods.
@@ -81,8 +81,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		queryTemplate = new QueryTemplateImpl();
 		
-		// Collect basic informations.
-		vtm =  new VariableTypeManager(inQuery);
+		// Collect basic informations like variable types.
+		VarNameManager.initVariableTypeManage(inQuery);
+		vtm =  VarNameManager.getVariableTypeManage();
+		vtm.collectVars();
 		
 		// Start code generation.
 		ElePattern();

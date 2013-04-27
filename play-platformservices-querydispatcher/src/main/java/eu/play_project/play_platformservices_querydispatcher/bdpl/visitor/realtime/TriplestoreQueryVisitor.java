@@ -14,6 +14,8 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
+import eu.play_platform.platformservices.bdpl.VariableTypes;
+
 
 /**
  * Generates "TriplestoreQuery" described in EPSPARQL20 grammar.
@@ -63,7 +65,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public Object visitVariable(Node_Variable it, String name) {
 		
 		//Check if variable is in aggregate result list. -> Add code to save values.
-		if(VarNameManager.getVarNameManager().isAggregatVar(name)){
+		if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.AVG_TYPE)){
 			aggregateValuesCode += ", addAgregatValue(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
 		}
 		

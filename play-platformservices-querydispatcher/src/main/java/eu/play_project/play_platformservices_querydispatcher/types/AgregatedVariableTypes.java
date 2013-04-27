@@ -1,3 +1,4 @@
+package eu.play_project.play_platformservices_querydispatcher.types;
 //package eu.play_project.play_platformservices_querydispatcher;
 //
 //import java.util.HashMap;

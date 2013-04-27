@@ -47,13 +47,11 @@ public class ElementEventGraph extends Element { // extends ElementNamedGraph{ /
 
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
