@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryTemplate;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.VariableQuadrupleVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.VariableQuadrupleVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 import eu.play_project.play_platformservices_querydispatcher.types.C_Quadruple;

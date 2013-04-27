@@ -1,10 +1,13 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import java.util.Stack;
+
 import com.hp.hpl.jena.sparql.expr.E_GreaterThanOrEqual;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator;
 import com.hp.hpl.jena.sparql.expr.ExprFunction0;
 import com.hp.hpl.jena.sparql.expr.ExprFunction1;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
+import com.hp.hpl.jena.sparql.expr.ExprFunction3;
 import com.hp.hpl.jena.sparql.expr.ExprFunctionN;
 import com.hp.hpl.jena.sparql.expr.ExprFunctionOp;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
@@ -17,96 +20,66 @@ import com.hp.hpl.jena.sparql.expr.aggregate.AggMin;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSample;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSum;
 
-// Simple implementation only one avg.
+/**
+ * Generate code for having constrains.
+ * @author sobermeier
+ *
+ */
 public class HavingVisitor extends GenericVisitor implements ExprVisitor {
-	private StringBuffer code;
-	private VarNameManager vm;
+	private StringBuffer code; // Generated code.
+	private MathExprFunctionXVisitor mathFuncVisitor;
 
 	public HavingVisitor() {
 		code = new StringBuffer();
-		vm = VarNameManager.getVarNameManager();
+		mathFuncVisitor = new MathExprFunctionXVisitor();
 	}
 
+	/**
+	 * Get generated code if something was produced.
+	 * @return Generated code.
+	 */
 	public StringBuffer getCode() {
 		return code;
 	}
 
+	/*
+	 * The visitor will append his generated code to the given StringBuffer.
+	 */
 	public void setCode(StringBuffer code) {
 		this.code = code;
 	}
+	
+	// Use MathExprFunctionXVisitor because he already knows how to deal with such expressions.
 
+	
+	@Override
+	public void visit(ExprFunction1 arg0) {
+		mathFuncVisitor.visit(arg0);
+		code = mathFuncVisitor.getCode();
+	}
+	
 	@Override
 	public void visit(ExprFunction2 arg0) {
-		arg0.getArg1().visit(this);
-		vm.getNextResultVar2();
-		arg0.getArg2().visit(this);
-
-		if (arg0 instanceof E_GreaterThanOrEqual) {
-			code.append(", greaterOrEqual(" + vm.getResultVar1() + ", "
-					+ vm.getResultVar2() + ")");
-		}
+		mathFuncVisitor.visit(arg0);
+		code = mathFuncVisitor.getCode();
 	}
+	
+	@Override
+	public void visit(ExprFunction3 arg0) {
+		mathFuncVisitor.visit(arg0);
+		code = mathFuncVisitor.getCode();
+	}
+	
 
 	@Override
 	public void visit(ExprAggregator arg0) {
-		arg0.visit(this);
-		vm.addAggregatVar(arg0.getAggregator().getExpr().getVarName());
-		// For not nested expressions. E.g. AVG(?value)
-		code.append("calcAverage(" + vm.getAggrDbId() + ", "
-				+ vm.getWindowTime() + ", " + vm.getResultVar1() + ")");
-		
-		if (arg0.getAggregator() instanceof AggMax){
-			
-		}else if(arg0.getAggregator() instanceof AggMin){
-			
-		}else if(arg0.getAggregator() instanceof AggSum){
-			
-		}else if(arg0.getAggregator() instanceof AggCount){
-			
-		}else if(arg0.getAggregator() instanceof AggAvg){
-			
-		}else if(arg0.getAggregator() instanceof AggSample){
-			
-		}
+		mathFuncVisitor.visit(arg0);
+		code = mathFuncVisitor.getCode();
 	}
 
 
 	public void visit1(ExprAggregator arg0) {
-		vm.addAggregatVar(arg0.getAggregator().getExpr().getVarName());
-		// For not nested expressions. E.g. AVG(?value)
-		code.append("calcAverage(" + vm.getAggrDbId() + ", "
-				+ vm.getWindowTime() + ", " + vm.getResultVar1() + ")");
-	}
-
-	@Override
-	public void visit(NodeValue arg0) {
-		AggMax arg1;
-		vm.setResultVar2("'" + arg0.toString() + "'");
-	}
-
-	@Override
-	public void visit(ExprFunction0 func) {
-		
-	}
-
-	@Override
-	public void visit(ExprFunction1 func) {
-	}
-
-
-	@Override
-	public void visit(ExprFunctionN func) {
-
-	}
-
-	@Override
-	public void visit(ExprFunctionOp funcOp) {
-
-	}
-
-
-	@Override
-	public void visit(ExprVar nv) {
-
+		mathFuncVisitor.visit(arg0);
+		code = mathFuncVisitor.getCode();
 	}
 }

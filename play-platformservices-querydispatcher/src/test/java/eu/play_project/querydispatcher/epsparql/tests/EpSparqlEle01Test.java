@@ -14,14 +14,16 @@ import org.junit.Test;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EleGeneratorForConstructQuery;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 
 
 //import eu.play_project.querydispatcher.epsparql.tests.helpers.FilterExpressionCodeGenerator;
@@ -31,31 +33,59 @@ public class EpSparqlEle01Test {
 	@Test
 	public void manualParserUsage(){
 
-		String queryString = "PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>\nPREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>\nPREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>\nPREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>\nPREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>\nPREFIX :        <http://events.event-processing.org/types/>\n\nCONSTRUCT {\n\t:e rdf:type :SRBench-q2.\n\t:e :stream <http://streams.event-processing.org/ids/Srbench#stream>. \n}\nWHERE {\n\tWINDOW {\n\t\tEVENT ?id1 {\n\t\t\t?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>. \n\t\t\t?e1 om-owl:procedure ?sensor ;\n               om-owl:observedProperty weather:WindSpeed ;\n               om-owl:result [ om-owl:floatValue ?value ] .\n\t\t\t}\n\t} (\"PT60M\"^^xsd:duration, sliding)\n}HAVING (AVG(?value) >= \"74\"^^xsd:float )";
+		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
 		
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		} catch(Exception e){
 			System.out.println("Exception was thrown: " + e);
-			
 		}
-//		HavingVisitor v = new HavingVisitor();
-//		
-//		for (Expr el : query.getHavingExprs()) {
-//			el.visit(v);
-//		}
+		HavingVisitor v = new HavingVisitor();
+		
+		for (Expr el : query.getHavingExprs()) {
+			el.visit(v);
+		}
+		
+		System.out.println(v.getCode());
 
 		// Use custom visitor
-		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
-
-		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
+//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+//
+//		visitor1.setPatternId("'http://patternId.example.com/123456'");
+//
+//		visitor1.generateQuery(query);
+//		String etalisPattern = visitor1.getEle();
 		
 
-		System.out.println(etalisPattern);
+//		System.out.println(etalisPattern);
+	}
+	
+	/**
+	 * Generate code for (AVG(t) >= 30).
+	 */
+	@Test
+	public void havingAvgTest(){
+
+		String queryString = getSparqlQuery("queries/HavingAvgCalc2.eprq");
+		Query query = null;
+		
+		System.out.println(queryString);
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch(Exception e){
+			System.out.println("Exception was thrown: " + e);
+		}
+		
+		// Generate code.
+		HavingVisitor v = new HavingVisitor();
+		
+		for (Expr el : query.getHavingExprs()) {
+			el.visit(v);
+		}
+		
+		System.out.println(v.getCode());
 	}
 	
 	

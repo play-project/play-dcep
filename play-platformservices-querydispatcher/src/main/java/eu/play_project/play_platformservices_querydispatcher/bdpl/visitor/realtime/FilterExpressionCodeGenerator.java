@@ -51,16 +51,19 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 	@Override
 	public void visit(ExprFunction2 func) {
 		logger.debug("Visit1: " + func.getClass().getName());
+		// Transform infix operators to prefix operators. E.g. (1 + 2) -3 -> plus(1, 2, R), minus(R, 3, R2) 
+		// Use post-order traversal except if node is a infix operator in prolog. In this case use In-order traversal.
 
 		// Get left values
 		func.getArg1().visit(this);
 		
 		//Infix operator
 		if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalAnd) {
-			ele.append("), (");
+			ele.append("), ("); // AND representation in prolog.
 			stack.push(""); //NOP
 		}else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalOr) {
-			ele.append("); ("); stack.push(""); //NOP
+			ele.append("); (");  // OR representation in prolog
+			stack.push(""); //NOP
 		}
 		
 		// Right values
@@ -148,7 +151,6 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 	@Override
 	public void visit(NodeValueDecimal nv) {
 		stack.push(nv.toString());
-
 	}
 
 	@Override

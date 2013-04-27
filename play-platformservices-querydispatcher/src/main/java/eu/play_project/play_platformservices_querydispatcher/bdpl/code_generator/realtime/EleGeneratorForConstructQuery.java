@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
 
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager.getVarNameManager;
 
@@ -18,7 +18,14 @@ import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.AgregatedVariableTypes.AgregatedEventType;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.BinOperatorVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
 import eu.play_project.querydispatcher.epsparql.Test.helpers.GenerateConstructResultVisitor;
+
 
 /**
  * This class coordinates the code generation for the CEP-Engine.

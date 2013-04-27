@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +8,8 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
@@ -20,21 +20,9 @@ import eu.play_project.play_platformservices_querydispatcher.types.P_Quadruple;
 import eu.play_project.play_platformservices_querydispatcher.types.R_Quadruple;
 import fr.inria.eventcloud.api.Quadruple;
 
-public class R_VariableVisitor extends GenericVisitor {
+public class H_VariableVisitor extends GenericVisitor {
 	Map<String, List<Quadruple>> variables;
 
-	public Map<String, List<Quadruple>> getVariables() {
-		return variables;
-	}
-
-	public void setVariables(Map<String, List<Quadruple>> variables) {
-		this.variables = variables;
-	}
-
-	@Override
-	public void visit(ElementEventGraph el) {
-		el.getElement().visit(this);
-	}
 
 	@Override
 	public void visit(ElementGroup el) {
@@ -46,12 +34,9 @@ public class R_VariableVisitor extends GenericVisitor {
 	@Override
 	public void visit(ElementPathBlock el) {
 		for (TriplePath triple : el.getPattern()) {
-			addToVariablelist(triple.getSubject().visitWith(this), triple,
-					VariableTypes.realtimeType);
-			addToVariablelist(triple.getPredicate().visitWith(this), triple,
-					VariableTypes.realtimeType);
-			addToVariablelist(triple.getObject().visitWith(this), triple,
-					VariableTypes.realtimeType);
+			addToVariablelist(triple.getSubject().visitWith(this), triple, VariableTypes.historicType);
+			addToVariablelist(triple.getPredicate().visitWith(this), triple, VariableTypes.historicType);
+			addToVariablelist(triple.getObject().visitWith(this), triple, VariableTypes.historicType);
 		}
 	}
 
@@ -59,10 +44,14 @@ public class R_VariableVisitor extends GenericVisitor {
 	public Object visitVariable(Node_Variable it, String name) {
 		return name;
 	}
+	
+	@Override
+	public void visit(ElementNamedGraph el) {
+		el.getElement().visit(this);
+	}
 
 	// Add value to resultSet if it is not null.
-	private void addToVariablelist(Object var, TriplePath triple,
-			VariableTypes type) {
+	private void addToVariablelist(Object var, TriplePath triple, VariableTypes type) {
 		if (variables == null) {
 			throw new RuntimeException(
 					"Pleas use first R_VariableVisitor.setVariables(Map<String, List<Quadruple>> variables) first, before using visit(R_VariableVisitor rVisitor)");
@@ -74,31 +63,29 @@ public class R_VariableVisitor extends GenericVisitor {
 			List<Quadruple> value = variables.get(var);
 			switch (type) {
 			case constructType:
-				value.add(new C_Quadruple(Node
-						.createURI("http://construct.play-project.eu/"), triple
-						.getSubject(), triple.getPredicate(), triple
-						.getObject()));
+				value.add(new C_Quadruple(Node.createURI("http://construct.play-project.eu/"), triple.getSubject(), triple.getPredicate(), triple.getObject()));
 				break;
 			case historicType:
-				value.add(new H_Quadruple(Node
-						.createURI("http://construct.play-project.eu/"), triple
-						.getSubject(), triple.getPredicate(), triple
-						.getObject()));
+				value.add(new H_Quadruple(Node.createURI("http://construct.play-project.eu/"), triple.getSubject(), triple.getPredicate(), triple.getObject()));
 				break;
 			case realtimeType:
-				value.add(new R_Quadruple(Node
-						.createURI("http://construct.play-project.eu/"), triple
-						.getSubject(), triple.getPredicate(), triple
-						.getObject()));
+				value.add(new R_Quadruple(Node.createURI("http://construct.play-project.eu/"), triple.getSubject(), triple.getPredicate(), triple.getObject()));
 				break;
 			case preloadType:
-				value.add(new P_Quadruple(Node
-						.createURI("http://construct.play-project.eu/"), triple
-						.getSubject(), triple.getPredicate(), triple
-						.getObject()));
+				value.add(new P_Quadruple(Node.createURI("http://construct.play-project.eu/"), triple.getSubject(), triple.getPredicate(), triple.getObject()));
 			}
 
 			variables.put((String) var, value);
 		}
 	}
+	
+
+	public Map<String, List<Quadruple>> getVariables() {
+		return variables;
+	}
+
+	public void setVariables(Map<String, List<Quadruple>> variables) {
+		this.variables = variables;
+	}
+
 }
