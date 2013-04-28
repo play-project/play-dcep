@@ -1,6 +1,6 @@
 package eu.play_project.querydispatcher.epsparql.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,17 +17,20 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
-import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
 
 //import eu.play_project.querydispatcher.epsparql.tests.helpers.FilterExpressionCodeGenerator;
 
-public class EpSparqlEle01Test {
+public class BdplEleTest {
 
 	@Test
 	public void manualParserUsage(){
@@ -61,6 +64,51 @@ public class EpSparqlEle01Test {
 	}
 	
 	/**
+	 * 
+	 */
+	@Test
+	public void basicEleGeneratorTest(){
+
+		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
+		Query query = null;
+		
+		System.out.println(queryString);
+		
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		
+		// Set id.
+		String patternId = "http://patternID.example.com/" + Math.random() * 1000000;
+		visitor1.setPatternId(patternId);
+		
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString,com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception was thrown: " + e);
+		}
+		
+		VarNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		
+		// Add query details.
+		QueryDetails details = new QueryDetails();
+	
+		EpSparqlQuery epSparqlQuery = new EpSparqlQuery();
+		epSparqlQuery.setEleQuery(etalisPattern);
+
+		details.setQueryId(patternId);
+		// Set properties for windows in QueryDetails
+		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
+		query.getWindow().accept(windowVisitor);
+		epSparqlQuery.setQueryDetails(details);
+		
+		System.out.println(etalisPattern);
+	}
+	
+	/**
 	 * Generate code for (AVG(t) >= 30).
 	 */
 	@Test
@@ -78,9 +126,6 @@ public class EpSparqlEle01Test {
 		}
 		VarNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 		
-		VariableTypeManager vtm = new VariableTypeManager(query);
-		vtm.collectVars();
-		
 		// Generate code.
 		HavingVisitor v = new HavingVisitor();
 		
@@ -88,7 +133,7 @@ public class EpSparqlEle01Test {
 			el.visit(v);
 		}
 		
-		assertEquals("calcAverage(dbId0, 1800, Result10), graterOrEqual(Result10,30.0)", v.getCode().toString());
+		assertEquals("calcAverage(dbId0, 1800, Result10), greaterOrEqual(Result10,30.0)", v.getCode().toString());
 	}
 	
 	
@@ -186,7 +231,7 @@ public class EpSparqlEle01Test {
 //		String queryString = "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
 //		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 //		
-//		VariableVisitor visitor = new VariableVisitor();
+//		VariableTypeVisitor visitor = new VariableTypeVisitor();
 //	
 //		Map<String, List<Variable>> variables =  visitor.getVariables(query, VariableTypes.historicType);
 //		System.out.println(variables.values());
@@ -293,7 +338,7 @@ public class EpSparqlEle01Test {
 	
 	public static String getSparqlQuery(String queryFile) {
 		try {
-			InputStream is = EpSparqlEle01Test.class.getClassLoader().getResourceAsStream(queryFile);
+			InputStream is = BdplEleTest.class.getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			StringBuffer sb = new StringBuffer();
 			String line;

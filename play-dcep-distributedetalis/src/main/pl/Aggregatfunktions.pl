@@ -6,9 +6,10 @@ addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if valuelist 
 		aggregatDb(Id,List), putInList(List,[],Element,Lnew), retractall(aggregatDb(Id,List)), assert(aggregatDb(Id,Lnew)); % Add element to existing list.
 		assert(aggregatDb(Id,[Element]))). % Put element in new list.
 
-% calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
+calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
 
-calcAverage(Id, WindowSize, Exp, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
+% TODO use this.
+% calcAverage(Id, WindowSize, Exp, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
 
 % Add value to sum with given Id.
 sumAdd(Id, Value):- (catch(sum(Id, V_old), E, assertSum(E, Id, Value)) -> % If value exists add new value. If not set value only.
@@ -34,8 +35,8 @@ assertMaxVal(_E,Id, Value) :- (assert(maxValue(Id, Value)),false).
 % Helpers
 agregateListExists(Id) :- (catch(aggregatDb(Id,_List), _Exception, false)). % Check if data structure exists.
 
-calcAvgIter([], _Id, Exp, _WindowEnd, Sum, N, Result):- ((Result is (Sum/N))).
-calcAvgIter([H|T], Id, Exp, WindowEnd, Sum, N, Result) :- (transformToNumber(H, Hn), transformToNumber(WindowEnd, WindowEndN), (Hn >= WindowEndN) ->
+calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):- ((Result is (Sum/N))).
+calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- (transformToNumber(H, Hn), transformToNumber(WindowEnd, WindowEndN), (Hn >= WindowEndN) ->
 			transformToNumber(H, Hn), calcAvgIter(T, Id, WindowEnd, (Sum + Hn), (N + 1), Result);
 			transformToNumber(H, Hn), calcAvgIter([], Id, WindowEnd, (Sum + Hn), (N + 1), Result)). % Stop recursion if value is out of window.
  

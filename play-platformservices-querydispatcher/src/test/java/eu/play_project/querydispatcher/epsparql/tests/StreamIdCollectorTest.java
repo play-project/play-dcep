@@ -25,7 +25,7 @@ public class StreamIdCollectorTest {
 		String expectedOutputStream = Stream.ContextualizedLatitudeFeed.getTopicUri();
 		
 		// Get query.
-		String queryString = EpSparqlEle01Test.getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
 		String queryId = "exampleQuery";
 		
 		assertNotNull("Testing Query was not found on classpath", queryString);
@@ -55,7 +55,7 @@ public class StreamIdCollectorTest {
 		String expectedOutputStream = "http://streams.event-processing.org/ids/Temperatures";
 		
 		// Get query.
-		String queryString = EpSparqlEle01Test.getSparqlQuery("EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq");
 		String queryId = "exampleQuery2";
 		
 		assertNotNull("Testing Query was not found on classpath", queryString);

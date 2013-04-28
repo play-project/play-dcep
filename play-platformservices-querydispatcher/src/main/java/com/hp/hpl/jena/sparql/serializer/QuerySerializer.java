@@ -116,7 +116,7 @@
 //        {
 //            out.incIndent(BLOCK_INDENT) ;
 //	//Add chared variables between historic and realtime query.sobermeier
-//	 VariableVisitor visitor = new VariableVisitor();
+//	 VariableTypeVisitor visitor = new VariableTypeVisitor();
 //    		Map<String, List<Variable>>   resultVars = visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.constructType);
 //    		visitor.getVariables(query, eu.play_platform.platformservices.bdpl.VariableTypes.historicType, resultVars);
 //            

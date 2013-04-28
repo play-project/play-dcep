@@ -15,9 +15,18 @@ import com.hp.hpl.jena.sparql.expr.aggregate.AggMax;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggMin;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSample;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSum;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDT;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDuration;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueFloat;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
 
-public class MathExprFunctionXVisitor extends GenericVisitor {
+public class MathExprFunctionXVisitor  extends GenericVisitor {
 	Logger logger;
 	Stack<String> stack;
 	StringBuffer code;
@@ -74,7 +83,7 @@ public class MathExprFunctionXVisitor extends GenericVisitor {
 			code.append("plus(" + stack.pop() + "," + rightElem + ", " + varNameManager.getNextFilterVar() + ")");
 			stack.push(varNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThanOrEqual) {
-			code.append("graterOrEqual(" + stack.pop() + "," + rightElem + ")");
+			code.append("greaterOrEqual(" + stack.pop() + "," + rightElem + ")");
 			stack.push(varNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThan) {
 			if(code.length()>2 && !code.toString().endsWith(",")) code.append(","); // TODO look if this is needed for other operators
@@ -110,17 +119,22 @@ public class MathExprFunctionXVisitor extends GenericVisitor {
 
 	@Override
 	public void visit(NodeValue nv) {
-		stack.push(nv.toString());
+		nv.visit(new MathExprNodeVisitor());
+		//stack.push(nv.visit(visitor) + "");
 	}
+
 	
 	@Override
 	public void visit(ExprAggregator arg0) {
+
 		
 		// This expression contains possibly more expressions. E.g. (1 + 2 - t).
 		// For this reason visit the element and make post-order traversal.
 		
-		stack.push("calcAverage(" + varNameManager.getAggrDbId() + ", "
-				+ varNameManager.getWindowTime() + ", " + varNameManager.getResultVar1() + ")");
+		code.append("calcAverage(" + varNameManager.getAggrDbId() + ", "
+				+ varNameManager.getWindowTime() + ", " + varNameManager.getResultVar1() + "), ");
+		
+		stack.push(varNameManager.getResultVar1());
 		
 		if (arg0.getAggregator() instanceof AggMax){
 			
@@ -147,5 +161,54 @@ public class MathExprFunctionXVisitor extends GenericVisitor {
 	public StringBuffer getCode() {
 		return code;
 	}
+	
+class MathExprNodeVisitor implements NodeValueVisitor{
+	@Override
+	public void visit(NodeValueBoolean nv) {
+		throw new RuntimeException(nv.toString() + "is not a valid value in math expressions.");
+	}
+
+	@Override
+	public void visit(NodeValueDouble nv) {
+		stack.push(nv.getDouble() + "");
+	}
+
+	@Override
+	public void visit(NodeValueFloat nv) {
+		stack.push(nv.getFloat() + "");
+	}
+
+	@Override
+	public void visit(NodeValueInteger nv) {
+		stack.push(nv.getInteger() + "");
+	}
+
+
+	@Override
+	public void visit(NodeValueString nv) {
+		throw new RuntimeException(nv.toString() + "is not a valid value in math expressions.");
+	}
+
+	@Override
+	public void visit(NodeValueDT nv) {
+		throw new RuntimeException(nv.toString() + "is not a valid value in math expressions.");
+	}
+
+	@Override
+	public void visit(NodeValueDuration nodeValueDuration) {
+		stack.push(nodeValueDuration.getDuration() + "");
+	}
+
+	@Override
+	public void visit(NodeValueDecimal nv) {
+		stack.push(nv.getDecimal() + "");		
+	}
+
+	@Override
+	public void visit(NodeValueNode nv) {
+		throw new RuntimeException(nv.toString() + "unknown datatype.");
+	}
+}
+
 
 }
