@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.hp.hpl.jena.query.Query;
 
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general.VariableVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general.VariableTypeVisitor;
 
 
 /**
@@ -26,7 +26,7 @@ public class VariableTypeManager {
 	}
 	
 	public void collectVars(){
-		VariableVisitor vv = new VariableVisitor(this);
+		VariableTypeVisitor vv = new VariableTypeVisitor(this);
 		
 		vv.collectVariables(query);
 	}
