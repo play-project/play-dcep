@@ -1,5 +1,5 @@
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd:	   <http://www.w3.org/2001/XMLSchema>
+PREFIX xsd:	   <http://www.w3.org/2001/XMLSchema#>
 PREFIX user:   <http://graph.facebook.com/schema/user#>
 PREFIX :       <http://events.event-processing.org/types/>
  
@@ -20,4 +20,4 @@ WHERE{
                 }
                 FILTER contains(?about1, "JEANS")
         } ("PT30M"^^xsd:duration, sliding)
-} HAVING(AVG(2 * ?t - 5) >= "30"^^xsd:float)
+} HAVING(AVG(?t) >= "30"^^xsd:float)
