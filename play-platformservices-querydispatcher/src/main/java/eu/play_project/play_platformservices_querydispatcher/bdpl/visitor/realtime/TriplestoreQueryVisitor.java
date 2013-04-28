@@ -50,7 +50,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	}
 
 	@Override
-	public Object visitLiteral(Node_Literal it, LiteralLabel lit) { //TODO Use prolog typesystem.
+	public Object visitLiteral(Node_Literal it, LiteralLabel lit) {
 		triplestoreQuery += "'" + lit.getLexicalForm() + "', ";
 		return lit;
 	}
@@ -65,8 +65,18 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public Object visitVariable(Node_Variable it, String name) {
 		
 		//Check if variable is in aggregate result list. -> Add code to save values.
-		if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.AVG_TYPE)){
+		if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.SAMPLE_TYPE)){
+			logger.error("VariableTypes.SAMPLE_TYPE is not implemented in dETALIS");
+		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.COUNT_TYPE)){
+			logger.error("VariableTypes.COUNT_TYPE is not implemented in dETALIS");
+		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.AVG_TYPE)){
 			aggregateValuesCode += ", addAgregatValue(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
+		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
+			aggregateValuesCode += ", storeMin(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
+		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
+			aggregateValuesCode += ", storeMin(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
+		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.SUM_TYPE)){
+			aggregateValuesCode += ", sumAdd(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
 		}
 		
 		
