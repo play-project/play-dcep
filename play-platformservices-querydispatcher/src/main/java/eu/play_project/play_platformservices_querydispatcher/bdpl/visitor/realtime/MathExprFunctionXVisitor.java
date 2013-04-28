@@ -118,9 +118,8 @@ public class MathExprFunctionXVisitor extends GenericVisitor {
 		
 		// This expression contains possibly more expressions. E.g. (1 + 2 - t).
 		// For this reason visit the element and make post-order traversal.
-		arg0.getExpr().visit(this);
 		
-		code.append("calcAverage(" + varNameManager.getAggrDbId() + ", "
+		stack.push("calcAverage(" + varNameManager.getAggrDbId() + ", "
 				+ varNameManager.getWindowTime() + ", " + varNameManager.getResultVar1() + ")");
 		
 		if (arg0.getAggregator() instanceof AggMax){

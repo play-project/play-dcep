@@ -13,12 +13,14 @@ import org.objectweb.proactive.core.util.URIBuilder;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_platformservices.api.EpSparqlQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
 /**
  * Connect to a DistributedEtalis instance and use the api(s).
@@ -69,13 +71,18 @@ public class SingleDistributedEtalisInstancePublisher {
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-
+		
+		QueryDetails details = new QueryDetails();
+	
 		EpSparqlQuery epSparqlQuery = new EpSparqlQuery();
 		epSparqlQuery.setEleQuery(etalisPattern);
 
-		QueryDetails details = new QueryDetails();
 		details.setQueryId(patternId);
+		// Set properties for windows in QueryDetails
+		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
+		query.getWindow().accept(windowVisitor);
 		epSparqlQuery.setQueryDetails(details);
+		
 		return epSparqlQuery;
 	}
 
