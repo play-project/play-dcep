@@ -1,5 +1,7 @@
 package eu.play_project.querydispatcher.epsparql.tests;
 
+import static org.junit.Assert.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -19,6 +21,8 @@ import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 
 //import eu.play_project.querydispatcher.epsparql.tests.helpers.FilterExpressionCodeGenerator;
@@ -28,7 +32,7 @@ public class EpSparqlEle01Test {
 	@Test
 	public void manualParserUsage(){
 
-		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
+		String queryString = getSparqlQuery("queries/HavingAvgExp1.eprq");
 		Query query = null;
 		
 		try {
@@ -62,7 +66,7 @@ public class EpSparqlEle01Test {
 	@Test
 	public void havingAvgTest(){
 
-		String queryString = getSparqlQuery("queries/HavingAvgCalc2.eprq");
+		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
 		
 		System.out.println(queryString);
@@ -72,6 +76,10 @@ public class EpSparqlEle01Test {
 		} catch(Exception e){
 			System.out.println("Exception was thrown: " + e);
 		}
+		VarNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		VariableTypeManager vtm = new VariableTypeManager(query);
+		vtm.collectVars();
 		
 		// Generate code.
 		HavingVisitor v = new HavingVisitor();
@@ -80,7 +88,7 @@ public class EpSparqlEle01Test {
 			el.visit(v);
 		}
 		
-		System.out.println(v.getCode());
+		assertEquals("calcAverage(dbId0, 1800, Result10), graterOrEqual(Result10,30.0)", v.getCode().toString());
 	}
 	
 	
@@ -204,7 +212,7 @@ public class EpSparqlEle01Test {
 //		assertTrue(eventTypes.get("bob").equals(AgregatedEventType.CR));
 //		assertTrue(eventTypes.get("e2").equals(AgregatedEventType.CR));
 //		assertTrue(eventTypes.get("direction").equals(AgregatedEventType.R));
-////		assertTrue(eventTypes.get("firstEvent").equals(AgregatedEventType.R)); //FIXME Auch filter anschauen.
+//		assertTrue(eventTypes.get("firstEvent").equals(AgregatedEventType.R)); //FIXME Auch filter anschauen.
 //		assertTrue(eventTypes.get("alice").equals(AgregatedEventType.CR));
 //		assertTrue(eventTypes.get("tweetTime").equals(AgregatedEventType.H));
 //		assertTrue(eventTypes.get("tweetContent").equals(AgregatedEventType.CH));
