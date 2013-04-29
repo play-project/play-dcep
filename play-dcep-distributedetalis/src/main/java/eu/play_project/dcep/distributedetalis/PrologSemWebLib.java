@@ -1,5 +1,10 @@
 package eu.play_project.dcep.distributedetalis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jpl.PrologException;
+
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.JtalisContextImpl;
 
@@ -12,6 +17,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	private static JtalisContextImpl ctx;
 	int oldValue =0;
 	long internalEventId = 0; // Ordered event ids. id_0 < id_1 < id2 ...
+	private static Logger logger = LoggerFactory.getLogger(PrologSemWebLib.class);
 	
 	@Override
 	public void init(JtalisContextImpl ctx) {
@@ -71,7 +77,8 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 						"'" + quadruple.getPredicate() + "', " +
 						    rdfObject                  + ", " +
 						"'" + event.getGraph() + "')";
-				dataAddedToTriplestore = ctx.getEngineWrapper().executeGoal(prologString);
+				
+				dataAddedToTriplestore = addPayloadToPlTriplestore(prologString);
 			} else {
 				throw new DistributedEtalisException("Failed to insert event data in Prolog triple store.");
 			}
@@ -87,7 +94,24 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 		return (dataAddedToTriplestore && gcDataAdded);
 }
 
-
+	/**
+	 * Execute given String in prolog. If it was not possible retry it after 1ms.
+	 * @param prologString code to execute in prolog.
+	 * @return true if code was executed.
+	 */
+	private boolean addPayloadToPlTriplestore(String prologString){
+		try{
+			return ctx.getEngineWrapper().executeGoal(prologString);
+		}catch (PrologException e) {
+			logger.error("Error on new event. Try againe.", e);
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			return this.addPayloadToPlTriplestore(prologString);
+		}
+	}
 	@Override
 	public CompoundEvent getRdfData(String complexEventID) {
 		throw new RuntimeException("Not implemented in this class.");

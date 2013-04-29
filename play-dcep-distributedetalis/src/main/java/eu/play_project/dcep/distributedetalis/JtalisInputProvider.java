@@ -70,15 +70,10 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 			semWebLib.addEvent(event);
 			// Trigger event in ETALIS:
 			events.put(new EtalisEvent("'" + eventType + "'", eventId));
-		} catch (PrologException e) {
-			logger.error("Error on new event. ", e);
-			semWebLib.removeEvent(eventId);
 		} catch (InterruptedException e) {
 			logger.error("Error adding event to Jtalis queue.", e);
-			semWebLib.removeEvent(eventId);
 		} catch (DistributedEtalisException e) {
 			logger.error("Error on new event. ", e);
-			semWebLib.removeEvent(eventId);
 		}
 	}
 
