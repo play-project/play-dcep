@@ -69,7 +69,7 @@ If the newer Virtuoso builds should appear e.g. in EPEL then the procedure becom
 rpm -i http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 yum install virtuoso-opensource virtuoso-opensource-conductor virtuoso-opensource-utils
 ```
-Use the init.d start script from here: http://tw2.tw.rpi.edu/zhengj3/virtuoso/virtuoso-opensource-6.1.1/debian/init.d
+Use the init.d start script from here: [RedHat, CentOS](https://gist.github.com/stuehmer/5481356), [Debian](http://tw2.tw.rpi.edu/zhengj3/virtuoso/virtuoso-opensource-6.1.1/debian/init.d)
 ```
 chkconfig virtuoso on
 ```
@@ -78,6 +78,7 @@ https://github.com/PetalsLinkLabs/petals-dsb/
 
 ### Build Requirements:
 #### Maven (3.x)
+There is no well-packaged Maven 3 for CentOS, so you must unzip Maven yourself, somewhere in `/opt/maven` and add `/opt/maven/bin` to your `$PATH`
 #### Git
 ```
 yum install git
