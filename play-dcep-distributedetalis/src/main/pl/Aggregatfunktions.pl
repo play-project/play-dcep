@@ -2,11 +2,16 @@
 % Author: Stefan Obermeier
 
 %Add new value to list. Average will be calculated by using values from this list.
-addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if valuelist exists.
-		aggregatDb(Id,List), putInList(List,[],Element,Lnew), retractall(aggregatDb(Id,List)), assert(aggregatDb(Id,Lnew)); % Add element to existing list.
-		assert(aggregatDb(Id,[Element]))). % Put element in new list.
+%Current simple version: Use local time. TODO use time form event. Datastructure aggregatDb(Id,[v(Time,Value)])
+addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if value list exists.
+		get_time(Time), aggregatDb(Id,List), putInList(List,[],[Time,Element],Lnew), retractall(aggregatDb(Id,List)), assert(aggregatDb(Id,Lnew)); % Add element to existing list.
+		get_time(Time), assert(aggregatDb(Id,[[Time,Element]]))). % Put element in new list.
 
 calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
+
+
+
+
 
 % TODO use this.
 % calcAverage(Id, WindowSize, Exp, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
@@ -35,17 +40,24 @@ assertMaxVal(_E,Id, Value) :- (assert(maxValue(Id, Value)),false).
 % Helpers
 agregateListExists(Id) :- (catch(aggregatDb(Id,_List), _Exception, false)). % Check if data structure exists.
 
-calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):- ((Result is (Sum/N))).
-calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- (transformToNumber(H, Hn), transformToNumber(WindowEnd, WindowEndN), (Hn >= WindowEndN) ->
-			transformToNumber(H, Hn), calcAvgIter(T, Id, WindowEnd, (Sum + Hn), (N + 1), Result);
-			transformToNumber(H, Hn), calcAvgIter([], Id, WindowEnd, (Sum + Hn), (N + 1), Result)). % Stop recursion if value is out of window.
- 
-%assert(aggregatDb(Id,H)), retractall(aggregatDb(Id,[H|T])),
+% Return time and corresponding value.
+% E.g. getFirstAndSecondElement(Input,Time,Value).
+getTimeAndValue([H|T], Time, Value) :- (Time is H, nextV(T,1,Value)).
+nextV([H|T], 1, Value) :- (Value = H).
+
+ %assert(aggregatDb(Id,H)), retractall(aggregatDb(Id,[H|T])),
 % Organize values in increasing order.
+% putInList(+OldList, [], +Element, -NewList). 
 putInList([],Left,Element, Result) :- (append(Left, [Element], Result)). % Element is last element in list. 
-putInList([H|T],LeftBuffer, Element, Result) :- ((transformToNumber(Element, ElementN), transformToNumber(H, Hn), ElementN>=Hn) -> 
-	append(LeftBuffer, ([Element|([H|T])]),Result); %Put in front
-	append(LeftBuffer, [H], Left), (putInList(T, Left, Element, Result))).
+putInList([H|T],LeftBuffer, Element, Result) :- (getTimeAndValue(H,TimeNewElement, Value),getTimeAndValue(H,TimeExistingElement, _Value), (TimeNewElement>=TimeExistingElement)) -> 
+	append(LeftBuffer, ([Element|([H|T])]),Result); % Put in front
+	append(LeftBuffer, [H], Left), (putInList(T, Left, Element, Result)).
+	
+calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):- ((Result is (Sum/N))).
+calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- (getTimeAndValue(H,Time, Value), (Time >= WindowEnd) ->
+			transformToNumber(Value, Hn), calcAvgIter(T, Id, WindowEnd, (Sum + Hn), (N + 1), Result);
+			transformToNumber(Value, Hn), calcAvgIter([], Id, WindowEnd, (Sum + Hn), (N + 1), Result)). % Stop recursion if value is out of window.
+
 
 
 % The idea behind this methods is a little bit like the GoV strategy pattern.
