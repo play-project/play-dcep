@@ -69,7 +69,7 @@ If the newer Virtuoso builds should appear e.g. in EPEL then the procedure becom
 rpm -i http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-8.noarch.rpm
 yum install virtuoso-opensource virtuoso-opensource-conductor virtuoso-opensource-utils
 ```
-Use the init.d start script from here: http://tw2.tw.rpi.edu/zhengj3/virtuoso/virtuoso-opensource-6.1.1/debian/init.d
+Use the init.d start script from here: [RedHat, CentOS](https://gist.github.com/stuehmer/5481356), [Debian](http://tw2.tw.rpi.edu/zhengj3/virtuoso/virtuoso-opensource-6.1.1/debian/init.d)
 ```
 chkconfig virtuoso on
 ```
@@ -78,10 +78,42 @@ https://github.com/PetalsLinkLabs/petals-dsb/
 
 ### Build Requirements:
 #### Maven (3.x)
+There is no well-packaged Maven 3 for CentOS, so you must unzip Maven yourself, somewhere in `/opt/maven` and add `/opt/maven/bin` to your `$PATH`
 #### Git
 ```
 yum install git
 ```
+
+Building DCEP
+-------------
+We will build DCEP in `/tmp` and later run in in `/opt/play-platform-stable`:
+```
+cd /tmp
+git clone https://github.com/play-project/play-dcep.git
+cd play-dcep/
+mvn install
+
+mkdir --parents /opt/play-platform-stable/
+cp play-dcep-distribution/target/dcep-jar-with-dependencies.jar /opt/play-platform-stable/
+```
+
+Configuring DCEP
+----------------
+The installation directory `/opt/play-platform-stable` will be on the Java classpath so you can place some customized configuration files there.
+
+- `play-commons-constants.properties` adapt it from these defaults: [default properties](https://github.com/play-project/play-commons/blob/master/play-commons-constants/src/main/resources/play-commons-constants-defaults.properties)
+- `play-dcep-distribution.properties` adapt it from these defaults: [default properties](https://github.com/play-project/play-dcep/blob/master/play-dcep-api/src/main/resources/play-dcep-distribution-defaults.properties)
+
+Running DCEP
+------------
+We will run DCEP from `/opt/play-platform-stable`:
+```
+cd /opt/play-platform-stable
+screen
+java -Djava.security.policy=proactive.java.policy -Dproactive.communication.protocol=pnp -Dproactive.pnp.port=9150 -Dproactive.http.port=9151 -cp .:dcep-jar-with-dependencies.jar eu.play_project.dcep.distribution.Main
+```
+You can press `CTRL-A, D` to put the screen terminal in background and enter `screen -x` to re-attach it back in foreground later.
+
 
 Issues
 ------
