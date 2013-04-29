@@ -16,4 +16,4 @@ export LD_LIBRARY_PATH=$lib_path
 export DYLD_LIBRARY_PATH=$lib_path
 
 # Start CEP-Engine
-java -Djava.security.manager -Djava.security.policy=proactive.java.policy -Djavlibrary.path=.:sr/lib/swipl-5.10.2/lib/x86_64-linux/ -Dproactive.net.interface=eth0  -Dproactiveet.noprivate=true -Dproactive.net.disableIPv6=false -Dproactive.hostname=$1 -cp .:dEtalis.jar eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner
+java -Djava.security.manager -Djava.security.policy=proactive.java.policy -Djavlibrary.path=.:sr/lib/swipl-5.10.2/lib/x86_64-linux/ -Dproactive.net.interface=eth0  -Dproactiveet.noprivate=true -Dproactive.hostname=$1 -cp .:dEtalis.jar eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner
