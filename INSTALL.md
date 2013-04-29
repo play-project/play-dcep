@@ -86,7 +86,7 @@ yum install git
 
 Building DCEP
 -------------
-We will build DCEP in `/tmp` and later run in in ``:
+We will build DCEP in `/tmp` and later run in in `/opt/play-platform-stable`:
 ```
 cd /tmp
 git clone https://github.com/play-project/play-dcep.git
