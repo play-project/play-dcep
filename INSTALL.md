@@ -84,6 +84,37 @@ There is no well-packaged Maven 3 for CentOS, so you must unzip Maven yourself, 
 yum install git
 ```
 
+Building DCEP
+-------------
+We will build DCEP in `/tmp` and later run in in ``:
+```
+cd /tmp
+git clone https://github.com/play-project/play-dcep.git
+cd play-dcep/
+mvn install
+
+mkdir --parents /opt/play-platform-stable/
+cp play-dcep-distribution/target/dcep-jar-with-dependencies.jar /opt/play-platform-stable/
+```
+
+Configuring DCEP
+----------------
+The installation directory `/opt/play-platform-stable` will be on the Java classpath so you can place some customized configuration files there.
+
+- `play-commons-constants.properties` adapt it from these defaults: [default properties](https://github.com/play-project/play-commons/blob/master/play-commons-constants/src/main/resources/play-commons-constants-defaults.properties)
+- `play-dcep-distribution.properties` adapt it from these defaults: [default properties](https://github.com/play-project/play-dcep/blob/master/play-dcep-api/src/main/resources/play-dcep-distribution-defaults.properties)
+
+Running DCEP
+------------
+We will run DCEP from `/opt/play-platform-stable`:
+```
+cd /opt/play-platform-stable
+screen
+java -Djava.security.policy=proactive.java.policy -Dproactive.communication.protocol=pnp -Dproactive.pnp.port=9150 -Dproactive.http.port=9151 -cp .:dcep-jar-with-dependencies.jar eu.play_project.dcep.distribution.Main
+```
+You can press `CTRL-A, D` to put the screen terminal in background and enter `screen -x` to re-attach it back in foreground later.
+
+
 Issues
 ------
 For issues and bug reporting, please go to https://github.com/play-project/play/issues?labels=dcep&amp;page=1&amp;state=open
