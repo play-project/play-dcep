@@ -18,7 +18,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	int oldValue =0;
 	long internalEventId = 0; // Ordered event ids. id_0 < id_1 < id2 ...
 	private static Logger logger = LoggerFactory.getLogger(PrologSemWebLib.class);
-	
+	int triesToStoreData = 0;
 	@Override
 	public void init(JtalisContextImpl ctx) {
 		PrologSemWebLib.ctx = ctx;
@@ -77,7 +77,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 						"'" + quadruple.getPredicate() + "', " +
 						    rdfObject                  + ", " +
 						"'" + event.getGraph() + "')";
-				
+				triesToStoreData = 0;
 				dataAddedToTriplestore = addPayloadToPlTriplestore(prologString);
 			} else {
 				throw new DistributedEtalisException("Failed to insert event data in Prolog triple store.");
@@ -103,13 +103,20 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 		try{
 			return ctx.getEngineWrapper().executeGoal(prologString);
 		}catch (PrologException e) {
-			logger.error("Error on new event. Try againe.", e);
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
+			if(e.getMessage().contains("error(permission_error(write, rdf_db, default)")){
+				logger.error("Error db is blocked. Try againe. Count: ", triesToStoreData);
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				return this.addPayloadToPlTriplestore(prologString);
+			}else{
+				logger.error("Error on new event.", e);
+				return false;
 			}
-			return this.addPayloadToPlTriplestore(prologString);
+			
+			
 		}
 	}
 	@Override
