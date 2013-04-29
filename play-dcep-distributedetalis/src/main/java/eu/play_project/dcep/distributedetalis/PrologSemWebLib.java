@@ -87,11 +87,6 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 		return (dataAddedToTriplestore && gcDataAdded);
 }
 
-	@Override
-	public void removeEvent(String id) {
-		ctx.getEngineWrapper().executeGoal("rdf_retractall(S,P,O,'" + id + "')");
-	}
-
 
 	@Override
 	public CompoundEvent getRdfData(String complexEventID) {

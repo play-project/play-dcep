@@ -23,12 +23,6 @@ public interface UsePrologSemWebLib {
 	 * @throws Exception 
 	 */
 	public Boolean addEvent(CompoundEvent event) throws Exception;
-	
-	/**
-	 * Remove triples form RDF Triple Store. 
-	 * @param id Triple Store id (is equals to graph name).
-	 */
-	public void removeEvent(String id);
 
 	/**
 	 * Takes all data from SWI-Prolog Semantic Web Library db and returns the as CompundEvent.
