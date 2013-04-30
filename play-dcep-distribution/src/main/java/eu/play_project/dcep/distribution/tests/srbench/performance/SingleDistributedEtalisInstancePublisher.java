@@ -53,12 +53,9 @@ public class SingleDistributedEtalisInstancePublisher {
 	//	managementApiI2.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
 		
 		// Start publishing events.
-		new EventProducerThread(100000, 1, testApiI1);
+		new EventProducerThread(100000, 30, testApiI1);
 		
 	}
-	
-	
-	
 
 	private static EpSparqlQuery generateEle(String queryString) {
 		// Parse query

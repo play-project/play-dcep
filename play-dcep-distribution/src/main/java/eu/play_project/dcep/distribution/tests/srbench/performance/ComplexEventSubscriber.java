@@ -32,7 +32,7 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 			for (Quadruple quadruple : event) {
 				// Use endTime
 				if (quadruple.getPredicate().toString().equals("http://events.event-processing.org/types/sedTime")) {
-					Long.parseLong(quadruple.getObject().toString());
+					eventTime = Long.parseLong(quadruple.getObject().toString().substring(1, quadruple.getObject().toString().length()-1));
 				}
 
 				long time = System.currentTimeMillis();

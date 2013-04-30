@@ -106,7 +106,7 @@ public class EventProducerThread implements Runnable {
 						+ eventId),
 				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"),
 				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
-				Node.createURI("6.0"));
+				Node.createURI("5.0"));
 
 //		Quadruple q7 = new Quadruple(
 //				Node.createURI("http://events.event-processing.org/eventId/"
