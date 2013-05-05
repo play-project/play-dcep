@@ -1,3 +1,60 @@
+% Aggregate functions
+%
+% This file provide functions to aggregate data.
+% E.g. aggregate function like SUM, AVG, MIN, MAX...
+%
+% @author Stefan Obermeier
+
+
+
+%% storeMaxT(+ID, +Value:int)
+%
+% Store value if it is the biggest value ever given.
+%
+% @param Id  Id to identify storage destination.
+% @param Value Value to store.
+storeMaxT(Id, Value):- 
+(
+	% If value is the first value for the given Id, assert it as the biggest value.
+	catch(
+		maxValue(Id, V_old),
+		E,
+		assertMaxVal(E, Id, Value)
+	)
+% If existing value is smaller than the new one replace it.
+-> 
+	(
+		maxValue(Id, V_old),
+		(
+			(V_old =< Value)
+		-> 
+		(
+			retract(maxValue(Id, _V)),
+			assert(maxValue(Id, Value))
+		)
+		;
+			true
+		)
+	)
+;
+	true
+). 
+
+%% assertMaxVal( -_E, +Id, +Value:int)
+%
+% Assert Id and Value pair. To get used by MaxAggregate functions.
+%
+% @param _E  Exception.
+% @param Id  Id to retrieve value.
+% @param Value Value to store.
+assertMaxVal(_E,Id, Value) :- 
+(
+	assert(maxValue(Id, Value))
+,
+	false
+).
+
+
 % Calulate average (Arithmetic mean) of the values in the last period.
 % Author: Stefan Obermeier
 
@@ -9,6 +66,12 @@ addAgregatValue(Id, Element) :- (agregateListExists(Id) -> % Check if value list
 
 calcAverage(Id, WindowSize, Avg) :- (aggregatDb(Id,List),get_time(Time), calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), retractall(aggregatDb(Id, _Dc))). %Calc avg recursivly
 
+
+
+
+% Delete all values. 
+resetMaxT(Id):- 
+	retractall(maxValue(Id, _)).
 
 
 
@@ -30,12 +93,7 @@ storeMin(Id, Value) :- (catch(minValue(Id, V_old), E, assertMinVal(E, Id, Value)
 assertMinVal(_E,Id, Value) :- (assert(minValue(Id, Value)),false).
 
 
-% Safe value if it is the biggest value ever given.
-% Distinction between different sorages is done bay Id.
-storeMax(Id, Value) :- (catch(maxValue(Id, V_old), E, assertMaxVal(E, Id, Value)) -> % If value exists check if it is bigger than the saved value.
-			(maxValue(Id, V_old), ((V_old =< Value) -> (retract(maxValue(Id, _V)), assert(maxValue(Id, Value))); true));
-			true). 
-assertMaxVal(_E,Id, Value) :- (assert(maxValue(Id, Value)),false).
+
 
 % Helpers
 agregateListExists(Id) :- (catch(aggregatDb(Id,_List), _Exception, false)). % Check if data structure exists.
