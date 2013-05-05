@@ -46,18 +46,31 @@ public class EventProducerThread implements Runnable {
 	@Override
 	public void run() {
 		int destination = 0; //Destinations are stored in testApi.
-		for (int i = 0; i < numberOfEvents; i++) {
-			
-			//Publis event
-			destination++;
-			testApi[destination%testApi.length].publish(createEvent("EventId" + Math.random()));
-			
-			//Some statistics
-			meausrementUnit.nexEvent();
-			
-			//Wait
-			delay();
-		}		
+		int count =0;
+
+		// Publis event
+		for (int i = 0; i < (numberOfEvents / testApi.length); i++) {
+
+			// Distibute events in Round-robin fashon to all CEP-Engines.
+			for (int j = 0; j < testApi.length; j++) {
+				testApi[j].publish(createEvent("http://example.com/eventId/" + Math.random()));
+				
+				// Some statistics
+				meausrementUnit.nexEvent();
+
+				// Decrease delay 
+				count++;
+				if (count % 2500 == 0) {
+					if ((delay - 2) > 0) {
+						delay -= 2;
+					}
+				}
+				
+				// Wait
+				delay();
+			}
+
+		}
 	}
 
 	private void delay() {
