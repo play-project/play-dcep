@@ -10,11 +10,23 @@ incrementEventCounter(PatternID):-
 		assert(eventCounter(PatternID,X2)))
 	; assert(eventCounter(PatternID,1)).
 	
-assertCounter(_Existence_error, PatternID):- assert(eventCounter(PatternID,0)).
+assertCounter(_Existence_error, PatternID):- 
+	assert(eventCounter(PatternID,0)
+).
 
 % In mode "on" the events of a given pattern ID will be counted.
-setMeasurementMode(Mode):-(retract(measurementMode(X)), assert(measurementMode(Mode))).
+setMeasurementMode(Mode):-
+(
+	retract(measurementMode(X)),
+	assert(measurementMode(Mode))
+).
 
-measure(PatternID) :- (measurementMode(on), incrementEventCounter(PatternID));true.
+measure(PatternID) :- 
+(
+	measurementMode(on), 
+	incrementEventCounter(PatternID)
+)
+;
+	true.
 
 :-assert(measurementMode(off)).
