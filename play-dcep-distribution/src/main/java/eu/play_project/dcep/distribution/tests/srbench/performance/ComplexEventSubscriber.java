@@ -20,7 +20,7 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 	public void publish(CompoundEvent event) {
 		if(mu==null){
 			mu = new MeasurementUnit();
-			mu.calcRateForNEvents(300);
+			mu.calcRateForNEvents(500);
 		}
 		//mu.nexEvent();
 		printTimeSpentInSystem(event);
@@ -33,12 +33,12 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 				// Use endTime
 				if (quadruple.getPredicate().toString().equals("http://events.event-processing.org/types/sedTime")) {
 					eventTime = Long.parseLong(quadruple.getObject().toString().substring(1, quadruple.getObject().toString().length()-1));
-				}
 
 				long time = System.currentTimeMillis();
 				// Print time spend in system.
 				System.out.println(time + "\t"
 						+ (System.currentTimeMillis() - eventTime));
+				}
 			}
 		}
 	}

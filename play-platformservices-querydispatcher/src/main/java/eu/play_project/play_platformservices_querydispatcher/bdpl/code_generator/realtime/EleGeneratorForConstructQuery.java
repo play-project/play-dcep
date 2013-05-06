@@ -85,7 +85,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		VarNameManager.initVariableTypeManage(inQuery);
 		vtm =  VarNameManager.getVariableTypeManage();
 		vtm.collectVars();
-		
+
 		// Start code generation.
 		ElePattern();
 	}

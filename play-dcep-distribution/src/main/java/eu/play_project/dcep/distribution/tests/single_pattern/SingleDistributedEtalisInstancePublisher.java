@@ -46,7 +46,9 @@ public class SingleDistributedEtalisInstancePublisher {
 	private static DistributedEtalisTestApi testApiI1;
 	private static DcepManagmentApi managementApiI1;
 
-
+	public SingleDistributedEtalisInstancePublisher(){}
+	
+	
 	public static void main(String[] args) throws RemoteException,
 			NotBoundException, Exception {
 

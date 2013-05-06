@@ -33,6 +33,8 @@ public class SingleDistributedEtalisInstancePublisher {
 	private static DcepManagmentApi managementApiI1;
 	private static DistributedEtalisTestApi testApiI2;
 	private static DcepManagmentApi managementApiI2;
+	private static DistributedEtalisTestApi testApiI3;
+	private static DcepManagmentApi managementApiI3;
 
 	public static void main(String[] args) throws RemoteException,
 			NotBoundException, Exception {
@@ -44,16 +46,25 @@ public class SingleDistributedEtalisInstancePublisher {
 		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
 		
 		// Connect to DistributedEtalis instance 2.
-	//	PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[2], args[3], "rmi", 1099).toString());
-	//	testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
-	//	managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
+		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[2], args[3], "rmi", 1099).toString());
+		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
+		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
+		
+		// Connect to DistributedEtalis instance 3.
+		PAComponentRepresentative root3 = Fractive.lookup(URIBuilder.buildURI(args[4], args[5], "rmi", 1099).toString());
+		testApiI3 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root3.getFcInterface("DistributedEtalisTestApi"));
+		managementApiI3 = ((eu.play_project.dcep.api.DcepManagmentApi) root3.getFcInterface("DcepManagmentApi"));
 
-		// Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
-	//	managementApiI2.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq")));
+		EpSparqlQuery q = generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq"));
+		// Register queries.  mw
+		managementApiI1.registerEventPattern(q);
+		managementApiI2.registerEventPattern(q);
+		managementApiI3.registerEventPattern(q);
+		
 		
 		// Start publishing events.
-		new EventProducerThread(100000, 30, testApiI1);
+		new EventProducerThread(1000000, 20, testApiI1, testApiI2);
+	
 		
 	}
 
