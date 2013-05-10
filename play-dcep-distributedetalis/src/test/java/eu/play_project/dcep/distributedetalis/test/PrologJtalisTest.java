@@ -432,28 +432,171 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
+	public void AverageTest1secondFromNow() throws InterruptedException{
+		if(ctx==null){
+			this.init();
+		}
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1, 1.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2, 2.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3, 3.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 4, 4.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 5, 5.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 6, 6.0)");
+		// Wait. Value 1-6 will be out of window.
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7, 7.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8, 8.0)");
+
+		
+		
+		//Get variables and values
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 1, 8, Avg)");
+
+		// Get all values of a variable
+		for (Hashtable<String, Object> hashtable : result) {
+			System.out.println(hashtable.get("Avg"));
+			assertTrue(hashtable.get("Avg").toString().equals("7.5"));
+		}
+		
+		//Check if all temp values are deleted.
+		Thread.sleep(400);
+		Hashtable<String, Object>[] values = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("aggregatDb(A, B)");
+		
+		assertTrue(values.length == 0);
+
+	}
+	
+	@Test
+	public void AverageTestOneValueFormPast() throws InterruptedException{
+		if(ctx==null){
+			this.init();
+		}
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1, 1.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2, 2.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3, 3.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 4, 4.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 5, 5.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 6, 6.0)");
+		// Wait. Value 1-6 will be out of window.
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7, 7.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8, 8.0)");
+
+		
+		
+		//Get variables and values
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 1, 9, Avg)");
+
+		// Get all values of a variable
+		for (Hashtable<String, Object> hashtable : result) {
+			System.out.println(hashtable.get("Avg"));
+			assertTrue(hashtable.get("Avg").toString().equals("8"));
+		}
+		
+		//Check if all temp values are deleted.
+		Thread.sleep(400);
+		Hashtable<String, Object>[] values = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("aggregatDb(A, B)");
+		
+		assertTrue(values.length == 0);
+
+	}
+	
+	@Test
+	public void AverageTest3Values() throws InterruptedException{
+		if(ctx==null){
+			this.init();
+		}
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1, 1.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2, 2.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3, 3.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 4, 4.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 5, 5.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 6, 6.0)");
+		// Wait. Value 1-6 will be out of window.
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7, 7.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8, 8.0)");
+
+		
+		
+		//Get variables and values
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 4, 10, Avg)");
+
+		// Get all values of a variable
+		for (Hashtable<String, Object> hashtable : result) {
+			System.out.println(hashtable.get("Avg"));
+			assertTrue(hashtable.get("Avg").toString().equals("7"));
+		}
+		
+		//Check if all temp values are deleted.
+		Thread.sleep(400);
+		Hashtable<String, Object>[] values = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("aggregatDb(A, B)");
+		
+		assertTrue(values.length == 0);
+
+	}
+	
+	@Test
+	public void AverageTestOutOfWindow() throws InterruptedException{
+		if(ctx==null){
+			this.init();
+		}
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1, 1.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2, 2.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3, 3.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 4, 4.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 5, 5.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 6, 6.0)");
+		// Wait. Value 1-6 will be out of window.
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7, 7.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8, 8.0)");
+
+		
+		
+		//Get variables and values
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 1, 200, Avg)");
+
+		// Get all values of a variable
+		for (Hashtable<String, Object> hashtable : result) {
+			System.out.println(hashtable.get("Avg"));
+			assertTrue(hashtable.get("Avg").toString().equals("7"));
+		}
+		
+		//Check if all temp values are deleted.
+		Thread.sleep(400);
+		Hashtable<String, Object>[] values = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("aggregatDb(A, B)");
+		
+		assertTrue(values.length == 0);
+
+	}
+	@Test
 	public void AverageTest() throws InterruptedException{
 		if(ctx==null){
 			this.init();
 		}
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1000000001.000000)");
+//		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2000000001.000000)");
+//		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3000000001.000000)");
+//		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 4000000001.000000)");
+//		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 5000000001.000000)");
+//		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 6000000001.000000)");
+		// Wait. Value 1-6 will be out of window.
+		Thread.sleep(3000);
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8.0)");
+
 		
 		
 		//Get variables and values
-		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 9000000000, Avg)");
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("calcAverage(id_1, 2, Avg)");
 
 		// Get all values of a variable
 		for (Hashtable<String, Object> hashtable : result) {
+			System.out.println("33333333333333333333333333333333333333333333333");
 			System.out.println(hashtable.get("Avg"));
-			assertTrue(hashtable.get("Avg").toString().equals("1.000000001E9"));
+			System.out.println(hashtable.get("Avg"));
+			System.out.println(hashtable.get("Avg"));
+			System.out.println(hashtable.get("Avg"));
+			System.out.println(hashtable.get("Avg"));
+			System.out.println(hashtable.get("Avg"));
+			assertTrue(hashtable.get("Avg").toString().equals("7.5"));
 		}
 		
 		//Check if all temp values are deleted.
@@ -611,7 +754,6 @@ public class PrologJtalisTest {
 		}
 		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
 			engine.execute("assert((" + method + "))");
-			System.out.println(method);
 		}
 
 	}

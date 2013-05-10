@@ -96,10 +96,23 @@ addAgregatValue(Id, Time, Element) :-
 % Calculate average (Arithmetic mean) of the values in the last period.
 %
 % Returns false if window is empty.
+% @param WindowSize Window size in seconds.
 calcAverage(Id, WindowSize, Avg) :- 
 (
-	aggregatDb(Id,List),
 	get_time(Time),
+	calcAverage(Id, WindowSize, Time, Avg)
+).
+
+%% calcAverage(+Id, +WindowSize, +Time, -Avg)
+%
+% Calculate average (Arithmetic mean) of the values in the last period.
+%
+% Returns false if window is empty.
+% @param WindowSize Window size in seconds.
+% @param Time Current time.
+calcAverage(Id, WindowSize, Time, Avg) :- 
+(
+	aggregatDb(Id,List),
 	calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg),
 	retractall(aggregatDb(Id, _Dc))  %Calc avg recursivly
 ).
@@ -189,10 +202,9 @@ calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :-
 	calcAvgIter(T, Id, WindowEnd, (Sum + Hn), 
 	(N + 1), Result)
 ;
+	getTimeAndValue(H,Time, Value),
 	\+ var(Value),
-	transformToNumber(Value, Hn),
-	calcAvgIter([], Id, WindowEnd,
-	(Sum + Hn), (N + 1), Result)  % Stop recursion if value is out of window.
+	calcAvgIter([], Id, WindowEnd, Sum, N, Result)  % Stop recursion if value is out of window.
 ). 
 
 
