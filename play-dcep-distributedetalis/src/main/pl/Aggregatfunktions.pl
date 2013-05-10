@@ -42,7 +42,7 @@ storeMaxT(Id, Value):-
 
 %% assertMaxVal( -_E, +Id, +Value:int)
 %
-% Assert Id and Value pair. To get used by MaxAggregate functions.
+% Assert Id and Value pair. Used by MaxAggregate functions.
 %
 % @param _E  Exception.
 % @param Id  Id to retrieve value.
@@ -55,24 +55,44 @@ assertMaxVal(_E,Id, Value) :-
 ).
 
 
-% Calulate average (Arithmetic mean) of the values in the last period.
 
-%Add new value to list. Average will be calculated by using values from this list.
-%Current simple version: Use local time. TODO use time form event. Datastructure aggregatDb(Id,[v(Time,Value)])
+%% addAgregatValue (+Id, +Element)
+%
+% Data structure to store (time, value) tuple.
+% All tuples are ordered by date, descending, so the newest value is always on top.
+% Local system time is used. 
+% Data structure: aggregatDb(Id,[[Time,Element]]).
+%
+% @param Id Id to identify datastructure.
+% @param Element element to store.
 addAgregatValue(Id, Element) :- 
+(
+	get_time(Time),
+	addAgregatValue(Id, Time, Element)
+).
+
+%% addAgregatValue (+Id, +Time, +Element)
+%
+% Data structure to store (time, value) tuple.
+% All tuples are ordered by date, descending, so the newest value is always on top.
+% Data structure: aggregatDb(Id,[[Time,Element]]).
+%
+% @param Id Id to identify data structure.
+% @param Element element to store.
+addAgregatValue(Id, Time, Element) :- 
 (
 	agregateListExists(Id)
 	 -> % Check if value list exists.
-		get_time(Time), 
 		aggregatDb(Id,List), 
 		putInList(List,[],[Time,Element],Lnew), 
 		retractall(aggregatDb(Id,List)), 
 		assert(aggregatDb(Id,Lnew)) % Add element to existing list.
 	;
-		get_time(Time), 
 		assert(aggregatDb(Id,[[Time,Element]])) % Put element in new list.
-). 
+).
+ 
 
+% Calulate average (Arithmetic mean) of the values in the last period.
 calcAverage(Id, WindowSize, Avg) :- 
 (
 	aggregatDb(Id,List),
@@ -128,26 +148,26 @@ getTimeAndValue([H|T], Time, Value) :-
 nextV([H|T], 1, Value) :- 
 	Value = H.
 
- %assert(aggregatDb(Id,H)), retractall(aggregatDb(Id,[H|T])),
 % Organize values in increasing order.
 % putInList(+OldList, [], +Element, -NewList). 
-
+%
 % Element is last element in list. 
 putInList([],Left,Element, Result) :- 
 (
 	append(Left, [Element], Result)
 ). 
 
+% Search place for Element.
 putInList([H|T],LeftBuffer, Element, Result) :- 
 (
-	getTimeAndValue(H,TimeNewElement, Value),
-	getTimeAndValue(H,TimeExistingElement, _Value),
-	(TimeNewElement>=TimeExistingElement)
+	getTimeAndValue(H,TimeExistingElement, _),
+	getTimeAndValue(Element,TimeNewElement, _),
+	(TimeNewElement >= TimeExistingElement)
 ) 
 -> 
-	append(LeftBuffer, ([Element|([H|T])]),Result) % Put in front
+	append(LeftBuffer, ([Element|([H|T])]),Result) % Put new value on top.
 ;
-	append(LeftBuffer, [H], Left), (putInList(T, Left, Element, Result)
+	append(LeftBuffer, [H], Left), (putInList(T, Left, Element, Result) % Check next element.
 ).
 	
 	
