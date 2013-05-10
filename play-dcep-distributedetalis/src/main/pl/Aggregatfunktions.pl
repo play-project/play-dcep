@@ -91,8 +91,11 @@ addAgregatValue(Id, Time, Element) :-
 		assert(aggregatDb(Id,[[Time,Element]])) % Put element in new list.
 ).
  
-
-% Calulate average (Arithmetic mean) of the values in the last period.
+%% calcAverage(+Id, +WindowSize, -Avg)
+%
+% Calculate average (Arithmetic mean) of the values in the last period.
+%
+% Returns false if window is empty.
 calcAverage(Id, WindowSize, Avg) :- 
 (
 	aggregatDb(Id,List),
@@ -179,12 +182,14 @@ calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):-
 calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- 
 (
 	getTimeAndValue(H,Time, Value),
+	\+ var(Value),
 	(Time >= WindowEnd)
 ->
 	transformToNumber(Value, Hn), 
 	calcAvgIter(T, Id, WindowEnd, (Sum + Hn), 
 	(N + 1), Result)
 ;
+	\+ var(Value),
 	transformToNumber(Value, Hn),
 	calcAvgIter([], Id, WindowEnd,
 	(Sum + Hn), (N + 1), Result)  % Stop recursion if value is out of window.
