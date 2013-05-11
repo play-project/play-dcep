@@ -189,13 +189,18 @@ putInList([H|T],LeftBuffer, Element, Result) :-
 	
 calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):- 
 (
+	(N == 0)
+->
+	retractall(aggregatDb(Id, _Dc)),
+	false % No element in window.
+;
 	(Result is (Sum/N))
 ).
 
 calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- 
 (
 	getTimeAndValue(H,Time, Value),
-	\+ var(Value),
+	\+ var(Value), % Return false no value stored.
 	(Time >= WindowEnd)
 ->
 	transformToNumber(Value, Hn), 
