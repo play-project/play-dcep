@@ -145,7 +145,7 @@
 //		Factory factory = FactoryFactory.getFactory();
 //		HashMap<String, Object> context = new HashMap<String, Object>();
 //
-//		root = (Component) factory.newComponent("EcDcepPsTest", context);
+//		root = (Component) factory.newComponent("PsDcepComponent.fractal", context);
 //		GCM.getGCMLifeCycleController(root).startFc();
 //
 //		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface("QueryDispatchApi"));
