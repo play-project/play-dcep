@@ -136,6 +136,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public void visit(ElementEventGraph el) {
 		// Visit triples
 		triplestoreQuery = "";
+		aggregateValuesCode = "";
 		el.getElement().visit(this);
 	}
 }
