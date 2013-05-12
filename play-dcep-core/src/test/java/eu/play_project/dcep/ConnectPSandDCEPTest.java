@@ -138,7 +138,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		InstantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQueries("play-epsparql-m12-jeans-example-query-tumbling-window.eprq");
+		queryString = getSparqlQueries("patterns/play-epsparql-m12-jeans-example-query-tumbling-window.eprq");
 
 		// Compile query
 		String paternID = queryDispatchApi.registerQuery("http://test.example.com", queryString);
@@ -170,7 +170,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		Thread.sleep(2000);
 		
 		// Check if c1 and c2 appeared.
-		assertTrue("Number of complex events wrong "+ subscriber.getComplexEvents().size(), subscriber.getComplexEvents().size() == 2);
+		assertTrue("Number of complex events wrong.  "+ subscriber.getComplexEvents().size() + " complex events produced but 2 complex event were expected.", subscriber.getComplexEvents().size() == 2);
 		
 		testApi.publish(createEvent("http://exmaple.com/eventId/e5"));
 		Thread.sleep(1);

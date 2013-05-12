@@ -570,6 +570,41 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
+	public void AverageTestSystemTime() throws InterruptedException{
+		if(ctx==null){
+			this.init();
+		}
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 4.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 5.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 6.0)");
+		Thread.sleep(3000);
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8.0)");
+
+		
+		
+		//Get variables and values
+		
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute(("calcAverage(id_1, 2, Avg)"));
+
+		// Get all values of a variable
+		for (Hashtable<String, Object> hashtable : result) {
+			System.out.println(hashtable.get("Avg").toString());
+			assertTrue(hashtable.get("Avg").toString().startsWith("7.5"));
+		}
+		
+		//Check if all temp values are deleted.
+		Thread.sleep(400);
+		Hashtable<String, Object>[] values = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("aggregatDb(A, B)");
+		
+		assertTrue(values.length == 0);
+
+	}
+	
+	@Test
 	public void AverageTestNoValues() throws InterruptedException{
 		if(ctx==null){
 			this.init();

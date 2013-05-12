@@ -156,7 +156,61 @@ public class CommonsPatternTest {
 			e.printStackTrace();
 		}
 }
+
+	@Test
+	public void AggregateAverageWindSpeedTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException{
+		String queryString;
+		
+		InstantiatePlayPlatform();
+
+		// Get query.
+		queryString = getSparqlQueries("patterns/wether_wind_speed.eprq");
+
+		// Compile query
+		String paternID = queryDispatchApi.registerQuery("example", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		try {
+			subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		} catch (ActiveObjectCreationException e) {
+			e.printStackTrace();
+		} catch (NodeException e) {
+			e.printStackTrace();
+		}
+		
+		testApi.attach(subscriber);
+		
+		
+		logger.info("Publish evetns");
+		for (int i = 0; i < 10; i++) {
+			CompoundEvent event = createTaxiUCCallEvent("example" + Math.random());
+			logger.fine("Publish event" +  event);
+			testApi.publish(event);
+		}
+
+		// Wait
+		delay();
+
+		assertTrue(subscriber.getComplexEvents().size()==9);
 	
+		
+		
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			 for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
+				GCM.getGCMLifeCycleController(subcomponent).terminateGCMComponent();
+			 }
+	
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+	}
 
 
 	public void sendEvents(){

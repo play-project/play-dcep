@@ -33,7 +33,7 @@ public class HistoricDataTest {
 		VariableBindings variableBindings;
 		HistoricalData values;
 		
-		String queryFile = "play-bdpl-personalmonitoring.eprq";
+		String queryFile = "patterns/play-bdpl-personalmonitoring.eprq";
 		String query = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), "UTF-8");
 		String queryId = queryFile;
 		
