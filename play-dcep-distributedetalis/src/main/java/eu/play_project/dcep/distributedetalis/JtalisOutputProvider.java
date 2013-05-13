@@ -69,7 +69,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	public void shutdown() {
 		shutdownEtalis = true;
 	}
-	int i = 0;
+
 	@Override
 	public void outputEvent(EtalisEvent event) {
 		//FIXME sobermeier: separate measurement events (e.g. without using "complex")

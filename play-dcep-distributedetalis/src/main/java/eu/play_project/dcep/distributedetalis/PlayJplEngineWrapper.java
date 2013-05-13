@@ -39,7 +39,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 
 	public synchronized Hashtable<String, Object>[] execute(String command) {
 		Hashtable<String, Object>[] result;
-		System.out.println("EngineWrapper Thread: " + Thread.currentThread().getId() + " Goal: " + command);
+		
 		// Get data from triplestore
 		Query q = new Query(command);
 		synchronized (this) {
@@ -52,7 +52,6 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	
 	@Override
 	public boolean execute(com.jtalis.core.plengine.logic.Term term) {
-		System.out.println("EngineWrapper Thread: " + Thread.currentThread().getId() + " Goal: " + term);
 		synchronized(this){
 			return engine.execute(term);
 		}
@@ -60,7 +59,6 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 
 	@Override
 	public boolean executeGoal(String goal) {
-		System.out.println("EngineWrapper Thread: " + Thread.currentThread().getId() + " Goal: " + goal);
 		//return engine.executeGoal(goal);
 	synchronized(this){	
 		Query q = new Query(goal);

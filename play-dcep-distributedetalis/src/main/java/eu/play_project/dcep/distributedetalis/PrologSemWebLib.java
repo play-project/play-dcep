@@ -77,7 +77,6 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 						"'" + quadruple.getPredicate() + "', " +
 						    rdfObject                  + ", " +
 						"'" + event.getGraph() + "')";
-				triesToStoreData = 0;
 				dataAddedToTriplestore = addPayloadToPlTriplestore(prologString);
 			} else {
 				throw new DistributedEtalisException("Failed to insert event data in Prolog triple store.");
@@ -101,6 +100,8 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	 */
 	private boolean addPayloadToPlTriplestore(String prologString){
 		try{
+			//ctx.getEngineWrapper().executeGoal("printRdfStat");
+			//ctx.getEngineWrapper().executeGoal("printNumberOfEvents");
 			return ctx.getEngineWrapper().executeGoal(prologString);
 		}catch (PrologException e) {
 			if(e.getMessage().contains("error(permission_error(write, rdf_db, default)")){

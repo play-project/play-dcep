@@ -22,14 +22,5 @@ WHERE {
 				om-owl:result [ om-owl:floatValue ?value ].
 			?e1 :endTime ?time
 			}
-		SEQ
-		EVENT ?id2 {
-			?e3 :stream <http://streams.event-processing.org/ids/Srbench#stream>. 
-			?e3 om-owl:procedure ?sensor ;
-				a weather:WindSpeedObservation; 
-				om-owl:observedProperty weather:_WindSpeed;
-				om-owl:result [ om-owl:floatValue ?value ].
-			?e3 :endTime ?time
-			}
 	} ("PT1M"^^xsd:duration, sliding)
 }HAVING (AVG(?value) >= "5"^^xsd:float )

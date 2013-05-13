@@ -18,7 +18,7 @@ printRefCountN :-
 % Print number of events available in this instance.
 printNumberOfEvents :- 
 (	
-	rdf_statistics(graphs(-Count)),
+	rdf_statistics(graphs(Count)),
 	write('Number of events: '),
 	write(Count),
 	nl
