@@ -17,15 +17,6 @@
 	<description>The DCEP distribution which produces a complete executable package of DCEP and Platformservices with all dependencies.</description>
 	
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/adl</directory>
-				<filtering>false</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<!-- Do not deploy this artefact to maven repo, it is very big. :stuehmer  -->
 			<plugin>
