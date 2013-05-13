@@ -113,12 +113,13 @@ calcAverage(Id, WindowSize, Avg) :-
 calcAverage(Id, WindowSize, Time, Avg) :- 
 (
 	aggregatDb(Id,List),
-	calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg),
-	retractall(aggregatDb(Id, _Dc))  %Calc avg recursivly
+	calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg) %Calc avg recursivly
+	%retractall(aggregatDb(Id, _Dc))  
 ).
 
-
-
+% Delete all aggregate DB data for given Id.
+cleanAggregateDb(Id):- 
+	retractall(aggregatDb(Id, _Dc)).
 
 % Delete all values. 
 resetMaxT(Id):- 
@@ -191,7 +192,7 @@ calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):-
 (
 	(N == 0)
 ->
-	retractall(aggregatDb(Id, _Dc)),
+	% retractall(aggregatDb(Id, _Dc)),
 	false % No element in window.
 ;
 	(Result is (Sum/N))
