@@ -27,42 +27,42 @@ import eu.play_project.dcep.distributedetalis.api.PrologEngineWrapperPlayExtensi
 public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWrapperPlayExtensions {
 
 	private JPLEngineWrapper engine;
-	private static PlayJplEngineWrapper localEngine;
+	private static PlayJplEngineWrapper localEngine = new PlayJplEngineWrapper();
 	
 	private PlayJplEngineWrapper(){
 		engine = new JPLEngineWrapper();
 	}
 	
 	public static PlayJplEngineWrapper getPlayJplEngineWrapper(){
-		if(localEngine==null){
-			localEngine = new PlayJplEngineWrapper();
-		}
 		return localEngine;
 	}
 
 	public synchronized Hashtable<String, Object>[] execute(String command) {
 		Hashtable<String, Object>[] result;
-
+		System.out.println("EngineWrapper Thread: " + Thread.currentThread().getId() + " Goal: " + command);
 		// Get data from triplestore
 		Query q = new Query(command);
-		
-		// Possibly faster and thread safe.
-		result = q.allSolutions();
-
+		synchronized (this) {
+			// Possibly faster and thread safe.
+			result = q.allSolutions();
+		}
 		//q.close();
 		return result;
 	}
 	
 	@Override
 	public boolean execute(com.jtalis.core.plengine.logic.Term term) {
-		return engine.execute(term);
+		System.out.println("EngineWrapper Thread: " + Thread.currentThread().getId() + " Goal: " + term);
+		synchronized(this){
+			return engine.execute(term);
+		}
 	}
 
 	@Override
 	public boolean executeGoal(String goal) {
-
+		System.out.println("EngineWrapper Thread: " + Thread.currentThread().getId() + " Goal: " + goal);
 		//return engine.executeGoal(goal);
-	synchronized(this){
+	synchronized(this){	
 		Query q = new Query(goal);
 		return q.hasSolution();
 	}
@@ -72,13 +72,18 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 
 	@Override
 	public Object registerPushNotification(EtalisEventListener listener) {
-		return engine.registerPushNotification(listener);
+		synchronized (this) {
+			return engine.registerPushNotification(listener);
+		}	
 	}
 
 	@Override
 	public void unregisterPushNotification(EtalisEventListener listener) {
-		engine.unregisterPushNotification(listener);
+		synchronized (this) {
+			engine.unregisterPushNotification(listener);
+		}
 	}
+
 
 	@Override
 	public void shutdown() {
@@ -92,7 +97,9 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 
 	@Override
 	public void addOutputListener(EngineOutputListener listener) {
-		engine.addOutputListener(listener);
+		synchronized (this) {
+			engine.addOutputListener(listener);
+		}
 	}
 
 	@Override
@@ -133,7 +140,10 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	                "consult",
 	                new Term[] {new Atom(file)}
 	            );
-		return consult_query.hasSolution();
+	    synchronized (this) {
+	    	return consult_query.hasSolution();
+		}
+		
 	}
 
 	@Override
