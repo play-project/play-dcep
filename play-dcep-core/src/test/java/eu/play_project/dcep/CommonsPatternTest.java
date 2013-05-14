@@ -46,7 +46,7 @@ public class CommonsPatternTest {
 	public static boolean test;
 	private final Logger logger = Logger.getAnonymousLogger();
 	
-	@Test
+	//@Test
 	public void Clic2callPatternTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
@@ -188,15 +188,26 @@ System.out.println(queryString);
 		
 		
 		logger.info("Publish evetns");
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 100; i++) {
 			CompoundEvent event = createWeatherEvent("example1" + Math.random());
 			logger.fine("Publish event" +  event);
+			System.out.println(event);
+			testApi.publish(event);
+		}
+		//Thread.sleep(100);
+		for (int i = 0; i < 1; i++) {
+			CompoundEvent event = createWeatherEvent("example1" + Math.random());
+			logger.fine("Publish event" +  event);
+			System.out.println(event);
 			testApi.publish(event);
 		}
 
 
 		// Wait
 		delay();
+		delay();
+		delay();
+
 System.out.println(subscriber.getComplexEvents().size());
 		assertTrue(subscriber.getComplexEvents().size()==9);
 		
