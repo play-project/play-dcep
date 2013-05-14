@@ -19,14 +19,7 @@
 		<dependency>
 			<groupId>jtalis</groupId>
 			<artifactId>jtalis-core</artifactId>
-			<version>1.0</version>
-			<type>jar</type>
-			<exclusions>
-				<exclusion>
-					<artifactId>play-dcep-distributedetalis</artifactId>
-					<groupId>eu.play-project</groupId>
-				</exclusion>
-			</exclusions>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
