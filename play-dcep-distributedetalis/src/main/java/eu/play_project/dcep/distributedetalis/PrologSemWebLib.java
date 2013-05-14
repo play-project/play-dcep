@@ -33,63 +33,49 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	}
 
 	@Override
-	public Boolean addEvent(CompoundEvent event) throws DistributedEtalisException {
+	public Boolean addEvent(CompoundEvent event)
+			throws DistributedEtalisException {
 		Boolean dataAddedToTriplestore = true;
 		Boolean gcDataAdded = true;
-		for(Quadruple quadruple : event){
-			if(dataAddedToTriplestore){
-				// TODO use prolog type system
-				Node o = quadruple.getObject();
-				String rdfObject;
-				if (o.isLiteral()) {
-					rdfObject = "'" + escapeForProlog(quadruple.getObject().getLiteralLexicalForm()) + "'";
-					
-					
-//					if (null != o.getLiteralDatatypeURI()) {
-//						// 1.) Numbers
-//						if (o.getLiteralValue() instanceof XSDDouble || o.getLiteralValue() instanceof XSDFloat || o.getLiteralValue() instanceof XSDBaseNumericType) {
-//							// Create native Prolog number (without quotes)
-//							rdfObject = "literal(type('" + o.getLiteralDatatypeURI() + "', " + o.getLiteralLexicalForm() + "))";
-//						}
-//						// 2.) Other specified types
-//						else {
-//							// Create prolog atom
-//							rdfObject = "literal(type('" + o.getLiteralDatatypeURI() + "', '" + o.getLiteralLexicalForm() + "'))";
-//						}
-//					}
-//					// Language literals
-//					else if (NodeUtils.hasLang(o)) {
-//						// 3.) Create prolog atom
-//						rdfObject = "literal(lang('" + o.getLiteralLanguage() + "', '" + o.getLiteralLexicalForm() + "'))";
-//					}
-//					// 4.) Plain literals
-//					else {
-//						rdfObject = "literal('" + o.getLiteralLexicalForm() + "')";
-//					}
-				}
-				else {
-					// 5.) Resource URI
-					rdfObject = "'" + o.getURI() + "'";
-				}
-				// Add data to triplestore
-				String prologString = "rdf_assert(" +
-						"'" + quadruple.getSubject()   + "', " +
-						"'" + quadruple.getPredicate() + "', " +
-						    rdfObject                  + ", " +
-						"'" + event.getGraph() + "')";
-				dataAddedToTriplestore = addPayloadToPlTriplestore(prologString);
+		StringBuilder prologString = new StringBuilder();
+		int i = 0;
+
+		for (Quadruple quadruple : event) {
+			i++;
+
+			// TODO use prolog type system
+			Node o = quadruple.getObject();
+			String rdfObject;
+			if (o.isLiteral()) {
+				rdfObject = "'"
+						+ escapeForProlog(quadruple.getObject()
+								.getLiteralLexicalForm()) + "'";
 			} else {
-				throw new DistributedEtalisException("Failed to insert event data in Prolog triple store.");
+				// 5.) Resource URI
+				rdfObject = "'" + o.getURI() + "'";
 			}
+			if (i > 1) {
+				prologString.append(", ");
+			}
+			// Add data to triplestore
+			prologString.append("rdf_assert(" + "'" + quadruple.getSubject()
+					+ "', " + "'" + quadruple.getPredicate() + "', "
+					+ rdfObject + ", " + "'" + event.getGraph() + "')");
 		}
+
+		dataAddedToTriplestore = addPayloadToPlTriplestore(prologString.toString());
+
 		// Add GC counter.
-		gcDataAdded = ctx.getEngineWrapper().executeGoal("assert(referenceCounter('" + event.getGraph() + "', " + internalEventId + ", -1))");
+		gcDataAdded = ctx.getEngineWrapper().executeGoal(
+				"assert(referenceCounter('" + event.getGraph() + "', "
+						+ internalEventId + ", -1))");
 		internalEventId++;
-		
+
 		if (!gcDataAdded) {
-			throw new DistributedEtalisException("Failed to insert garbage collection information in Prolog.");
+			throw new DistributedEtalisException(
+					"Failed to insert garbage collection information in Prolog.");
 		}
-		
+
 		return (dataAddedToTriplestore && gcDataAdded);
 }
 
@@ -100,9 +86,10 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	 */
 	private boolean addPayloadToPlTriplestore(String prologString){
 		try{
-			//ctx.getEngineWrapper().executeGoal("printRdfStat");
-			//ctx.getEngineWrapper().executeGoal("printNumberOfEvents");
-			return ctx.getEngineWrapper().executeGoal(prologString);
+			boolean result = ctx.getEngineWrapper().executeGoal(prologString);
+			ctx.getEngineWrapper().executeGoal("printRdfStat");
+			ctx.getEngineWrapper().executeGoal("printNumberOfEvents");
+			return result;
 		}catch (PrologException e) {
 			if(e.getMessage().contains("error(permission_error(write, rdf_db, default)")){
 				logger.error("Error db is blocked. Try againe. Count: ", triesToStoreData);

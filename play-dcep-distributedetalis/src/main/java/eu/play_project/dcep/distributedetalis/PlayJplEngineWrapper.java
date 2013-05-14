@@ -42,49 +42,36 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 		
 		// Get data from triplestore
 		Query q = new Query(command);
-		synchronized (this) {
 			// Possibly faster and thread safe.
 			result = q.allSolutions();
-		}
 		//q.close();
 		return result;
 	}
 	
 	@Override
-	public boolean execute(com.jtalis.core.plengine.logic.Term term) {
-		synchronized(this){
+	public synchronized boolean execute(com.jtalis.core.plengine.logic.Term term) {
 			return engine.execute(term);
-		}
 	}
 
 	@Override
-	public boolean executeGoal(String goal) {
-		//return engine.executeGoal(goal);
-	synchronized(this){	
+	public  boolean executeGoal(String goal) {
 		Query q = new Query(goal);
 		return q.hasSolution();
 	}
 
-		
+	@Override
+	public synchronized Object registerPushNotification(EtalisEventListener listener) {
+			return engine.registerPushNotification(listener);	
 	}
 
 	@Override
-	public Object registerPushNotification(EtalisEventListener listener) {
-		synchronized (this) {
-			return engine.registerPushNotification(listener);
-		}	
-	}
-
-	@Override
-	public void unregisterPushNotification(EtalisEventListener listener) {
-		synchronized (this) {
+	public synchronized void unregisterPushNotification(EtalisEventListener listener) {
 			engine.unregisterPushNotification(listener);
-		}
 	}
 
 
 	@Override
-	public void shutdown() {
+	public synchronized void shutdown() {
 		engine.shutdown();
 		
 		//It is not possible to shutdown completly. We will clean up the database.
@@ -94,14 +81,12 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	}
 
 	@Override
-	public void addOutputListener(EngineOutputListener listener) {
-		synchronized (this) {
+	public synchronized void addOutputListener(EngineOutputListener listener) {
 			engine.addOutputListener(listener);
-		}
 	}
 
 	@Override
-	public String getName() {
+	public synchronized String getName() {
 		return engine.getName();
 	}
 
@@ -132,16 +117,13 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	
 	
 	@Override
-	public boolean consult(String file) {
+	public synchronized boolean consult(String file) {
 	    Query consult_query =
 	            new Query(
 	                "consult",
 	                new Term[] {new Atom(file)}
 	            );
-	    synchronized (this) {
 	    	return consult_query.hasSolution();
-		}
-		
 	}
 
 	@Override

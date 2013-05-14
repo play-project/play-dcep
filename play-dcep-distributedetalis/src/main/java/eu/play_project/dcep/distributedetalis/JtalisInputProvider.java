@@ -66,6 +66,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 		}
 		
 		try {
+			//Thread.sleep(100);
 			// Add RDF payload to Prolog:
 			semWebLib.addEvent(event);
 			// Trigger event in ETALIS:
