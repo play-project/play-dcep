@@ -23,7 +23,7 @@ Benchmark SRBench
 
 
 |				| Q1	| Q2	| Q3	| Q4	| Q5	| Q6	| Q7	| Q8	| Q9	| Q10	| Q11	| Q12	| Q13	| Q14	| Q15	| Q16	| Q17	|
-| ---			| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	| ---	|
+| ---:			| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	| :---:	|
 |SPARQLStream	| ✓		| PP	| A		| G		| G		| ✓		| ✓		| G		| G,IF	| SD	| SD	| PP,SD	| PP,SD	| PP,SD	| PP,SD	| PP,SD	| PP,SD	|
 |CQELS			| ✓		| PP	| A		| ✓		| ✓		| ✓		| D/N	| ✓		| IF	| ✓		| ✓		| PP	| PP	| PP	| PP	| PP	| PP	|
 |C-SPARQL		| ✓		| PP	| A		| ✓		| ✓		| ✓		| D		| ✓		| IF	| ✓		| ✓		| PP	| PP	| PP	| PP	| PP	| PP	|
@@ -52,9 +52,8 @@ Special implementation remarks for BDPL:
 - (10) enhancement: implement BDPL `REGEX` to be more powerful than the current BDPL `fn:contains`
 
 Slash `/` means "or", either feature would be sufficient for the query to be sopported
+
 Comma `,` means "and", all listed features must be supported for the query to work
-
-
 
 
 References
@@ -65,3 +64,4 @@ References
 
 ### BDPL
 - Stojanovic, N.; Stühmer, R.; Gibert, P. & Baude, F. (2012), Tutorial: Where Event Processing Grand Challenge meets Real-time Web: PLAY Event Marketplace, in 'Proceedings of the 6th ACM International Conference on Distributed Event-Based Systems'.
+- https://github.com/play-project/play-dcep/tree/master/play-platformservices-bdpl
