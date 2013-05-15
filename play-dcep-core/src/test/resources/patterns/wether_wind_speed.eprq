@@ -22,5 +22,5 @@ WHERE {
 				om-owl:result [ om-owl:floatValue ?value ].
 			?e1 :endTime ?time
 			}
-	} ("PT1M"^^xsd:duration, sliding)
+	} ("PT5S"^^xsd:duration, sliding)
 }HAVING (AVG(?value) >= "5"^^xsd:float )

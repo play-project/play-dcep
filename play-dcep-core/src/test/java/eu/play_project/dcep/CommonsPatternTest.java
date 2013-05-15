@@ -161,6 +161,12 @@ public class CommonsPatternTest {
 		}
 }
 
+	/**
+	 * Aggregate values in time-window. 
+	 * A complex event is created if the average value is >=5 in a 5s window. 
+	 * Event e1,e2,e3 are in window w1 and the average is > 5. 
+	 * For event e4 the average is < 5, because e1 is out of window.
+	 */
 	@Test
 	public void AggregateAverageWindSpeedTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, InterruptedException{
 		String queryString;
@@ -171,7 +177,7 @@ public class CommonsPatternTest {
 		queryString = getSparqlQueries("patterns/wether_wind_speed.eprq");
 
 		// Compile query
-		String hh = queryDispatchApi.registerQuery("example", queryString);
+		queryDispatchApi.registerQuery("example", queryString);
 		
 		
 		//Subscribe to get complex events.
@@ -188,28 +194,19 @@ public class CommonsPatternTest {
 		
 		
 		logger.info("Publish evetns");
-		for (int i = 0; i < 6; i++) {
-			CompoundEvent event = createWeatherEvent("example1" + Math.random());
-			logger.fine("Publish event" +  event);
-			System.out.println(event);
-			testApi.publish(event);
-		}
-		//Thread.sleep(100);
-		for (int i = 0; i < 1; i++) {
-			CompoundEvent event = createWeatherEvent("example1" + Math.random());
-			logger.fine("Publish event" +  event);
-			System.out.println(event);
-			testApi.publish(event);
-		}
 
-
+		testApi.publish(createWeatherEvent("example1" + Math.random(), 20)); // e1 start window w1.
+		testApi.publish(createWeatherEvent("example1" + Math.random(), 1));  // e2
+		Thread.sleep(3000);													 // wait 3s
+		testApi.publish(createWeatherEvent("example1" + Math.random(), 1));  // e3
+		Thread.sleep(2000);													 // wait 2s
+		testApi.publish(createWeatherEvent("example1" + Math.random(), 1));  // e4 is out of window w1.
+	
+		
 		// Wait
 		delay();
-		delay();
-		delay();
-
-		System.out.println(subscriber.getComplexEvents().size());
-		assertTrue(subscriber.getComplexEvents().size()==9);
+System.out.println(subscriber.getComplexEvents().size());
+		assertTrue(subscriber.getComplexEvents().size()==3);
 		
 		// Stop and terminate GCM Components
 		try {
@@ -288,7 +285,7 @@ public class CommonsPatternTest {
 		}
 	}
 	
-	public static CompoundEvent createWeatherEvent(String eventId) {
+	public static CompoundEvent createWeatherEvent(String eventId, double value) {
 
 		LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 
@@ -325,7 +322,7 @@ public class CommonsPatternTest {
 						+ eventId),
 				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"),
 				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
-				Node.createURI("5.0"));
+				Node.createURI(value + ""));
 
 //		Quadruple q7 = new Quadruple(
 //				Node.createURI("http://events.event-processing.org/eventId/"
