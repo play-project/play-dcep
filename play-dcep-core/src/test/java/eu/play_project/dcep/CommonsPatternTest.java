@@ -169,7 +169,7 @@ public class CommonsPatternTest {
 
 		// Get query.
 		queryString = getSparqlQueries("patterns/wether_wind_speed.eprq");
-System.out.println(queryString);
+
 		// Compile query
 		String hh = queryDispatchApi.registerQuery("example", queryString);
 		
@@ -188,7 +188,7 @@ System.out.println(queryString);
 		
 		
 		logger.info("Publish evetns");
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 6; i++) {
 			CompoundEvent event = createWeatherEvent("example1" + Math.random());
 			logger.fine("Publish event" +  event);
 			System.out.println(event);
@@ -208,7 +208,7 @@ System.out.println(queryString);
 		delay();
 		delay();
 
-System.out.println(subscriber.getComplexEvents().size());
+		System.out.println(subscriber.getComplexEvents().size());
 		assertTrue(subscriber.getComplexEvents().size()==9);
 		
 		// Stop and terminate GCM Components
