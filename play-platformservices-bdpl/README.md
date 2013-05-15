@@ -27,7 +27,7 @@ Benchmark SRBench
 |SPARQLStream	| ✓		| PP	| A		| G		| G		| ✓		| ✓		| G		| G,IF	| SD	| SD	| PP,SD	| PP,SD	| PP,SD	| PP,SD	| PP,SD	| PP,SD	|
 |CQELS			| ✓		| PP	| A		| ✓		| ✓		| ✓		| D/N	| ✓		| IF	| ✓		| ✓		| PP	| PP	| PP	| PP	| PP	| PP	|
 |C-SPARQL		| ✓		| PP	| A		| ✓		| ✓		| ✓		| D		| ✓		| IF	| ✓		| ✓		| PP	| PP	| PP	| PP	| PP	| PP	|
-|BDPL			| ✓		| ✓(1,2)| A		| SM(3)	| ✓		| ✓(4)	| N(5)	| SM	| SM	| ✓		| ✓	(6)	| PP,SM	| ✓(7,8)| ✓(9, 10)| ✓	| ✓		| ✓	(9)	|
+|BDPL			| ✓		| ✓(1,2)| A		| SM(3)	| ✓		| ✓(4)	| N(5)	| SM	| SM	| ✓		| ✓(6)	| PP,SM	| ✓(7,8)| ✓(9, 10)| ✓	| ✓		| ✓	(9)	|
 
 Not supported by a particular system:
 - **A:** Ask query form
