@@ -46,7 +46,7 @@
 						</goals>
 						<configuration>
 							<includes>
-								<include>**/*sparql_11_BDPL-jena-arq-2.9.4.jj</include>
+								<include>**/*sparql_11_BDPL-jena-arq-2.10.1.jj</include>
 							</includes>
 						</configuration>
 					</execution>
