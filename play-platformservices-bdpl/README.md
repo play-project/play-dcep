@@ -51,7 +51,7 @@ Special implementation remarks for BDPL:
 - (5) operator NOT is implemented in underlying ETALIS, must be included in BDPL
 - (6) subselect can be replaced by BDPL `SEQ`-operator here
 - (7) disjunctive property path replaced by BDPL `OR`-operator here
-- (8) propery path in historical part are allowed in BDPL, we have higher expressivity here thanks to federation of queries
+- (8) property paths in historical part are allowed in BDPL, we have higher expressivity here thanks to federation of queries
 - (9) enhancement: fetching historic data first (using planned BDPL feature `CONTEXT`) 
 - (10) enhancement: implement BDPL `REGEX` to be more powerful than the current BDPL `fn:contains`
 
