@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
-import com.hp.hpl.jena.sparql.syntax.ElementFetch;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementFnAbsFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
@@ -224,11 +223,7 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 		logger.info("GenericVisitor visit: " + el.getClass().getName());
 		
 	}
-	@Override
-	public void visit(ElementFetch el) {
-		logger.info("GenericVisitor visit: " + el.getClass().getName());
-		
-	}
+
 	@Override
 	public void visit(ElementSubQuery el) {
 		logger.info("GenericVisitor visit: " + el.getClass().getName());
