@@ -38,7 +38,7 @@ setLastInsertedEvent(Id):-
 collectGarbage(ID) :- 
 (
 	referenceCounter(ID,_ID2 ,X),
-	 X == 1, 
+	 X == 0, 
 	 rdf_retractall(_S,_P,_O,ID), 
 	 retractall(referenceCounter(ID, _ID2, X))
 	 ; 
