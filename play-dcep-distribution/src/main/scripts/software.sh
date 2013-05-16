@@ -2,7 +2,7 @@
 #Scipt to install requierd software to run PLAY cep-components on a Debian machine.
 
 TOOL_URL=https://raw.github.com/play-project/play-dcep/master/play-dcep-distribution/src/main/scripts
-PROLOG_SRC_URL=http://heanet.dl.sourceforge.net/project/portableapps/Source/SWI-Prolog/
+PROLOG_SRC_URL=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play/
 INSTALL_DIR=/opt/play/
 IPv6_PREFIX=2001:6f8:100d:b::
 
