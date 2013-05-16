@@ -605,21 +605,6 @@ Element GroupGraphPattern() : { Element el = null ; Token t ; }
     { return el ; }
 }
 
-// PLAY GroupGraphPattern() without braces.
-// ---- General Graph Pattern 
-Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
-{
-  (
-    { startSubSelect(t.beginLine, t.beginColumn) ; }
-    SubSelect()
-    {
-      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
-      el = new ElementSubQuery(q) ;
-    }
-  | el = GroupGraphPatternSub()
-  )
-    { return el ; }
-}
 Element GroupGraphPatternSub() : { Element el = null ; }
 {
       { ElementGroup elg = new ElementGroup() ; }
@@ -2097,4 +2082,21 @@ Element PLAYGraphGraphPattern() :
   {
     return new ElementNamedGraph(n, el);
   }
+}
+
+// PLAY GroupGraphPattern() without braces.
+// ---- General Graph Pattern 
+Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
+{
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
+  (
+    { startSubSelect(beginLine, beginColumn) ; }
+    SubSelect()
+    {
+      Query q = endSubSelect(beginLine, beginColumn) ;
+      el = new ElementSubQuery(q) ;
+    }
+  | el = GroupGraphPatternSub()
+  )
+    { return el ; }
 }
