@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.event_processing.events.types.Event;
-import org.ontoware.rdf2go.impl.jena29.TypeConversion;
+import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

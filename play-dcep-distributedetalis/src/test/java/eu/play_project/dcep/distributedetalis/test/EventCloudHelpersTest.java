@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.event_processing.events.types.Event;
 import org.junit.Test;
-import org.ontoware.rdf2go.impl.jena29.TypeConversion;
+import org.ontoware.rdf2go.impl.jena.TypeConversion;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.vocabulary.RDF;

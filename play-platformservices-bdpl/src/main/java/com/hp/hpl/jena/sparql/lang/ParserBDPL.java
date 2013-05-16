@@ -3,7 +3,7 @@ package com.hp.hpl.jena.sparql.lang;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.openjena.atlas.logging.Log;
+import org.apache.jena.atlas.logging.Log;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
@@ -79,7 +79,7 @@ public class ParserBDPL extends ParserSPARQL11{
 	            action.exec(parser) ;
 	        }
 	        catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
-	        { 
+	        {
 	            throw new QueryParseException(ex.getMessage(),
 	                                          ex.currentToken.beginLine,
 	                                          ex.currentToken.beginColumn

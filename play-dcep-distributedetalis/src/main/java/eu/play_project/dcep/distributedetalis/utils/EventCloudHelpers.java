@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.event_processing.events.types.Event;
-import org.ontoware.rdf2go.impl.jena29.TypeConversion;
+import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.node.Node;

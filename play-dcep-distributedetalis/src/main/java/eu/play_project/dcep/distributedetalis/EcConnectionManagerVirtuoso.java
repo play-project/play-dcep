@@ -15,7 +15,7 @@ import java.util.Properties;
 
 import javax.xml.namespace.QName;
 
-import org.ontoware.rdf2go.impl.jena29.TypeConversion;
+import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.petalslink.dsb.commons.service.api.Service;
 import org.petalslink.dsb.notification.commons.NotificationException;
 import org.petalslink.dsb.notification.service.NotificationConsumerService;

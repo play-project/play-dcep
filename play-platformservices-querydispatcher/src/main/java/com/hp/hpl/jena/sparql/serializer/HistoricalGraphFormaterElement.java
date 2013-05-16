@@ -3,8 +3,8 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openjena.atlas.io.IndentedLineBuffer;
-import org.openjena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
 
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
@@ -27,7 +27,7 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 	    {
 
 	    	//PLAY: Replace output buffer temporally to get one graph only
-	    	IndentedWriter original = super.out; 	
+	    	IndentedWriter original = super.out;
 	    	
 	    	super.out = new IndentedLineBuffer();
 	    	
@@ -42,7 +42,7 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 	        if(historicalCloudQueries.containsKey(DetectCloudId.getCloudId())){
 	        	historicalCloudQueries.put(DetectCloudId.getCloudId(), historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());
 	        }else{
-		        historicalCloudQueries.put(DetectCloudId.getCloudId(), out.toString());      	
+		        historicalCloudQueries.put(DetectCloudId.getCloudId(), out.toString());
 	        }
 	        
 	        //Continue with old buffer.

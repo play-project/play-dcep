@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.openjena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode;

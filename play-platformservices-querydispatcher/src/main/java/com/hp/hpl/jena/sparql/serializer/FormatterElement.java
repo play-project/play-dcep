@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.openjena.atlas.io.IndentedLineBuffer;
-import org.openjena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -43,7 +43,6 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
-import com.hp.hpl.jena.sparql.syntax.ElementFetch;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementFnAbsFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
@@ -63,7 +62,7 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 public class FormatterElement extends FormatterBase
     implements ElementVisitor
 {
-    public static final int INDENT = 2 ; 
+    public static final int INDENT = 2 ;
     
     /** Control whether to show triple pattern boundaries - creates extra nesting */
     public static final boolean PATTERN_MARKERS = false ;
@@ -83,8 +82,8 @@ public class FormatterElement extends FormatterBase
     /** Control whether disjunction has set of delimiters - as it's a group usually, these aren't needed */
     public static final boolean UNION_MARKERS = false ;
     
-    /** Control whether a group of one is unnested - changes the query syntax tree */ 
-    public static final boolean GROUP_UNNEST_ONE = false ; 
+    /** Control whether a group of one is unnested - changes the query syntax tree */
+    public static final boolean GROUP_UNNEST_ONE = false ;
 
     /** Control whether GRAPH indents in a fixed way or based on the layout size */
     public static final boolean GRAPH_FIXED_INDENT = true ;
@@ -97,7 +96,7 @@ public class FormatterElement extends FormatterBase
     
     // Less than this => rest of triple on the same line
     // Could be smart and make it depend on the property length as well.  Later.
-    public static final int TRIPLES_SUBJECT_LONG = 12 ;     
+    public static final int TRIPLES_SUBJECT_LONG = 12 ;
 
     public static final int TRIPLES_PROPERTY_COLUMN = 20;
     
@@ -192,7 +191,7 @@ public class FormatterElement extends FormatterBase
 //                    if ( ! first )
 //                        out.newline() ;
 //                    out.print("FROM <") ;
-//                    String s = (String)iter.next() ; 
+//                    String s = (String)iter.next() ;
 //                    out.print(s) ;
 //                    out.print(">") ;
 //                }
@@ -329,7 +328,7 @@ public class FormatterElement extends FormatterBase
         out.print("{") ;
         out.incIndent(INDENT) ;
         if ( GROUP_FIRST_ON_SAME_LINE )
-            out.newline() ;  
+            out.newline() ;
         
         int row1 = out.getRow() ;
         out.pad() ;
@@ -344,7 +343,7 @@ public class FormatterElement extends FormatterBase
                 // Need to move on after the last thing printed.
                 if ( GROUP_SEP_DOT )
                     out.print(" . ") ;
-                out.newline() ;    
+                out.newline() ;
             }
             subElement.visit(this) ;
             first = false ;
@@ -485,7 +484,7 @@ public class FormatterElement extends FormatterBase
 
     public void visitAsGroup(Element el)
     {
-        boolean needBraces = ! ( ( el instanceof ElementGroup ) || ( el instanceof ElementSubQuery ) ) ; 
+        boolean needBraces = ! ( ( el instanceof ElementGroup ) || ( el instanceof ElementSubQuery ) ) ;
         
         if ( needBraces )
         {
@@ -517,7 +516,7 @@ public class FormatterElement extends FormatterBase
             return ;
         }
         
-        // TODO RDF Collections - spot the parsers pattern 
+        // TODO RDF Collections - spot the parsers pattern
         if ( triples.isEmpty() )
             return ;
 
@@ -528,7 +527,7 @@ public class FormatterElement extends FormatterBase
             predicateWidth = TRIPLES_PROPERTY_COLUMN ;
         
         // Loops:
-        List<Triple> subjAcc = new ArrayList<Triple>() ;    // Accumulate all triples with the same subject.  
+        List<Triple> subjAcc = new ArrayList<Triple>() ;    // Accumulate all triples with the same subject.
         Node subj = null ;                  // Subject being accumulated
         
         boolean first = true ;             // Print newlines between blocks.
@@ -575,7 +574,7 @@ public class FormatterElement extends FormatterBase
         
         // Do the first triple.
         Iterator<Triple> iter = triples.iterator() ;
-        Triple t1 = iter.next() ; 
+        Triple t1 = iter.next() ;
 
 //        int indent = TRIPLES_SUBJECT_COLUMN+TRIPLES_COLUMN_GAP ;
 //        // Long subject => same line.  Works for single triple as well.
@@ -649,7 +648,7 @@ public class FormatterElement extends FormatterBase
         out.print(str) ;
         //out.pad(TRIPLES_SUBJECT_COLUMN) ;
         out.pad(subjectWidth) ;
-        return str.length() ; 
+        return str.length() ;
     }
 
     // Assumes the indent is TRIPLES_SUBJECT_COLUMN+GAP
@@ -659,7 +658,7 @@ public class FormatterElement extends FormatterBase
         out.print(str) ;
         //out.pad(TRIPLES_PROPERTY_COLUMN) ;
         out.pad(predicateWidth) ;
-        return str.length() ; 
+        return str.length() ;
     }
     
     protected int printObject(Node obj)
@@ -669,7 +668,7 @@ public class FormatterElement extends FormatterBase
     
     protected int printNoCol(Node node)
     {
-        String str = slotToString(node) ; 
+        String str = slotToString(node) ;
         out.print(str) ;
         return str.length() ;
         

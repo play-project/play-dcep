@@ -20,9 +20,9 @@ package com.hp.hpl.jena.sparql.serializer;
 
 import java.io.OutputStream;
 
-import org.openjena.atlas.io.IndentedLineBuffer;
-import org.openjena.atlas.io.IndentedWriter;
-import org.openjena.atlas.logging.Log;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.logging.Log;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.Syntax;
@@ -155,7 +155,7 @@ public class Serializer
         // For the construct pattern
         SerializationContext cxt2 = new SerializationContext(query, new NodeToLabelMapBNode("c", false)  ) ;
         
-        serializeARQ(query, writer, 
+        serializeARQ(query, writer,
                      new FormatterElement(writer, cxt1),
                      new FmtExprSPARQL(writer, cxt1),
                      new FmtTemplate(writer, cxt2)) ;
@@ -169,14 +169,14 @@ public class Serializer
         // For the construct pattern
         SerializationContext cxt2 = new SerializationContext(query, new NodeToLabelMapBNode("c", false)  ) ;
         
-        serializeARQ(query, writer, 
+        serializeARQ(query, writer,
                      new FormatterElement(writer, cxt1),
                      new FmtExprSPARQL(writer, cxt1),
                      new FmtTemplate(writer, cxt2)) ;
     }
     
-    protected static void serializeARQ(Query query, 
-                                     IndentedWriter writer, 
+    protected static void serializeARQ(Query query,
+                                     IndentedWriter writer,
                                      FormatterElement eltFmt,
                                      FmtExprSPARQL    exprFmt,
                                      FormatterTemplate templateFmt)
