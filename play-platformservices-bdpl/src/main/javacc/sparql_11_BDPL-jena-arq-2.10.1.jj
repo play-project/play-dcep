@@ -1917,27 +1917,17 @@ TOKEN:
 
 // PLAY extensions
 // Stefan
-Element EventGraphPattern() :
+Element EventGraphPattern() :{ Element el; Node n;}
 {
-  Element el;
-  Node n;
-}
-{
-  {
-    ElementGroup elg = new ElementGroup();
-  }
-  {
-    startGroup(elg);
-  }
-  n = 	VarOrIri() < LBRACE >
-  {
-    startTriplesBlock();
-  }
-  el = TriplesBlock(null)
-  {
-    endTriplesBlock();
-    elg.addElement(el);
-  }
+  {ElementGroup elg = new ElementGroup();}
+  {startGroup(elg);}
+  
+  n = 	VarOrIri()
+  < LBRACE >
+  	{startTriplesBlock();}
+  	el = TriplesBlock(null)
+  	{endTriplesBlock();
+  	elg.addElement(el);}
   < RBRACE >
   
   {

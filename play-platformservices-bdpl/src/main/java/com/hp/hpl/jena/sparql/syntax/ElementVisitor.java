@@ -26,7 +26,6 @@ public interface ElementVisitor
     public void visit(ElementNotExists el) ;
     public void visit(ElementMinus el) ;
     public void visit(ElementService el) ;
-    public void visit(ElementFetch el) ;
     public void visit(ElementSubQuery el) ;
 	
     public void visit(RelationalOperator relationalOperator) ;
