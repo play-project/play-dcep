@@ -2,6 +2,7 @@
 #Scipt to install requierd software to run PLAY cep-components on a Debian machine.
 
 TOOL_URL=https://raw.github.com/play-project/play-dcep/master/play-dcep-distribution/src/main/scripts
+PROLOG_SRC_URL=http://heanet.dl.sourceforge.net/project/portableapps/Source/SWI-Prolog/
 INSTALL_DIR=/opt/play/
 IPv6_PREFIX=2001:6f8:100d:b::
 
@@ -25,7 +26,7 @@ installCEP_Engine(){
 
 	# Compile and install SWI-Prolog
 	cd /tmp/
-	wget $TOOL_URL/pl-5.10.2.tar.gz
+	wget $PROLOG_SRC_URL/pl-5.10.2.tar.gz
 	tar -xzf pl-5.10.2.tar.gz
 	cd pl-5.10.2
 	./build.templ
