@@ -2044,49 +2044,13 @@ Element EpSparqlFilter() :
 }
 
 
-
-
-Element SeqClause() :
-{
-  Element el = null;
-}
-{
-  < LBRACE > el = GroupGraphPattern()
-  {
-    getQuery().setQueryPattern(el);
-  }
-  < RBRACE >
-  {
-    return el;
-  }
-}
-
 // http://research.petalslink.org/display/play/SPARQL+Expressivity
-Element PLAYGraphGraphPattern() :
-{
-  Element el;
-  Node n;
-}
-{
-  < GRAPH > n = Var() el = GroupGraphPattern()
-  {
-    return new ElementNamedGraph(n, el);
-  }
-}
 
-// PLAY GroupGraphPattern() without braces.
+// BDPL GroupGraphPattern() without braces.
 // ---- General Graph Pattern 
 Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
 {
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
-  (
-    { startSubSelect(beginLine, beginColumn) ; }
-    SubSelect()
-    {
-      Query q = endSubSelect(beginLine, beginColumn) ;
-      el = new ElementSubQuery(q) ;
-    }
-  | el = GroupGraphPatternSub()
-  )
+   el = GroupGraphPatternSub()
     { return el ; }
 }
