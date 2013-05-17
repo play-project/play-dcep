@@ -36,7 +36,7 @@ public class EventProducerThread implements Runnable {
 		this.numberOfEvents = numberOfEvents;
 		this.delay =  delay;
 		
-		meausrementUnit = new MeasurementUnit();
+		meausrementUnit = MeasurementUnit.getMeasurementUnit();
 		meausrementUnit.calcRateForNEvents(500);
 		
 		thisThread = new Thread(this);
@@ -53,7 +53,7 @@ public class EventProducerThread implements Runnable {
 
 			// Distibute events in Round-robin fashon to all CEP-Engines.
 			for (int j = 0; j < testApi.length; j++) {
-				testApi[j].publish(createEvent("http://example.com/eventId/" + Math.random()));
+				testApi[j].publish(createEvent("http://example.com/eventId/" + i));
 				
 				// Some statistics
 				meausrementUnit.nexEvent();

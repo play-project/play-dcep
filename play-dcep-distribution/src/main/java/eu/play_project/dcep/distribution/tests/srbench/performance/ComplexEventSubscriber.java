@@ -19,7 +19,7 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 	@Override
 	public void publish(CompoundEvent event) {
 		if(mu==null){
-			mu = new MeasurementUnit();
+			mu = MeasurementUnit.getMeasurementUnit();
 			mu.calcRateForNEvents(500);
 		}
 		//mu.nexEvent();

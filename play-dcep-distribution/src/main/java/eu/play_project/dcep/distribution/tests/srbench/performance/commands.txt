@@ -6,3 +6,5 @@
   ./publisher.sh detalis1.dcep.s-node.de dEtalis1 detalis2.dcep.s-node.de dEtalis1
 #Start subscriber
   ./subscriber.sh detalis1.dcep.s-node.de dEtalis1 detalis2.dcep.s-node.de dEtalis1
+  
+  

@@ -186,6 +186,10 @@
 					<artifactId>slf4j-log4j12</artifactId>
 					<groupId>org.slf4j</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>jena-core</artifactId>
+					<groupId>org.apache.jena</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>

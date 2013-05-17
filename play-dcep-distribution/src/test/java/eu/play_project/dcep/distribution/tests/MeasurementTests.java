@@ -9,7 +9,7 @@ public class MeasurementTests {
 	
 	@Test
 	public void runMeasuremntMethod(){
-		MeasurementUnit m = new MeasurementUnit();
+		MeasurementUnit m = MeasurementUnit.getMeasurementUnit();
 		
 		m.calcRateForNEvents(10);
 		
