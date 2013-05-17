@@ -32,6 +32,24 @@ printRdfStat :-
 	nl
 .
 
+% Print reference counters.
+printReferenceCounters :-
+(
+	forall(
+	  referenceCounter(ID1, ID2, V),
+	  (
+	    write('referenceCounter('),
+	    write(ID1),
+	    write(', '),
+	    write(ID2),
+	    write(', '),
+	    write(V),
+	    write(')'),
+	    nl
+	  )	
+	)
+).
+
 % Helpers
 %---------
 
