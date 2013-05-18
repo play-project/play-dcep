@@ -3,6 +3,7 @@ package eu.play_project.dcep.distributedetalis;
 import java.util.Hashtable;
 
 import jpl.Atom;
+import jpl.JPL;
 import jpl.Query;
 import jpl.Term;
 
@@ -39,7 +40,6 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 
 	public synchronized Hashtable<String, Object>[] execute(String command) {
 		Hashtable<String, Object>[] result;
-		
 		// Get data from triplestore
 		Query q = new Query(command);
 			// Possibly faster and thread safe.
@@ -47,10 +47,18 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 		//q.close();
 		return result;
 	}
-	
+	int i =0;
 	@Override
 	public synchronized boolean execute(com.jtalis.core.plengine.logic.Term term) {
+		try{
 			return engine.execute(term);
+		}catch(Exception e){
+			i++;
+			
+			System.out.println("\n\n\n\n\n\n\n\n " + i);
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	@Override

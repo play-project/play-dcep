@@ -87,8 +87,11 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	private boolean addPayloadToPlTriplestore(String prologString){
 		try{
 			boolean result = ctx.getEngineWrapper().executeGoal(prologString);
-			ctx.getEngineWrapper().executeGoal("printRdfStat");
-			ctx.getEngineWrapper().executeGoal("printNumberOfEvents");
+//			ctx.getEngineWrapper().executeGoal("printRdfStat");
+//			ctx.getEngineWrapper().executeGoal("printNumberOfEvents");
+//			ctx.getEngineWrapper().executeGoal("printRefCountN");
+//			ctx.getEngineWrapper().executeGoal("printReferenceCounters");
+			
 			return result;
 		}catch (PrologException e) {
 			if(e.getMessage().contains("error(permission_error(write, rdf_db, default)")){
