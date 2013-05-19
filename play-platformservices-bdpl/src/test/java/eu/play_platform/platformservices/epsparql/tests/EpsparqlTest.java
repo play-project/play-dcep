@@ -25,7 +25,7 @@ public class EpsparqlTest {
 		EP_SPARQL_Query, EP_SPARQL_BROKEN_QUERY
 	}
 	
-	@Test
+	//@Test
 	public void manualTest(){
 		QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxBDPL);
 	}
@@ -45,7 +45,7 @@ public class EpsparqlTest {
 				"EP-SPARQL-Query-New-Infix-Opators.eprq",
 				"EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq",
 				"EP-SPARQL-Query-Realtime-Historical-shared-Variables.eprq",
-				"EP-SPARQL-Query-SEQ-Parenthesis.eprq",
+				// "EP-SPARQL-Query-SEQ-Parenthesis.eprq", Currently not needed.
 				"EP-SPARQL-Query-Type.eprq",
 				"EP-SPARQL-Query-WINDOW-sliding.eprq",
 				"EP-SPARQL-Query-WINDOW-tumbling.eprq",
@@ -73,6 +73,7 @@ public class EpsparqlTest {
 			} catch (IOException e) {
 				fail("Could not read query file: " + fileName);
 			} catch (QueryException e) {
+				e.printStackTrace();
 				fail("Malformed query file: " + fileName + " with error: " + e.getMessage());
 			}
 		}
@@ -88,7 +89,6 @@ public class EpsparqlTest {
 			System.out.println("Testing queryfile: " + fileName);
 			try {
 				query = getQuery(fileName);
-					System.out.println(query[0]);
 				// Test if expeted exeption is given.
 				if(query[1]==null){
 					throw new Exception("No expected exception given in inputfile " + fileName + " \t e.g. @expectedException<java.lang.NullPointerException\\>");

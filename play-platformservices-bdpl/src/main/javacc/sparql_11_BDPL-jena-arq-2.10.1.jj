@@ -259,23 +259,28 @@ String SourceSelector() : { String iri ; }
   iri = iri() { return iri ; }
 }
 // Modified whereClause for ep-sparql Stefan
-void WhereClause() : { Element el ; Token t ; Update up ; Expr testExp; Window win; }
+void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testExp; Window win; }
 {
-   (<WHERE>)? t = <LBRACE>
+   (<WHERE>)?
+   th = <LBRACE> //Historical part needs this value.
 	(
 	  //Realtime query with window.
-	   < BEGIN_WINDOW > <LBRACE>
-	   		< EVENT > E()
-		<RBRACE> t = < WINDOWSIZE > 
-		( < WINDOW_TYPE_SLIDING > {win = new SlidingWindow(t.image);}
-		| < WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(t.image);}
-		) <RPAREN> {getQuery().setWindow(win);}	  
+	   < BEGIN_WINDOW >
+	   		<LBRACE>
+	   			< EVENT > EventClause()
+			<RBRACE>
+		t = < WINDOWSIZE >
+				(
+		  			< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(t.image);}
+				|   < WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(t.image);}
+				)
+			<RPAREN> {getQuery().setWindow(win);}	  
 	|
-		//Realtime query without windows.
-	   < EVENT > E()
+		//Realtime query without window.
+	   < EVENT > EventClause()
 	)
 	// Historical query is optional.
-	WhereClauseH(t)
+	WhereClauseH(th)
 
   <RBRACE>
 }
@@ -1943,15 +1948,18 @@ Element EventGraphPattern() :{ Element el; Node n;}
 }
 
 // Stefan
-Element EventClause() :
+void EventClause() :
 {
   Element el = null;
 }
 {
-  EPSparqlBinOperators() B()
-  {return el;}
+  EventGraphPattern()
+  (EpSparqlFilter())?
+  (EPSparqlBinOperators() < EVENT > EventClause())?
+  //  ((< LBRACE >) (< EVENT >) E() < RBRACE >) % Braces important??
 }
-// Aktuell
+
+
 // Binary operators for EP-SPARQL.
 void EPSparqlBinOperators() :
 {
@@ -1966,14 +1974,12 @@ void EPSparqlBinOperators() :
   | t= < EQUALS >
   | t= < OPTIONALSEQ >
   | t= < EQUALSOPTIONAL >
-  )
+ )
 
   {
   	ElementEventBinOperator tmp = new ElementEventBinOperator(t.image);
 	getQuery().addEventBinOperator(tmp);
-  }
-
-   
+  } 
 }
 
 // EP-SPARQL operators in FILTER expression.
@@ -1987,36 +1993,8 @@ void EPSparqlFilterOperators() :
   )
 }
 
-
-void B() :
-{
-  Element el = null;
-}
-{
-  (
-    (< EVENT > E())
-  |
-    ((< LBRACE >) (< EVENT >) E() < RBRACE >)
-    (EventClause())?
-  )
-}
-
-void E() :
-{
-  Element el = null;
-}
-{
-  EventGraphPattern()
-  (EpSparqlFilter())?
-  (EventClause())?
-}
-
-
 Element EpSparqlFilter() :
 {
-//  Expr c; Token varname; Token string;
-//  Element boolOperator = null;
-//  Expr relationalExpression = null;
 	Element filter = null;
 }
 {
@@ -2026,21 +2004,6 @@ Element EpSparqlFilter() :
   }
 
   {return filter;}
-  
-//  < FILTER >
-//  (
-//    < epContains > (varname =<VAR1> | varname =<VAR2>)"," string = < STRING_LITERAL2 > ")" //c = Constraint()
-//	{ElementXpathContains filtexExp = new ElementXpathContains(); filtexExp.setFilterExp(varname.image, string.image);}
-//
-//		//((ElementEventGraph)getQuery().getEventQuery().get(getQuery().getEventQuery().size()-1)).setFilterExp(filtexExp);} // set filter exp to last EventClause
-// |
-//
-//	relationalExpression = EpExpression()
-// 	  { 
-// 	    ((ElementEventGraph)getQuery().getEventQuery().get(getQuery().getEventQuery().size()-1)).setFilterExp(new ElementEventFilter(relationalExpression));
-// 	  }
-// 	  
-// )
 }
 
 
