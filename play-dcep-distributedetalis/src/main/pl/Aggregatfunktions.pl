@@ -6,6 +6,21 @@
 % @author Stefan Obermeier
 
 
+%% removeOutdatedValues(+ListIn, +WindowSize:int, -ListOut)
+%
+% Remove all elements which are out of window. (To free memory).
+%
+% @param ListIn List of aggregateValue data structure. (aggregatDb(Id,List))
+% @param WindowSize window size in ms.
+% @param ListOut updated list.
+removeOutdatedValues(ListIn, WindowSize, ListOut) :-
+(
+	get_time(Time),
+	removeOutdatedValuesImp(ListIn, ListIn, WindowSize, Time, ListOut)
+).
+
+
+
 
 %% storeMaxT(+ID, +Value:int)
 %
@@ -113,8 +128,10 @@ calcAverage(Id, WindowSize, Avg) :-
 calcAverage(Id, WindowSize, Time, Avg) :- 
 (
 	aggregatDb(Id,List),
-	calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg) %Calc avg recursivly
-	%retractall(aggregatDb(Id, _Dc))  
+	calcAvgIter(List, Id, (Time-WindowSize), 0, 0, Avg), %Calc avg recursivly
+	removeOutdatedValues(List, WindowSize, UpdatedList), %Clean up.
+	retractall(aggregatDb(Id, _Dc)),
+	assert(aggregatDb(Id, UpdatedList))  
 ).
 
 % Delete all aggregate DB data for given Id.
@@ -175,7 +192,7 @@ putInList([],Left,Element, Result) :-
 ). 
 
 % Search place for Element.
-putInList([H|T],LeftBuffer, Element, Result) :- 
+putInList([H|T], LeftBuffer, Element, Result) :- 
 (
 	getTimeAndValue(H,TimeExistingElement, _),
 	getTimeAndValue(Element,TimeNewElement, _),
@@ -212,6 +229,23 @@ calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :-
 	\+ var(Value),
 	calcAvgIter([], Id, WindowEnd, Sum, N, Result)  % Stop recursion if value is out of window.
 ). 
+
+% Implementation to remove all elements which are out of window.
+removeOutdatedValuesImp([], ListFull,  WindowSize, Time, CleanList) :- 
+(
+	CleanList = ListFull  % No outdated element found.
+).
+
+removeOutdatedValuesImp([H|T], ListFull, WindowSize, Time, CleanList):-
+(
+	getTimeAndValue(H,TimeO, Value),
+	(TimeO >= (Time-WindowSize)) % Check if this element is in window.
+	-> 
+		removeOutdatedValuesImpl(T, ListFull, WindowSize, Time, CleanList)
+	; 
+		subtract(ListFull, [H], New), % Stop recursion and remove all elements which are outdated.
+		subtract(New, T, ListNew)
+).
 
 
 
