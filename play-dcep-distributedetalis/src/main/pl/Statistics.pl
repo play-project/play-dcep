@@ -32,7 +32,7 @@ printRdfStat :-
 	nl
 .
 
-% Print reference counters.
+% Print all reference counters.
 printReferenceCounters :-
 (
 	forall(

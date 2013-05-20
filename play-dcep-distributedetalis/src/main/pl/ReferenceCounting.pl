@@ -5,16 +5,19 @@
 incrementReferenceCounter(ID):- 
 (
 	(
-		referenceCounter(ID, ID2, X), (X == -1) 
+		referenceCounter(ID, ID2, X), (X = -1)
+		 
 	-> 
 		(X2 is X + 2)
 	;
 		(
 			referenceCounter(ID, ID2, X), 
-			X2 is X + 1)
-		), 
+			X2 is X + 1
+		)
+	), 
 	retractall(referenceCounter(ID, ID2, X)),
 	assert(referenceCounter(ID, ID2, X2))
+	%write('increment counter: '), write(X2), write(' ID: '), write(ID), nl
 ).
 
 % Decrement counter for given event id.
@@ -22,6 +25,7 @@ decrementReferenceCounter(ID):-
 (
 	referenceCounter(ID, ID2, X), 
 	X2 is X - 1,
+	%write('decrement counter: '), write(X2), write(' ID: '), write(ID), nl,
 	retractall(referenceCounter(ID, ID2, X)), 
 	assert(referenceCounter(ID, ID2, X2)),
 	collectGarbage(ID)
@@ -37,8 +41,8 @@ setLastInsertedEvent(Id):-
 % Remove elements if counter == 0
 collectGarbage(ID) :- 
 (
-	referenceCounter(ID,_ID2 ,X),
-	 X == 0, 
+	 referenceCounter(ID,_ID2 ,X),
+	 X = 0, 
 	 rdf_retractall(_S,_P,_O,ID), 
 	 retractall(referenceCounter(ID, _ID2, X))
 	 ; 
