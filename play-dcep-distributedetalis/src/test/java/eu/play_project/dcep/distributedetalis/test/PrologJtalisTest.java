@@ -45,7 +45,7 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class PrologJtalisTest {
 	
-	public JtalisContextImpl ctx;
+	private JtalisContextImpl ctx;
 	public static UsePrologSemWebLib prologSemWebLib;
 	public static EtalisEvent result;
 	
@@ -59,10 +59,8 @@ public class PrologJtalisTest {
 		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);
 		
-		
 	//	ctx.getEngineWrapper().executeGoal("reset_ETALIS");
 		Thread.sleep(1000);
-		
 	}
 	
 	
