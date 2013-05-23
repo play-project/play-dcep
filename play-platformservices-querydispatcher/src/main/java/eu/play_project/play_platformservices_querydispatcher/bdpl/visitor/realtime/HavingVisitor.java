@@ -21,7 +21,7 @@ public class HavingVisitor extends GenericVisitor implements ExprVisitor {
 	}
 
 	/**
-	 * Get generated code if something was produced.
+	 * Get generated code.
 	 * @return Generated code.
 	 */
 	public StringBuffer getCode() {

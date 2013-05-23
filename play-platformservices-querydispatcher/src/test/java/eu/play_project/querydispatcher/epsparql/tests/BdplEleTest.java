@@ -1,8 +1,10 @@
 package eu.play_project.querydispatcher.epsparql.tests;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,6 +28,8 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
+import eu.play_project.play_platformservices_querydispatcher.playEleParser.ParseException;
+import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
 
 
 //import eu.play_project.querydispatcher.epsparql.tests.helpers.FilterExpressionCodeGenerator;
@@ -140,7 +144,7 @@ public class BdplEleTest {
 	
 	@Test
 	public void startParser() throws InterruptedException {
-		String queryString = getQuery("EP-SPARQL-Query-HAVING.eprq")[0];
+		String queryString = getQuery("EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
 		//queryString = "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
 		System.out.println(queryString);
 		// Parse query
@@ -156,13 +160,25 @@ public class BdplEleTest {
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
-		System.out.println(etalisPattern);
-		
-	//	assertTrue(testEtalisPatter(etalisPattern));
+
+//		try {
+//			parsEtalisPatter(etalisPattern);
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//			fail("Pars error: " + e.getMessage());
+//		}
 	}
 
 
 	
+	private void parsEtalisPatter(String elePattern) throws ParseException {
+		PlayEleParser parser = new PlayEleParser(new ByteArrayInputStream(elePattern.getBytes()));
+		
+		parser.Start();
+		
+		
+	}
+
 	@Test
 	public void showQdResult(){
 
