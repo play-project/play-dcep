@@ -1,0 +1,1317 @@
+<!--
+	Event types for local unit tests. 
+	First defined here :https://github.com/play-project/play-commons/blob/master/play-commons-eventtypes/src/main/resources/types.n3
+	2013.06.01
+-->
+<rdf:RDF xmlns="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:DUL="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#"
+    xmlns:ais="http://imu.ntua.gr/ais#"
+    xmlns:dbpedia="http://dbpedia.org/resource/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:e="http://events.event-processing.org/ids/"
+    xmlns:esr="http://imu.ntua.gr/play/esr/mcm/2#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+    xmlns:gn="http://www.geonames.org/ontology#"
+    xmlns:log="http://www.w3.org/2000/10/swap/log#"
+    xmlns:mcep="http://mcep.fzi.de/pattern/"
+    xmlns:ngeo="http://geovocab.org/geometry#"
+    xmlns:nissa="http://www.nissatech.rs/ns/types/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfg="http://www.w3.org/2004/03/trix/rdfg-1/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:s="http://streams.event-processing.org/ids/"
+    xmlns:sioc="http://rdfs.org/sioc/ns#"
+    xmlns:spin="http://spinrdf.org/spin#"
+    xmlns:src="http://sources.event-processing.org/ids/"
+    xmlns:uccrisis="http://www.mines-albi.fr/nuclearcrisisevent/"
+    xmlns:uctelco="http://events.event-processing.org/uc/telco/"
+    xmlns:user="http://graph.facebook.com/schema/user#"
+    xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2/"
+    xmlns:xhtml2="http://www.w3.org/2002/06/xhtml2/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+
+    <Class rdf:about="http://docs.oasis-open.org/wsn/b-2/Topic">
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A topic for a topic-based publish/subscribe system. It can be used to access a stream of events.</comment>
+    </Class>
+
+    <AvgTempEvent xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://events.event-processing.org/ids/e1#event">
+        <endTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-08-24T14:42:01.011</endTime>
+        <members rdf:parseType="Resource">
+            <rdf:first rdf:resource="http://events.event-processing.org/ids/e2#event"/>
+            <rdf:rest rdf:parseType="Resource">
+                <rdf:first rdf:resource="http://events.event-processing.org/ids/e3#event"/>
+                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </rdf:rest>
+        </members>
+        <source rdf:resource="http://sources.event-processing.org/ids/NiceWeatherAggregator#source"/>
+        <startTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-08-24T14:40:59.837</startTime>
+        <stream rdf:resource="http://streams.event-processing.org/ids/NiceWeatherStream#stream"/>
+    </AvgTempEvent>
+
+    <TempEvent xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://events.event-processing.org/ids/e2#event">
+        <endTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-08-24T14:40:59.837</endTime>
+        <source rdf:resource="http://sources.event-processing.org/ids/NiceWeatherStation01#source"/>
+        <stream rdf:resource="http://streams.event-processing.org/ids/NiceTempStream#stream"/>
+    </TempEvent>
+
+    <TempEvent xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://events.event-processing.org/ids/e3#event">
+        <endTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2011-08-24T14:42:01.011</endTime>
+        <source rdf:resource="http://sources.event-processing.org/ids/NiceWeatherStation02#source"/>
+        <stream rdf:resource="http://streams.event-processing.org/ids/NiceTempStream#stream"/>
+    </TempEvent>
+
+    <owl:Ontology rdf:about="http://events.event-processing.org/types/">
+        <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Andreas Harth</dc:creator>
+        <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Roland Stühmer</dc:creator>
+        <seeAlso rdf:resource="http://km.aifb.kit.edu/sites/lodstream/"/>
+        <seeAlso rdf:resource="http://www.play-project.eu/"/>
+        <owl:imports rdf:resource="http://purl.org/dc/elements/1.1/"/>
+        <owl:imports rdf:resource="http://rdfs.org/sioc/ns"/>
+        <owl:imports rdf:resource="http://rdfs.org/sioc/ns#"/>
+        <owl:imports rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl"/>
+        <owl:imports rdf:resource="http://www.w3.org/2004/03/trix/rdfg-1/"/>
+        <owl:imports rdf:resource="http://xmlns.com/foaf/0.1/"/>
+        <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.1-SNAPSHOT</owl:versionInfo>
+    </owl:Ontology>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/AisEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+        <subClassOf rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+        <xhtml2:icon rdf:resource="http://www.kinetic.co.uk/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/AvgTempEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/ContextualizedLatitudeEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/Event">
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Something that happens or is contemplated as happening.</comment>
+        <subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/famfam_page_white.png"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/FacebookCepResult">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/FacebookEvent"/>
+        <xhtml2:icon rdf:resource="https://fbstatic-a.akamaihd.net/rsrc.php/yP/r/Ivn-CVe5TGK.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/FacebookEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+        <xhtml2:icon rdf:resource="https://fbstatic-a.akamaihd.net/rsrc.php/yP/r/Ivn-CVe5TGK.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/FacebookStatusFeedEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/FacebookEvent"/>
+        <xhtml2:icon rdf:resource="https://fbstatic-a.akamaihd.net/rsrc.php/yP/r/Ivn-CVe5TGK.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/PachubeEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+        <xhtml2:icon rdf:resource="https://d2npiipx5ecxt9.cloudfront.net/assets/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/ProximityInfoEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/AisEvent"/>
+        <xhtml2:icon rdf:resource="http://www.kinetic.co.uk/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/Source">
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A source of events.</comment>
+        <subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/Stream">
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An unbounded, ordered set of events of the same type, from the same source.</comment>
+        <subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/Telco">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/TempEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/TwitterEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+        <xhtml2:icon rdf:resource="http://twitter.com/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoAnswer">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoAvailability">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoCall">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoClic2Call">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoEsrRecom">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/famfam_comment_yellow.gif"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoGeoLocation">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoOutNetwork">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoPresence">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoSmsCustomerAlert">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoTrafficJam">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/UcTelcoUnexpected">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <xhtml2:icon rdf:resource="http://www.orange.com/extension/orange/design/orangecom/images/favicon.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/types/VesselEvent">
+        <subClassOf rdf:resource="http://events.event-processing.org/types/AisEvent"/>
+        <xhtml2:icon rdf:resource="http://www.kinetic.co.uk/favicon.ico"/>
+    </owl:Class>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/discussionTopic">
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookCepResult"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <Event xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://events.event-processing.org/types/e">
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">This is a dummy individual (an event instance) used as placeholder before a final, unique event ID is known e.g. while assembling CONTRUCT query results internally to DCEP.</rdfs:comment>
+    </Event>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/endTime">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+        <subPropertyOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasEventDate"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/types/eventPattern">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A derived event usually has an event pattern which is responsible for creating it.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/followersCount">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">twitterFollowersCount</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/friend">
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookCepResult"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/friendsCount">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">twitterFriendsCount</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/hashTag">
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">twitterHashTag</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/isRetweet">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">twitterIsRetweet</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/types/location">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An event can have a location, being a point.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">location</label>
+        <range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#Point"/>
+        <subPropertyOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasLocation"/>
+        <subPropertyOf rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#location"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/types/members">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An event can have member events if the event is complex and the participating events should be made explicit.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <range rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+        <subPropertyOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasConstituent"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <rdf:Property rdf:about="http://events.event-processing.org/types/message">
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <domain rdf:resource="http://mcep.fzi.de/pattern/DeployPattern"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </rdf:Property>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/types/rawData">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/PachubeEvent"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/screenName">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/uc/telco/OpenTwitter"/>
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">twitterScreenName</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/types/source">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An event usually has one source.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <range rdf:resource="http://events.event-processing.org/types/Source"/>
+        <subPropertyOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#involvesAgent"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/startTime">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+        <subPropertyOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasEventDate"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/status">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/types/stream">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An event usually belongs to a stream.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/Event"/>
+        <range rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/twitterName">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/types/userMention">
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">twitterUserMention</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:Class rdf:about="http://events.event-processing.org/uc/telco/ComposeMail">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UcTelcoComposeMail</label>
+        <subClassOf rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#Action"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/famfam_icon_email.gif"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/uc/telco/OpenFacebook">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UcTelcoOpenFacebook</label>
+        <subClassOf rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#Action"/>
+        <xhtml2:icon rdf:resource="https://fbstatic-a.akamaihd.net/rsrc.php/yP/r/Ivn-CVe5TGK.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://events.event-processing.org/uc/telco/OpenTwitter">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">UcTelcoOpenTwitter</label>
+        <subClassOf rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#Action"/>
+        <xhtml2:icon rdf:resource="http://twitter.com/favicon.ico"/>
+    </owl:Class>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/ackRequired">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoEsrRecom"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoAckRequired</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/ackResult">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A boolean field stating whether the ack is positive or negative.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAnswer"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoAckResult</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:ObjectProperty rdf:about="http://events.event-processing.org/uc/telco/action">
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Identifying actions to be performed when the recommendation is accepted.  In a single event we could have several actions, all referring to the same human readable message, also included in the event.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoEsrRecom"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoAction</label>
+        <range rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#Action"/>
+    </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/answerRequired">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A boolean field 'Ack with answer required' (the user has to send an Ack saying he followed the recom or not).</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoEsrRecom"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoAnswerRequired</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/calleePhoneNumber">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">String composed of numerical chars only.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoCall"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoClic2Call"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoEsrRecom"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoOutNetwork"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoCalleePhoneNumber</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/callerPhoneNumber">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">String composed of numerical chars only.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoCall"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoClic2Call"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoEsrRecom"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoOutNetwork"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoCallerPhoneNumber</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/customerNumber">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoSmsCustomerAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoCustomerNumber</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/direction">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <dc:desciption rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Specifies whether the (missed) call was incoming or outgoing: 'incoming' or 'outgoing'.</dc:desciption>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoCall"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoDirection</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/uc/telco/mailAddress">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <domain rdf:resource="http://events.event-processing.org/uc/telco/ComposeMail"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoMailAddress</label>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/mailContent">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/uc/telco/ComposeMail"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoMailContent</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/mailSubject">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/uc/telco/ComposeMail"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoMailSubject</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/outOfNetwork">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoOutNetwork"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoOutOfNetwork</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/payloadJamEvent">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoTrafficJam"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoPayloadJamEvent</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/phoneNumber">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">String, composed of numerical chars only. The length is variable. Example: 33000000000</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/ContextualizedLatitudeEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAnswer"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAvailability"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoGeoLocation"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoPresence"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoUnexpected"/>
+        <domain rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#ShowFriendGeolocation"/>
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoPhoneNumber</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/uc/telco/relAction">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Set of actions (HTTP URI) in the recommendation which generated the ack. (Optional, 0:n)</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAnswer"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoRelAction</label>
+    </owl:FunctionalProperty>
+
+    <owl:FunctionalProperty rdf:about="http://events.event-processing.org/uc/telco/relRecommendation">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The URL identifying the RecomEvent which generated the ack.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAnswer"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoRelRecommendation</label>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/relUniqueId">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The uniqueId of the RecomEvent  which generated the ack.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAnswer"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoRelUniqueId</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/sequenceNumber">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoSequenceNumber</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/signalStrength">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoOutNetwork"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoSignalStrength</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/status">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAvailability"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoPresence"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoUnexpected"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoStatus</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/unexpectedMessage">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoUnexpected"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoUnexpectedMessage</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/uniqueId">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoUniqueId</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://events.event-processing.org/uc/telco/userType">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <dc:desciption rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Specifies what type of user created this event: 'Customer' or 'Driver'.</dc:desciption>
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAnswer"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoAvailability"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoPresence"/>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoUnexpected"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ucTelcoUserType</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://graph.facebook.com/schema/user#id">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Telco"/>
+        <domain rdf:resource="http://events.event-processing.org/uc/telco/OpenFacebook"/>
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">facebookId</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://graph.facebook.com/schema/user#link">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">facebookLink</label>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://graph.facebook.com/schema/user#location">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">facebookLocation</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://graph.facebook.com/schema/user#name">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">facebookName</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#MMSI">
+        <domain rdf:resource="http://events.event-processing.org/types/AisEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisMMSI</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#callSign">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisCallSign</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#course">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisCourse</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#distance">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisDistance</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#name">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisName</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#navStatus">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNavStatus</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbyCallSign">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbyCallSign</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbyCourse">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbyCourse</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbyMMSI">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbyMMSI</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbyName">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbyName</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbyShipCargo">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbyShipCargo</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbyShipType">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbyShipType</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbySpeed">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbySpeed</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#nearbyTrueHeading">
+        <domain rdf:resource="http://events.event-processing.org/types/ProximityInfoEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisNearbyTrueHeading</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#shipCargo">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisShipCargo</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#shipType">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisShipType</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#speed">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisSpeed</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#trueHeading">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisTrueHeading</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#windDirection">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisWindDirection</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://imu.ntua.gr/ais#windSpeed">
+        <domain rdf:resource="http://events.event-processing.org/types/VesselEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">aisWindSpeed</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:Class rdf:about="http://imu.ntua.gr/play/esr/mcm/2#Action">
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Action to be recommended by ESR.</comment>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EsrAction</label>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/famfam_comment_yellow.gif"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://imu.ntua.gr/play/esr/mcm/2#ShowFriendGeolocation">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EsrShowFriendGeolocation</label>
+        <subClassOf rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#Action"/>
+        <subClassOf rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#Point"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/famfam_comment_yellow.gif"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://imu.ntua.gr/play/esr/mcm/2#SubscribeTo">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EsrSubscribeTo</label>
+        <subClassOf rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#Action"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/famfam_comment_yellow.gif"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://imu.ntua.gr/play/esr/mcm/2#UnsubscribeFrom">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EsrUnsubscribeFrom</label>
+        <subClassOf rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#Action"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/fam_fam_comment_yellow.gif"/>
+    </owl:Class>
+
+    <owl:FunctionalProperty rdf:about="http://imu.ntua.gr/play/esr/mcm/2#fromStream">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <domain rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#UnsubscribeFrom"/>
+        <range rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:FunctionalProperty rdf:about="http://imu.ntua.gr/play/esr/mcm/2#recommendation">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A link with a unique identifier for each recommendation.</comment>
+        <domain rdf:resource="http://events.event-processing.org/types/UcTelcoEsrRecom"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">esrRecommendation</label>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:FunctionalProperty rdf:about="http://imu.ntua.gr/play/esr/mcm/2#toStream">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <domain rdf:resource="http://imu.ntua.gr/play/esr/mcm/2#SubscribeTo"/>
+        <range rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:Class rdf:about="http://mcep.fzi.de/pattern/DeployPattern">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Manage an event pattern in MCEP.</label>
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+    </owl:Class>
+
+    <rdf:Property rdf:about="http://mcep.fzi.de/pattern/pattern">
+        <domain rdf:resource="http://mcep.fzi.de/pattern/DeployPattern"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mcepPattern</label>
+    </rdf:Property>
+
+    <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/desciption">
+        <domain rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">streamDescription</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://purl.org/dc/elements/1.1/title">
+        <domain rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">streamTitle</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://rdfs.org/sioc/ns#content">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://rdfs.org/sioc/ns#links_to">
+        <domain rdf:resource="http://events.event-processing.org/types/FacebookStatusFeedEvent"/>
+        <domain rdf:resource="http://events.event-processing.org/types/TwitterEvent"/>
+    </owl:DatatypeProperty>
+
+    <Source xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://sources.event-processing.org/ids/Facebook#source">
+    </Source>
+
+    <Source xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://sources.event-processing.org/ids/NiceWeatherAggregator#source">
+    </Source>
+
+    <Source xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://sources.event-processing.org/ids/NiceWeatherStation01#source">
+    </Source>
+
+    <Source xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://sources.event-processing.org/ids/NiceWeatherStation02#source">
+    </Source>
+
+    <Stream xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://streams.event-processing.org/ids/FacebookStatusFeed#stream">
+    </Stream>
+
+    <Stream xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://streams.event-processing.org/ids/NiceTempStream#stream">
+    </Stream>
+
+    <Stream xmlns="http://events.event-processing.org/types/"
+        rdf:about="http://streams.event-processing.org/ids/NiceWeatherStream#stream">
+    </Stream>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/ActivityEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisActivityEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/ActivityStatusEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisActivityStatusEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ActivityEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/AlertEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisAlertEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/SituationEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/ConsequenceEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisConsequenceEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/DemandEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisDemandEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/DrawGraphEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisDrawGraphEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/VisualizationEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/Event">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisEvent</label>
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/InstructionEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisInstructionEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ConsequenceEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisMeasureEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/SituationEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/OfferEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisOfferEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/ReportEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisReportEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ConsequenceEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisResourcesEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesStatusEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisResourcesStatusEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesEvent"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/SituationEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisSituationEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/VisualizationEvent">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CrisisVisualizationEvent</label>
+        <subClassOf rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/nuclear.ico"/>
+    </owl:Class>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/activity">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ActivityStatusEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisActivity</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/activityId">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ActivityEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ConsequenceEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisActivityId</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/capability">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/DemandEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/OfferEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisCapability</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/componentName">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/SituationEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisComponentName</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/componentSeid">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/SituationEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisComponentSeid</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/consequence">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/InstructionEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ReportEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisConsequence</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/description">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/AlertEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisDescription</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/frequency">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisFrequency</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/gravity">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/AlertEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisGravity</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/instructionMessage">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/InstructionEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisInstructionMessage</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/localisation">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/DrawGraphEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/SituationEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisLocalisation</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/provider">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/OfferEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesStatusEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisProvider</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/quantity">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisQuantity</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/resources">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/DemandEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/OfferEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesStatusEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisResources</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/resultMessage">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ReportEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisResultMessage</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/situation">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/AlertEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisSituation</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/state">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ActivityStatusEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/DemandEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesStatusEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisState</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/type">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisType</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/uid">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/Event"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisUid</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:FunctionalProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/uncertainty">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ActivityStatusEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/AlertEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/DemandEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/InstructionEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/OfferEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ReportEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/ResourcesStatusEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisUncertainty</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/unit">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/DrawGraphEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisUnit</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.mines-albi.fr/nuclearcrisisevent/value">
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/DrawGraphEvent"/>
+        <domain rdf:resource="http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">crisisValue</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <owl:cardinality>1</owl:cardinality>
+    </owl:DatatypeProperty>
+
+    <owl:Class rdf:about="http://www.nissatech.rs/ns/types/HeartbeatAlert">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NissaHeartbeatAlert</label>
+        <subClassOf rdf:resource="http://events.event-processing.org/types/Event"/>
+        <xhtml2:icon rdf:resource="http://demo.play-project.eu/icons/cardio.ico"/>
+    </owl:Class>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/acc">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaAcc</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/battery">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaBattery</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/calories">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaCalories</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/distance">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaDistance</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/duration">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaDuration</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/heartRate">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaHeartRate</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/humidity">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaHumidity</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/pressure">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaPressure</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/sessionId">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaSessionId</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/speed">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaSpeed</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/steps">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaSteps</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/temp">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaTemp</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.nissatech.rs/ns/types/wind">
+        <domain rdf:resource="http://www.nissatech.rs/ns/types/HeartbeatAlert"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nissaWind</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+    </rdf:Property>
+
+    <rdf:Description rdf:about="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Event">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">DulEvent</label>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasLocation">
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">dulLocation</label>
+    </rdf:Description>
+
+    <owl:DatatypeProperty rdf:about="http://www.play-project.eu/xml/ns/complexEvents">
+        <domain rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">StreamComplexEvents</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.play-project.eu/xml/ns/dsbneedstosubscribe">
+        <domain rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">StreamDsbNeedsToSubscribe</label>
+        <range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:DatatypeProperty>
+
+    <owl:FunctionalProperty rdf:about="http://www.play-project.eu/xml/ns/topic">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <domain rdf:resource="http://events.event-processing.org/types/Stream"/>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">StreamTopic</label>
+        <range rdf:resource="http://docs.oasis-open.org/wsn/b-2/Topic"/>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <owl:FunctionalProperty rdf:about="http://www.w3.org/2002/06/xhtml2/icon">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+        <comment>A small icon (favicon) describing stream instances, event classes, event instances, etc.</comment>
+        <label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Icon</label>
+        <owl:maxCardinality>1</owl:maxCardinality>
+    </owl:FunctionalProperty>
+
+    <Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#Point">
+        <comment> 
+Uniquely identified by lat/long/alt. i.e.
+
+spaciallyIntersects(P1, P2) :- lat(P1, LAT), long(P1, LONG), alt(P1, ALT),
+  lat(P2, LAT), long(P2, LONG), alt(P2, ALT).
+
+sameThing(P1, P2) :- type(P1, Point), type(P2, Point), spaciallyIntersects(P1, P2).
+  </comment>
+        <comment>A point, typically described using a coordinate system relative to Earth, such as WGS84.
+  </comment>
+        <label>point</label>
+        <subClassOf rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </Class>
+
+    <Class rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing">
+        <comment>Anything with spatial extent, i.e. size, shape, or position.
+ e.g. people, places, bowling balls, as well as abstract areas like cubes.
+    </comment>
+        <label>SpatialThing</label>
+    </Class>
+
+    <rdf:Property rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#alt">
+        <comment>The WGS84 altitude of a SpatialThing (decimal meters 
+above the local reference ellipsoid).</comment>
+        <domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+        <label>geoAltitude</label>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#lat">
+        <comment>The WGS84 latitude of a SpatialThing (decimal degrees).</comment>
+        <domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+        <label>geoLatitude</label>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#location">
+        <comment>The relation between something and the point, 
+ or other geometrical thing in space, where it is.  For example, the realtionship between
+ a radio tower and a Point with a given lat and long.
+ Or a relationship between a park and its outline as a closed arc of points, or a road and
+ its location as a arc (a sequence of points).
+ Clearly in practice there will be limit to the accuracy of any such statement, but one would expect
+ an accuracy appropriate for the size of the object and uses such as mapping .
+ </comment>
+        <label>geoLocation</label>
+        <range rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:about="http://www.w3.org/2003/01/geo/wgs84_pos#long">
+        <comment>The WGS84 longitude of a SpatialThing (decimal degrees).</comment>
+        <domain rdf:resource="http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing"/>
+        <label>geoLongitude</label>
+    </rdf:Property>
+</rdf:RDF>
+
+
