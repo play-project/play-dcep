@@ -12,6 +12,6 @@ public interface PrologEngineWrapperPlayExtensions {
 	 * @return true = success
 	 */
 	public boolean consult(String file);
-
 	public boolean assertFromFile(String file);
+	public Hashtable<String, Object>[] execute(String command);
 }
