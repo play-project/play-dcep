@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
->
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.ow2.play</groupId>
@@ -12,13 +11,22 @@
 
 	<artifactId>play-dcep-distribution</artifactId>
 	<packaging>jar</packaging>
-	
+
 	<name>play-dcep-distribution</name>
 	<description>The DCEP distribution which produces a complete executable package of DCEP and Platformservices with all dependencies.</description>
-	
+
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/adl/</directory>
+			</resource>
+		</resources>
 		<plugins>
-			<!-- Do not deploy this artefact to maven repo, it is very big. :stuehmer  -->
+			<!-- Do not deploy this artefact to maven repo, it is very big. :stuehmer -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -142,8 +150,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-		<!-- in order to be able to use filters in the logback configuration side:   -->
+
+		<!-- in order to be able to use filters in the logback configuration side: -->
 		<dependency>
 			<groupId>org.codehaus.janino</groupId>
 			<artifactId>janino</artifactId>
@@ -198,7 +206,7 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
