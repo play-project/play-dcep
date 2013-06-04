@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.jtalis.core.JtalisContextImpl;
 import com.jtalis.core.event.AbstractJtalisEventProvider;
 import com.jtalis.core.event.EtalisEvent;
@@ -246,38 +247,38 @@ public class PrologJtalisTest {
 		List<Quadruple> quadruple = new ArrayList<Quadruple>();
 		
 		Quadruple q1 = new Quadruple(
-				Node.createURI("'testDb2'"),
-				Node.createURI("'s1'"),
-                Node.createURI("'p1'"),
-                Node.createURI("'o1'"));
+				NodeFactory.createURI("'testDb2'"),
+				NodeFactory.createURI("'s1'"),
+				NodeFactory.createURI("'p1'"),
+				NodeFactory.createURI("'o1'"));
 		quadruple.add(q1);
 		
 		 q1 = new Quadruple(
-				Node.createURI("'testDb2'"),
-				Node.createURI("'s1'"),
-                Node.createURI("'p1'"),
-                Node.createURI("'o2'"));
+				 NodeFactory.createURI("'testDb2'"),
+				 NodeFactory.createURI("'s1'"),
+				 NodeFactory.createURI("'p1'"),
+				 NodeFactory.createURI("'o2'"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
-				Node.createURI("'testDb2'"),
-				Node.createURI("'s2'"),
-                Node.createURI("'p1'"),
-                Node.createURI("'o1'"));
+				NodeFactory.createURI("'testDb2'"),
+				NodeFactory.createURI("'s2'"),
+				NodeFactory.createURI("'p1'"),
+				NodeFactory.createURI("'o1'"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
-				Node.createURI("'testDb2'"),
-				Node.createURI("'s2'"),
-                Node.createURI("'p1'"),
-                Node.createURI("'o1'"));
+				NodeFactory.createURI("'testDb2'"),
+				NodeFactory.createURI("'s2'"),
+				NodeFactory.createURI("'p1'"),
+				NodeFactory.createURI("'o1'"));
 		quadruple.add(q1);
 		
 		q1 = new Quadruple(
-				Node.createURI("'testDb2'"),
-				Node.createURI("false"),
-                Node.createURI("false"),
-                Node.createURI("false"));
+				NodeFactory.createURI("'testDb2'"),
+				NodeFactory.createURI("false"),
+				NodeFactory.createURI("false"),
+				NodeFactory.createURI("false"));
 		quadruple.add(q1);
 		
 		CompoundEvent original = new CompoundEvent(quadruple);
@@ -609,7 +610,7 @@ public class PrologJtalisTest {
 		}
 		
 		
-		//Get variables and values		
+		//Get variables and values
 		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute(("calcAverage(id_1, 1, 200, Avg)"));
 
 		// Get all values of a variable
@@ -813,8 +814,8 @@ public class PrologJtalisTest {
 		
 		String eventId = EVENTS.getUri() + patternId;
 	
-		final Node GRAPHNAME = Node.createURI(eventId);
-		final Node EVENTID = Node.createURI(eventId + EVENT_ID_SUFFIX);
+		final Node GRAPHNAME = NodeFactory.createURI(eventId);
+		final Node EVENTID = NodeFactory.createURI(eventId + EVENT_ID_SUFFIX);
 
 		
 		/*
@@ -838,10 +839,10 @@ public class PrologJtalisTest {
 			quadruples.add(new Quadruple(
 					GRAPHNAME,
 					// Replace dummy event id placeholder with actual unique id for complex event:
-					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : Node.createURI(subject)),
-	                Node.createURI(predicate),
+					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
+					NodeFactory.createURI(predicate),
 	                objectNode));
-		}		
+		}
 		return quadruples;
 	}
 }

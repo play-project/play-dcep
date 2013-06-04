@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
@@ -17,10 +17,10 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class MeasureProcessingTime implements MeasurementState{
-	private MeasurementUnit context;
-	private PrologSemWebLib semWebLib;
-	private DistributedEtalis cepEngine;
-	private Logger logger;
+	private final MeasurementUnit context;
+	private final PrologSemWebLib semWebLib;
+	private final DistributedEtalis cepEngine;
+	private final Logger logger;
 	private int measurementEventCounter = 0;
 	private int complexEventCounter = 0;
 
@@ -114,16 +114,16 @@ public class MeasureProcessingTime implements MeasurementState{
 		//Measure time for one event.
 		List<Quadruple> quads = new ArrayList<Quadruple>();
 		Quadruple q1 = new Quadruple(
-                Node.createURI("http://play-project.eu/measurement/" + measurementID),
-                Node.createURI("http://play-project.eu/measurement/event"),
-                Node.createURI("http://play-project.eu/startTime"),
-                Node.createURI(time + ""));
+				NodeFactory.createURI("http://play-project.eu/measurement/" + measurementID),
+				NodeFactory.createURI("http://play-project.eu/measurement/event"),
+				NodeFactory.createURI("http://play-project.eu/startTime"),
+				NodeFactory.createURI(time + ""));
 				
 		Quadruple q2 = new Quadruple(
-                Node.createURI("http://play-project.eu/measurement/" + measurementID),
-                Node.createURI("http://play-project.eu/measurement/event"),
+				NodeFactory.createURI("http://play-project.eu/measurement/" + measurementID),
+				NodeFactory.createURI("http://play-project.eu/measurement/event"),
                 RDF.type.asNode(),
-                Node.createURI("measurementEvent"));
+                NodeFactory.createURI("measurementEvent"));
 		quads.add(q1);
 		quads.add(q2);
 		

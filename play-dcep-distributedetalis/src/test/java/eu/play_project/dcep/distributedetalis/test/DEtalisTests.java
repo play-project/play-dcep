@@ -24,7 +24,7 @@ import org.objectweb.proactive.core.node.NodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
@@ -71,10 +71,10 @@ public class DEtalisTests implements Serializable {
 		 * Push an event:
 		 */
 		logger.info("Push events");
-		Quadruple event = new Quadruple(Node.createURI("id4710"),
-				Node.createURI("http://play-project.eu/Karlsruhe"),
-				Node.createURI("http://play-project.eu/is/CepResult"),
-				Node.createURI("http://play-project.eu/42"));
+		Quadruple event = new Quadruple(NodeFactory.createURI("id4710"),
+				NodeFactory.createURI("http://play-project.eu/Karlsruhe"),
+				NodeFactory.createURI("http://play-project.eu/is/CepResult"),
+				NodeFactory.createURI("http://play-project.eu/42"));
 
 		ArrayList<Quadruple> list = new ArrayList<Quadruple>();
 		list.add(event);
@@ -87,17 +87,17 @@ public class DEtalisTests implements Serializable {
 		 * Check results:
 		 */
 		logger.info("Check results.");
-		Quadruple eventR = new Quadruple(Node.createURI("http://events.event-processing.org/ids/id4710"),
-				Node.createURI("http://play-project.eu/Karlsruhe"),
-				Node.createURI("http://play-project.eu/is/CepResult"),
-				Node.createURI("http://play-project.eu/42"));
+		Quadruple eventR = new Quadruple(NodeFactory.createURI("http://events.event-processing.org/ids/id4710"),
+				NodeFactory.createURI("http://play-project.eu/Karlsruhe"),
+				NodeFactory.createURI("http://play-project.eu/is/CepResult"),
+				NodeFactory.createURI("http://play-project.eu/42"));
 
 		if (subscriber.getComplexEvents() != null) {
 			assertTrue(subscriber.getComplexEvents().get(0).get(4).equals(eventR));
 		} else {
 			System.out.println("ERROR: No complex events in test 'checkComplexEvents()'.");
 			fail();
-		}	
+		}
 	}
 
 	@After

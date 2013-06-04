@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.event.JtalisOutputEventProvider;
 
@@ -111,10 +112,10 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	public List<Quadruple> getEventData(PlayJplEngineWrapper engine, EtalisEvent event) throws RetractEventException {
 		List<Quadruple> quadruples = new ArrayList<Quadruple>();
 		
-		String eventId = EVENTS.getUri() + event.getStringProperty(0);
+		String eventId = EVENTS.getUri() + event.getProperty(0).toString();
 	
-		final Node GRAPHNAME = Node.createURI(eventId);
-		final Node EVENTID = Node.createURI(eventId + EVENT_ID_SUFFIX);
+		final Node GRAPHNAME = NodeFactory.createURI(eventId);
+		final Node EVENTID = NodeFactory.createURI(eventId + EVENT_ID_SUFFIX);
 
 		/*
 		 *  Add implicit values from Jtalis to each event:
@@ -124,13 +125,13 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				EVENTID,
 				EVENTPATTERN,
 				//Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getRuleID()))); // FIXME sobermeier
-				Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
+				NodeFactory.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
 
 		quadruples.add(new Quadruple(
 				GRAPHNAME,
 				EVENTID,
 				STARTTIME,
-				Node.createLiteral(
+				NodeFactory.createLiteral(
 						DateFormatUtils.format(event.getTimeStarts(), DATE_FORMAT_8601),
 						XSDDatatype.XSDdateTime)));
 
@@ -138,7 +139,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				GRAPHNAME,
 				EVENTID,
 				ENDTIME,
-				Node.createLiteral(
+				NodeFactory.createLiteral(
 						DateFormatUtils.format(event.getTimeEnds(), DATE_FORMAT_8601),
 						XSDDatatype.XSDdateTime)));
 
@@ -146,7 +147,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				GRAPHNAME,
 				EVENTID,
 				SOURCE,
-				Node.createURI(Source.Dcep.toString())));
+				NodeFactory.createURI(Source.Dcep.toString())));
 
 		//TODO Add :members to the event (an RDF list of all simple events which were detected)
 		
@@ -171,8 +172,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			quadruples.add(new Quadruple(
 					GRAPHNAME,
 					// Replace dummy event id placeholder with actual unique id for complex event:
-					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : Node.createURI(subject)),
-	                Node.createURI(predicate),
+					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
+					NodeFactory.createURI(predicate),
 	                objectNode));
 		}
 		

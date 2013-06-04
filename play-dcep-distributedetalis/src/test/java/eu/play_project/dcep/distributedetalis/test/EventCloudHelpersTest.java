@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
@@ -23,17 +24,17 @@ import fr.inria.eventcloud.api.Quadruple;
 public class EventCloudHelpersTest {
 
 	private final String eventId = EVENTS.getUri() + "1234";
-	private final Node GRAPHNAME = Node.createURI(eventId);
+	private final Node GRAPHNAME = NodeFactory.createURI(eventId);
 	// Subjects
-	private final Node SUBJECT = Node.createURI(eventId + EVENT_ID_SUFFIX);
-	private final Node OTHER_SUBJECT = Node.createURI(eventId + "bogus");
+	private final Node SUBJECT = NodeFactory.createURI(eventId + EVENT_ID_SUFFIX);
+	private final Node OTHER_SUBJECT = NodeFactory.createURI(eventId + "bogus");
 	
 	// Predicates
 	private final Node STREAM = TypeConversion.toJenaNode(Event.STREAM);
 	
 	// Objects
-	private final Node EVENT_TYPE_1 = Node.createURI(TYPES.getUri() + "Type1");
-	private final Node EVENT_TYPE_2 = Node.createURI(TYPES.getUri() + "Type2");
+	private final Node EVENT_TYPE_1 = NodeFactory.createURI(TYPES.getUri() + "Type1");
+	private final Node EVENT_TYPE_2 = NodeFactory.createURI(TYPES.getUri() + "Type2");
 	private final Node EVENT_TYPE_DEFAULT = TypeConversion.toJenaNode(Event.RDFS_CLASS);
 
 	/**
@@ -108,7 +109,7 @@ public class EventCloudHelpersTest {
 				GRAPHNAME,
 				SUBJECT,
 				STREAM,
-				Node.createURI(Stream.ActivityEventStream.getUri())));
+				NodeFactory.createURI(Stream.ActivityEventStream.getUri())));
 
 		CompoundEvent event = new CompoundEvent(quadruple);
 		
