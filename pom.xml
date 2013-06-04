@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.ow2.play</groupId>
 		<artifactId>play-parent</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.ow2.play</groupId>
