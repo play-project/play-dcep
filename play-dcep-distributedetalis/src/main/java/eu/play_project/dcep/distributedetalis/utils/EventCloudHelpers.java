@@ -119,7 +119,7 @@ public class EventCloudHelpers {
 		com.hp.hpl.jena.graph.Node secondaryType = null;
 		
 		if (event.getGraph() != null) {
-			com.hp.hpl.jena.graph.Node eventId = com.hp.hpl.jena.graph.Node.createURI(event.getGraph() + EVENT_ID_SUFFIX);
+			com.hp.hpl.jena.graph.Node eventId = com.hp.hpl.jena.graph.NodeFactory.createURI(event.getGraph() + EVENT_ID_SUFFIX);
 			for (Quadruple quad : event) {
 				if (quad.getPredicate().equals(RDF.type.asNode())) {
 					secondaryType = quad.getObject();
@@ -153,7 +153,7 @@ public class EventCloudHelpers {
 		String cloudId = "";
 		
 		if (event.getGraph() != null) {
-			com.hp.hpl.jena.graph.Node eventId = com.hp.hpl.jena.graph.Node.createURI(event.getGraph() + EVENT_ID_SUFFIX);
+			com.hp.hpl.jena.graph.Node eventId = com.hp.hpl.jena.graph.NodeFactory.createURI(event.getGraph() + EVENT_ID_SUFFIX);
 			for (Quadruple quad : event) {
 				if (quad.getPredicate().toString().equals(Event.STREAM.toString())) {
 					secondaryType = quad.getObject();
