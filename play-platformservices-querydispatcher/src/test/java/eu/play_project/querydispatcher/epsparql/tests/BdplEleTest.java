@@ -26,6 +26,7 @@ import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.ParseException;
@@ -39,7 +40,7 @@ public class BdplEleTest {
 	@Test
 	public void manualParserUsage(){
 
-		String queryString = getSparqlQuery("queries/HavingAvgExp1.eprq");
+		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
 		
 		try {
@@ -47,13 +48,17 @@ public class BdplEleTest {
 		} catch(Exception e){
 			System.out.println("Exception was thrown: " + e);
 		}
-		HavingVisitor v = new HavingVisitor();
+//		HavingVisitor v = new HavingVisitor();
+//		
+//		for (Expr el : query.getHavingExprs()) {
+//			el.visit(v);
+//		}
 		
-		for (Expr el : query.getHavingExprs()) {
-			el.visit(v);
-		}
+		RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor("Id1");
+		query.getEventQuery().get(0).visit(v);
 		
-		System.out.println(v.getCode());
+		System.out.println(v.getRdfQueryRepresentativeQuery());
+		//System.out.println(v.getCode());
 
 		// Use custom visitor
 //		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
@@ -322,6 +327,51 @@ public class BdplEleTest {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@Test
+	public void RdfQueryRepresentativeQueryVisitorTest(){
+
+		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
+		Query query = null;
+		
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch(Exception e){
+			System.out.println("Exception was thrown: " + e);
+		}
+		
+		RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor("Id1");
+		query.getEventQuery().get(0).visit(v);
+		
+		// Queries for variable t1,e1,friend1,about1.
+		String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1)", 
+								   "rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent')",
+								   "rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1)",
+								   "rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1)"
+								  };
+
+		int i = 0;
+		for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
+			
+			if(!expectedResult[i].equals(v.getRdfQueryRepresentativeQuery().get(key))){
+				fail();
+			}
+			i++;
+		}
+		System.out.println(v.getRdfQueryRepresentativeQuery());
+		//System.out.println(v.getCode());
+
+		// Use custom visitor
+//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+//
+//		visitor1.setPatternId("'http://patternId.example.com/123456'");
+//
+//		visitor1.generateQuery(query);
+//		String etalisPattern = visitor1.getEle();
+		
+
+//		System.out.println(etalisPattern);
 	}
 
 	/**

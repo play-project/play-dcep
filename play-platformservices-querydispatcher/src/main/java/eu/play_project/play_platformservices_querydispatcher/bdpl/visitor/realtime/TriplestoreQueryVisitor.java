@@ -1,7 +1,10 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_ANY;
 import com.hp.hpl.jena.graph.Node_Blank;
 import com.hp.hpl.jena.graph.Node_Literal;
@@ -18,7 +21,7 @@ import eu.play_platform.platformservices.bdpl.VariableTypes;
 
 
 /**
- * Generates "TriplestoreQuery" described in EPSPARQL20 grammar.
+ * Generates "TriplestoreQuery" described in BDPL grammar.
  * @author sobermeier
  *
  */
@@ -27,6 +30,23 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	private String triplestoreQuery;
 	private VarNameManager varNameManager;
 	private String aggregateValuesCode;
+
+	// Start
+	@Override
+	public void visit(ElementEventGraph el) {
+		// Visit triples
+		triplestoreQuery = "";
+		aggregateValuesCode = "";
+		el.getElement().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementGroup el) {
+		// Visit all group elements
+		for(int i=0; i<el.getElements().size(); i++){
+			el.getElements().get(i).visit(this); 
+		}
+	}
 	
 	public TriplestoreQueryVisitor(VarNameManager varNameManager){
 		triplestoreQuery = "";
@@ -64,7 +84,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	@Override
 	public Object visitVariable(Node_Variable it, String name) {
 		
-		//Check if variable is in aggregate result list. -> Add code to save values.
+		//Add code to save values.
 		if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.SAMPLE_TYPE)){
 			logger.error("VariableTypes.SAMPLE_TYPE is not implemented in dETALIS");
 		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.COUNT_TYPE)){
@@ -103,6 +123,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public void visit(ElementPathBlock el) {
 		Iterator<TriplePath> iter = el.getPattern().getList().iterator();
 		
+		// Generate db queries.
 		while (iter.hasNext()) {
 			triplestoreQuery += "rdf(";
 			TriplePath tmpTriplePath = iter.next();
@@ -120,23 +141,6 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 			if(iter.hasNext()){
 				triplestoreQuery += ", ";
 			}
-		}
-	}
-
-	
-	@Override
-	public void visit(ElementGroup el) {
-		// Visit all group elements
-		for(int i=0; i<el.getElements().size(); i++){
-			el.getElements().get(i).visit(this); 
-		}
-	}
-
-	@Override
-	public void visit(ElementEventGraph el) {
-		// Visit triples
-		triplestoreQuery = "";
-		aggregateValuesCode = "";
-		el.getElement().visit(this);
+		}	
 	}
 }
