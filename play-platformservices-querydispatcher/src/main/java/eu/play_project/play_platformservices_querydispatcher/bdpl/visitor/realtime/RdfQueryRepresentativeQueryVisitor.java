@@ -29,7 +29,6 @@ import eu.play_platform.platformservices.bdpl.VariableTypes;
 public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 
 	private StringBuffer code;
-	private String queryId;
 	private Map<String, String> varRepresentative; // For each variable in the
 													// query exists a
 													// representative query.
@@ -37,9 +36,8 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 													// all possible values. E.g.
 													// P : rdf(:e, P, O, 1234).
 
-	public RdfQueryRepresentativeQueryVisitor(String queryId) {
+	public RdfQueryRepresentativeQueryVisitor() {
 		code = new StringBuffer();
-		this.queryId = queryId;
 	}
 	
 	// Start

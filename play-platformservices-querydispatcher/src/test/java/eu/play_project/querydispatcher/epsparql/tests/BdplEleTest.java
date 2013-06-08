@@ -53,23 +53,17 @@ public class BdplEleTest {
 //		for (Expr el : query.getHavingExprs()) {
 //			el.visit(v);
 //		}
-		
-		RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor("Id1");
-		query.getEventQuery().get(0).visit(v);
-		
-		System.out.println(v.getRdfQueryRepresentativeQuery());
-		//System.out.println(v.getCode());
+
 
 		// Use custom visitor
-//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-//
-//		visitor1.setPatternId("'http://patternId.example.com/123456'");
-//
-//		visitor1.generateQuery(query);
-//		String etalisPattern = visitor1.getEle();
-		
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
-//		System.out.println(etalisPattern);
+		visitor1.setPatternId("'http://patternId.example.com/123456'");
+
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		
+		System.out.println(etalisPattern);
 	}
 	
 	/**
@@ -341,7 +335,7 @@ public class BdplEleTest {
 			System.out.println("Exception was thrown: " + e);
 		}
 		
-		RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor("Id1");
+		RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor();
 		query.getEventQuery().get(0).visit(v);
 		
 		// Queries for variable t1,e1,friend1,about1.

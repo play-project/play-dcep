@@ -1,6 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
 
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager.getVarNameManager;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResultVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
@@ -221,8 +223,29 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void TriplestoreQuery(){
+		String flatDbQueries;
+		
+		// Get flat queries
 		currentElement.visit(triplestoreQueryVisitor);
-		elePattern += triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
+		flatDbQueries = triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
+		
+		RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor();
+		currentElement.visit(v);
+		
+		int i = 0;
+		for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
+
+			elePattern += "(\\+forall(" 
+								+ v.getRdfQueryRepresentativeQuery().get(key) + ", " +
+								"(\\+((" +
+										flatDbQueries +
+								")))" +
+							"))"; 
+					
+			if((i < v.getRdfQueryRepresentativeQuery().size())){
+				elePattern += ",";
+			}	
+		}		   	
 	}
 
 	private void FilterExpression(){
