@@ -235,12 +235,16 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		int i = 0;
 		for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
 
-			elePattern += "(\\+forall(" 
+			elePattern +="findall(" +
+							"V" + key + ", " +
+							"(\\+forall(" 
 								+ v.getRdfQueryRepresentativeQuery().get(key) + ", " +
-								"(\\+((" +
-										flatDbQueries +
-								")))" +
-							"))"; 
+									"(\\+((" +
+											flatDbQueries +
+									")))" +
+							")), " +
+							"V" + key +
+						  ")"; 
 					
 			if((i < v.getRdfQueryRepresentativeQuery().size())){
 				elePattern += ",";
