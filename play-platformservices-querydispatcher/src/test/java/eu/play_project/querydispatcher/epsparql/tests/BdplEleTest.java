@@ -27,7 +27,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.ParseException;
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
@@ -91,7 +91,7 @@ public class BdplEleTest {
 			System.out.println("Exception was thrown: " + e);
 		}
 		
-		VarNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
@@ -127,7 +127,7 @@ public class BdplEleTest {
 		} catch(Exception e){
 			System.out.println("Exception was thrown: " + e);
 		}
-		VarNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 		
 		// Generate code.
 		HavingVisitor v = new HavingVisitor();

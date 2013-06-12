@@ -2,6 +2,7 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realt
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -133,6 +134,17 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 				code = new StringBuffer();
 			}
 		}
+	}
+	/**
+	 * Return all used variables in this Query.
+	 */
+	public  List<String> getVariables(){
+		List<String> vars = new LinkedList<String>();
+		
+		for (String var : varRepresentative.keySet()) {
+			vars.add(var);
+		}
+		return vars;
 	}
 
 }

@@ -30,11 +30,11 @@ public class MathExprFunctionXVisitor  extends GenericVisitor {
 	Logger logger;
 	Stack<String> stack;
 	StringBuffer code;
-	VarNameManager varNameManager;
+	UniqueNameManager uniqueNameManager;
 	
 	public MathExprFunctionXVisitor(){
 		logger = LoggerFactory.getLogger(MathExprFunctionXVisitor.class);
-		varNameManager = VarNameManager.getVarNameManager();
+		uniqueNameManager = UniqueNameManager.getVarNameManager();
 		stack = new Stack<String>();
 		code = new StringBuffer();
 	}
@@ -72,36 +72,36 @@ public class MathExprFunctionXVisitor  extends GenericVisitor {
 			if(code.length()>2) code.append(","); // At the beginning of a string no ",". 
 			code.append("less(" + stack.pop() + ", " + rightElem + ")");
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Subtract) {
-			code.append("minus(" + stack.pop() + "," + rightElem + ", " + varNameManager.getNextFilterVar() + ")");
-			stack.push(varNameManager.getFilterVar());
+			code.append("minus(" + stack.pop() + "," + rightElem + ", " + uniqueNameManager.getNextFilterVar() + ")");
+			stack.push(uniqueNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Multiply) {
-			code.append("multiply(" + stack.pop() + "," + rightElem + ", " + varNameManager.getNextFilterVar() + ")");
-			stack.push(varNameManager.getFilterVar());
+			code.append("multiply(" + stack.pop() + "," + rightElem + ", " + uniqueNameManager.getNextFilterVar() + ")");
+			stack.push(uniqueNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Divide) {
 			code.append("/");
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Add) {
-			code.append("plus(" + stack.pop() + "," + rightElem + ", " + varNameManager.getNextFilterVar() + ")");
-			stack.push(varNameManager.getFilterVar());
+			code.append("plus(" + stack.pop() + "," + rightElem + ", " + uniqueNameManager.getNextFilterVar() + ")");
+			stack.push(uniqueNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThanOrEqual) {
 			code.append("greaterOrEqual(" + stack.pop() + "," + rightElem + ")");
-			stack.push(varNameManager.getFilterVar());
+			stack.push(uniqueNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThan) {
 			if(code.length()>2 && !code.toString().endsWith(",")) code.append(","); // TODO look if this is needed for other operators
 			code.append("greater(" + stack.pop() + "," + rightElem + ")");
-			stack.push(varNameManager.getFilterVar());
+			stack.push(uniqueNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Equals) {
 			code.append("equal(" + stack.pop() + "," + rightElem +")");
-			stack.push(varNameManager.getFilterVar());
+			stack.push(uniqueNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_NotEquals) {
 			code.append("notEqual(" + stack.pop() + "," + rightElem +")");
-			stack.push(varNameManager.getFilterVar());
+			stack.push(uniqueNameManager.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_StrContains) {
 			code.append( " (xpath(element(sparqlFilter, [keyWord="
 					+ stack.pop()   
 					+ "], []), //sparqlFilter(contains(@keyWord,'"
 					//Cutting away opening and closing quotes.
 					+ rightElem.substring(1, (rightElem.length()-1)) + "')), _))");
-			stack.push(varNameManager.getFilterVar());
+			stack.push(uniqueNameManager.getFilterVar());
 		} else {
 			throw new RuntimeException("Operator not implemented " + func.getClass().getName());
 		}
@@ -131,10 +131,10 @@ public class MathExprFunctionXVisitor  extends GenericVisitor {
 		// This expression contains possibly more expressions. E.g. (1 + 2 - t).
 		// For this reason visit the element and make post-order traversal.
 		
-		code.append("calcAverage(" + varNameManager.getAggrDbId() + ", "
-				+ varNameManager.getWindowTime() + ", " + varNameManager.getResultVar1() + "), ");
+		code.append("calcAverage(" + uniqueNameManager.getAggrDbId() + ", "
+				+ uniqueNameManager.getWindowTime() + ", " + uniqueNameManager.getResultVar1() + "), ");
 		
-		stack.push(varNameManager.getResultVar1());
+		stack.push(uniqueNameManager.getResultVar1());
 		
 		if (arg0.getAggregator() instanceof AggMax){
 			
@@ -145,7 +145,7 @@ public class MathExprFunctionXVisitor  extends GenericVisitor {
 		}else if(arg0.getAggregator() instanceof AggCount){
 			
 		}else if(arg0.getAggregator() instanceof AggAvg){
-			//code.append("calcAverage(" + varNameManager.g);
+			//code.append("calcAverage(" + uniqueNameManager.g);
 		}else if(arg0.getAggregator() instanceof AggSample){
 			
 		}
@@ -154,8 +154,8 @@ public class MathExprFunctionXVisitor  extends GenericVisitor {
 	public void visit1(ExprAggregator arg0) {
 
 		// For not nested expressions. E.g. AVG(?value)
-		code.append("calcAverage(" + varNameManager.getAggrDbId() + ", "
-				+ varNameManager.getWindowTime() + ", " + varNameManager.getResultVar1() + ")");
+		code.append("calcAverage(" + uniqueNameManager.getAggrDbId() + ", "
+				+ uniqueNameManager.getWindowTime() + ", " + uniqueNameManager.getResultVar1() + ")");
 	}
 
 	public StringBuffer getCode() {

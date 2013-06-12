@@ -1,9 +1,10 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
 
-import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager.getVarNameManager;
+import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.Triple;
@@ -22,8 +23,9 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResultVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.VarNameManager;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 
@@ -39,7 +41,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	// Currently selected element in the tree.
 	private Element currentElement = null;
 	// Manages variables which are globally unique.
-	private VarNameManager varNameManager;
+	private UniqueNameManager uniqueNameManager;
 	// Returns one triple after the other.
 	private Iterator<Element> eventQueryIter;
 	// Return operators used in the query. E.g. SEQ, AND, OR ... In the order they are used in the query.
@@ -51,8 +53,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private FilterExpressionCodeGenerator filterExpressionVisitor;
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
-	private VariableTypeManager vtm;
+	private VariableTypeManager nameManager;
 	
+	private List<String> rdfDbQueries; // Rdf db queries represents the semantic web part of a BDPL query. ETALIS calls this queries to check conditions for the current events.
+	private int eventCounter; // Count number of events in a query. 
 	
 	private String patternId;
 	
@@ -69,12 +73,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		this.inputQuery = inQuery;
 		eventQueryIter = inQuery.getEventQuery().iterator();
 		binOperatorIter = inQuery.getEventBinOperator().iterator();
-		varNameManager = getVarNameManager();
-		varNameManager.newQuery(); // Rest varNameManager.
-		varNameManager.setWindowTime(inQuery.getWindow().getValue());
+		uniqueNameManager = getVarNameManager();
+		uniqueNameManager.newQuery(); // Rest uniqueNameManager.
+		uniqueNameManager.setWindowTime(inQuery.getWindow().getValue());
 		// Instantiate visitors.
 		eventTypeVisitor = new EventTypeVisitor();
-		triplestoreQueryVisitor = new TriplestoreQueryVisitor(varNameManager);
+		triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
 		binOperatorVisitor =  new BinOperatorVisitor();
 		havingVisitor =  new HavingVisitor();
@@ -82,10 +86,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		queryTemplate = new QueryTemplateImpl();
 		
 		// Collect basic informations like variable types.
-		VarNameManager.initVariableTypeManage(inQuery);
-		vtm =  VarNameManager.getVariableTypeManage();
-		vtm.collectVars();
+		UniqueNameManager.initVariableTypeManage(inQuery);
+		nameManager =  UniqueNameManager.getVariableTypeManage();
+		nameManager.collectVars();
 
+		rdfDbQueries = new LinkedList<String>();
+		eventCounter = 0;
 		// Start code generation.
 		ElePattern();
 	}
@@ -103,7 +109,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 
 	private void Complex() {
-		elePattern += "complex(" + varNameManager.getNextCeid() + "," + patternId + ") do (";
+		elePattern += "complex(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
 		SaveSharedVariabelValues();
 		Having();
@@ -129,7 +135,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 						+ ","
 						+ triple.getObject().visitWith(
 								generateConstructResultVisitor) + ","
-						+ varNameManager.getCeid() + ")";
+						+ uniqueNameManager.getCeid() + ")";
 				if (iter.hasNext()) {
 					elePattern += ",";
 				}
@@ -140,18 +146,18 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private boolean containsSharedVariablesTest(Triple triple){
 		boolean result = false;
 		if(triple.getSubject().isVariable()){
-			if(vtm.isType(triple.getSubject().getName(), VariableTypes.REALTIME_TYPE) && vtm.isType(triple.getSubject().getName(), VariableTypes.HISTORIC_TYPE)){
+			if(nameManager.isType(triple.getSubject().getName(), VariableTypes.REALTIME_TYPE) && nameManager.isType(triple.getSubject().getName(), VariableTypes.HISTORIC_TYPE)){
 				return true;
 			}
 			
 		}
 		if(triple.getPredicate().isVariable()){
-			if(vtm.isType(triple.getPredicate().getName(), VariableTypes.REALTIME_TYPE) && vtm.isType(triple.getPredicate().getName(), VariableTypes.HISTORIC_TYPE)){
+			if(nameManager.isType(triple.getPredicate().getName(), VariableTypes.REALTIME_TYPE) && nameManager.isType(triple.getPredicate().getName(), VariableTypes.HISTORIC_TYPE)){
 				return true;
 			}
 		}
 		if(triple.getObject().isVariable()){
-			if(vtm.isType(triple.getObject().getName(), VariableTypes.REALTIME_TYPE) && vtm.isType(triple.getObject().getName(), VariableTypes.HISTORIC_TYPE)){
+			if(nameManager.isType(triple.getObject().getName(), VariableTypes.REALTIME_TYPE) && nameManager.isType(triple.getObject().getName(), VariableTypes.HISTORIC_TYPE)){
 				return true;
 			}
 		}
@@ -161,7 +167,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	public void SaveSharedVariabelValues() {
 		StringBuffer tmpEle = new StringBuffer();
 
-		List<String> vars = vtm.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
+		List<String> vars = nameManager.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
 		for (String var : vars) {
 			if (!elePattern.endsWith(",")) {
 				elePattern += ",";
@@ -174,7 +180,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private void DecrementReferenceCounter(){
 		StringBuffer tmp = new StringBuffer();
 		
-		for (String var : varNameManager.getAllTripleStoreVariablesOfThisQuery()) {
+		for (String var : uniqueNameManager.getAllTripleStoreVariablesOfThisQuery()) {
 			tmp.append(", decrementReferenceCounter( "+ var + ")");
 		}
 		
@@ -192,7 +198,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		currentElement.visit(eventTypeVisitor);
 		elePattern += eventTypeVisitor.getEventType();
 		elePattern += "(";
-		String triplestoreVariable = varNameManager.getNextTriplestoreVariable();
+		String triplestoreVariable = uniqueNameManager.getNextTriplestoreVariable();
 		elePattern += triplestoreVariable;
 		elePattern += ") 'WHERE' (";
 		AdditionalConditions();
@@ -213,19 +219,61 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 
 	private void ReferenceCounter(){
-		elePattern += " incrementReferenceCounter(" + varNameManager.getTriplestoreVariable() + ")";
+		elePattern += " incrementReferenceCounter(" + uniqueNameManager.getTriplestoreVariable() + ")";
 	}
 	
 	private void PerformanceMeasurement(){
 		elePattern += "measure(" +  patternId + ")";
 	}
 	
-	private void TriplestoreQuery(){
+	private void TriplestoreQuery() {
+		String flatDbQueries;
+		eventCounter++; // New event in query.
+		
+		// Get flat queries
 		currentElement.visit(triplestoreQueryVisitor);
-		elePattern += triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
+		flatDbQueries = triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
+		
+		// Generate representative.
+		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
+		currentElement.visit(v);
+
+		//Generate query method
+		StringBuffer dbQueryMethod = new StringBuffer();
+		StringBuffer dbQueryDecl = new StringBuffer();
+		
+		dbQueryDecl.append("dbQuery" + patternId.replace("'","") + "_e" + eventCounter + "(");
+		Iterator<String> iter = v.getVariables().iterator();
+		while (iter.hasNext()) {
+			dbQueryDecl.append("V" + iter.next());
+
+			// Decide if it is the last variable or end of decl.
+			if(iter.hasNext()){
+				dbQueryDecl.append(", ");
+			}else{
+				dbQueryDecl.append(")");
+			}
+		}
+
+		// Query impl.
+		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
+		
+		
+		//Generate call for query.
+		int i = 0;
+		for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
+
+			elePattern += "(\\+forall("
+					+ v.getRdfQueryRepresentativeQuery().get(key) + ", "
+					+ "(\\+((" + dbQueryDecl + ")))" + "))";
+
+			if ((i < v.getRdfQueryRepresentativeQuery().size())) {
+				elePattern += ",";
+			}
+		}
 	}
 
-	private void FilterExpression(){
+	private void FilterExpression() {
 		filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
 		if(!elePattern.endsWith(",") && !filterExpressionVisitor.getEle().equals("")){ // This filter is optional. No value needed.
 			elePattern += "," + filterExpressionVisitor.getEle();
@@ -235,7 +283,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 		
 	private void GenerateCEID(){
-		elePattern += "random(1000000, 9000000, " + varNameManager.getCeid() + ")";
+		elePattern += "random(1000000, 9000000, " + uniqueNameManager.getCeid() + ")";
 	}
 
 	@Override

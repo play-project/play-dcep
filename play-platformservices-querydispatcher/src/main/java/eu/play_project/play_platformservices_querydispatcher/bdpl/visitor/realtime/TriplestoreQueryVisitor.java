@@ -28,7 +28,7 @@ import eu.play_platform.platformservices.bdpl.VariableTypes;
 public class TriplestoreQueryVisitor extends GenericVisitor {
 	
 	private String triplestoreQuery;
-	private VarNameManager varNameManager;
+	private UniqueNameManager uniqueNameManager;
 	private String aggregateValuesCode;
 
 	// Start
@@ -48,10 +48,10 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		}
 	}
 	
-	public TriplestoreQueryVisitor(VarNameManager varNameManager){
+	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager){
 		triplestoreQuery = "";
 		aggregateValuesCode = "";
-		this.varNameManager = varNameManager;
+		this.uniqueNameManager = uniqueNameManager;
 	}
 
 	
@@ -85,18 +85,18 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public Object visitVariable(Node_Variable it, String name) {
 		
 		//Add code to save values.
-		if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.SAMPLE_TYPE)){
+		if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.SAMPLE_TYPE)){
 			logger.error("VariableTypes.SAMPLE_TYPE is not implemented in dETALIS");
-		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.COUNT_TYPE)){
+		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.COUNT_TYPE)){
 			logger.error("VariableTypes.COUNT_TYPE is not implemented in dETALIS");
-		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.AVG_TYPE)){
-			aggregateValuesCode += ", addAgregatValue(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
-		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
-			aggregateValuesCode += ", storeMin(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
-		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
-			aggregateValuesCode += ", storeMin(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
-		}else if(VarNameManager.getVariableTypeManage().isType(name, VariableTypes.SUM_TYPE)){
-			aggregateValuesCode += ", sumAdd(" + varNameManager.getAggrDbId() + ", " + "V" + name + ")";
+		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.AVG_TYPE)){
+			aggregateValuesCode += ", addAgregatValue(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
+		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
+			aggregateValuesCode += ", storeMin(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
+		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
+			aggregateValuesCode += ", storeMin(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
+		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.SUM_TYPE)){
+			aggregateValuesCode += ", sumAdd(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
 		}
 		
 		
@@ -131,7 +131,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 			tmpTriplePath.getSubject().visitWith(this);
 			tmpTriplePath.getPredicate().visitWith(this);
 			tmpTriplePath.getObject().visitWith(this);
-			triplestoreQuery += varNameManager.getTriplestoreVariable() + ")"; 
+			triplestoreQuery += uniqueNameManager.getTriplestoreVariable() + ")"; 
 			
 			//Add save aggregate values code if it exists.
 			if(!aggregateValuesCode.equals("")){

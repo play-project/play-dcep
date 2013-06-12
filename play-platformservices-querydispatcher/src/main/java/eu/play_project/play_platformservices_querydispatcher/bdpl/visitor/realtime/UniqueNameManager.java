@@ -17,7 +17,7 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
  * @author sobermei
  *
  */
-public class VarNameManager {
+public class UniqueNameManager {
 	private static VariableTypeManager vtm;
 	long ceid; //Complex event id variable.
 	long triplestoreVariable;
@@ -34,9 +34,9 @@ public class VarNameManager {
 	Stack<Long> filterVars;
 	
 
-	static VarNameManager counter;
+	static UniqueNameManager counter;
 	
-	private VarNameManager(){
+	private UniqueNameManager(){
 		ceid = 0;
 		triplestoreVariable = 0;
 		absVariable = 0;
@@ -47,9 +47,9 @@ public class VarNameManager {
 		
 	}
 	
-	public static VarNameManager getVarNameManager(){
+	public static UniqueNameManager getVarNameManager(){
 		if(counter==null){
-			counter = new VarNameManager();
+			counter = new UniqueNameManager();
 		}
 		return counter;
 	}
