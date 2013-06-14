@@ -19,6 +19,7 @@ import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.BinOperatorVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResultVisitor;
@@ -96,6 +97,8 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void ElePattern(){
+		StringBuffer generateConstructCode;
+		
 		Complex();
 		elePattern += "<-";
 		SimpleEventPattern();
@@ -118,28 +121,49 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 
 	private void GenerateConstructResult() {
+		StringBuffer constructResult = new StringBuffer();
+		
 		GenerateConstructResultVisitor generateConstructResultVisitor = new GenerateConstructResultVisitor();
-		Iterator<Triple> iter = inputQuery.getConstructTemplate().getTriples()
-				.iterator();
+		Iterator<Triple> constructTemplIter = inputQuery.getConstructTemplate().getTriples().iterator();
 		Triple triple;
-		while (iter.hasNext()) {
-			triple = iter.next();
-			if (!containsSharedVariablesTest(triple)) {
-				elePattern += "generateConstructResult("
-						+ triple.getSubject().visitWith(
-								generateConstructResultVisitor)
-						+ ","
-						+ triple.getPredicate().visitWith(
-								generateConstructResultVisitor)
-						+ ","
-						+ triple.getObject().visitWith(
-								generateConstructResultVisitor) + ","
-						+ uniqueNameManager.getCeid() + ")";
-				if (iter.hasNext()) {
-					elePattern += ",";
-				}
+		
+		// Concatenate q1, q2, q3 ...
+		StringBuffer queriesConcatenated = new StringBuffer();
+		for (String q : RdfQueryDbMethodDecl(inputQuery, patternId)) {
+			if(queriesConcatenated.length() > 0){
+				queriesConcatenated.append(", ");
+				queriesConcatenated.append(q);
+			}else{
+				queriesConcatenated.append(q);
 			}
 		}
+		
+		constructResult.append("forall((" + 
+									queriesConcatenated.toString() + "), " +
+									"(");
+										while (constructTemplIter.hasNext()) {
+											triple = constructTemplIter.next();
+											if (!containsSharedVariablesTest(triple)) {
+												constructResult.append( "" +
+												   "generateConstructResult("
+														+ triple.getSubject().visitWith(
+																generateConstructResultVisitor)
+														+ ","
+														+ triple.getPredicate().visitWith(
+																generateConstructResultVisitor)
+														+ ","
+														+ triple.getObject().visitWith(
+																generateConstructResultVisitor) + ","
+														+ uniqueNameManager.getCeid() + ")");
+												if (constructTemplIter.hasNext()) {
+													constructResult.append(", ");
+												}
+											}
+										}
+				constructResult.append(")");
+		constructResult.append(")");
+		
+		elePattern += constructResult.toString();
 	}
 
 	private boolean containsSharedVariablesTest(Triple triple){
@@ -224,6 +248,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private void PerformanceMeasurement(){
 		elePattern += "measure(" +  patternId + ")";
 	}
+	
 	
 	private void TriplestoreQuery() {
 		String flatDbQueries;
@@ -322,5 +347,45 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 	public List<String> getRdfDbQueries() {
 		return rdfDbQueries;
+	}
+	
+	/**
+	 * Generate rdf db method declerations. 
+	 * E.g. dbQuery_abc_e1(Ve1).
+	 * @param q Parsed Jena query.
+	 * @return
+	 */
+	private List<String> RdfQueryDbMethodDecl(Query q, String patternId) {
+		List<String> dbDecl = new LinkedList<String>();
+		
+		int eventCounter = 0;
+		for (Element currentElement : q.getEventQuery()) {
+			eventCounter++;
+
+			// Get variables
+			CollectVariablesInTriplesVisitor v = new CollectVariablesInTriplesVisitor();
+			currentElement.visit(v);
+
+			// Generate query method
+			StringBuffer dbQueryDecl = new StringBuffer();
+
+			// Schema fix string "dbQuery" + patternId + idForEvent
+			dbQueryDecl.append("dbQuery_" + patternId.replace("'", "") + "_e" + eventCounter + "(");
+
+			Iterator<String> iter = v.getVariables().iterator();
+			while (iter.hasNext()) {
+				dbQueryDecl.append(iter.next());
+
+				// Decide if it is the last variable or end of decl.
+				if (iter.hasNext()) {
+					dbQueryDecl.append(", ");
+				} else {
+					dbQueryDecl.append(")");
+				}
+			}
+			
+			dbDecl.add(dbQueryDecl.toString());
+		}
+		return dbDecl;
 	}
 }

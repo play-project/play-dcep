@@ -15,6 +15,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
@@ -52,10 +53,10 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 	}
 
 	@Override
-	public void visit(ElementGroup el) {
+	public void visit(ElementGroup elg) {
 		// Visit all group elements
-		for (int i = 0; i < el.getElements().size(); i++) {
-			el.getElements().get(i).visit(this);
+		for (Element el : elg.getElements()) {
+			el.visit(this);
 		}
 	}
 
@@ -102,20 +103,17 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 
 	@Override
 	public void visit(ElementPathBlock el) {
-		Iterator<TriplePath> iter = el.getPattern().getList().iterator();
 
 		// Generate representative queries for variables. Result will be stored
 		// in "varRepresentative" variable.
-		while (iter.hasNext()) {
-			TriplePath tmpTriplePath = iter.next();
-			generadeCodeForNewVariable(tmpTriplePath.getSubject(), tmpTriplePath);
-			generadeCodeForNewVariable(tmpTriplePath.getPredicate(), tmpTriplePath);
-			generadeCodeForNewVariable(tmpTriplePath.getObject(), tmpTriplePath);
+		for (TriplePath tp : el.getPattern().getList()) {
+			generadeCodeForNewVariable(tp.getSubject(), tp);
+			generadeCodeForNewVariable(tp.getPredicate(), tp);
+			generadeCodeForNewVariable(tp.getObject(), tp);
 		}
-
 	}
 
-	// Check if a representative exists for given Variable and generate code.;
+	// Check if a representative exists for given Variable and generate code.
 	private void generadeCodeForNewVariable(Node node, TriplePath triple) {
 
 		if (node.isVariable()) {
@@ -135,8 +133,9 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 			}
 		}
 	}
+	
 	/**
-	 * Return all used variables in this Query.
+	 * Return all variables used in this query.
 	 */
 	public  List<String> getVariables(){
 		List<String> vars = new LinkedList<String>();

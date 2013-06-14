@@ -86,6 +86,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	
 			// Do not remove this line, needed for logs. :stuehmer
 			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
+			System.out.println(result);
 			
 			if(recipients.size()<1) logger.warn("No recipient for complex events.");
 			
