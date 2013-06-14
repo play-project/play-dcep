@@ -56,7 +56,7 @@ public class CommonsPatternTest {
 
 		// Get query.
 		queryString = getSparqlQueries("play-epsparql-clic2call.eprq");
-
+System.out.println(queryString);
 		// Compile query
 		String paternID = queryDispatchApi.registerQuery("abc", queryString);
 		

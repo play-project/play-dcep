@@ -69,6 +69,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 		gcDataAdded = ctx.getEngineWrapper().executeGoal(
 				"assert(referenceCounter('" + event.getGraph() + "', "
 						+ internalEventId + ", -1))");
+		
 		internalEventId++;
 
 		if (!gcDataAdded) {

@@ -33,7 +33,7 @@ public class SemWebLibTests {
 		// Load class hierarchy.
 		//FIXME find a method to load it in java.
 		ctx.getEngineWrapper().executeGoal("rdf_load('" + new File (".").getCanonicalPath().replace("\\", "/") + "/src/test/resources/event_types.xml')");
-		
+		System.out.println("rdf_load('" + new File (".").getCanonicalPath().replace("\\", "/") + "/src/test/resources/event_types.xml')");
 		// Get all Telco subclasses.
 		Hashtable<String, Object>[] result =  engine.execute("rdf(X, 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://events.event-processing.org/types/Telco').");
 		

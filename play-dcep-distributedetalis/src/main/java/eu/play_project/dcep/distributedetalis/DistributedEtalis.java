@@ -116,6 +116,13 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		etalis.addDynamicRuleWithId("'" + epSparqlQuery.getQueryDetails().getQueryId() + "'" + epSparqlQuery.getQueryDetails().getEtalisProperty(), epSparqlQuery.getEleQuery());
 		// Start tumbling window. (If a tumbling window was defined.) 
 		etalis.getEngineWrapper().executeGoal(epSparqlQuery.getQueryDetails().getTumblingWindow());
+		
+		//Register db queries.
+		for (String dbQuerie : epSparqlQuery.getQueryDetails().getRdfDbQueries()) {
+			etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
+		}
+		
+		//Register ele querie.	
 		this.ecConnectionManager.registerEventPattern(epSparqlQuery);
 	}
 

@@ -33,7 +33,7 @@ public class Main {
 		Component root = null;
 		
 		try {
-		
+			
 			/*
 			 * Set up Components
 			 */

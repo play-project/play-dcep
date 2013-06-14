@@ -61,7 +61,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private String patternId;
 	
 	//Helper methods.
-	//private Map<String, AgregatedEventType> variableAgregatedType;
 	private QueryTemplate queryTemplate;
 
 	@Override
@@ -242,7 +241,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer dbQueryMethod = new StringBuffer();
 		StringBuffer dbQueryDecl = new StringBuffer();
 		
-		dbQueryDecl.append("dbQuery" + patternId.replace("'","") + "_e" + eventCounter + "(");
+		dbQueryDecl.append("dbQuery_" + patternId.replace("'","") + "_e" + eventCounter + "(");
 		Iterator<String> iter = v.getVariables().iterator();
 		while (iter.hasNext()) {
 			dbQueryDecl.append("V" + iter.next());
@@ -255,9 +254,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			}
 		}
 
-		// Query impl.
+		// Combine decl and impl.
 		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
-		
+	
+		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
 		int i = 0;
@@ -318,5 +318,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		}
 		
 		elePattern += havingVisitor.getCode().toString();
+	}
+
+	public List<String> getRdfDbQueries() {
+		return rdfDbQueries;
 	}
 }

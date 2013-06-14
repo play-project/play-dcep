@@ -1,6 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.hp.hpl.jena.query.Query;
 
@@ -11,6 +12,6 @@ public interface EleGenerator {
 	public void setPatternId(String patternId);
 	public String getEle();
 	public QueryTemplate getQueryTemplate();
-	public ArrayList<String[]> getEventProperties();
-	
+	public List<String[]> getEventProperties();
+	public List<String> getRdfDbQueries();	
 }

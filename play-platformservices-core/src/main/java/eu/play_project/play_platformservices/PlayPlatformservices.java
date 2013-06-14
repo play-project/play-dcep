@@ -164,7 +164,9 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);
+		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
 		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
+		
 		
 		//Generate historical query.
 		epQuery.setHistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));

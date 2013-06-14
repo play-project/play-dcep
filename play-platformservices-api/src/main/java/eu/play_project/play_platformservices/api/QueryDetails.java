@@ -1,6 +1,7 @@
 package eu.play_project.play_platformservices.api;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,6 +23,7 @@ public class QueryDetails implements Serializable {
 	private Set<String> historicStreams;
 	private String etalisProperty;
 	private String tumblingWindow;
+	private List<String> rdfDbQueries;
 	
 	public QueryDetails(){}
 	
@@ -104,5 +106,13 @@ public class QueryDetails implements Serializable {
 
 	public void setTumblingWindow(String tumblingWindow) {
 		this.tumblingWindow = tumblingWindow;
+	}
+
+	public List<String> getRdfDbQueries() {
+		return rdfDbQueries;
+	}
+
+	public void setRdfDbQueries(List<String> rdfDbQueries) {
+		this.rdfDbQueries = rdfDbQueries;
 	}
 }
