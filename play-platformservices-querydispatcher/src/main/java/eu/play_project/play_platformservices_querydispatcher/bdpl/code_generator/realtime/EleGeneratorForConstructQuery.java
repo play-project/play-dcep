@@ -129,7 +129,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		// Concatenate q1, q2, q3 ...
 		StringBuffer queriesConcatenated = new StringBuffer();
-		for (String q : RdfQueryDbMethodDecl(inputQuery, patternId)) {
+		for (String q : AllRdfQueryDbMethodDecl(inputQuery, patternId)) {
 			if(queriesConcatenated.length() > 0){
 				queriesConcatenated.append(", ");
 				queriesConcatenated.append(q);
@@ -137,15 +137,16 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 				queriesConcatenated.append(q);
 			}
 		}
-		
-		constructResult.append("forall((" + 
-									queriesConcatenated.toString() + "), " +
+
+
+		constructResult.append("" +
+				"forall((" + queriesConcatenated.toString() + "), " +
 									"(");
 										while (constructTemplIter.hasNext()) {
 											triple = constructTemplIter.next();
 											if (!containsSharedVariablesTest(triple)) {
 												constructResult.append( "" +
-												   "generateConstructResult("
+												"generateConstructResult("
 														+ triple.getSubject().visitWith(
 																generateConstructResultVisitor)
 														+ ","
@@ -154,7 +155,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 														+ ","
 														+ triple.getObject().visitWith(
 																generateConstructResultVisitor) + ","
-														+ uniqueNameManager.getCeid() + ")");
+														+ uniqueNameManager.getCeid() + 
+													") ");
+												
 												if (constructTemplIter.hasNext()) {
 													constructResult.append(", ");
 												}
@@ -264,21 +267,8 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 		//Generate query method
 		StringBuffer dbQueryMethod = new StringBuffer();
-		StringBuffer dbQueryDecl = new StringBuffer();
+		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, eventCounter).toString();
 		
-		dbQueryDecl.append("dbQuery_" + patternId.replace("'","") + "_e" + eventCounter + "(");
-		Iterator<String> iter = v.getVariables().iterator();
-		while (iter.hasNext()) {
-			dbQueryDecl.append("V" + iter.next());
-
-			// Decide if it is the last variable or end of decl.
-			if(iter.hasNext()){
-				dbQueryDecl.append(", ");
-			}else{
-				dbQueryDecl.append(")");
-			}
-		}
-
 		// Combine decl and impl.
 		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
 	
@@ -355,37 +345,47 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	 * @param q Parsed Jena query.
 	 * @return
 	 */
-	private List<String> RdfQueryDbMethodDecl(Query q, String patternId) {
+	private List<String> AllRdfQueryDbMethodDecl(Query q, String patternId) {
 		List<String> dbDecl = new LinkedList<String>();
 		
 		int eventCounter = 0;
 		for (Element currentElement : q.getEventQuery()) {
 			eventCounter++;
-
-			// Get variables
-			CollectVariablesInTriplesVisitor v = new CollectVariablesInTriplesVisitor();
-			currentElement.visit(v);
-
-			// Generate query method
-			StringBuffer dbQueryDecl = new StringBuffer();
-
-			// Schema fix string "dbQuery" + patternId + idForEvent
-			dbQueryDecl.append("dbQuery_" + patternId.replace("'", "") + "_e" + eventCounter + "(");
-
-			Iterator<String> iter = v.getVariables().iterator();
-			while (iter.hasNext()) {
-				dbQueryDecl.append(iter.next());
-
-				// Decide if it is the last variable or end of decl.
-				if (iter.hasNext()) {
-					dbQueryDecl.append(", ");
-				} else {
-					dbQueryDecl.append(")");
-				}
-			}
-			
-			dbDecl.add(dbQueryDecl.toString());
+			dbDecl.add(RdfQueryDbMethodDecl(currentElement, eventCounter).toString());
 		}
 		return dbDecl;
+	}
+	
+	public StringBuffer RdfQueryDbMethodDecl(Element currentElement, int eventCounter) {
+		// Get variables
+		CollectVariablesInTriplesVisitor v = new CollectVariablesInTriplesVisitor();
+		currentElement.visit(v);
+
+		// Generate query method
+		StringBuffer dbQueryDecl = new StringBuffer();
+
+		// Schema "dbQuery" + patternId + idForEvent
+		dbQueryDecl.append("dbQuery_" + patternId.replace("'", "") + "_e"
+				+ eventCounter + "(");
+		dbQueryDecl.append(uniqueNameManager
+				.getTriplestoreVariableForEventNr(eventCounter) + ", "); // Mapping
+																			// between
+																			// event
+																			// and
+																			// corresponding
+																			// data.
+		Iterator<String> iter = v.getVariables().iterator();
+		while (iter.hasNext()) {
+			dbQueryDecl.append(iter.next());
+
+			// Decide if it is the last variable or end of decl.
+			if (iter.hasNext()) {
+				dbQueryDecl.append(", ");
+			} else {
+				dbQueryDecl.append(")");
+			}
+		}
+
+		return dbQueryDecl;
 	}
 }

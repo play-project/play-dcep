@@ -43,7 +43,11 @@ public class CollectVariablesInTriplesVisitor extends GenericVisitor{
 
 	@Override
 	public Object visitVariable(Node_Variable it, String name) {
-		vars.add("V" + name);
+
+		if(!name.startsWith("?")){ //Ignore blank nodes
+			vars.add("V" + name);
+		}
+
 		return it;
 	}
 

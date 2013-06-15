@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -28,9 +29,11 @@ import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
+import com.jtalis.core.JtalisContext;
 import com.jtalis.core.JtalisContextImpl;
 import com.jtalis.core.event.AbstractJtalisEventProvider;
 import com.jtalis.core.event.EtalisEvent;
+import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
@@ -340,6 +343,51 @@ public class PrologJtalisTest {
 			ctx.getEngineWrapper().executeGoal(("assert(" +  methods[i] + ")"));
 		}
 		
+	}
+	
+	/**
+	 * Abstract example how conditions are checked now. (internal)
+	 */
+	@Test
+	public void externalConditionCeck() {
+		final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
+
+		PrologEngineWrapper<?> engine = new JPLEngineWrapper();
+		JtalisContext context = new JtalisContextImpl(engine);
+		context.addEventTrigger("c/1");
+
+		context.registerOutputProvider(new AbstractJtalisEventProvider() {
+			@Override
+			public void outputEvent(EtalisEvent event) {
+				System.out.println("\n\n\n");
+				System.out.println(event);
+				System.out.println("\n\n\n");
+				list.add(event);
+			}
+		});
+
+		engine.executeGoal("assert(a(id1, a1))");
+		engine.executeGoal("assert(a(id1, a2))");
+		engine.executeGoal("assert(a(id1, a3))");
+
+		engine.executeGoal("assert(b(id2, b1))");
+		engine.executeGoal("assert(b(id2, b2))");
+		engine.executeGoal("assert(b(id2, b3))");
+
+		engine.executeGoal("assert(newCid(cid1))");
+		engine.executeGoal("assert(checkConditions(Eid) :- true)");
+		engine.executeGoal("assert(storeEdata(CID, D):- (write(CID), write(': '), write(D), nl))");
+
+		context.addDynamicRule(""
+				+ "c(CID) "
+				+ "	do forall((a(Eid1, Da), b(Eid2, Db)), (storeEdata(CID, Da), storeEdata(CID, Db))) "
+				+ "<- " + 
+				"(a(Eid) 'WHERE' (checkConditions(Eid))) " + 
+				"seq " +
+				"(b(Eid2) 'WHERE' (checkConditions(Eid2), newCid(CID)))");
+
+		context.pushEvent(new EtalisEvent("a", "id1"));
+		context.pushEvent(new EtalisEvent("b", "id2"));
 	}
 	
 //	@Test

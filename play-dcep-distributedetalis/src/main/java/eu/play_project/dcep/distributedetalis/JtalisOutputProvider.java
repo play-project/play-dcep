@@ -76,6 +76,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		//FIXME sobermeier: separate measurement events (e.g. without using "complex")
 
 		try {
+			System.out.println(event);
 			List<Quadruple> quadruples = this.getEventData(engine, event);
 					 
 			// Publish complex event

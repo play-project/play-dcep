@@ -24,7 +24,7 @@ import eu.play_platform.platformservices.bdpl.VariableTypes;
 
 /**
  * Generate code for variable representative. 
- * For each variable one query is needet which provides all possible values of this variable.
+ * For each variable one query is needed which provides all possible values of this variable.
  * @author sobermeier
  *
  */
@@ -85,6 +85,7 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 	public Object visitVariable(Node_Variable it, String name) {
 
 		StringBuffer resultNode = new StringBuffer();
+		//FIXME wats wrong?
 		// It is part of a blank node.
 		if (name.startsWith("?")) {
 			// Transform number to uppercase char.
@@ -99,6 +100,8 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 			code.append("V" + name);
 			return "V" + name;
 		}
+
+		
 	}
 
 	@Override
