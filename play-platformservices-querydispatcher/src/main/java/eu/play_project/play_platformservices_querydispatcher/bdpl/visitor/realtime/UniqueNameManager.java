@@ -103,12 +103,18 @@ public class UniqueNameManager {
 	
 	public String getNextTriplestoreVariable(){
 		triplestoreVariable++;
-		return "ViD" + triplestoreVariable;
+		return getTriplestoreVariableForEventNr(triplestoreVariable);
 	}
 	
 	public String getTriplestoreVariable(){
-		return "ViD" + triplestoreVariable;
+		return getTriplestoreVariableForEventNr(triplestoreVariable);
 	}
+	
+	public String getTriplestoreVariableForEventNr(long eventNumber){
+		return "ViD" + eventNumber;
+	}
+	
+	
 	
 	public String getNextAbsVariable(){
 		absVariable++;
