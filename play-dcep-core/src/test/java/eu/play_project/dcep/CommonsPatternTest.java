@@ -1,6 +1,7 @@
 package eu.play_project.dcep;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -56,7 +57,7 @@ public class CommonsPatternTest {
 
 		// Get query.
 		queryString = getSparqlQueries("play-epsparql-clic2call.eprq");
-System.out.println(queryString);
+
 		// Compile query
 		String paternID = queryDispatchApi.registerQuery("abc", queryString);
 		
@@ -104,6 +105,48 @@ System.out.println(queryString);
 		}
 	}
 
+	/**
+	 * One events contains multiple topics a person is talking about.
+	 */
+	@Test
+	public void setOperationTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException{
+	String queryString;
+		
+		InstantiatePlayPlatform();
+
+		// Get query.
+		queryString = getSparqlQueries("play-bdpl-all-topics-he-talks-about-setoperation-example.eprq");
+
+		// Compile query
+		String paternID = queryDispatchApi.registerQuery("abc", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		try {
+			subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		} catch (ActiveObjectCreationException e) {
+			e.printStackTrace();
+		} catch (NodeException e) {
+			e.printStackTrace();
+		}
+
+		testApi.attach(subscriber);
+	
+		logger.info("Publish evetns");
+		for (int i = 0; i < 5; i++) {
+			CompoundEvent event = createFacebookTopicEvent("example1" + Math.random());
+			testApi.publish(event);
+		}
+
+		// Wait
+		delay();
+		
+		//Contains coffee and tea.
+		assertTrue(subscriber.getComplexEvents().size()==5);
+		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getMatchObject().toString(), "\"Tea\"");
+		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(11).getMatchObject().toString(), "\"Coffee\"");
+	}
 	//@Test
 	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
@@ -354,6 +397,49 @@ System.out.println(subscriber.getComplexEvents().size());
 		quads.add(q6);
 		quads.add(q7);
 		quads.add(q8);
+
+		return new CompoundEvent(quads);
+	}
+	
+	public static CompoundEvent createFacebookTopicEvent(String eventId) {
+
+		LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
+
+		Quadruple q1 = new Quadruple(
+				Node.createURI("http://events.event-processing.org/eventId/" + eventId),
+				Node.createURI("http://prefix.example.com/e1"),
+				Node.createURI("http://events.event-processing.org/types/stream"),
+				Node.createURI("http://streams.event-processing.org/ids/FacebookStatusFeed#stream"));
+
+		Quadruple q3 = new Quadruple(
+				Node.createURI("http://events.event-processing.org/eventId/"+ eventId),
+				Node.createURI("http://prefix.example.com/e1"),
+				Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+				Node.createURI("http://events.event-processing.org/types/FacebookStatusFeedEvent"));
+
+		Quadruple q4 = new Quadruple(
+				Node.createURI("http://events.event-processing.org/eventId/"+ eventId),
+				Node.createURI("http://prefix.example.com/e1"),
+				Node.createURI("http://events.event-processing.org/types/status"),
+				Node.createURI("Tea"));
+		
+		Quadruple q5 = new Quadruple(
+				Node.createURI("http://events.event-processing.org/eventId/"+ eventId),
+				Node.createURI("http://prefix.example.com/e1"),
+				Node.createURI("http://events.event-processing.org/types/status"),
+				Node.createURI("Coffee"));
+
+		Quadruple q6 = new Quadruple(
+				Node.createURI("http://events.event-processing.org/eventId/"+ eventId),
+				Node.createURI("http://prefix.example.com/e1"),
+				Node.createURI("http://graph.facebook.com/schema/user#name"),
+				Node.createURI("Max"));
+	
+		quads.add(q1);
+		quads.add(q3);
+		quads.add(q4);
+		quads.add(q5);
+		quads.add(q6);
 
 		return new CompoundEvent(quads);
 	}
