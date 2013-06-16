@@ -17,22 +17,22 @@ public class GenerateConstructResultVisitor implements NodeVisitor {
 
 	@Override
 	public Object visitBlank(Node_Blank it, AnonId id) {
-		return "['http://blak.example.com/" + id + "']";
+		return "'http://blak.example.com/" + id + "'";
 	}
 
 	@Override
 	public Object visitLiteral(Node_Literal it, LiteralLabel lit) {
-		return "['" + lit + "']";
+		return "'" + lit + "'";
 	}
 
 	@Override
 	public Object visitURI(Node_URI it, String uri) {
-		return "['" + uri + "']";
+		return "'" + uri + "'";
 	}
 
 	@Override
 	public Object visitVariable(Node_Variable it, String name) {
-		return "[V" + name + "]";
+		return "V" + name + "";
 	}
 
 }
