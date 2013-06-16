@@ -143,9 +143,10 @@ public class CommonsPatternTest {
 		delay();
 		
 		//Contains coffee and tea.
+		System.out.println();
 		assertTrue(subscriber.getComplexEvents().size()==5);
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getMatchObject().toString(), "\"Tea\"");
-		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(11).getMatchObject().toString(), "\"Coffee\"");
+		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(8).getMatchObject().toString(), "\"Coffee\"");
 	}
 	//@Test
 	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
