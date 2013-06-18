@@ -13,5 +13,5 @@ public interface DcepMonitoringApi {
 
 	// Measure data. Time in ms.
 	public NodeMeasuringResult getMeasurementData();
-	public NodeMeasuringResult measurePerformance(int measuringPeriod);
+	public void measurePerformance(int measuringPeriod);
 }

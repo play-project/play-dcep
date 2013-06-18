@@ -132,8 +132,6 @@ public class MeasureProcessingTime implements MeasurementState{
 	
 	@Override
 	public void setMeasuredData(NodeMeasuringResult measuredValues) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

@@ -59,14 +59,10 @@ public class Ready implements MeasurementState{
 
 	@Override
 	public void setMeasuredData(NodeMeasuringResult measuredValues) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void eventProduced(CompoundEvent event, String patternId) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -76,14 +72,10 @@ public class Ready implements MeasurementState{
 
 	@Override
 	public void sendMeasuringEvent() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void measuringPeriodIsUp() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -7,5 +7,5 @@ generateConstructResult(S, P, O, DB) :-
 		assert(rdfTest(S, P, O, DB))
 ).
 
-%Add 
+%Add data so it is possible to find something.
 rdfTest(s1,p1,o1,db1).

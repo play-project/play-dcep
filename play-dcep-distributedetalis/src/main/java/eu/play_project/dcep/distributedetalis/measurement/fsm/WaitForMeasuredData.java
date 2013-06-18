@@ -32,8 +32,6 @@ public class WaitForMeasuredData implements MeasurementState{
 
 	@Override
 	public void startMeasurement(int period) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -62,14 +60,10 @@ public class WaitForMeasuredData implements MeasurementState{
 
 	@Override
 	public void sendMeasuringEvent() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void measuringPeriodIsUp() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

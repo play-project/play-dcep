@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
@@ -17,6 +18,7 @@ import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
+import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 
 
 
@@ -25,6 +27,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 	private static final long serialVersionUID = 100L;
 	private String inputRdfModelFile;
 	private Logger logger;
+	private MeasurementUnit measurementUnit;
 	private static transient LoadPrologCode cl;
 	
 	public  DetalisConfigLocal(){}
@@ -97,13 +100,11 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
-
-		// Instatiate measurement unit.
-		// this.measurementUnit = new MeasurementUnit(this);	
-		
+	
 		// Register event pattern.
 		//Set new ID, but no complex event will be produced.
 		//etalis.addDynamicRuleWithId("GarbageCollectionPattern", "complex <- gc(ID) where (setLastInsertedEvent(ID),false)");
+	
 	}
 	
 	

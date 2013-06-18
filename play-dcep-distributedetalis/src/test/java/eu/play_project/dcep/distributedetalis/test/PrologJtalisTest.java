@@ -18,6 +18,10 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 import jpl.Query;
@@ -36,11 +40,14 @@ import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
+import eu.play_project.dcep.api.measurement.MeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.RetractEventException;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
+import eu.play_project.dcep.distributedetalis.measurement.MeasurementThread;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
@@ -751,52 +758,52 @@ public class PrologJtalisTest {
 		assertEquals(result[8].get("RefCounter").toString(),   "1");
 	}
 	
-//	/**
-//	 * Simulate performance measurement and test results.
-//	 */
-//	@Test
-//	public void MeasurementTrheadTest(){
-//
-//		//New prolog engine
-//		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
-//		engine.consult(System.getProperty("user.dir") + "/src/main/pl/Measurement.pl");
-//		ExecutorService measureExecutor = Executors.newCachedThreadPool();
-//
-//		// New task. Measure 5s.
-//		MeasurementThread task = new MeasurementThread(5000, engine, null); //TODO change
-//
-//		// Execute task.
-//		Future<MeasuringResult> future = measureExecutor.submit(task);
-//
-//		// Simulate events.
-//		for(int i=0; i<10; i++){
-//
-//			engine.executeGoal("measure('http://example.com/patternID1')");
-//			if(i%2==0){
-//				engine.executeGoal("measure('http://example.com/patternID2')");
-//			}
-//			if(i%3==0){
-//				engine.executeGoal("measure('http://example.com/patternID3')");
-//			}
-//
-//			delay();
-//		}
-//
-//
-//		NodeMeasuringResult measuredValues = null;
-//		try {
-//			measuredValues = (NodeMeasuringResult) future.get();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (ExecutionException e) {
-//			e.printStackTrace();
-//		}
-//
-//
-//		assertTrue(measuredValues.getMeasuredValues().get(1).getProcessedEvents()==4);
-//		assertTrue(measuredValues.getMeasuredValues().get(2).getProcessedEvents()==2);
-//		assertTrue(measuredValues.getMeasuredValues().get(3).getProcessedEvents()==1);
-//	}
+	/**
+	 * Simulate performance measurement and test results.
+	 */
+	@Test
+	public void MeasurementTrheadTest(){
+
+		//New prolog engine
+		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
+		engine.consult(System.getProperty("user.dir") + "/src/main/pl/Measurement.pl");
+		ExecutorService measureExecutor = Executors.newCachedThreadPool();
+
+		// New task. Measure 5s.
+		MeasurementThread task = new MeasurementThread(5000, engine, null); //TODO change
+
+		// Execute task.
+		Future<MeasuringResult> future = measureExecutor.submit(task);
+
+		// Simulate events.
+		for(int i=0; i<10; i++){
+
+			engine.executeGoal("measure('http://example.com/patternID1')");
+			if(i%2==0){
+				engine.executeGoal("measure('http://example.com/patternID2')");
+			}
+			if(i%3==0){
+				engine.executeGoal("measure('http://example.com/patternID3')");
+			}
+
+			delay();
+		}
+
+
+		NodeMeasuringResult measuredValues = null;
+		try {
+			measuredValues = (NodeMeasuringResult) future.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+
+
+		assertTrue(measuredValues.getMeasuredValues().get(1).getProcessedEvents()==4);
+		assertTrue(measuredValues.getMeasuredValues().get(2).getProcessedEvents()==2);
+		assertTrue(measuredValues.getMeasuredValues().get(3).getProcessedEvents()==1);
+	}
 	
 	public static void delay(){
 		try {

@@ -32,7 +32,6 @@ public class MeasurementThread implements Callable<MeasuringResult> {
 		logger.debug("Start new measurement peride with " + measuringPeriod + "ms");
 
 		ctx.executeGoal("setMeasurementMode(on)");
-
 		// Wait till measurement time is up. Send triger 5 measurements.
 		int measureEvents = eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit.eventsPeriod ;// Number of measurement events in one period.
 		

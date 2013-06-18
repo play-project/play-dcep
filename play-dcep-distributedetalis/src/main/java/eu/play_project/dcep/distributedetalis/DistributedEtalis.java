@@ -49,8 +49,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private JtalisOutputProvider eventOutputProvider;
 	private JtalisInputProvider eventInputProvider;
 	private Logger logger;
-	private Map<String, EpSparqlQuery> registeredQueries = Collections
-			.synchronizedMap(new HashMap<String, EpSparqlQuery>());
+	private Map<String, EpSparqlQuery> registeredQueries = Collections.synchronizedMap(new HashMap<String, EpSparqlQuery>());
 	private EcConnectionManager ecConnectionManager;
 	private MeasurementUnit measurementUnit;
 	private PrologSemWebLib semWebLib;
@@ -174,14 +173,18 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public NodeMeasuringResult measurePerformance(int measuringPeriod) {
+	public void measurePerformance(int measuringPeriod) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
 
-		// measurementUnit.startMeasurement(measuringPeriod);
-		return null;
+		if(measurementUnit==null){
+			//Configure and set MeasuremntUnit.
+			measurementUnit = new MeasurementUnit(this, (PlayJplEngineWrapper)etalis.getEngineWrapper(), semWebLib);
+		}
+		
+		measurementUnit.startMeasurement(measuringPeriod);
 	}
 
 	@Override
@@ -301,5 +304,4 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	public JtalisOutputProvider getEventOutputProvider() {
 		return eventOutputProvider;
 	}
-
 }

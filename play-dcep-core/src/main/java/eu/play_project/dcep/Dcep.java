@@ -112,9 +112,9 @@ Serializable {
 	}
 
 	@Override
-	public NodeMeasuringResult measurePerformance(int period) {
+	public void measurePerformance(int period) {
 		if(!init) init();
-		return dEtalisMonitoring.measurePerformance(period);
+		dEtalisMonitoring.measurePerformance(period);
 	}
 
 	@Override
