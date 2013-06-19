@@ -244,6 +244,9 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 
 	@Override
 	public void destroy() {
+		if(logger==null){
+			logger = LoggerFactory.getLogger(EcConnectionManagerNet.class);
+		}
 		logger.info("Terminating {}.", this.getClass().getSimpleName());
 		logger.info("Unsubscribe from Event Clouds");
 
@@ -252,10 +255,10 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			proxy.unsubscribe(subscriptions.get(proxy).sub.getId());
 		}
 		
-		getEventThread.stop();
-		subscriptions.clear();
-		inputClouds.clear();
-		outputClouds.clear();
+		if(getEventThread!=null) getEventThread.stop();
+		if(subscriptions!=null) subscriptions.clear();
+		if(inputClouds!=null) inputClouds.clear();
+		if(outputClouds!=null) outputClouds.clear();
 
 		this.init = false;
 	}
