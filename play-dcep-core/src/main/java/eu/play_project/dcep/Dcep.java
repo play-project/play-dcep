@@ -78,6 +78,8 @@ Serializable {
 			GCM.getGCMLifeCycleController(this.dEtalis).terminateGCMComponent();
 		} catch (IllegalLifeCycleException e) {
 			logger.error("Error terminating subcomponent.", e);
+		} catch (NullPointerException e) {
+			logger.error("Error terminating subcomponent.", e);
 		} catch (NoSuchInterfaceException e) {
 			logger.error("Error terminating subcomponent.", e);
 		}
