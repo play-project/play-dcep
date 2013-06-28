@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.api.DcepMonitoringApi;
+import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
@@ -45,6 +47,7 @@ public class DEtalisTests implements Serializable {
 	private static ConfigApi configApi = null;
 	static Component root;
 	private final Logger logger = LoggerFactory.getLogger(DEtalisTests.class);
+	DcepMonitoringApi dEtalis;
 
 
 	@Test
@@ -100,6 +103,31 @@ public class DEtalisTests implements Serializable {
 		}
 	}
 
+	@Test
+	public void measurePerformance() throws InterruptedException, NoSuchInterfaceException, ADLException, IllegalLifeCycleException {
+		
+		//instantiateDcepComponent();
+		
+		long time = System.currentTimeMillis();
+
+		for (int i = 0; i < 100; i++) {
+			System.out.println(System.currentTimeMillis() - time);
+			time = System.currentTimeMillis();
+
+			System.out.println(i);
+			dEtalis.measurePerformance(20000);
+
+			System.out.println("Two requests sent.");
+
+			// Wait and pull data
+			Thread.sleep(31000);
+			NodeMeasuringResult measuringResult = dEtalis.getMeasurementData();
+
+
+			// Print results
+			//print(measuringResult);
+		}
+	}
 	@After
 	public void shutDownComponents() {
 		
@@ -157,6 +185,8 @@ public class DEtalisTests implements Serializable {
 		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-plus-tweet-historical-data.trig"));
 
 		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
+		
+		dEtalis = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface("DcepMonitoringApi"));
 
 		// Subscribe to get complex events.
 		try {
