@@ -60,8 +60,8 @@ public class MeasurementUnit implements MeasurementState{
 		
 		//Register measurement pattern.
 		EpSparqlQuery eq = new EpSparqlQuery();
-		// eq.setEleQuery("complexN(MeasureCEID,'measurement-pattern') do (generateConstructResult(['http://play-project.eu/measurement/event'],['http://play-project.eu/timeOneEvent'],[Vtime],MeasureCEID))<-('measurementEvent'(ViD1) 'WHERE' (rdf(Vs, 'http://play-project.eu/startTime', Vtime, ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1),random(1000000, 9000000, MeasureCEID)))");
-		eq.setEleQuery("complex(MeasureCEID) <- 'measurementEvent'(ViD1)");
+		eq.setEleQuery("complexN(MeasureCEID,'measurement-pattern') do (generateConstructResult(['http://play-project.eu/measurement/event'],['http://play-project.eu/timeOneEvent'],[Vtime],MeasureCEID))<-('measurementEvent'(ViD1) 'WHERE' (rdf(Vs, 'http://play-project.eu/startTime', Vtime, ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1),random(1000000, 9000000, MeasureCEID)))");
+		//eq.setEleQuery("complex(MeasureCEID) <- 'measurementEvent'(ViD1)");
 
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId("'measurement-pattern'");

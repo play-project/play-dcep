@@ -181,7 +181,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 		if(measurementUnit==null){
 			//Configure and set MeasuremntUnit.
-			measurementUnit = new MeasurementUnit(this, (PlayJplEngineWrapper)etalis.getEngineWrapper(), semWebLib);
+			//measurementUnit = new MeasurementUnit(this, (PlayJplEngineWrapper)etalis.getEngineWrapper(), semWebLib);
 		}
 		
 		measurementUnit.startMeasurement(measuringPeriod);
