@@ -54,7 +54,7 @@
 	</licenses>
 
 	<properties>
-		<play.commons.version>1.1-SNAPSHOT</play.commons.version>
+		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
 	</properties>
 
 	<dependencyManagement>
