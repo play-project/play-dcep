@@ -1,0 +1,16 @@
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :ComplexMeasurementEvent.
+	:e :stream <http://streams.event-processing.org/ids/Local#stream> .
+	:e :sendTime ?time .
+	:e :payload ?payload
+}
+WHERE {
+	EVENT ?id1 {
+		?e1 rdf:type :MeasurementEvent .
+		?e1 :stream <http://streams.event-processing.org/ids/Local#stream> .
+		?e1 :sendTime ?time .
+		:e :payload ?payload .
+	}
+}
