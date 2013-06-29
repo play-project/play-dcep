@@ -365,8 +365,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer dbQueryDecl = new StringBuffer();
 
 		// Schema "dbQuery" + patternId + idForEvent
-		dbQueryDecl.append("dbQuery_" + patternId.replace("'", "") + "_e"
-				+ eventCounter + "(");
+		dbQueryDecl.append("'dbQuery_" + patternId.replace("'", "") + "_e" + eventCounter + "'(");
 		dbQueryDecl.append(uniqueNameManager
 				.getTriplestoreVariableForEventNr(eventCounter) + ", "); // Mapping
 																			// between
