@@ -12,7 +12,6 @@ public class MeasuringThreadFactory implements ThreadFactory{
 	public Thread newThread(Runnable r) {
 		Thread t =  new Thread(r);
 		t.setPriority(java.lang.Thread.MAX_PRIORITY);
-		//t.setPriority(1);
 		return t;
 	}
 

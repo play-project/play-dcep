@@ -1,5 +1,7 @@
 package eu.play_project.dcep.api;
 
+import com.hp.hpl.jena.query.Query;
+
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 
 /**
@@ -11,7 +13,12 @@ import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 
 public interface DcepMonitoringApi {
 
-	// Measure data. Time in ms.
-	public NodeMeasuringResult getMeasurementData();
-	public void measurePerformance(int measuringPeriod);
+	/**
+	 * Measure performance with given query.
+	 * @param measurementQuery
+	 * @param measuringPeriod
+	 */
+	public void measurePerformance(Query measurementQuery, int measuringPeriod);
+	public NodeMeasuringResult getMeasuredData(String queryId);
+
 }

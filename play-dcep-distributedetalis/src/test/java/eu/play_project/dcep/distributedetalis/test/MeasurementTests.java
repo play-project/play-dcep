@@ -21,32 +21,6 @@ public class MeasurementTests {
 	static Component root;
 	DcepMonitoringApi dEtalis;
 
-	@Test
-	public void measurePerformance() throws InterruptedException, NoSuchInterfaceException, ADLException, IllegalLifeCycleException {
-		
-		instantiateDcepComponent();
-		
-		long time = System.currentTimeMillis();
-
-		for (int i = 0; i < 100; i++) {
-			System.out.println(System.currentTimeMillis() - time);
-			time = System.currentTimeMillis();
-
-			System.out.println(i);
-			dEtalis.measurePerformance(20000);
-
-			System.out.println("Two requests sent.");
-
-			// Wait and pull data
-			Thread.sleep(31000);
-			NodeMeasuringResult measuringResult = dEtalis.getMeasurementData();
-
-
-			// Print results
-			print(measuringResult);
-		}
-	}
-
 	@Before
 	public void instantiateDcepComponent() throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, InterruptedException {
 		

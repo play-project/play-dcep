@@ -18,6 +18,8 @@ import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.Query;
+
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
@@ -114,18 +116,6 @@ Serializable {
 	}
 
 	@Override
-	public void measurePerformance(int period) {
-		if(!init) init();
-		dEtalisMonitoring.measurePerformance(period);
-	}
-
-	@Override
-	public NodeMeasuringResult getMeasurementData() {
-		if(!init) init();
-		return dEtalisMonitoring.getMeasurementData();
-	}
-
-	@Override
 	public void publish(CompoundEvent event) {
 		if(!init) init();
 		dEtalisTest.publish(event);
@@ -205,5 +195,17 @@ Serializable {
 		else {
 			logger.error("Specified middleware is not implemented: {}.", middleware);
 		}
+	}
+
+	@Override
+	public void measurePerformance(Query measurementQuery, int measuringPeriod) {
+		if(!init) init();
+		dEtalisMonitoring.measurePerformance(measurementQuery, measuringPeriod);
+	}
+
+	@Override
+	public NodeMeasuringResult getMeasuredData(String queryId) {
+		if(!init) init();
+		return dEtalisMonitoring.getMeasuredData(queryId);
 	}
 }

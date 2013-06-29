@@ -14,6 +14,7 @@ import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.query.Query;
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.api.DcepManagementException;
@@ -173,22 +174,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void measurePerformance(int measuringPeriod) {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-
-		if(measurementUnit==null){
-			//Configure and set MeasuremntUnit.
-			//measurementUnit = new MeasurementUnit(this, (PlayJplEngineWrapper)etalis.getEngineWrapper(), semWebLib);
-		}
-		
-		measurementUnit.startMeasurement(measuringPeriod);
-	}
-
-	@Override
-	public NodeMeasuringResult getMeasurementData() {
+	public NodeMeasuringResult getMeasuredData(String queryId) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
@@ -303,5 +289,19 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	@Override
 	public JtalisOutputProvider getEventOutputProvider() {
 		return eventOutputProvider;
+	}
+
+	@Override
+	public void measurePerformance(Query measurementQuery, int measuringPeriod) {
+		if (!init) {
+			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
+		}
+
+		if(measurementUnit==null){
+			//Configure and set MeasuremntUnit.
+			measurementUnit = new MeasurementUnit(this, (PlayJplEngineWrapper)etalis.getEngineWrapper(), semWebLib);
+		}
+		
+		measurementUnit.startMeasurement(measuringPeriod);
 	}
 }
