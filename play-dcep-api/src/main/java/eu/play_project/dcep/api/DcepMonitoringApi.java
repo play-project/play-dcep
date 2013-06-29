@@ -20,5 +20,4 @@ public interface DcepMonitoringApi {
 	 */
 	public void measurePerformance(Query measurementQuery, int measuringPeriod);
 	public NodeMeasuringResult getMeasuredData(String queryId);
-
 }

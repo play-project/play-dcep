@@ -2,7 +2,7 @@ package eu.play_project.dcep.api;
 
 import java.util.Map;
 
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 
 
 public interface DcepManagmentApi {
@@ -13,7 +13,7 @@ public interface DcepManagmentApi {
 	 * @throws DcepManagementException
 	 *             if the pattern has errors
 	 */
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery);
+	public void registerEventPattern(CepQuery cepQuery);
 
 	/**
 	 * Unregister an existing event pattern. This method silently does nothing
@@ -29,11 +29,11 @@ public interface DcepManagmentApi {
 	 * @throws DcepManagementException
 	 *             if there is no pattern with the given ID
 	 */
-	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException;
+	public CepQuery getRegisteredEventPattern(String queryId) throws DcepManagementException;
 
 	/**
 	 * Get a collection of all currently registered event patterns.
 	 */
-	public Map<String, EpSparqlQuery> getRegisteredEventPatterns();
+	public Map<String, CepQuery> getRegisteredEventPatterns();
 
 }

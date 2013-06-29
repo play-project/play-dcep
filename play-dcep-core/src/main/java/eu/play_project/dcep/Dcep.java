@@ -33,7 +33,7 @@ import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigVirtuoso;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
@@ -88,23 +88,23 @@ Serializable {
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery){
+	public void registerEventPattern(CepQuery cepQuery){
 
 		logger.debug("Pattern reached DCEP facade: "
-				+ epSparqlQuery.getEleQuery());
+				+ cepQuery.getEleQuery());
 
 		if(!init) init();
-		dEtalisManagment.registerEventPattern(epSparqlQuery);
+		dEtalisManagment.registerEventPattern(cepQuery);
 	}
 
 	@Override
-	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException{
+	public CepQuery getRegisteredEventPattern(String queryId) throws DcepManagementException{
 		if(!init) init();
 		return dEtalisManagment.getRegisteredEventPattern(queryId);
 	}
 
 	@Override
-	public Map<String, EpSparqlQuery> getRegisteredEventPatterns() {
+	public Map<String, CepQuery> getRegisteredEventPatterns() {
 		if(!init) init();
 		return dEtalisManagment.getRegisteredEventPatterns();
 	}

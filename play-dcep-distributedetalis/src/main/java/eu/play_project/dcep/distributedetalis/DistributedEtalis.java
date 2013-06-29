@@ -29,7 +29,7 @@ import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
@@ -50,7 +50,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private JtalisOutputProvider eventOutputProvider;
 	private JtalisInputProvider eventInputProvider;
 	private Logger logger;
-	private Map<String, EpSparqlQuery> registeredQueries = Collections.synchronizedMap(new HashMap<String, EpSparqlQuery>());
+	private Map<String, CepQuery> registeredQueries = Collections.synchronizedMap(new HashMap<String, CepQuery>());
 	private EcConnectionManager ecConnectionManager;
 	private MeasurementUnit measurementUnit;
 	private PrologSemWebLib semWebLib;
@@ -90,45 +90,45 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) {
+	public void registerEventPattern(CepQuery cepQuery) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()+ " has not been initialized.");
 		}
-		if (epSparqlQuery.getQueryDetails() == null) {
+		if (cepQuery.getQueryDetails() == null) {
 			throw new IllegalArgumentException("QueryDetails is not set");
 		}
 		logger.info("New event pattern is being registered at {} with queryId = {}",
-				this.getClass().getSimpleName(), epSparqlQuery
+				this.getClass().getSimpleName(), cepQuery
 				.getQueryDetails().getQueryId());
-		logger.info("ELE: " + epSparqlQuery.getEleQuery());
+		logger.info("ELE: " + cepQuery.getEleQuery());
 
-		if(this.registeredQueries.containsKey(epSparqlQuery.getQueryDetails().getQueryId())) {
-			String error = "Pattern ID already exists: " + epSparqlQuery.getQueryDetails().getQueryId();
+		if(this.registeredQueries.containsKey(cepQuery.getQueryDetails().getQueryId())) {
+			String error = "Pattern ID already exists: " + cepQuery.getQueryDetails().getQueryId();
 			logger.error(error);
 			//throw new DcepManagementException(error);
 			// FIXME stuehmer: revert to descriptive messages
 		}
 		
-		this.registeredQueries.put(epSparqlQuery.getQueryDetails().getQueryId(), epSparqlQuery);
+		this.registeredQueries.put(cepQuery.getQueryDetails().getQueryId(), cepQuery);
 		
-		logger.debug("Register query: " + epSparqlQuery.getEleQuery());
+		logger.debug("Register query: " + cepQuery.getEleQuery());
 		
-		etalis.addDynamicRuleWithId("'" + epSparqlQuery.getQueryDetails().getQueryId() + "'" + epSparqlQuery.getQueryDetails().getEtalisProperty(), epSparqlQuery.getEleQuery());
+		etalis.addDynamicRuleWithId("'" + cepQuery.getQueryDetails().getQueryId() + "'" + cepQuery.getQueryDetails().getEtalisProperty(), cepQuery.getEleQuery());
 		// Start tumbling window. (If a tumbling window was defined.) 
-		etalis.getEngineWrapper().executeGoal(epSparqlQuery.getQueryDetails().getTumblingWindow());
+		etalis.getEngineWrapper().executeGoal(cepQuery.getQueryDetails().getTumblingWindow());
 		
 		//Register db queries.
-		for (String dbQuerie : epSparqlQuery.getQueryDetails().getRdfDbQueries()) {
+		for (String dbQuerie : cepQuery.getQueryDetails().getRdfDbQueries()) {
 			System.out.println(dbQuerie);
 			etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
 		}
 		
 		//Register ele querie.	
-		this.ecConnectionManager.registerEventPattern(epSparqlQuery);
+		this.ecConnectionManager.registerEventPattern(cepQuery);
 	}
 
 	@Override
-	public EpSparqlQuery getRegisteredEventPattern(String queryId) throws DcepManagementException {
+	public CepQuery getRegisteredEventPattern(String queryId) throws DcepManagementException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
@@ -143,7 +143,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public Map<String, EpSparqlQuery> getRegisteredEventPatterns() {
+	public Map<String, CepQuery> getRegisteredEventPatterns() {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
@@ -262,12 +262,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public Map<String, EpSparqlQuery> getRegisteredQueries() {
+	public Map<String, CepQuery> getRegisteredQueries() {
 		return registeredQueries;
 	}
 
 	@Override
-	public void setRegisteredQueries(Map<String, EpSparqlQuery> registeredQueries) {
+	public void setRegisteredQueries(Map<String, CepQuery> registeredQueries) {
 		this.registeredQueries = registeredQueries;
 	}
 

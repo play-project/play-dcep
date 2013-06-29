@@ -33,7 +33,7 @@ import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
@@ -47,7 +47,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 	private final PlayJplEngineWrapper engine;
 	private final Set<SimplePublishApi> recipients;
-	private final Map<String, EpSparqlQuery> registeredQueries;
+	private final Map<String, CepQuery> registeredQueries;
 	private final HistoricalDataEngine historicData;
 	
 	private final static Node STARTTIME = TypeConversion.toJenaNode(Event.STARTTIME);
@@ -55,7 +55,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	private final static Node EVENTPATTERN = TypeConversion.toJenaNode(Event.EVENTPATTERN);
 	private final static Node SOURCE = TypeConversion.toJenaNode(Event.SOURCE);
 
-	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, EpSparqlQuery> registeredQueries, EcConnectionManager ecConnectionManager) {
+	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, CepQuery> registeredQueries, EcConnectionManager ecConnectionManager) {
 		this.engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.recipients = recipients;
 		this.registeredQueries = registeredQueries;
@@ -182,7 +182,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		/*
 		 * Add historic data to event:
 		 */
-		EpSparqlQuery query = this.registeredQueries.get(event.getProperties()[1].toString());
+		CepQuery query = this.registeredQueries.get(event.getProperties()[1].toString());
 		if (query == null) {
 			logger.error("Query with ID {} was not found in registeredQueries.", event.getProperties()[1].toString());
 		} else if (query.getHistoricalQueries() != null && !query.getHistoricalQueries().isEmpty()) {

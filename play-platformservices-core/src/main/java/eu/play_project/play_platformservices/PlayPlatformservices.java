@@ -29,7 +29,7 @@ import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWind
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.play_commons.constants.Constants;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -148,6 +148,19 @@ public class PlayPlatformservices implements QueryDispatchApi,
 					+ this.getClass().getSimpleName());
 		}
 
+		CepQuery epQuery = createCepQuery(queryId, query);
+		
+		try {
+			dcepManagmentApi.registerEventPattern(epQuery);
+		} catch (Exception e) {
+			logger.error("Error while registering query: " + queryId, e);
+			throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage()));
+		}
+		return queryId;
+	}
+
+	private CepQuery createCepQuery(String queryId, String query)
+			throws QueryDispatchException {
 		// Parse query
 		Query q;
 		try {
@@ -165,7 +178,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);
 		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
-		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
+		CepQuery epQuery = new CepQuery(qd, eleGenerator.getEle());
 		
 		
 		//Generate historical query.
@@ -174,14 +187,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		// Add EP-SPARQL query.
 		epQuery.setEpSparqlQuery(query);
-		
-		try {
-			dcepManagmentApi.registerEventPattern(epQuery);
-		} catch (Exception e) {
-			logger.error("Error while registering query: " + queryId, e);
-			throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage()));
-		}
-		return queryId;
+		return epQuery;
 	}
 
 
@@ -264,7 +270,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 		List<eu.play_project.play_platformservices.jaxb.Query> results = new ArrayList<eu.play_project.play_platformservices.jaxb.Query>();
 
-		Map<String, EpSparqlQuery> queries = dcepManagmentApi
+		Map<String, CepQuery> queries = dcepManagmentApi
 				.getRegisteredEventPatterns();
 
 		for (String queryId : queries.keySet()) {

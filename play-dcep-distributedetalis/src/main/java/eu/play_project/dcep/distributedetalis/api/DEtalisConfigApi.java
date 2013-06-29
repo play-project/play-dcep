@@ -12,7 +12,7 @@ import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 
 /**
  * Set attributes used by a dEtalis instance. dEtalis can be configured with defend implementations of an attribute. E.g. Defended output methods.
@@ -30,8 +30,8 @@ public interface DEtalisConfigApi {
 	public void setEventInputProvider(JtalisInputProvider eventInputProvider);
 	public void setSemWebLib(PrologSemWebLib semWebLib);
 	public DistributedEtalis getDistributedEtalis();
-	public Map<String, EpSparqlQuery> getRegisteredQueries();
-	public void setRegisteredQueries(Map<String, EpSparqlQuery> registeredQueries);
+	public Map<String, CepQuery> getRegisteredQueries();
+	public void setRegisteredQueries(Map<String, CepQuery> registeredQueries);
 	public EcConnectionManager getEcConnectionManager();
 	public Set<SimplePublishApi> getEventSinks();
 	public JtalisContextImpl getEtalis();

@@ -19,7 +19,7 @@ import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_project.play_platformservices.QueryTemplateImpl;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -88,7 +88,7 @@ public class QueryTemplateImplTest {
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails("'" + "123" + "'", q);
 
-		EpSparqlQuery epQuery = new EpSparqlQuery(qd, eleGenerator.getEle());
+		CepQuery epQuery = new CepQuery(qd, eleGenerator.getEle());
 		
 		//Generate historical query.
 		epQuery.setHistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));

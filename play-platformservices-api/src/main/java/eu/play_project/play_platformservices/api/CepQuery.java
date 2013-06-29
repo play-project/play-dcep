@@ -3,19 +3,19 @@ package eu.play_project.play_platformservices.api;
 import java.io.Serializable;
 import java.util.List;
 
-public class EpSparqlQuery implements Serializable {
+public class CepQuery implements Serializable {
 
 	private static final long serialVersionUID = 100L;
 
 	private QueryDetails queryDetails;
-	private String epSparqlQuery;
+	private String bdpl_Query;
 	private String eleQuery;
 	private QueryTemplate constructTemplate;
 	private List<HistoricalQuery> historicalQueries;
 	
 	
-	public EpSparqlQuery(){}
-	public EpSparqlQuery(QueryDetails queryDetails, String eleQuery){
+	public CepQuery(){}
+	public CepQuery(QueryDetails queryDetails, String eleQuery){
 		this.queryDetails = queryDetails;
 		this.eleQuery = eleQuery;
 	}
@@ -29,11 +29,11 @@ public class EpSparqlQuery implements Serializable {
 	}
 	
 	public String getEpSparqlQuery() {
-		return epSparqlQuery;
+		return bdpl_Query;
 	}
 	
 	public void setEpSparqlQuery(String epSparqlQuery) {
-		this.epSparqlQuery = epSparqlQuery;
+		this.bdpl_Query = epSparqlQuery;
 	}
 	
 	public String getEleQuery() {

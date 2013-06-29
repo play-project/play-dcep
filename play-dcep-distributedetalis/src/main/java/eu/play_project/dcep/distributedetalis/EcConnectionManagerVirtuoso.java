@@ -42,7 +42,7 @@ import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventformat.EventFormatHelpers;
 import eu.play_project.play_eventadapter.AbstractReceiver;
 import eu.play_project.play_eventadapter.AbstractSender;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
@@ -271,12 +271,12 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 
 	@Override
-	public void registerEventPattern(EpSparqlQuery epSparqlQuery) {
+	public void registerEventPattern(CepQuery cepQuery) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
-		for (String cloudId : epSparqlQuery.getQueryDetails().getInputStreams()) {
+		for (String cloudId : cepQuery.getQueryDetails().getInputStreams()) {
 			subscribe(cloudId);
 		}
 
@@ -284,8 +284,8 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 
 	@Override
-	public void unregisterEventPattern(EpSparqlQuery epSparqlQuery) {
-		for (String cloudId : epSparqlQuery.getQueryDetails().getInputStreams()) {
+	public void unregisterEventPattern(CepQuery cepQuery) {
+		for (String cloudId : cepQuery.getQueryDetails().getInputStreams()) {
 			unsubscribe(cloudId, this.subscriptions.get(cloudId).sub);
 		}
 	}

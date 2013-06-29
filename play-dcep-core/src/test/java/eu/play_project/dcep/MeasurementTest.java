@@ -39,7 +39,7 @@ import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -58,7 +58,7 @@ public class MeasurementTest {
 	private final Logger logger = Logger.getAnonymousLogger();
 
 	@Test
-	public void Clic2callPatternTest() throws IllegalLifeCycleException,
+	public void basicMeasurementTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException,
 			QueryDispatchException {
 
@@ -94,218 +94,10 @@ public class MeasurementTest {
 		}
 	}
 
-	/**
-	 * One events contains multiple topics a person is talking about.
-	 */
-	@Test
-	public void setOperationTest() throws IllegalLifeCycleException,
-			NoSuchInterfaceException, ADLException, QueryDispatchException {
-		String queryString;
 
-		InstantiatePlayPlatform();
 
-		// Get query.
-		queryString = getSparqlQueries("play-bdpl-all-topics-he-talks-about-setoperation-example.eprq");
 
-		// Compile query
-		String paternID = queryDispatchApi.registerQuery("abc", queryString);
-
-		// Subscribe to get complex events.
-		SimplePublishApiSubscriber subscriber = null;
-		try {
-			subscriber = PAActiveObject.newActive(
-					SimplePublishApiSubscriber.class, new Object[] {});
-		} catch (ActiveObjectCreationException e) {
-			e.printStackTrace();
-		} catch (NodeException e) {
-			e.printStackTrace();
-		}
-
-		testApi.attach(subscriber);
-
-		logger.info("Publish evetns");
-		for (int i = 0; i < 5; i++) {
-			CompoundEvent event = createFacebookTopicEvent("example1"
-					+ Math.random());
-			testApi.publish(event);
-		}
-
-		// Wait
-		delay();
-
-		// Contains coffee and tea.
-		System.out.println();
-		assertTrue(subscriber.getComplexEvents().size() == 5);
-		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7)
-				.getMatchObject().toString(), "\"Tea\"");
-		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(8)
-				.getMatchObject().toString(), "\"Coffee\"");
-	}
-
-	// @Test
-	public void Clic2callPatternPlusTweetTest()
-			throws IllegalLifeCycleException, NoSuchInterfaceException,
-			ADLException, InterruptedException, QueryDispatchException {
-
-		String queryString;
-
-		InstantiatePlayPlatform();
-
-		// Get query.
-		queryString = getSparqlQueries("play-epsparql-clic2call-plus-tweet.eprq");
-
-		// Compile query
-		String paternID = queryDispatchApi
-				.registerQuery("example", queryString);
-
-		// Subscribe to get complex events.
-		SimplePublishApiSubscriber subscriber = null;
-		try {
-			subscriber = PAActiveObject.newActive(
-					SimplePublishApiSubscriber.class, new Object[] {});
-		} catch (ActiveObjectCreationException e) {
-			e.printStackTrace();
-		} catch (NodeException e) {
-			e.printStackTrace();
-		}
-
-		testApi.attach(subscriber);
-
-		logger.info("Publish evetns");
-		for (int i = 0; i < 10; i++) {
-			CompoundEvent event = createTaxiUCCallEvent("example"
-					+ Math.random());
-			logger.fine("Publish event" + event);
-			testApi.publish(event);
-		}
-
-		// Wait
-		delay();
-
-		assertTrue(subscriber.getComplexEvents().size() == 9);
-
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
-
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Aggregate values in time-window. A complex event is created if the
-	 * average value is >=5 in a 5s window. Event e1,e2,e3 are in window w1 and
-	 * the average is > 5. For event e4 the average is < 5, because e1 is out of
-	 * window.
-	 */
-	@Test
-	public void AggregateAverageWindSpeedTest()
-			throws IllegalLifeCycleException, NoSuchInterfaceException,
-			ADLException, QueryDispatchException, InterruptedException {
-		String queryString;
-
-		InstantiatePlayPlatform();
-
-		// Get query.
-		queryString = getSparqlQueries("patterns/wether_wind_speed.eprq");
-
-		// Compile query
-		queryDispatchApi.registerQuery("example", queryString);
-
-		// Subscribe to get complex events.
-		SimplePublishApiSubscriber subscriber = null;
-		try {
-			subscriber = PAActiveObject.newActive(
-					SimplePublishApiSubscriber.class, new Object[] {});
-		} catch (ActiveObjectCreationException e) {
-			e.printStackTrace();
-		} catch (NodeException e) {
-			e.printStackTrace();
-		}
-
-		testApi.attach(subscriber);
-
-		logger.info("Publish evetns");
-
-		testApi.publish(createWeatherEvent("example1" + Math.random(), 20)); // e1
-																				// start
-																				// window
-																				// w1.
-		testApi.publish(createWeatherEvent("example1" + Math.random(), 1)); // e2
-		Thread.sleep(3000); // wait 3s
-		testApi.publish(createWeatherEvent("example1" + Math.random(), 1)); // e3
-		Thread.sleep(2000); // wait 2s
-		testApi.publish(createWeatherEvent("example1" + Math.random(), 1)); // e4
-																			// is
-																			// out
-																			// of
-																			// window
-																			// w1.
-
-		// Wait
-		delay();
-		System.out.println(subscriber.getComplexEvents().size());
-		assertTrue(subscriber.getComplexEvents().size() == 3);
-
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
-
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void sendEvents() {
-		start = true;
-		System.out.println("Start Producer");
-		System.out.println("Send 2000 Events ");
-
-	}
-
-	public static CompoundEvent createTaxiUCCallEvent(String eventId) {
-
-		UcTelcoCall event = new UcTelcoCall(
-		// set the RDF context part
-				EventHelpers.createEmptyModel(eventId),
-				// set the RDF subject
-				eventId + EVENT_ID_SUFFIX,
-				// automatically write the rdf:type statement
-				true);
-
-		// Run some setters of the event
-		event.setUcTelcoCalleePhoneNumber("49123456789");
-		event.setUcTelcoCallerPhoneNumber("49123498765");
-		event.setUcTelcoDirection("incoming");
-
-		double longitude = 123;
-		double latitude = 345;
-		EventHelpers.setLocationToEvent(event, longitude, latitude);
-
-		// Create a Calendar for the current date and time
-		event.setEndTime(Calendar.getInstance());
-		event.setStream(new URIImpl(Stream.TaxiUCCall.getUri()));
-
-		// Push events.
-		return EventCloudHelpers.toCompoundEvent(event);
-	}
+	
 
 	public static void InstantiatePlayPlatform()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,

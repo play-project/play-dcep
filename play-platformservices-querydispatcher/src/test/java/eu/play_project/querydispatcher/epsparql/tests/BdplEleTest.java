@@ -20,7 +20,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
-import eu.play_project.play_platformservices.api.EpSparqlQuery;
+import eu.play_project.play_platformservices.api.CepQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -99,14 +99,14 @@ public class BdplEleTest {
 		// Add query details.
 		QueryDetails details = new QueryDetails();
 	
-		EpSparqlQuery epSparqlQuery = new EpSparqlQuery();
-		epSparqlQuery.setEleQuery(etalisPattern);
+		CepQuery cepQuery = new CepQuery();
+		cepQuery.setEleQuery(etalisPattern);
 
 		details.setQueryId(patternId);
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);
-		epSparqlQuery.setQueryDetails(details);
+		cepQuery.setQueryDetails(details);
 		
 		System.out.println(etalisPattern);
 	}
