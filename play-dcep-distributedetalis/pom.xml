@@ -80,10 +80,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>fr.inria.eventcloud</groupId>
-			<artifactId>eventcloud-utils-trigwriter</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.ow2.petals.dsb</groupId>
 			<artifactId>dsb-notification-service</artifactId>
 			<version>1.0.0</version>

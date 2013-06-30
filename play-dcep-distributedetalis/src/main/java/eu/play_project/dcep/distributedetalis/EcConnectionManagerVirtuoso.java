@@ -15,6 +15,8 @@ import java.util.Properties;
 
 import javax.xml.namespace.QName;
 
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.petalslink.dsb.commons.service.api.Service;
 import org.petalslink.dsb.notification.commons.NotificationException;
@@ -27,7 +29,6 @@ import org.w3c.dom.Element;
 
 import virtuoso.jdbc4.VirtuosoDataSource;
 
-import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 
@@ -46,7 +47,6 @@ import eu.play_project.play_platformservices.api.CepQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
-import fr.inria.eventcloud.utils.trigwriter.TriGWriter;
 
 public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
@@ -262,7 +262,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
         
 		// Send event to DSB:
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		TriGWriter.write(out, DatasetFactory.create(quadruplesToDatasetGraph(event)));
+		RDFDataMgr.write(out, quadruplesToDatasetGraph(event), RDFFormat.TRIG_BLOCKS);
 		Element notifPayload = EventFormatHelpers.wrapWithDomNativeMessageElement(new String(out.toByteArray()));
 		this.rdfSender.notify(notifPayload, getTopic(cloudId));
 		
