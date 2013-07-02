@@ -29,7 +29,7 @@ import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWind
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.play_commons.constants.Constants;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -148,7 +148,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 					+ this.getClass().getSimpleName());
 		}
 
-		CepQuery epQuery = createCepQuery(queryId, query);
+		BdplQuery epQuery = createCepQuery(queryId, query);
 		
 		try {
 			dcepManagmentApi.registerEventPattern(epQuery);
@@ -159,7 +159,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		return queryId;
 	}
 
-	private CepQuery createCepQuery(String queryId, String query)
+	private BdplQuery createCepQuery(String queryId, String query)
 			throws QueryDispatchException {
 		// Parse query
 		Query q;
@@ -178,7 +178,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);
 		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
-		CepQuery epQuery = new CepQuery(qd, eleGenerator.getEle());
+		BdplQuery epQuery = new BdplQuery(qd, eleGenerator.getEle());
 		
 		
 		//Generate historical query.
@@ -270,7 +270,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 		List<eu.play_project.play_platformservices.jaxb.Query> results = new ArrayList<eu.play_project.play_platformservices.jaxb.Query>();
 
-		Map<String, CepQuery> queries = dcepManagmentApi
+		Map<String, BdplQuery> queries = dcepManagmentApi
 				.getRegisteredEventPatterns();
 
 		for (String queryId : queries.keySet()) {

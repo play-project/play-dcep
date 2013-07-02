@@ -16,7 +16,7 @@ import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
@@ -43,7 +43,7 @@ public class HistoricDataTest {
 
 		// Add queryDetails
 		QueryDetails qd = new QueryDetails(queryId);
-		CepQuery epQuery = new CepQuery(qd, "");
+		BdplQuery epQuery = new BdplQuery(qd, "");
 		
 		//Generate historical query.
 		epQuery.setHistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));

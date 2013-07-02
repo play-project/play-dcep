@@ -29,7 +29,7 @@ import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
@@ -88,7 +88,7 @@ public class DcepTest implements Serializable {
 		//dcepTestApi.setEcConnectionManager(new EcConnectionMangerLocal());
 
 		//Register pattern
-		dcepManagmentApi.registerEventPattern(new CepQuery(
+		dcepManagmentApi.registerEventPattern(new BdplQuery(
 				new QueryDetails("queryId42"),
 				"complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))"));
 

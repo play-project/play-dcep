@@ -29,7 +29,7 @@ import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -71,7 +71,7 @@ public class SingleDistributedEtalisInstancePublisher {
 	}
 
 
-	private static CepQuery generateEle(String queryString) {
+	private static BdplQuery generateEle(String queryString) {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		// Use custom visitor
@@ -83,13 +83,13 @@ public class SingleDistributedEtalisInstancePublisher {
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
-		CepQuery cepQuery = new CepQuery();
-		cepQuery.setEleQuery(etalisPattern);
+		BdplQuery bdplQuery = new BdplQuery();
+		bdplQuery.setEleQuery(etalisPattern);
 
 		QueryDetails details = new QueryDetails();
 		details.setQueryId(patternId);
-		cepQuery.setQueryDetails(details);
-		return cepQuery;
+		bdplQuery.setQueryDetails(details);
+		return bdplQuery;
 	}
 	
 	public static CompoundEvent createTaxiUCCallEvent(String eventId){

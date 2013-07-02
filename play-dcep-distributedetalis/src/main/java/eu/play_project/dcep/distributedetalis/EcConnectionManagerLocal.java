@@ -21,7 +21,7 @@ import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
@@ -38,13 +38,13 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 	public EcConnectionManagerLocal(){}
 	
 	@Override
-	public void registerEventPattern(CepQuery cepQuery) {}
+	public void registerEventPattern(BdplQuery bdplQuery) {}
 	
 	@Override
 	public void publish(CompoundEvent event) {}
 	
 	@Override
-	public void unregisterEventPattern(CepQuery cepQuery) {}
+	public void unregisterEventPattern(BdplQuery bdplQuery) {}
 	
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query,

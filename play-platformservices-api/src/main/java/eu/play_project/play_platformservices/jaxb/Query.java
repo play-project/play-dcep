@@ -2,10 +2,10 @@ package eu.play_project.play_platformservices.jaxb;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 
 /**
- * A simple bean to encapsulate parts of a {@linkplain CepQuery} for WS marshalling.
+ * A simple bean to encapsulate parts of a {@linkplain BdplQuery} for WS marshalling.
  * 
  * @author Christophe Hamerling
  * @author Roland Stühmer
@@ -15,9 +15,9 @@ public class Query {
 	
 	public Query() {};
 	
-	public Query(CepQuery cepQuery) {
-		this.id = cepQuery.getQueryDetails().getQueryId();
-		this.content = cepQuery.getEpSparqlQuery();
+	public Query(BdplQuery bdplQuery) {
+		this.id = bdplQuery.getQueryDetails().getQueryId();
+		this.content = bdplQuery.getEpSparqlQuery();
 	};
 	
 

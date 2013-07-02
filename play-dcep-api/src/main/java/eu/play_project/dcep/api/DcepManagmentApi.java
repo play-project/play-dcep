@@ -2,7 +2,7 @@ package eu.play_project.dcep.api;
 
 import java.util.Map;
 
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 
 
 public interface DcepManagmentApi {
@@ -13,7 +13,7 @@ public interface DcepManagmentApi {
 	 * @throws DcepManagementException
 	 *             if the pattern has errors
 	 */
-	public void registerEventPattern(CepQuery cepQuery);
+	public void registerEventPattern(BdplQuery bdplQuery);
 
 	/**
 	 * Unregister an existing event pattern. This method silently does nothing
@@ -29,11 +29,11 @@ public interface DcepManagmentApi {
 	 * @throws DcepManagementException
 	 *             if there is no pattern with the given ID
 	 */
-	public CepQuery getRegisteredEventPattern(String queryId) throws DcepManagementException;
+	public BdplQuery getRegisteredEventPattern(String queryId) throws DcepManagementException;
 
 	/**
 	 * Get a collection of all currently registered event patterns.
 	 */
-	public Map<String, CepQuery> getRegisteredEventPatterns();
+	public Map<String, BdplQuery> getRegisteredEventPatterns();
 
 }

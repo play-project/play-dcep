@@ -14,7 +14,7 @@ import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.EventCloudId;
 import fr.inria.eventcloud.api.PublishApi;
@@ -169,8 +169,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	}
 
 	@Override
-	public void registerEventPattern(CepQuery cepQuery) {
-		for (String cloudId : cepQuery.getQueryDetails().getInputStreams()) {
+	public void registerEventPattern(BdplQuery bdplQuery) {
+		for (String cloudId : bdplQuery.getQueryDetails().getInputStreams()) {
 			subscribe(cloudId);
 		}
 
@@ -179,8 +179,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	}
 
 	@Override
-	public void unregisterEventPattern(CepQuery cepQuery) {
-		for (String cloudId : cepQuery.getQueryDetails().getInputStreams()) {
+	public void unregisterEventPattern(BdplQuery bdplQuery) {
+		for (String cloudId : bdplQuery.getQueryDetails().getInputStreams()) {
 			try {
 				unsubscribe(cloudId,
 						this.subscriptions.get(getInputCloud(cloudId)).sub);

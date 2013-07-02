@@ -20,7 +20,7 @@
 //import eu.play_project.dcep.distributedetalis.EcConnectionManager;
 //import eu.play_project.play_commons.constants.Constants;
 //import eu.play_project.play_commons.constants.Stream;
-//import eu.play_project.play_platformservices.api.CepQuery;
+//import eu.play_project.play_platformservices.api.BdplQuery;
 //import eu.play_project.play_platformservices.api.QueryDetails;
 //import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 //import eu.play_project.play_platformservices_querydispatcher.epsparql.visitor.realtime.EleGeneratorForConstructQuery;
@@ -53,8 +53,8 @@
 //		// Query
 //		//Example EP-SPARQL-Query-Realtime-Historical-shared-Variables.eprq
 //		String queryString = "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX xsd:       <http://events.event-processing.org/types/>\nPREFIX :       <http://events.event-processing.org/types/>\n CONSTRUCT{\n    :e rdf:type :Temperature .\n    :e :stream <http://streams.event-processing.org/ids/Temperatures#stream>.\n    :e :current    ?temperature.\n    :e :date ?pub_date \n }\n WHERE{\n \tEVENT ?id1 {\n   \t\t?e1 rdf:type :Temperature .\n   \t\t?e1 :stream <http://streams.event-processing.org/ids/Temperature#stream> .\n   \t\t?e1 :current ?temperature .\n \t}\n \tGRAPH ?id {\n   \t\t?e1 rdf:type :Temperature .\n   \t\t?e1 :current ?temperature .\n   \t\t?e2 :date ?pub_date \n  \t}\n }";
-//		//CepQuery query = generateQuery(args[0]);
-//		CepQuery query = generateQuery(queryString) ; 
+//		//BdplQuery query = generateQuery(args[0]);
+//		BdplQuery query = generateQuery(queryString) ; 
 //		String historicalQuery = query.getHistoricalQuery();
 //		
 //		//TODO Add values.
@@ -86,14 +86,14 @@
 //	}
 //	
 //
-//	public static CepQuery generateQuery(String queryString){
+//	public static BdplQuery generateQuery(String queryString){
 //		com.hp.hpl.jena.query.Query query = QueryFactory.create(queryString, Syntax.syntaxEPSPARQL_20);
 //
 //		EleGenerator eleGenerator = new EleGeneratorForConstructQuery();
 //		eleGenerator.setPatternId("'id_1234'");
 //		eleGenerator.generateEle(query);
 //		
-//		CepQuery epQuery = new CepQuery(new QueryDetails("'id_1234'"), eleGenerator.getEle());
+//		BdplQuery epQuery = new BdplQuery(new QueryDetails("'id_1234'"), eleGenerator.getEle());
 //		epQuery.setHistoricalQuery(query.toString());
 //		
 //		return epQuery;

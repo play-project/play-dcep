@@ -3,7 +3,7 @@ package eu.play_project.play_platformservices.api;
 import java.io.Serializable;
 import java.util.List;
 
-public class CepQuery implements Serializable {
+public class BdplQuery implements Serializable {
 
 	private static final long serialVersionUID = 100L;
 
@@ -14,8 +14,8 @@ public class CepQuery implements Serializable {
 	private List<HistoricalQuery> historicalQueries;
 	
 	
-	public CepQuery(){}
-	public CepQuery(QueryDetails queryDetails, String eleQuery){
+	public BdplQuery(){}
+	public BdplQuery(QueryDetails queryDetails, String eleQuery){
 		this.queryDetails = queryDetails;
 		this.eleQuery = eleQuery;
 	}

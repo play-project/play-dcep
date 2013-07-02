@@ -23,6 +23,7 @@ import com.hp.hpl.jena.query.Query;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
+import eu.play_project.dcep.api.measurement.MeasurementConfig;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
@@ -33,7 +34,7 @@ import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigVirtuoso;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
@@ -88,23 +89,23 @@ Serializable {
 	}
 
 	@Override
-	public void registerEventPattern(CepQuery cepQuery){
+	public void registerEventPattern(BdplQuery bdplQuery){
 
 		logger.debug("Pattern reached DCEP facade: "
-				+ cepQuery.getEleQuery());
+				+ bdplQuery.getEleQuery());
 
 		if(!init) init();
-		dEtalisManagment.registerEventPattern(cepQuery);
+		dEtalisManagment.registerEventPattern(bdplQuery);
 	}
 
 	@Override
-	public CepQuery getRegisteredEventPattern(String queryId) throws DcepManagementException{
+	public BdplQuery getRegisteredEventPattern(String queryId) throws DcepManagementException{
 		if(!init) init();
 		return dEtalisManagment.getRegisteredEventPattern(queryId);
 	}
 
 	@Override
-	public Map<String, CepQuery> getRegisteredEventPatterns() {
+	public Map<String, BdplQuery> getRegisteredEventPatterns() {
 		if(!init) init();
 		return dEtalisManagment.getRegisteredEventPatterns();
 	}
@@ -198,9 +199,9 @@ Serializable {
 	}
 
 	@Override
-	public void measurePerformance(Query measurementQuery, int measuringPeriod) {
+	public void measurePerformance(MeasurementConfig config) {
 		if(!init) init();
-		dEtalisMonitoring.measurePerformance(measurementQuery, measuringPeriod);
+		dEtalisMonitoring.measurePerformance(config);
 	}
 
 	@Override

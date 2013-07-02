@@ -16,7 +16,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -55,7 +55,7 @@ public class SingleDistributedEtalisInstancePublisher {
 //		testApiI3 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root3.getFcInterface("DistributedEtalisTestApi"));
 //		managementApiI3 = ((eu.play_project.dcep.api.DcepManagmentApi) root3.getFcInterface("DcepManagmentApi"));
 
-		CepQuery q = generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq"));
+		BdplQuery q = generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq"));
 		// Register queries.  mw
 		managementApiI1.registerEventPattern(q);
 		managementApiI2.registerEventPattern(q);
@@ -72,7 +72,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		
 	}
 
-	private static CepQuery generateEle(String queryString) {
+	private static BdplQuery generateEle(String queryString) {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		// Use custom visitor
@@ -86,16 +86,16 @@ public class SingleDistributedEtalisInstancePublisher {
 		
 		QueryDetails details = new QueryDetails();
 	
-		CepQuery cepQuery = new CepQuery();
-		cepQuery.setEleQuery(etalisPattern);
+		BdplQuery bdplQuery = new BdplQuery();
+		bdplQuery.setEleQuery(etalisPattern);
 
 		details.setQueryId(patternId);
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);
-		cepQuery.setQueryDetails(details);
+		bdplQuery.setQueryDetails(details);
 		
-		return cepQuery;
+		return bdplQuery;
 	}
 
 	public static void delay(int delay) {

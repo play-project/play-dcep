@@ -1,7 +1,7 @@
 package eu.play_project.dcep.distributedetalis.api;
 
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
-import eu.play_project.play_platformservices.api.CepQuery;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 public interface EcConnectionManager extends SimplePublishApi{
@@ -12,9 +12,9 @@ public interface EcConnectionManager extends SimplePublishApi{
 	@Override
 	public void publish(CompoundEvent event);
 
-	public void registerEventPattern(CepQuery cepQuery);
+	public void registerEventPattern(BdplQuery bdplQuery);
 
-	public void unregisterEventPattern(CepQuery cepQuery);
+	public void unregisterEventPattern(BdplQuery bdplQuery);
 
 	public void destroy();
 
