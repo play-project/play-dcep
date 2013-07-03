@@ -20,7 +20,6 @@
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-eventtypes</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>
