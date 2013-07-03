@@ -170,7 +170,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 
 	@Override
 	public void registerEventPattern(BdplQuery bdplQuery) {
-		for (String cloudId : bdplQuery.getQueryDetails().getInputStreams()) {
+		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
 			subscribe(cloudId);
 		}
 
@@ -180,7 +180,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 
 	@Override
 	public void unregisterEventPattern(BdplQuery bdplQuery) {
-		for (String cloudId : bdplQuery.getQueryDetails().getInputStreams()) {
+		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
 			try {
 				unsubscribe(cloudId,
 						this.subscriptions.get(getInputCloud(cloudId)).sub);

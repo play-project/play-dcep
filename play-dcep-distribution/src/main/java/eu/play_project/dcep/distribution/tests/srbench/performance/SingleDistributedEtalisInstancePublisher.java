@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
@@ -16,7 +17,9 @@ import com.hp.hpl.jena.query.QueryFactory;
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
+import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -84,17 +87,20 @@ public class SingleDistributedEtalisInstancePublisher {
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 		
-		QueryDetails details = new QueryDetails();
+		QueryDetails details = new QueryDetails(patternId);
 	
-		BdplQuery bdplQuery = new BdplQuery();
-		bdplQuery.setEleQuery(etalisPattern);
-
-		details.setQueryId(patternId);
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);
-		bdplQuery.setQueryDetails(details);
 		
+		BdplQuery bdplQuery = BdplQuery.builder()
+				.ele(etalisPattern)
+				.details(details)
+				.bdpl("")
+				.constructTemplate(new QueryTemplateImpl())
+				.historicalQueries(new LinkedList<HistoricalQuery>())
+				.build();
+
 		return bdplQuery;
 	}
 

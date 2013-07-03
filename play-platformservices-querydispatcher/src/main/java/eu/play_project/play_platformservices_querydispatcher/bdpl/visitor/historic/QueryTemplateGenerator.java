@@ -3,6 +3,7 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.histo
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 
@@ -16,7 +17,7 @@ public class QueryTemplateGenerator {
 	QueryTemplate queryTemplate;
 	
 	public QueryTemplate createQueryTemplate(Query inputQuery) {
-		Node graph = Node.createURI("urn:placeholder");
+		Node graph = NodeFactory.createURI("urn:placeholder");
 		queryTemplate = new QueryTemplateImpl();
 
 		Iterator<Triple> iter = inputQuery.getConstructTemplate().getTriples().iterator();

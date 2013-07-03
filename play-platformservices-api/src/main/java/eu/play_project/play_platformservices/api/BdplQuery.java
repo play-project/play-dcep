@@ -7,33 +7,45 @@ public class BdplQuery implements Serializable {
 
 	private static final long serialVersionUID = 100L;
 
-	private QueryDetails queryDetails;
-	private String bdpl_Query;
-	private String eleQuery;
-	private QueryTemplate constructTemplate;
-	private List<HistoricalQuery> historicalQueries;
+	private final QueryDetails queryDetails;
+	private final String bdplQuery;
+	private final String eleQuery;
+	private final QueryTemplate constructTemplate;
+	private final List<HistoricalQuery> historicalQueries;
 	
 	
-	public BdplQuery(){}
-	public BdplQuery(QueryDetails queryDetails, String eleQuery){
-		this.queryDetails = queryDetails;
-		this.eleQuery = eleQuery;
+	public BdplQuery(Builder builder) {
+		this.queryDetails = builder.queryDetails;
+		this.bdplQuery = builder.bdplQuery;
+		this.eleQuery = builder.eleQuery;
+		this.constructTemplate = builder.constructTemplate;
+		this.historicalQueries = builder.historicalQueries;
 	}
 	
-	public QueryDetails getQueryDetails() {
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	/**
+	 * This builder can be made to build a {@linkplain BdplQuery} <b>without</b>
+	 * checking consistency. This means that there is no checking whether all
+	 * setters were invoked (with not null values) before building. Useful e.g.
+	 * in UnitTests where inconsistent {@linkplain BdplQuery} are acceptable.
+	 * 
+	 * @param validating
+	 *            whether to check all setters were called (with not null
+	 *            values) before building
+	 */
+	public static Builder nonValidatingBuilder() {
+		return new Builder(false);
+	}
+
+	public QueryDetails getDetails() {
 		return queryDetails;
 	}
 	
-	public void setQueryDetails(QueryDetails queryDetails) {
-		this.queryDetails = queryDetails;
-	}
-	
-	public String getEpSparqlQuery() {
-		return bdpl_Query;
-	}
-	
-	public void setEpSparqlQuery(String epSparqlQuery) {
-		this.bdpl_Query = epSparqlQuery;
+	public String getBdpl() {
+		return bdplQuery;
 	}
 	
 	public String getEleQuery() {
@@ -48,28 +60,84 @@ public class BdplQuery implements Serializable {
 		}
 	}
 	
-	/**
-	 * Set template for historical queries with placeholder for shared variables.
-	 * @param constructTemplate
-	 */
-	public void setConstructTemplate(QueryTemplate constructTemplate) {
-		this.constructTemplate = constructTemplate;
-	}
-	
 	public List<HistoricalQuery> getHistoricalQueries() {
 		return historicalQueries;
 	}
 	
-	public void setHistoricalQueries(List<HistoricalQuery> historicalQueries) {
-		this.historicalQueries = historicalQueries;
-	}
-	public void setEleQuery(String eleQuery) {
-		this.eleQuery = eleQuery;
-	}
-	
 	@Override
 	public String toString() {
-		return getEpSparqlQuery();
+		return getBdpl();
 	}
 	
+	public static class Builder {
+
+		private boolean validating;
+
+		public Builder() {
+			new Builder(true);
+		}
+		
+		public Builder (boolean validating) {
+			this.validating = validating;
+		}
+		
+		private QueryDetails queryDetails;
+		private String bdplQuery;
+		private String eleQuery;
+		private QueryTemplate constructTemplate;
+		private List<HistoricalQuery> historicalQueries;
+
+		public Builder details(QueryDetails queryDetails) {
+			this.queryDetails = queryDetails;
+			return this;
+		}
+
+		public Builder bdpl(String bdplQuery) {
+			this.bdplQuery = bdplQuery;
+			return this;
+		}
+		
+		public Builder historicalQueries(List<HistoricalQuery> historicalQueries) {
+			this.historicalQueries = historicalQueries;
+			return this;
+		}
+		
+		public Builder ele(String eleQuery) {
+			this.eleQuery = eleQuery;
+			return this;
+		}
+
+		/**
+		 * Set template for historical queries with placeholder for shared variables.
+		 */
+		public Builder constructTemplate(QueryTemplate constructTemplate) {
+			this.constructTemplate = constructTemplate;
+			return this;
+		}
+		
+		public BdplQuery build() {
+			if (validating) {
+				validate();
+			}
+			return new BdplQuery(this);
+		}
+		
+		private void validate() {
+			if (queryDetails == null) {
+				throw new IllegalStateException("queryDetails was not set on builder.");
+			}
+			if (bdplQuery == null) {
+				throw new IllegalStateException("bdplQuery was not set on builder.");
+			}
+			if (eleQuery == null) {
+				throw new IllegalStateException("eleQuery was not set on builder.");
+			}
+			if (constructTemplate == null) {
+				throw new IllegalStateException("constructTemplate was not set on builder.");
+			}
+			if (historicalQueries == null) {
+				throw new IllegalStateException("historicalQueries was not set on builder.");
+			}
+		}
+	}
 }

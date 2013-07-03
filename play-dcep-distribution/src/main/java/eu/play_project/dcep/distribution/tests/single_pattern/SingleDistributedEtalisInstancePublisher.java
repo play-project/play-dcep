@@ -23,6 +23,8 @@ import org.ow2.play.srbench.SrBenchExtendedSimulator;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
+import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
@@ -33,6 +35,7 @@ import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -83,12 +86,22 @@ public class SingleDistributedEtalisInstancePublisher {
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
-		BdplQuery bdplQuery = new BdplQuery();
-		bdplQuery.setEleQuery(etalisPattern);
+		// Parse query
+		Query q;
+		try {
+			q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
+		} catch (com.hp.hpl.jena.query.QueryException e) {
+			throw new IllegalArgumentException("Error compiling BDPL to ELE.", e);
+		}
 
-		QueryDetails details = new QueryDetails();
-		details.setQueryId(patternId);
-		bdplQuery.setQueryDetails(details);
+		BdplQuery bdplQuery = BdplQuery.builder()
+				.ele(etalisPattern)
+				.details(new QueryDetails(patternId))
+				.bdpl(queryString)
+				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
+				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
+				.build();
+		
 		return bdplQuery;
 	}
 	
@@ -200,9 +213,9 @@ public class SingleDistributedEtalisInstancePublisher {
 
 
 //		Quadruple q3 = new Quadruple(
-//				Node.createURI("http://prefix.example.com/" + eventId), 
+//				Node.createURI("http://prefix.example.com/" + eventId),
 //				Node.createURI("http://prefix.example.com/e1"),
-//				Node.createURI("http://prefix.example.com/math/value"), 
+//				Node.createURI("http://prefix.example.com/math/value"),
 //				Node.createURI(value + ""));
 
 		quads.add(q1);

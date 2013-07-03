@@ -43,22 +43,21 @@ public class HistoricDataTest {
 
 		// Add queryDetails
 		QueryDetails qd = new QueryDetails(queryId);
-		BdplQuery epQuery = new BdplQuery(qd, "");
-		
-		//Generate historical query.
-		epQuery.setHistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
-		epQuery.setConstructTemplate((new QueryTemplateGenerator()).createQueryTemplate(q));
-		
-		// Add EP-SPARQL query.
-		epQuery.setEpSparqlQuery(query);
-		
+		BdplQuery bdpl = BdplQuery.builder()
+				.details(qd)
+				.bdpl(query)
+				.ele("")
+				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
+				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
+				.build();
+				
 		variableBindings = new VariableBindings();
 		variableBindings.put("?tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
 		variableBindings.put("?id2", Arrays.asList(new Object[] {Node.createURI(TEST_URI)}));
 
 		//Get historical data to the given binding.
 		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
-		values = historicData.get(epQuery.getHistoricalQueries(), variableBindings);
+		values = historicData.get(bdpl.getHistoricalQueries(), variableBindings);
 		
 		for (String varName : values.keySet()) {
 			System.out.format("Bindings for %s: %s\n", varName, values.get(varName));
@@ -76,7 +75,7 @@ public class HistoricDataTest {
 
 		//Get historical data to the given binding.
 		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
-		values = historicData.get(epQuery.getHistoricalQueries(), variableBindings);
+		values = historicData.get(bdpl.getHistoricalQueries(), variableBindings);
 		
 		for (String varName : values.keySet()) {
 			System.out.format("Bindings for %s: %s\n", varName, values.get(varName));

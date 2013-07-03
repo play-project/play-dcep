@@ -60,12 +60,12 @@ public class SubscriberPerformanceTest implements PublishApi, Serializable {
 
 	@Override
 	public void publish(Quadruple arg0) {
-		throw new RuntimeException("Not implemented");
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	@Override
 	public void publish(Collection<CompoundEvent> arg0) {
-		throw new RuntimeException("Not implemented");
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 
@@ -98,7 +98,6 @@ public class SubscriberPerformanceTest implements PublishApi, Serializable {
 
 	@Override
 	public void publish(URL arg0, SerializationFormat arg1) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("not implemented");
 	}
 }

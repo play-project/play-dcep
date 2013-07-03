@@ -276,7 +276,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
-		for (String cloudId : bdplQuery.getQueryDetails().getInputStreams()) {
+		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
 			subscribe(cloudId);
 		}
 
@@ -285,7 +285,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 	@Override
 	public void unregisterEventPattern(BdplQuery bdplQuery) {
-		for (String cloudId : bdplQuery.getQueryDetails().getInputStreams()) {
+		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
 			unsubscribe(cloudId, this.subscriptions.get(cloudId).sub);
 		}
 	}

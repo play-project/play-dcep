@@ -12,7 +12,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -32,9 +32,9 @@ public class QueryTemplateImplTest {
 	@Test
 	public void testQueryTemplateImpl() {
 		QueryTemplateImpl qt = new QueryTemplateImpl();
-		qt.appendLine(Node.createURI("urn:1"), Node.createVariable("alice"), Node.createVariable("bob"), Node.createLiteral("100"));
-		qt.appendLine(Node.createURI("urn:1"), Node.createURI(EVENT_ID_PLACEHOLDER), Node.createURI("urn:someuri"), Node.createLiteral("120"));
-		qt.appendLine(Node.createURI("urn:2"), Node.createVariable("a"), Node.createVariable("b"), Node.createVariable("c"));
+		qt.appendLine(NodeFactory.createURI("urn:1"), NodeFactory.createVariable("alice"), NodeFactory.createVariable("bob"), NodeFactory.createLiteral("100"));
+		qt.appendLine(NodeFactory.createURI("urn:1"), NodeFactory.createURI(EVENT_ID_PLACEHOLDER), NodeFactory.createURI("urn:someuri"), NodeFactory.createLiteral("120"));
+		qt.appendLine(NodeFactory.createURI("urn:2"), NodeFactory.createVariable("a"), NodeFactory.createVariable("b"), NodeFactory.createVariable("c"));
 		
 		HistoricalData hd = new HistoricalData();
 		
@@ -65,7 +65,7 @@ public class QueryTemplateImplTest {
 		bindC.add("door");
 		hd.put("c", bindC);
 		
-		List<Quadruple> result = qt.fillTemplate(hd, Node.createURI("urn:graphName"), Node.createURI("urn:event"));
+		List<Quadruple> result = qt.fillTemplate(hd, NodeFactory.createURI("urn:graphName"), NodeFactory.createURI("urn:event"));
 		Assert.assertEquals("We expected 27 results.", 27, result.size());
 		
 		System.out.println(new CompoundEvent(result));
@@ -88,12 +88,14 @@ public class QueryTemplateImplTest {
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails("'" + "123" + "'", q);
 
-		BdplQuery epQuery = new BdplQuery(qd, eleGenerator.getEle());
-		
-		//Generate historical query.
-		epQuery.setHistoricalQueries(PlaySerializer.serializeToMultipleSelectQueries(q));
-		epQuery.setConstructTemplate(eleGenerator.getQueryTemplate());
-		
+		BdplQuery bdpl = BdplQuery.builder()
+				.details(qd)
+				.bdpl(queryString)
+				.ele(eleGenerator.getEle())
+				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
+				.constructTemplate(eleGenerator.getQueryTemplate())
+				.build();
+
 		System.out.println("FFF");
 		
 		
