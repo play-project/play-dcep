@@ -24,6 +24,7 @@ public class QueryDetails implements Serializable {
 	private String etalisProperty;
 	private String tumblingWindow;
 	private List<String> rdfDbQueries;
+	private String complexType;  //Type name of the complex event.
 	
 	public QueryDetails(){}
 	
@@ -114,5 +115,13 @@ public class QueryDetails implements Serializable {
 
 	public void setRdfDbQueries(List<String> rdfDbQueries) {
 		this.rdfDbQueries = rdfDbQueries;
+	}
+
+	public String getComplexType() {
+		return complexType;
+	}
+
+	public void setComplexType(String complexType) {
+		this.complexType = complexType;
 	}
 }

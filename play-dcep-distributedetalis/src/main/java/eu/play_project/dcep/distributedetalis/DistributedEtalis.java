@@ -124,6 +124,9 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
 		}
 		
+		// Configure ETALIS to inform output listener if complex event of new type appeared.
+		etalis.addEventTrigger(bdplQuery.getQueryDetails().getComplexType() + "/_");
+		
 		//Register ele querie.	
 		this.ecConnectionManager.registerEventPattern(bdplQuery);
 	}

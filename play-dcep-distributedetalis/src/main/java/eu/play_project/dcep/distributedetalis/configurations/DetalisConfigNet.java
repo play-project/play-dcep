@@ -85,7 +85,6 @@ public class DetalisConfigNet implements Configuration, Serializable{
 		
 		
 		// Set ETALIS properties.
-		// Set ETALIS properties.
 		etalis.setEtalisFlags("save_ruleId", "on");
 		etalis.addEventTrigger("complex/_");
 		etalis.addEventTrigger("realtimeResult/2");

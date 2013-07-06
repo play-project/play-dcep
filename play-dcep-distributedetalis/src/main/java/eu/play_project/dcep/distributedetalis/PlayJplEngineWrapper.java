@@ -52,6 +52,13 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	@Override
 	public synchronized boolean execute(com.jtalis.core.plengine.logic.Term term) {
 		try{
+			System.out.println(term);
+			System.out.println(term);
+			System.out.println(term);
+			System.out.println(term);
+			System.out.println(term);
+			System.out.println(term);
+			System.out.println(term);
 			return engine.execute(term);
 		}catch(Exception e){
 			e.printStackTrace();
