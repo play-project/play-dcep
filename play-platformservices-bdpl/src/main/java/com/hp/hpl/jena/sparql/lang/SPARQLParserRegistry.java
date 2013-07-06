@@ -18,10 +18,10 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.util.HashMap ;
-import java.util.Map ;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.query.Syntax;
 
 public class SPARQLParserRegistry
 {

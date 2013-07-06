@@ -5,6 +5,10 @@ import java.io.Serializable;
 import eu.play_project.play_platformservices.api.BdplQuery;
 
 public class MeasurementConfig implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int measurementPeriod;
 	BdplQuery bdplquery;
 	//TODO sobermeier Extends with event template.

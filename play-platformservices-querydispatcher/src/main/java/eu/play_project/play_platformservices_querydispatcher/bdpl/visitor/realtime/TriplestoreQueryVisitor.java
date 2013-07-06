@@ -1,10 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_ANY;
 import com.hp.hpl.jena.graph.Node_Blank;
 import com.hp.hpl.jena.graph.Node_Literal;

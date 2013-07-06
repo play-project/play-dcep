@@ -1,9 +1,9 @@
 package eu.play_project.dcep.distributedetalis;
 
+import jpl.PrologException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jpl.PrologException;
 
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.JtalisContextImpl;

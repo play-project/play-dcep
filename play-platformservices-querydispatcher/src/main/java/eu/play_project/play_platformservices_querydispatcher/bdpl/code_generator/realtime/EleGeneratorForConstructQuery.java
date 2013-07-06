@@ -338,6 +338,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += havingVisitor.getCode().toString();
 	}
 
+	@Override
 	public List<String> getRdfDbQueries() {
 		return rdfDbQueries;
 	}

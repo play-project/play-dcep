@@ -1,6 +1,6 @@
 package eu.play_project.dcep.distributedetalis.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,6 @@ import java.util.Hashtable;
 import org.junit.Test;
 
 import com.jtalis.core.JtalisContextImpl;
-import com.jtalis.core.plengine.PrologEngineWrapper;
 
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 

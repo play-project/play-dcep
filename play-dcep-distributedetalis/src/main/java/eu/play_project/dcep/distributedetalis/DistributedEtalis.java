@@ -14,7 +14,6 @@ import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.query.Query;
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.api.DcepManagementException;
@@ -125,7 +124,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		}
 		
 		// Configure ETALIS to inform output listener if complex event of new type appeared.
-		etalis.addEventTrigger(bdplQuery.getQueryDetails().getComplexType() + "/_");
+		etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
 		
 		//Register ele querie.	
 		this.ecConnectionManager.registerEventPattern(bdplQuery);

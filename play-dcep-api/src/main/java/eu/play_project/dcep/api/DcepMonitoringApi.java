@@ -1,10 +1,7 @@
 package eu.play_project.dcep.api;
 
-import com.hp.hpl.jena.query.Query;
-
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
-import eu.play_project.play_platformservices.api.BdplQuery;
 
 /**
  * Manage the DCEP in non-functional ways such as configuring distribution strategies, constraining resources 

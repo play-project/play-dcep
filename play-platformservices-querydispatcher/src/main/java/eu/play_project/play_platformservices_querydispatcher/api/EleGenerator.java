@@ -1,6 +1,5 @@
 package eu.play_project.play_platformservices_querydispatcher.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.hp.hpl.jena.query.Query;

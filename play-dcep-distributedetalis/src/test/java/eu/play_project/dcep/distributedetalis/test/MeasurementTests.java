@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Before;
-import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;

@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.jtalis.core.JtalisContextImpl;
 
-import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;

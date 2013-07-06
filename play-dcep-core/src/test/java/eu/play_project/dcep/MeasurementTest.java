@@ -1,50 +1,27 @@
 package eu.play_project.dcep;
 
-import org.junit.Test;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
-
-import eu.play_project.dcep.api.DcepManagmentApi;
-import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import org.etsi.uri.gcm.util.GCM;
-import org.event_processing.events.types.UcTelcoCall;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
-import org.objectweb.proactive.ActiveObjectCreationException;
-import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
-import org.objectweb.proactive.core.node.NodeException;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryFactory;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.constants.Stream;
-import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.BdplQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
-import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 

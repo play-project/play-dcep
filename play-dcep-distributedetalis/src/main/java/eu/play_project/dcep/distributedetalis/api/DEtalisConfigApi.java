@@ -11,7 +11,6 @@ import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
-import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import eu.play_project.play_platformservices.api.BdplQuery;
 
 /**

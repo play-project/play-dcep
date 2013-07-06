@@ -3,7 +3,6 @@ package eu.play_project.dcep.distributedetalis;
 import java.util.Hashtable;
 
 import jpl.Atom;
-import jpl.JPL;
 import jpl.Query;
 import jpl.Term;
 
@@ -52,13 +51,6 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 	@Override
 	public synchronized boolean execute(com.jtalis.core.plengine.logic.Term term) {
 		try{
-			System.out.println(term);
-			System.out.println(term);
-			System.out.println(term);
-			System.out.println(term);
-			System.out.println(term);
-			System.out.println(term);
-			System.out.println(term);
 			return engine.execute(term);
 		}catch(Exception e){
 			e.printStackTrace();
