@@ -16,8 +16,8 @@ public class Query {
 	public Query() {};
 	
 	public Query(BdplQuery bdplQuery) {
-		this.id = bdplQuery.getQueryDetails().getQueryId();
-		this.content = bdplQuery.getEpSparqlQuery();
+		this.id = bdplQuery.getDetails().getQueryId();
+		this.content = bdplQuery.getBdpl();
 	};
 	
 

@@ -28,7 +28,6 @@ import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
@@ -64,12 +63,16 @@ public class DEtalisTests implements Serializable {
 		 *  Register a pattern:
 		 */
 		logger.info("Register pattern.");
-		dcepManagmentApi
-				.registerEventPattern(new BdplQuery(
-						new QueryDetails("queryId42"),
-						"complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1), (xpath(element(sparqlFilter, [keyWord=O], []), //sparqlFilter(contains(@keyWord,'42')), _)))"));
-		// "complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))"));
-
+		
+		BdplQuery bdpl = BdplQuery.nonValidatingBuilder()
+				.details(new QueryDetails("queryId42"))
+				.ele("complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1), (xpath(element(sparqlFilter, [keyWord=O], []), //sparqlFilter(contains(@keyWord,'42')), _)))")
+				//.ele("complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))")
+				.bdpl("")
+				.build();
+		
+		dcepManagmentApi.registerEventPattern(bdpl);
+						
 		/*
 		 * Push an event:
 		 */

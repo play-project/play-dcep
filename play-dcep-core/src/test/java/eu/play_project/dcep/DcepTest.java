@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.etsi.uri.gcm.util.GCM;
@@ -23,13 +24,15 @@ import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.config.ProActiveConfiguration;
 import org.objectweb.proactive.core.node.NodeException;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
+import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
@@ -87,10 +90,16 @@ public class DcepTest implements Serializable {
 
 		//dcepTestApi.setEcConnectionManager(new EcConnectionMangerLocal());
 
+		BdplQuery bdplQuery = BdplQuery.builder()
+			.details(new QueryDetails("queryId42"))
+			.ele("complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))")
+			.bdpl("")
+			.constructTemplate(new QueryTemplateImpl())
+			.historicalQueries(new LinkedList<HistoricalQuery>())
+			.build();
+			
 		//Register pattern
-		dcepManagmentApi.registerEventPattern(new BdplQuery(
-				new QueryDetails("queryId42"),
-				"complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))"));
+		dcepManagmentApi.registerEventPattern(bdplQuery);
 
 		if (dcepPublishApi == null) {
 			fail("No DCEP component instantiated");
@@ -99,10 +108,10 @@ public class DcepTest implements Serializable {
 				List<Quadruple> quadruple = new ArrayList<Quadruple>();
 				quadruple
 				.add(new Quadruple(
-						Node.createURI("ab" + Math.random()),
-						Node.createURI("http://events.event-processing.org/ids/e2#event"),
-						Node.createURI("http://events.event-processing.org/ids/endTime"),
-						Node.createURI("\"2011-08-24T12:42:01.011Z\"^^http://www.w3.org/2001/XMLSchema#dateTime")));
+						NodeFactory.createURI("ab" + Math.random()),
+						NodeFactory.createURI("http://events.event-processing.org/ids/e2#event"),
+						NodeFactory.createURI("http://events.event-processing.org/ids/endTime"),
+						NodeFactory.createURI("\"2011-08-24T12:42:01.011Z\"^^http://www.w3.org/2001/XMLSchema#dateTime")));
 				dcepPublishApi.publish(new CompoundEvent(quadruple));
 			}
 		}

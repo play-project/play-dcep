@@ -59,14 +59,13 @@ public class MeasurementUnit implements MeasurementState{
 		this.singleEventTime = new ArrayList<Long>();
 		
 		//Register measurement pattern.
-		BdplQuery eq = new BdplQuery();
-		eq.setEleQuery("complexN(MeasureCEID,'measurement-pattern') do (generateConstructResult(['http://play-project.eu/measurement/event'],['http://play-project.eu/timeOneEvent'],[Vtime],MeasureCEID))<-('measurementEvent'(ViD1) 'WHERE' (rdf(Vs, 'http://play-project.eu/startTime', Vtime, ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1),random(1000000, 9000000, MeasureCEID)))");
-		//eq.setEleQuery("complex(MeasureCEID) <- 'measurementEvent'(ViD1)");
+		BdplQuery bdpl = BdplQuery.nonValidatingBuilder()
+				.ele("complexN(MeasureCEID,'measurement-pattern') do (generateConstructResult(['http://play-project.eu/measurement/event'],['http://play-project.eu/timeOneEvent'],[Vtime],MeasureCEID))<-('measurementEvent'(ViD1) 'WHERE' (rdf(Vs, 'http://play-project.eu/startTime', Vtime, ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1),random(1000000, 9000000, MeasureCEID)))")
+				//.ele("complex(MeasureCEID) <- 'measurementEvent'(ViD1)")
+				.details(new QueryDetails("'measurement-pattern'"))
+				.build();
 
-		QueryDetails qd = new QueryDetails();
-		qd.setQueryId("'measurement-pattern'");
-		eq.setQueryDetails(qd);
-		cepEngine.registerEventPattern(eq);
+		cepEngine.registerEventPattern(bdpl);
 	}
 
 	@Override

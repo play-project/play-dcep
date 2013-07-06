@@ -95,31 +95,31 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()+ " has not been initialized.");
 		}
-		if (bdplQuery.getQueryDetails() == null) {
+		if (bdplQuery.getDetails() == null) {
 			throw new IllegalArgumentException("QueryDetails is not set");
 		}
 		logger.info("New event pattern is being registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), bdplQuery
-				.getQueryDetails().getQueryId());
+				.getDetails().getQueryId());
 		logger.info("ELE: " + bdplQuery.getEleQuery());
 
-		if(this.registeredQueries.containsKey(bdplQuery.getQueryDetails().getQueryId())) {
-			String error = "Pattern ID already exists: " + bdplQuery.getQueryDetails().getQueryId();
+		if(this.registeredQueries.containsKey(bdplQuery.getDetails().getQueryId())) {
+			String error = "Pattern ID already exists: " + bdplQuery.getDetails().getQueryId();
 			logger.error(error);
 			//throw new DcepManagementException(error);
 			// FIXME stuehmer: revert to descriptive messages
 		}
 		
-		this.registeredQueries.put(bdplQuery.getQueryDetails().getQueryId(), bdplQuery);
+		this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
 		
 		logger.debug("Register query: " + bdplQuery.getEleQuery());
 		
-		etalis.addDynamicRuleWithId("'" + bdplQuery.getQueryDetails().getQueryId() + "'" + bdplQuery.getQueryDetails().getEtalisProperty(), bdplQuery.getEleQuery());
+		etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
 		// Start tumbling window. (If a tumbling window was defined.) 
-		etalis.getEngineWrapper().executeGoal(bdplQuery.getQueryDetails().getTumblingWindow());
+		etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
 		
 		//Register db queries.
-		for (String dbQuerie : bdplQuery.getQueryDetails().getRdfDbQueries()) {
+		for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
 			System.out.println(dbQuerie);
 			etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
 		}

@@ -1,7 +1,7 @@
 package eu.play_project.querydispatcher.epsparql.tests;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
@@ -20,7 +21,9 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
+import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -49,7 +52,7 @@ public class BdplEleTest {
 			System.out.println("Exception was thrown: " + e);
 		}
 //		HavingVisitor v = new HavingVisitor();
-//		
+//
 //		for (Expr el : query.getHavingExprs()) {
 //			el.visit(v);
 //		}
@@ -97,17 +100,19 @@ public class BdplEleTest {
 		String etalisPattern = visitor1.getEle();
 		
 		// Add query details.
-		QueryDetails details = new QueryDetails();
-	
-		BdplQuery bdplQuery = new BdplQuery();
-		bdplQuery.setEleQuery(etalisPattern);
-
-		details.setQueryId(patternId);
+		QueryDetails details = new QueryDetails(patternId);
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);
-		bdplQuery.setQueryDetails(details);
 		
+		BdplQuery bdplQuery = BdplQuery.builder()
+				.ele(etalisPattern)
+				.details(details)
+				.bdpl("")
+				.constructTemplate(new QueryTemplateImpl())
+				.historicalQueries(new LinkedList<HistoricalQuery>())
+				.build();
+	
 		System.out.println(etalisPattern);
 	}
 	
@@ -245,9 +250,9 @@ public class BdplEleTest {
 //	public void dispatchQuery(){
 //		String queryString = "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
 //		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-//		
+//
 //		VariableTypeVisitor visitor = new VariableTypeVisitor();
-//	
+//
 //		Map<String, List<Variable>> variables =  visitor.getVariables(query, VariableTypes.historicType);
 //		System.out.println(variables.values());
 //	}
@@ -255,17 +260,17 @@ public class BdplEleTest {
 	@Test
 	public void agregatedEventTypeTest(){
 //		AgregatedVariableTypes aTypes = new AgregatedVariableTypes();
-//		
+//
 //		// Get query.
 //		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
-//		
+//
 //		// Parse query
 //		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-//		
+//
 //		// Get types.
 //		Map<String, AgregatedEventType> eventTypes = aTypes.detectType(query);
-//		
-//	
+//
+//
 //		//Test results.
 //		assertTrue(eventTypes.get("e3").equals(AgregatedEventType.H));
 //		assertTrue(eventTypes.get("e1").equals(AgregatedEventType.CR));
@@ -339,7 +344,7 @@ public class BdplEleTest {
 		query.getEventQuery().get(0).visit(v);
 		
 		// Queries for variable t1,e1,friend1,about1.
-		String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1)", 
+		String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1)",
 								   "rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent')",
 								   "rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1)",
 								   "rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1)"
