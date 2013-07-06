@@ -1,6 +1,9 @@
 package eu.play_project.dcep;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +14,8 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.Body;
+import org.objectweb.proactive.core.ProActiveException;
+import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.body.ComponentEndActive;
 import org.objectweb.proactive.core.component.body.ComponentInitActive;
@@ -50,7 +55,7 @@ Serializable {
 	private static final long serialVersionUID = 100L;
 	private DistributedEtalisTestApi dEtalisTest;
 	private DcepMonitoringApi dEtalisMonitoring;
-	private DcepManagmentApi dEtalisManagment;
+	private DcepManager dcepManager;
 	private ConfigApi configApi;
 	private Component dEtalis;
 	private Logger logger;
@@ -93,25 +98,25 @@ Serializable {
 				+ bdplQuery.getEleQuery());
 
 		if(!init) init();
-		dEtalisManagment.registerEventPattern(bdplQuery);
+		dcepManager.getManagementApi().registerEventPattern(bdplQuery);
 	}
 
 	@Override
 	public BdplQuery getRegisteredEventPattern(String queryId) throws DcepManagementException{
 		if(!init) init();
-		return dEtalisManagment.getRegisteredEventPattern(queryId);
+		return dcepManager.getManagementApi().getRegisteredEventPattern(queryId);
 	}
 
 	@Override
 	public Map<String, BdplQuery> getRegisteredEventPatterns() {
 		if(!init) init();
-		return dEtalisManagment.getRegisteredEventPatterns();
+		return dcepManager.getManagementApi().getRegisteredEventPatterns();
 	}
 
 	@Override
 	public void unregisterEventPattern(String queryID) {
 		if(!init) init();
-		dEtalisManagment.unregisterEventPattern(queryID);
+		dcepManager.getManagementApi().unregisterEventPattern(queryID);
 	}
 
 	@Override
@@ -154,8 +159,6 @@ Serializable {
 
 				dEtalisTest = ((DistributedEtalisTestApi) dEtalis
 						.getFcInterface("DistributedEtalisTestApi"));
-				dEtalisManagment = ((DcepManagmentApi) dEtalis
-						.getFcInterface("DcepManagmentApi"));
 				dEtalisMonitoring = ((DcepMonitoringApi) dEtalis
 						.getFcInterface("DcepMonitoringApi"));
 				configApi = ((ConfigApi)dEtalis.getFcInterface("ConfigApi"));
@@ -173,6 +176,21 @@ Serializable {
 				logger.error("Error initialising DCEP: ", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
 			}
+			
+			// Register apis
+			try {
+				Registry registry = LocateRegistry.getRegistry();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}	
+			try {
+				Fractive.registerByName(this.dEtalis, "dEtalis");
+			} catch (ProActiveException e) {
+				e.printStackTrace();
+			}
+			
+			dcepManager = new DcepManager();
+			dcepManager.init();
 			init = true;
 		}
 		return init;
