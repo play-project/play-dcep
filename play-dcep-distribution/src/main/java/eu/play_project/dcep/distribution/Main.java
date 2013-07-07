@@ -111,9 +111,9 @@ public class Main {
 					GCM.getGCMLifeCycleController(root).stopFc();
 					// Terminate is not recursive:
 					for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
-						GCM.getGCMLifeCycleController(subcomponent).terminateGCMComponent();
+						//GCM.getGCMLifeCycleController(subcomponent).terminateGCMComponent();
 					}
-					GCM.getGCMLifeCycleController(root).terminateGCMComponent();
+					//GCM.getGCMLifeCycleController(root).terminateGCMComponent();
 				}
 				
 			} catch (IllegalLifeCycleException e) {
