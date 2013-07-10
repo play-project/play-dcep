@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
@@ -65,7 +66,11 @@ public class MeasurementUnit implements MeasurementState{
 				.details(new QueryDetails("'measurement-pattern'"))
 				.build();
 
-		cepEngine.registerEventPattern(bdpl);
+		try {
+			cepEngine.registerEventPattern(bdpl);
+		} catch (DcepManagementException e) {
+			logger.error("Error while registering measurement query: " + e.getMessage());
+		}
 	}
 
 	@Override

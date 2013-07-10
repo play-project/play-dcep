@@ -12,7 +12,7 @@ public interface EcConnectionManager extends SimplePublishApi{
 	@Override
 	public void publish(CompoundEvent event);
 
-	public void registerEventPattern(BdplQuery bdplQuery);
+	public void registerEventPattern(BdplQuery bdplQuery) throws EcConnectionmanagerException;
 
 	public void unregisterEventPattern(BdplQuery bdplQuery);
 

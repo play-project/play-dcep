@@ -169,7 +169,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	}
 
 	@Override
-	public void registerEventPattern(BdplQuery bdplQuery) {
+	public void registerEventPattern(BdplQuery bdplQuery) throws EcConnectionmanagerException {
 		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
 			subscribe(cloudId);
 		}
@@ -193,7 +193,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		// needs counters!
 	}
 
-	private void subscribe(String cloudId) {
+	private void subscribe(String cloudId) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
@@ -214,6 +214,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		} catch (EcConnectionmanagerException e) {
 			logger.error("Problem subscribing to event cloud {}: {}", cloudId,
 					e.getMessage());
+			throw e;
 		}
 	}
 

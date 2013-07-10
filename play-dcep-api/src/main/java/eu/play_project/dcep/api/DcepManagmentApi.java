@@ -13,7 +13,7 @@ public interface DcepManagmentApi {
 	 * @throws DcepManagementException
 	 *             if the pattern has errors
 	 */
-	public void registerEventPattern(BdplQuery bdplQuery);
+	public void registerEventPattern(BdplQuery bdplQuery) throws DcepManagementException;
 
 	/**
 	 * Unregister an existing event pattern. This method silently does nothing

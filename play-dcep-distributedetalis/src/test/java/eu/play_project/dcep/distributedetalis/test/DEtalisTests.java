@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
@@ -50,7 +51,7 @@ public class DEtalisTests implements Serializable {
 
 
 	@Test
-	public void basicDEtalisComponentTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException, InterruptedException {
+	public void basicDEtalisComponentTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException, InterruptedException, DcepManagementException {
 		
 		/*
 		 *  Check if you get a reference to PublishApi and ManagementApi:

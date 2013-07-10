@@ -92,7 +92,7 @@ Serializable {
 	}
 
 	@Override
-	public void registerEventPattern(BdplQuery bdplQuery){
+	public void registerEventPattern(BdplQuery bdplQuery) throws DcepManagementException {
 
 		logger.debug("Pattern reached DCEP facade: "
 				+ bdplQuery.getEleQuery());
@@ -182,7 +182,7 @@ Serializable {
 				Registry registry = LocateRegistry.getRegistry();
 			} catch (RemoteException e) {
 				e.printStackTrace();
-			}	
+			}
 			try {
 				Fractive.registerByName(this.dEtalis, "dEtalis");
 			} catch (ProActiveException e) {

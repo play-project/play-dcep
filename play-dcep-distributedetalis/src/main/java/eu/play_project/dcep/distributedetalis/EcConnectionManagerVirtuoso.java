@@ -271,7 +271,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	}
 
 	@Override
-	public void registerEventPattern(BdplQuery bdplQuery) {
+	public void registerEventPattern(BdplQuery bdplQuery) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -293,7 +293,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	/**
 	 * Subscribe to a given topic on the DSB. Duplicate subscriptions are handled using counters.
 	 */
-	private void subscribe(String cloudId) {
+	private void subscribe(String cloudId) throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
@@ -311,7 +311,9 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 			}
 		} catch (NotificationException e) {
-			logger.error("Problem subscribing to topic {}: {}", cloudId, e.getMessage());
+			String errorMesg = String.format("Problem subscribing to topic %s: %s", cloudId, e.getMessage());
+			logger.error(errorMesg);
+			throw new EcConnectionmanagerException(errorMesg);
 		}
 	}
 

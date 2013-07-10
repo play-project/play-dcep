@@ -27,6 +27,7 @@ import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import eu.play_project.play_platformservices.api.BdplQuery;
@@ -90,7 +91,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void registerEventPattern(BdplQuery bdplQuery) {
+	public void registerEventPattern(BdplQuery bdplQuery) throws DcepManagementException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()+ " has not been initialized.");
 		}
@@ -105,8 +106,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		if(this.registeredQueries.containsKey(bdplQuery.getDetails().getQueryId())) {
 			String error = "Pattern ID already exists: " + bdplQuery.getDetails().getQueryId();
 			logger.error(error);
-			//throw new DcepManagementException(error);
-			// FIXME stuehmer: revert to descriptive messages
+			throw new DcepManagementException(error);
 		}
 		
 		this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
@@ -114,7 +114,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.debug("Register query: " + bdplQuery.getEleQuery());
 		
 		etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
-		// Start tumbling window. (If a tumbling window was defined.) 
+		// Start tumbling window. (If a tumbling window was defined.)
 		etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
 		
 		//Register db queries.
@@ -126,8 +126,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		// Configure ETALIS to inform output listener if complex event of new type appeared.
 		etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
 		
-		//Register ele querie.	
-		this.ecConnectionManager.registerEventPattern(bdplQuery);
+		//Register ele query.
+		try {
+			this.ecConnectionManager.registerEventPattern(bdplQuery);
+		} catch (EcConnectionmanagerException e) {
+			throw new DcepManagementException(e.getMessage());
+		}
 	}
 
 	@Override
