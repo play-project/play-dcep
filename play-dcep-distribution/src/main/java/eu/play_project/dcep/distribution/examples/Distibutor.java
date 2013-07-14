@@ -1,48 +1,23 @@
 package eu.play_project.dcep.distribution.examples;
 
-import java.io.File;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
-import org.objectweb.proactive.core.ProActiveException;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.adl.Registry;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
-import org.objectweb.proactive.examples.components.userguide.starter.Main;
+import org.objectweb.proactive.core.xml.VariableContractImpl;
 import org.objectweb.proactive.extensions.gcmdeployment.PAGCMDeployment;
 import org.objectweb.proactive.gcmdeployment.GCMApplication;
 import org.objectweb.proactive.gcmdeployment.GCMVirtualNode;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-
-import org.etsi.uri.gcm.util.GCM;
-import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
-import org.objectweb.fractal.api.Component;
-import org.objectweb.fractal.api.NoSuchInterfaceException;
-import org.objectweb.fractal.api.control.IllegalLifeCycleException;
-import org.objectweb.fractal.api.control.LifeCycleController;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
-import org.objectweb.proactive.core.xml.VariableContractImpl;
-import org.objectweb.proactive.core.xml.VariableContractType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
-import eu.play_project.play_platformservices.api.QueryDispatchApi;
-import eu.play_project.play_platformservices.api.QueryDispatchException;
 import fr.inria.eventcloud.api.PublishApi;
 
 public class Distibutor {
@@ -52,10 +27,13 @@ public class Distibutor {
 	private static DcepManagmentApi dcepManagmentApi = null;
 
 	public static void main(String[] args) throws Exception {
-
+		
 		VariableContractImpl variableContract = new VariableContractImpl();
 		// variableContract.setVariableFromProgram("HOSTS",
 		// "detalis1.s-node.de", VariableContractType.DescriptorVariable);
+
+
+		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
 		
 		// Start node
 		GCMApplication gcma = PAGCMDeployment
