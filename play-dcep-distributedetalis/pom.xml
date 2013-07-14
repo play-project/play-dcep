@@ -43,6 +43,20 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-dcep-api</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>
+						proactive-p2p-structured-utils
+					</artifactId>
+					<groupId>
+						org.objectweb.proactive.extensions.p2p.structured
+					</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>eventcloud-configuration</artifactId>
+					<groupId>fr.inria.eventcloud</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
@@ -67,6 +81,22 @@
 					<artifactId>play-commons-constants</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>
+						proactive-p2p-structured-core
+					</artifactId>
+					<groupId>
+						org.objectweb.proactive.extensions.p2p.structured
+					</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>
+						proactive-p2p-structured-can
+					</artifactId>
+					<groupId>
+						org.objectweb.proactive.extensions.p2p.structured
+					</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -88,6 +118,11 @@
 			<groupId>com.openlinksw</groupId>
 			<artifactId>virtjdbc4</artifactId>
 			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2</version>
 		</dependency>
 	</dependencies>
 

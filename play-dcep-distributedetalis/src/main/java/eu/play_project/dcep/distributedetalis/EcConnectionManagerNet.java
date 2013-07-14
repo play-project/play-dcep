@@ -99,19 +99,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 					+ " has not been initialized.");
 		}
 
-		try {
-			if (!putGetClouds.containsKey(cloudId)) {
-				PutGetApi proxy = ProxyFactory.newPutGetProxy(
-						eventCloudRegistryUrl,
-						new EventCloudId(
-								eu.play_project.play_commons.constants.Stream
-										.toTopicUri(cloudId)));
-				putGetClouds.put(cloudId, proxy);
-			}
-		} catch (EventCloudIdNotManaged e) {
-			throw new EcConnectionmanagerException(e.getMessage(), e);
-		}
-		return putGetClouds.get(cloudId);
+		throw new RuntimeException("Not implementes because compatible binaries are missing.");
 	}
 
 	private SubscribeApi getInputCloud(String cloudId)
@@ -120,17 +108,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
-
-		try {
-			if (!inputClouds.containsKey(cloudId)) {
-				SubscribeApi proxy = ProxyFactory.newSubscribeProxy(
-						eventCloudRegistryUrl, new EventCloudId(cloudId));
-				inputClouds.put(cloudId, proxy);
-			}
-		} catch (EventCloudIdNotManaged e) {
-			throw new EcConnectionmanagerException(e.getMessage(), e);
-		}
-		return inputClouds.get(cloudId);
+		throw new RuntimeException("Not implementes because compatible binaries are missing.");
 	}
 
 	private PublishApi getOutputCloud(String cloudId)
@@ -139,17 +117,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
-
-		try {
-			if (!outputClouds.containsKey(cloudId)) {
-				PublishApi proxy = ProxyFactory.newPublishProxy(
-						eventCloudRegistryUrl, new EventCloudId(cloudId));
-				outputClouds.put(cloudId, proxy);
-			}
-		} catch (EventCloudIdNotManaged e) {
-			throw new EcConnectionmanagerException(e.getMessage(), e);
-		}
-		return outputClouds.get(cloudId);
+		throw new RuntimeException("Not implementes because compatible binaries are missing.");
 	}
 
 	@Override
