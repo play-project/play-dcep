@@ -7,4 +7,5 @@
 	 <interface name="ConfigApi"  role="server" signature="eu.play_project.dcep.distributedetalis.api.ConfigApi"/>
      <content class="eu.play_project.dcep.distributedetalis.DistributedEtalis"/>
      <controller desc="primitive"/>
+     <virtual-node name="dEtalis-node"/>
 </definition>
