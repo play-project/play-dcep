@@ -5,5 +5,5 @@
     <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="client"/>
     <content class="eu.play_project.play_platformservices.PlayPlatformservices"/>
      <controller desc="primitive"/>
-     <virtual-node name="ps-node"/>
+     <virtual-node name="VN"/>
 </definition>
