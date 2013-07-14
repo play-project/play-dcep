@@ -12,7 +12,7 @@
         <proactive base="root" relpath="${proactive.home}">
             <configuration>
                 <applicationClasspath>
-                    <pathElement base="root" relpath="/opt/play/cep-engine.jar"/>
+                    <pathElement base="root" relpath="/opt/play/cep_engine-jar-with-dependencies.jar"/>
                     <pathElement base="proactive" relpath="dist/lib/*"/>
                 </applicationClasspath>
             </configuration>
