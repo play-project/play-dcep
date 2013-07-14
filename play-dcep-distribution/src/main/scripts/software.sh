@@ -48,12 +48,11 @@ installProActive(){
 	cd $INSTALL_DIR
 	wget http://www.activeeon.com/public_content/releases/ProActive/3.3.2/ProActiveProgramming-5.3.2_core_bin.zip
 	unzip ProActiveProgramming-5.3.2_core_bin.zip
-	
-
 
 }
 
 setEnvironemenVariables(){
+	echo TODO setEnvironemenVariables
 	# TODO Update Bash environment variables
 	# .bashrc
 	# For ssh login.
