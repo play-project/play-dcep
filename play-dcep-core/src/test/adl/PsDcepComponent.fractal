@@ -3,6 +3,7 @@
 <definition name="PsDcepComponent">
   <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
   <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi" role="server"/>
+  <interface name="DcepMonitoringApi" signature="eu.play_project.dcep.api.DcepMonitoringApi" role="server"/>
   
   <component name="PlatformServices">
     <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
@@ -13,11 +14,13 @@
   <component name="Dcep">
     <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
     <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi" role="server"/>
+	<interface name="DcepMonitoringApi" signature="eu.play_project.dcep.api.DcepMonitoringApi" role="server"/>
     <content class="eu.play_project.dcep.Dcep"/>
   </component>
   
   <binding client="this.QueryDispatchApi" server="PlatformServices.QueryDispatchApi"/>
   <binding client="this.DistributedEtalisTestApi" server="Dcep.DistributedEtalisTestApi"/>
   <binding client="PlatformServices.DcepManagmentApi" server="Dcep.DcepManagmentApi"/>
+  <binding client="PlatformServices.DcepMonitoringApi" server="Dcep.DcepMonitoringApi"/>
   <controller desc="composite"/>
 </definition>
