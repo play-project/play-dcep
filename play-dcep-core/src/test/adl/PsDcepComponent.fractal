@@ -18,9 +18,9 @@
     <content class="eu.play_project.dcep.Dcep"/>
   </component>
   
+  <binding client="this.DcepMonitoringApi" server="Dcep.DcepMonitoringApi"/>
   <binding client="this.QueryDispatchApi" server="PlatformServices.QueryDispatchApi"/>
   <binding client="this.DistributedEtalisTestApi" server="Dcep.DistributedEtalisTestApi"/>
   <binding client="PlatformServices.DcepManagmentApi" server="Dcep.DcepManagmentApi"/>
-  <binding client="PlatformServices.DcepMonitoringApi" server="Dcep.DcepMonitoringApi"/>
   <controller desc="composite"/>
 </definition>
