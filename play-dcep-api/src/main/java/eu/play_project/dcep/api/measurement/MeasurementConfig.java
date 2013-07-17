@@ -5,16 +5,22 @@ import java.io.Serializable;
 import eu.play_project.play_platformservices.api.BdplQuery;
 
 public class MeasurementConfig implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	int measurementPeriod;
 	BdplQuery bdplquery;
-	//TODO sobermeier Extends with event template.
-	public int getMeasurementPeriod() {
-		return measurementPeriod;
+
+	MeasurementConfig(){}
+	/**
+	 * Define measurement query and measurement period.
+	 * @param measurementPeriod Time in seconds.
+	 * @param bdplquery
+	 */
+	public MeasurementConfig(int measurementPeriod, BdplQuery bdplquery){
+		this.measurementPeriod = measurementPeriod;
+		this.bdplquery = bdplquery;
 	}
+	
 	public void setMeasurementPeriod(int measurementPeriod) {
 		this.measurementPeriod = measurementPeriod;
 	}
@@ -23,6 +29,10 @@ public class MeasurementConfig implements Serializable {
 	}
 	public void setBdplquery(BdplQuery bdplquery) {
 		this.bdplquery = bdplquery;
+	}
+	
+	public int getMeasurementPeriod() {
+		return measurementPeriod;
 	}
 	
 }

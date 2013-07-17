@@ -45,7 +45,7 @@ public class WaitForMeasuredData implements MeasurementState{
 		context.setNumberOfOutputEvents(context.getNumberOfOutputEvents()+numberOfProducedEvents);
 		context.setNumberOfInputEvents(context.getNumberOfInputEvents() + numberOfConsumedEvents);
 		
-		context.setState( context.create("MeasurementFinished"));
+		context.setState( context.createMeasurementState("MeasurementFinished"));
 	}
 
 

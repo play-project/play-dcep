@@ -46,7 +46,7 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 			context.setNumberOfOutputEvents(context.getNumberOfOutputEvents() + complexEventCounter);
 			context.setNumberOfInputEvents(context.getNumberOfInputEvents() + numberOfConsumedEvents);
 
-			context.setState(context.create("WaitForMeasuredData"));
+			context.setState(context.createMeasurementState("WaitForMeasuredData"));
 		}
 	}
 

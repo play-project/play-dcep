@@ -41,7 +41,7 @@ public class Ready implements MeasurementState{
 
 		Future<MeasuringResult> future = measureExecutor.submit(task);
 
-		context.setState(context.create("MeasureProcessingTime"));
+		context.setState(context.createMeasurementState("MeasureProcessingTime"));
 	}
 
 	@Override

@@ -28,8 +28,7 @@ public class MeasuremnetFinished implements MeasurementState {
 		NodeMeasuringResult  measuredValues = context.getMeasurementData();
 
 		logger.info(measuredValues.getName());
-		logger.info("\n\n\nffffffffffffffffff\n");
-		context.setState(context.create("Start"));
+		context.setState(context.createMeasurementState("Start"));
 
 		return measuredValues;
 	}

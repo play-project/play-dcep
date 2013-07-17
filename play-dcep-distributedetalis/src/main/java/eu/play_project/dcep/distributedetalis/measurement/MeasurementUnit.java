@@ -54,18 +54,9 @@ public class MeasurementUnit implements MeasurementState{
 		this.cepEngine = cepEngine;
 		this.etalis = etalis;
 		this.semWebLib = semWebLib;
-		this.state = create("Start");
+		this.state = createMeasurementState("Start");
 		
 		this.singleEventTime = new ArrayList<Long>();
-		
-		//Register measurement pattern.
-		BdplQuery bdpl = BdplQuery.nonValidatingBuilder()
-				.ele("complexN(MeasureCEID,'measurement-pattern') do (generateConstructResult(['http://play-project.eu/measurement/event'],['http://play-project.eu/timeOneEvent'],[Vtime],MeasureCEID))<-('measurementEvent'(ViD1) 'WHERE' (rdf(Vs, 'http://play-project.eu/startTime', Vtime, ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1),random(1000000, 9000000, MeasureCEID)))")
-				//.ele("complex(MeasureCEID) <- 'measurementEvent'(ViD1)")
-				.details(new QueryDetails("'measurement-pattern'"))
-				.build();
-
-		cepEngine.registerEventPattern(bdpl);
 	}
 
 	@Override
@@ -93,7 +84,7 @@ public class MeasurementUnit implements MeasurementState{
 		state.eventProduced(event, patternId);
 	}
 	
-	public MeasurementState create(String name){
+	public MeasurementState createMeasurementState(String name){
 		MeasurementState state = null;
 		
 		if(name.equals("Start")){
@@ -219,8 +210,6 @@ public class MeasurementUnit implements MeasurementState{
 
 	@Override
 	public void sendMeasuringEvent() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
