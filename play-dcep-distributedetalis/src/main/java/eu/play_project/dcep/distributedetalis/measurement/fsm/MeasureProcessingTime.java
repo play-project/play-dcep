@@ -13,6 +13,7 @@ import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
+import eu.play_project.dcep.api.measurement.*;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -23,6 +24,7 @@ public class MeasureProcessingTime implements MeasurementState{
 	private final Logger logger;
 	private int measurementEventCounter = 0;
 	private int complexEventCounter = 0;
+	private int measurementCounter = 0; // Count how often events were sent.
 
 	public MeasureProcessingTime( MeasurementUnit context, DistributedEtalis cepEngine, PrologSemWebLib semWebLib){
 		this.cepEngine = cepEngine;
@@ -38,16 +40,18 @@ public class MeasureProcessingTime implements MeasurementState{
 		
 		// Generate m events with current time.
 		long currentTime = System.nanoTime();
+		measurementCounter++;
 		for (int i = 0; i < mEvents; i++) {
-			CompoundEvent mEvent = generateMeasuringEvent(i, currentTime);
+			CompoundEvent mEvent = generateMeasuringEvent((i + measurementCounter), currentTime);
 			
-//			try {
-//				semWebLib.addEvent(mEvent);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			cepEngine.notify(this.getSimpleEventType(mEvent), mEvent.getGraph().toString());
-			// FIXME sobermeier: is it OK to use the facade method? it calls measuremtUnit.eventReceived()... again
+			// Skip ProActive queue.
+			try {
+				semWebLib.addEvent(mEvent);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//cepEngine.notify(this.getSimpleEventType(mEvent), mEvent.getGraph().toString());
+		
 			cepEngine.publish(mEvent);
 		}
 	}
@@ -113,19 +117,39 @@ public class MeasureProcessingTime implements MeasurementState{
 	private CompoundEvent generateMeasuringEvent(int measurementID, long time){
 		//Measure time for one event.
 		List<Quadruple> quads = new ArrayList<Quadruple>();
+				
 		Quadruple q1 = new Quadruple(
 				NodeFactory.createURI("http://play-project.eu/measurement/" + measurementID),
 				NodeFactory.createURI("http://play-project.eu/measurement/event"),
-				NodeFactory.createURI("http://play-project.eu/startTime"),
-				NodeFactory.createURI(time + ""));
-				
+                RDF.type.asNode(),
+                NodeFactory.createURI(MeasurementConstants.MEASUREMENT_SIMPLE_TYPE)
+                );
 		Quadruple q2 = new Quadruple(
 				NodeFactory.createURI("http://play-project.eu/measurement/" + measurementID),
 				NodeFactory.createURI("http://play-project.eu/measurement/event"),
-                RDF.type.asNode(),
-                NodeFactory.createURI("measurementEvent"));
+                NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+                NodeFactory.createURI("http://streams.event-processing.org/ids/Local#stream")
+                );
+		
+		Quadruple q3 = new Quadruple(
+				NodeFactory.createURI("http://play-project.eu/measurement/" + measurementID),
+				NodeFactory.createURI("http://play-project.eu/measurement/event"),
+				NodeFactory.createURI("http://events.event-processing.org/types/sendTime"),
+				NodeFactory.createURI(time + "")
+				);
+		
+		Quadruple q4 = new Quadruple(
+				NodeFactory.createURI("http://play-project.eu/measurement/" + measurementID),
+				NodeFactory.createURI("http://play-project.eu/measurement/event"),
+				NodeFactory.createURI("http://events.event-processing.org/types/payload"),
+				NodeFactory.createURI("payload")
+				);
+		
+		
 		quads.add(q1);
 		quads.add(q2);
+		quads.add(q3);
+		quads.add(q4);
 		
 		return new CompoundEvent(quads);
 	}

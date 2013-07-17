@@ -194,8 +194,7 @@ public class MeasurementUnit implements MeasurementState{
 			measuredValues.setNumberOfEtalisInputEvents(JtalisInputProvider.getEventCounter());
 			measuredValues.setCompontenQueue(cepEngine.getService().getRequestCount());
 			measuredValues.setEtalisInputQueue(cepEngine.getEventInputProvider().getInputQueueSize());
-			
-			
+
 			return measuredValues;
 		} else {
 			logger.debug("No measured data.");

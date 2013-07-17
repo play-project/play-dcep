@@ -19,6 +19,9 @@ import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
 import com.hp.hpl.jena.graph.Node;
 
+import eu.play_project.dcep.api.DcepMonitoringApi;
+import eu.play_project.dcep.api.measurement.MeasurementConfig;
+import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -29,6 +32,7 @@ public class MeasurementTest {
 
 	public static QueryDispatchApi queryDispatchApi;
 	public static DistributedEtalisTestApi testApi;
+	public static DcepMonitoringApi monitoringApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;
@@ -49,32 +53,39 @@ public class MeasurementTest {
 		// Compile query
 		String paternID1 = queryDispatchApi.registerQuery("measurement", queryString);
 
+		long startTime = System.currentTimeMillis();
 
-		
+		for (int i = 0; i < 1000; i++) {
 
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				logger.info("Terminating component: "
-						+ subcomponent.getFcType());
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
+			monitoringApi.measurePerformance(new MeasurementConfig(1000, null));
 
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
+			// Wait and pull data
+			Thread.sleep(25000);
+
+			// dEtalis1Data = monitoringApi.getMeasurementData();
+
+			// printUtilisation(dEtalis1Data);
 		}
+
+			// Stop and terminate GCM Components
+			try {
+				GCM.getGCMLifeCycleController(root).stopFc();
+				// Terminate all subcomponents.
+				for (Component subcomponent : GCM.getContentController(root)
+						.getFcSubComponents()) {
+					logger.info("Terminating component: "
+							+ subcomponent.getFcType());
+					GCM.getGCMLifeCycleController(subcomponent)
+							.terminateGCMComponent();
+				}
+
+			} catch (IllegalLifeCycleException e) {
+				e.printStackTrace();
+			} catch (NoSuchInterfaceException e) {
+				e.printStackTrace();
+			}
 	}
 
-
-
-
-	
 
 	public static void InstantiatePlayPlatform()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
@@ -96,6 +107,8 @@ public class MeasurementTest {
 				.getFcInterface("QueryDispatchApi"));
 		testApi = (DistributedEtalisTestApi) root
 				.getFcInterface("DistributedEtalisTestApi");
+		
+		monitoringApi = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface("DcepMonitoringApi"));
 
 		try {
 			Thread.sleep(10000);
