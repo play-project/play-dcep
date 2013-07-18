@@ -49,11 +49,13 @@ installProActive(){
 	wget http://www.activeeon.com/public_content/releases/ProActive/3.3.2/ProActiveProgramming-5.3.2_core_bin.zip
 	unzip ProActiveProgramming-5.3.2_core_bin.zip
 	
-
+	# Delete bad slf4j version.
+	rm /opt/play/ProActiveProgramming-5.3.2_core_bin/dist/lib/slf4j-log4j12-1.5.3.jar
 
 }
 
 setEnvironemenVariables(){
+	echo TODO setEnvironemenVariables
 	# TODO Update Bash environment variables
 	# .bashrc
 	# For ssh login.

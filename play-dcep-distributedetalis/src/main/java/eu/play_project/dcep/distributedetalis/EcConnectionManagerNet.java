@@ -16,7 +16,6 @@ import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.EventCloudId;
 import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.SubscribeApi;
@@ -26,8 +25,6 @@ import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
-import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
-import fr.inria.eventcloud.factories.ProxyFactory;
 
 public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		EcConnectionManager {
@@ -99,19 +96,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 					+ " has not been initialized.");
 		}
 
-		try {
-			if (!putGetClouds.containsKey(cloudId)) {
-				PutGetApi proxy = ProxyFactory.newPutGetProxy(
-						eventCloudRegistryUrl,
-						new EventCloudId(
-								eu.play_project.play_commons.constants.Stream
-										.toTopicUri(cloudId)));
-				putGetClouds.put(cloudId, proxy);
-			}
-		} catch (EventCloudIdNotManaged e) {
-			throw new EcConnectionmanagerException(e.getMessage(), e);
-		}
-		return putGetClouds.get(cloudId);
+		throw new RuntimeException("Not implementes because compatible binaries are missing.");
 	}
 
 	private SubscribeApi getInputCloud(String cloudId)
@@ -120,17 +105,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
-
-		try {
-			if (!inputClouds.containsKey(cloudId)) {
-				SubscribeApi proxy = ProxyFactory.newSubscribeProxy(
-						eventCloudRegistryUrl, new EventCloudId(cloudId));
-				inputClouds.put(cloudId, proxy);
-			}
-		} catch (EventCloudIdNotManaged e) {
-			throw new EcConnectionmanagerException(e.getMessage(), e);
-		}
-		return inputClouds.get(cloudId);
+		throw new RuntimeException("Not implementes because compatible binaries are missing.");
 	}
 
 	private PublishApi getOutputCloud(String cloudId)
@@ -139,17 +114,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
-
-		try {
-			if (!outputClouds.containsKey(cloudId)) {
-				PublishApi proxy = ProxyFactory.newPublishProxy(
-						eventCloudRegistryUrl, new EventCloudId(cloudId));
-				outputClouds.put(cloudId, proxy);
-			}
-		} catch (EventCloudIdNotManaged e) {
-			throw new EcConnectionmanagerException(e.getMessage(), e);
-		}
-		return outputClouds.get(cloudId);
+		throw new RuntimeException("Not implementes because compatible binaries are missing.");
 	}
 
 	@Override

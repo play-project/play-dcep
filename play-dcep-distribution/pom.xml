@@ -37,7 +37,7 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<finalName>dcep</finalName>
+					<finalName>cep_engine</finalName>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
@@ -147,6 +147,30 @@
 				<exclusion>
 					<artifactId>cxf-bundle</artifactId>
 					<groupId>org.apache.cxf</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>
+						proactive-p2p-structured-utils
+					</artifactId>
+					<groupId>
+						org.objectweb.proactive.extensions.p2p.structured
+					</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>
+						proactive-p2p-structured-configuration
+					</artifactId>
+					<groupId>
+						org.objectweb.proactive.extensions.p2p.structured
+					</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>
+						proactive-p2p-structured-can
+					</artifactId>
+					<groupId>
+						org.objectweb.proactive.extensions.p2p.structured
+					</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>

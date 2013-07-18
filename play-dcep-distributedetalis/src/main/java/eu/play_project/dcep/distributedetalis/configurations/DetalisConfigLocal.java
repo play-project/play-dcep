@@ -27,7 +27,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 	private String inputRdfModelFile;
 	private Logger logger;
 	private MeasurementUnit measurementUnit;
-	private static transient LoadPrologCode cl;
+	private LoadPrologCode cl;
 	
 	public  DetalisConfigLocal(){}
 	
