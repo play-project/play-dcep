@@ -79,10 +79,6 @@
 			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>proactive</artifactId>
-					<groupId>org.objectweb.proactive</groupId>
-				</exclusion>
-				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
 				</exclusion>
@@ -147,30 +143,6 @@
 				<exclusion>
 					<artifactId>cxf-bundle</artifactId>
 					<groupId>org.apache.cxf</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>
-						proactive-p2p-structured-utils
-					</artifactId>
-					<groupId>
-						org.objectweb.proactive.extensions.p2p.structured
-					</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>
-						proactive-p2p-structured-configuration
-					</artifactId>
-					<groupId>
-						org.objectweb.proactive.extensions.p2p.structured
-					</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>
-						proactive-p2p-structured-can
-					</artifactId>
-					<groupId>
-						org.objectweb.proactive.extensions.p2p.structured
-					</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
