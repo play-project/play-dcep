@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class LoadTimeSeries extends MeasuringResult implements Collection<Double>, List<Double>, Comparable<LoadTimeSeries>{
+public class LoadTimeSeries extends MeasurementResult implements Collection<Double>, List<Double>, Comparable<LoadTimeSeries>{
 	/**
 	 * 
 	 */

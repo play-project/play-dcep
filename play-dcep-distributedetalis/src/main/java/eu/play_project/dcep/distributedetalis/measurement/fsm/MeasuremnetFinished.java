@@ -3,7 +3,7 @@ package eu.play_project.dcep.distributedetalis.measurement.fsm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -23,9 +23,9 @@ public class MeasuremnetFinished implements MeasurementState {
 	}
 
 	@Override
-	public NodeMeasuringResult getMeasuringResults() {
+	public NodeMeasurementResult getMeasuringResults() {
 		logger.debug("Get measured data. Finish");
-		NodeMeasuringResult  measuredValues = context.getMeasurementData();
+		NodeMeasurementResult  measuredValues = context.getMeasurementData();
 
 		logger.info(measuredValues.getName());
 		context.setState(context.createMeasurementState("Start"));
@@ -40,7 +40,7 @@ public class MeasuremnetFinished implements MeasurementState {
 	}
 
 	@Override
-	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+	public void setMeasuredData(NodeMeasurementResult measuredValues) {
 		// TODO Auto-generated method stub
 		
 	}

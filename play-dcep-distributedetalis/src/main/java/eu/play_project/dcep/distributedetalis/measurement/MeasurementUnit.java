@@ -6,7 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
@@ -39,7 +39,7 @@ public class MeasurementUnit implements MeasurementState{
 	private long totalOutputEvents = 0;
 	private boolean inMeasurementMode = false;
 	private List<Long> singleEventTime; // Time for one event.
-	private NodeMeasuringResult measuredValues; //Statistics data from cepEngine.
+	private NodeMeasurementResult measuredValues; //Statistics data from cepEngine.
 	
 	//Config
 	public static int mEvents = 10; //Defines the number of events used to measure the performance. Default 10
@@ -126,15 +126,15 @@ public class MeasurementUnit implements MeasurementState{
 
 	
 	@Override
-	public NodeMeasuringResult getMeasuringResults() {
+	public NodeMeasurementResult getMeasuringResults() {
 		logger.debug("Request measured data.");
 		logger.debug("State: " + state.getName());
-		NodeMeasuringResult n = state.getMeasuringResults();
+		NodeMeasurementResult n = state.getMeasuringResults();
 		return n;
 	}
 
 	@Override
-	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+	public void setMeasuredData(NodeMeasurementResult measuredValues) {
 		state.setMeasuredData(measuredValues);
 	}
 	
@@ -173,7 +173,7 @@ public class MeasurementUnit implements MeasurementState{
 	public void setNumberOfOutputEvents(int numberOfOutputEvents) {
 		this.numberOfOutputEvents = numberOfOutputEvents;
 	}
-	public synchronized void setMeasuredValues(NodeMeasuringResult measuredValues) {
+	public synchronized void setMeasuredValues(NodeMeasurementResult measuredValues) {
 		state.setMeasuredData(measuredValues);
 		this.measuredValues = measuredValues;
 	}
@@ -183,7 +183,7 @@ public class MeasurementUnit implements MeasurementState{
 		this.inMeasurementMode = inMeasurementMode;
 	}
 	
-	public  NodeMeasuringResult getMeasurementData() {
+	public  NodeMeasurementResult getMeasurementData() {
 
 		// If the measurement finished, publish the result. Else null.
 		if (measuredValues != null) {

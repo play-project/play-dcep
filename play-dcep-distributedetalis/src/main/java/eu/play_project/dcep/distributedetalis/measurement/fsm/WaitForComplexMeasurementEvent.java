@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -51,7 +51,7 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 	}
 
 	@Override
-	public NodeMeasuringResult getMeasuringResults() {
+	public NodeMeasurementResult getMeasuringResults() {
 		return null;
 	}
 
@@ -67,7 +67,7 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 	}
 	
 	@Override
-	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+	public void setMeasuredData(NodeMeasurementResult measuredValues) {
 	}
 
 	private long calcTimeForEvent(CompoundEvent event) {

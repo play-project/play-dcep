@@ -13,7 +13,7 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
 import eu.play_project.dcep.api.DcepMonitoringApi;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.api.measurement.PatternMeasuringResult;
 
 public class MeasurementTests {
@@ -37,7 +37,7 @@ public class MeasurementTests {
 		Thread.sleep(10000);
 	}
 	
-	public static void print(NodeMeasuringResult result){
+	public static void print(NodeMeasurementResult result){
 		System.out.println("---------------------------------------------------");
 		System.out.println("Proces time for one event: " +result.getProcessingTimeForOneEvent());
 		for (PatternMeasuringResult key : result.getMeasuredValues()) {

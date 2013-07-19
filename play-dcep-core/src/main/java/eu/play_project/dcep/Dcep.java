@@ -27,7 +27,7 @@ import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
@@ -221,7 +221,7 @@ Serializable {
 	}
 
 	@Override
-	public NodeMeasuringResult getMeasuredData(String queryId) {
+	public NodeMeasurementResult getMeasuredData(String queryId) {
 		if(!init) init();
 		return dEtalisMonitoring.getMeasuredData(queryId);
 	}

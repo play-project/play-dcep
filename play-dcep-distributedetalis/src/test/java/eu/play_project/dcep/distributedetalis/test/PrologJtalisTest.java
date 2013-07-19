@@ -40,8 +40,8 @@ import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-import eu.play_project.dcep.api.measurement.MeasuringResult;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.MeasurementResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.RetractEventException;
@@ -773,7 +773,7 @@ public class PrologJtalisTest {
 		MeasurementThread task = new MeasurementThread(5000, engine, null); //TODO change
 
 		// Execute task.
-		Future<MeasuringResult> future = measureExecutor.submit(task);
+		Future<MeasurementResult> future = measureExecutor.submit(task);
 
 		// Simulate events.
 		for(int i=0; i<10; i++){
@@ -790,9 +790,9 @@ public class PrologJtalisTest {
 		}
 
 
-		NodeMeasuringResult measuredValues = null;
+		NodeMeasurementResult measuredValues = null;
 		try {
-			measuredValues = (NodeMeasuringResult) future.get();
+			measuredValues = (NodeMeasurementResult) future.get();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {

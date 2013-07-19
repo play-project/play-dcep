@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.api.measurement.Load;
 import eu.play_project.dcep.api.measurement.LoadTimeSeries;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.api.measurement.PatternMeasuringResult;
 import eu.play_project.dcep.api.measurement.RoutingInformation;
 
@@ -19,14 +19,14 @@ public class StatisticsUnit {
 	private Logger logger;
 	int kPeriods; //Number of stored measurements.
 	double statisticsWindow; //Total time of k statistics measurements.
-	List<NodeMeasuringResult> nodes; //Values of the k measurements.
+	List<NodeMeasurementResult> nodes; //Values of the k measurements.
 	
 	double epsilon =0; //Good mapping or little load.
 	double delta =0;
 	
 	public StatisticsUnit(){
 		logger = LoggerFactory.getLogger(StatisticsUnit.class);
-		nodes = new LinkedList<NodeMeasuringResult>();
+		nodes = new LinkedList<NodeMeasurementResult>();
 	}
 	
 	public double calcVariance(LoadTimeSeries loadTimeSerie) {
@@ -127,7 +127,7 @@ public class StatisticsUnit {
 		return result;
 	}
 	public void addLoadTimeSeries(String nodeName, LoadTimeSeries loadTimeSeries){
-		for (NodeMeasuringResult node : nodes) {
+		for (NodeMeasurementResult node : nodes) {
 			if(node.getName().equals(node)){
 				if(loadTimeSeries.size()==kPeriods){
 					node.setLoatTimeSeries(nodeName, loadTimeSeries);
@@ -141,7 +141,7 @@ public class StatisticsUnit {
 	/**
 	 * Calculates the load for this node an all Patterns in this measurementResult object.
 	 */
-	public Load calcLoad(NodeMeasuringResult measuredValues){
+	public Load calcLoad(NodeMeasurementResult measuredValues){
 		Load load = new Load(measuredValues.getName(), measuredValues.getMeasuringPeriod());
 		List<PatternMeasuringResult> patternLoad = new LinkedList<PatternMeasuringResult>();
 		int processedEvents=0;
@@ -184,8 +184,8 @@ public class StatisticsUnit {
 
 		// Check if movement is needed. // Section 3.3 in paper. Pair-wise Algorithm.
 		for (int i = 0; i < (nodes.size() / 2); i++) {
-			NodeMeasuringResult donor = nodes.get(i);
-			NodeMeasuringResult receiver = nodes.get((nodes.size()) - (i + 1));
+			NodeMeasurementResult donor = nodes.get(i);
+			NodeMeasurementResult receiver = nodes.get((nodes.size()) - (i + 1));
  
 		//	LoadTimeSeries operator = nodes.get(i); //FIXME change value.
 
@@ -258,12 +258,12 @@ public class StatisticsUnit {
 		 * Put measured data in StatisticsUnit.
 		 * @param data
 		 */
-		public void addData(NodeMeasuringResult data){
+		public void addData(NodeMeasurementResult data){
 			
 			Load l = this.calcLoad(data);
 			
 			// Add data to LoadTimeSeries for this node.
-			NodeMeasuringResult node = this.getNode(data.getName()); //Get Node
+			NodeMeasurementResult node = this.getNode(data.getName()); //Get Node
 			
 			// If node does not exists create one.
 			if(node==null){
@@ -282,10 +282,10 @@ public class StatisticsUnit {
 		 * @param name Name of the node.
 		 * @return
 		 */
-		private NodeMeasuringResult getNode(String name){
+		private NodeMeasurementResult getNode(String name){
 			
-			NodeMeasuringResult result = null;
-			for (NodeMeasuringResult node : nodes) {
+			NodeMeasurementResult result = null;
+			for (NodeMeasurementResult node : nodes) {
 				if(node.getName().equals(name)){
 					result = node;
 				}

@@ -24,9 +24,11 @@ public class MeasurementConfig implements Serializable {
 	public void setMeasurementPeriod(int measurementPeriod) {
 		this.measurementPeriod = measurementPeriod;
 	}
+	
 	public BdplQuery getBdplquery() {
 		return bdplquery;
 	}
+	
 	public void setBdplquery(BdplQuery bdplquery) {
 		this.bdplquery = bdplquery;
 	}

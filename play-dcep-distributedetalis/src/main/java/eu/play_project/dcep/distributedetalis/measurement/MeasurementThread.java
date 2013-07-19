@@ -8,12 +8,12 @@ import java.util.concurrent.Callable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.measurement.MeasuringResult;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.MeasurementResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.api.measurement.PatternMeasuringResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 
-public class MeasurementThread implements Callable<MeasuringResult> {
+public class MeasurementThread implements Callable<MeasurementResult> {
 	private Logger logger;
 	private int measuringPeriod = 0;
 	private PlayJplEngineWrapper ctx; // CEP-Engine
@@ -27,7 +27,7 @@ public class MeasurementThread implements Callable<MeasuringResult> {
 	}
 
 	@Override
-	public NodeMeasuringResult call() throws Exception {
+	public NodeMeasurementResult call() throws Exception {
 
 		logger.debug("Start new measurement peride with " + measuringPeriod + "ms");
 
@@ -56,7 +56,7 @@ public class MeasurementThread implements Callable<MeasuringResult> {
 	
 		// Get measured data.
 		logger.debug("Get measured data form prolog.");
-		NodeMeasuringResult values = getMeasuredValues();
+		NodeMeasurementResult values = getMeasuredValues();
 
 		// Cleanup
 		logger.debug("Delete measured data..");
@@ -70,7 +70,7 @@ public class MeasurementThread implements Callable<MeasuringResult> {
 		return values;
 	}
 
-	public NodeMeasuringResult getMeasuredValues() {
+	public NodeMeasurementResult getMeasuredValues() {
 		logger.debug("getMeasuredValues");
 		StringBuffer comand = new StringBuffer();
 		List<PatternMeasuringResult> results = null;
@@ -94,7 +94,7 @@ public class MeasurementThread implements Callable<MeasuringResult> {
 			logger.error("No measuring results");
 		}
 
-		return new NodeMeasuringResult("DummyETALIS-NodeName", measuringPeriod, results);
+		return new NodeMeasurementResult("DummyETALIS-NodeName", measuringPeriod, results);
 	}
 
 

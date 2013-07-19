@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
@@ -104,7 +104,7 @@ public class MeasureProcessingTime implements MeasurementState{
 
 
 	@Override
-	public NodeMeasuringResult getMeasuringResults() {
+	public NodeMeasurementResult getMeasuringResults() {
 		return null;
 		//Reflexive edge.
 	}
@@ -155,7 +155,7 @@ public class MeasureProcessingTime implements MeasurementState{
 	}
 	
 	@Override
-	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+	public void setMeasuredData(NodeMeasurementResult measuredValues) {
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package eu.play_project.dcep.api;
 
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 
 /**
  * Manage the DCEP in non-functional ways such as configuring distribution strategies, constraining resources 
@@ -18,5 +18,5 @@ public interface DcepMonitoringApi {
 	 * @param measuringPeriod
 	 */
 	public void measurePerformance(MeasurementConfig config);
-	public NodeMeasuringResult getMeasuredData(String queryId);
+	public NodeMeasurementResult getMeasuredData(String queryId);
 }
