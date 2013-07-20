@@ -18,6 +18,7 @@ import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
+import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 
 
 
@@ -56,12 +57,15 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		dEtalisConfigApi.setSemWebLib(semWebLib);
 		semWebLib.init(etalis);
 		
+		// Use measurement unit.
+		measurementUnit = new MeasurementUnit((DistributedEtalis)dEtalisConfigApi, engine, semWebLib);
+		
 		dEtalisConfigApi.setEventInputProvider(new JtalisInputProvider(semWebLib));
 		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocal(inputRdfModelFile));
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 		dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
 		dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQueries(),
-		dEtalisConfigApi.getEcConnectionManager()));
+		dEtalisConfigApi.getEcConnectionManager(), measurementUnit));
 
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerNet;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
@@ -21,6 +22,7 @@ import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
+import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import eu.play_project.play_commons.constants.Constants;
 
 public class DetalisConfigNet implements Configuration, Serializable{
@@ -54,13 +56,16 @@ public class DetalisConfigNet implements Configuration, Serializable{
 		dEtalisConfigApi.setSemWebLib(semWebLib);
 		semWebLib.init(etalis);
 		
+		// Use measurement unit.
+		MeasurementUnit measurementUnit = new MeasurementUnit((DistributedEtalis)dEtalisConfigApi, engine, semWebLib);
+		
 		dEtalisConfigApi.setEventInputProvider(new JtalisInputProvider(semWebLib));
 		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerNet(Constants
 				.getProperties().getProperty("eventcloud.registry"), dEtalisConfigApi.getDistributedEtalis()));
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 		dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
 				dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQueries(),
-				dEtalisConfigApi.getEcConnectionManager()));
+				dEtalisConfigApi.getEcConnectionManager(), measurementUnit));
 
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());
