@@ -6,7 +6,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 public interface MeasurementState {
 	public void startMeasurement(int period);
 	public void eventReceived();
-	public void eventProduced(CompoundEvent event, String patternId);
+	public void eventProduced(CompoundEvent event, String type);
 	public void sendMeasuringEvent();
 	public NodeMeasurementResult getMeasuringResults();
 	public void setMeasuredData(NodeMeasurementResult measuredValues);

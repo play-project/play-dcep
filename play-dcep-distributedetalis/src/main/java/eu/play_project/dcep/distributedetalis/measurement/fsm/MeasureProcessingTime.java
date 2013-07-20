@@ -57,9 +57,9 @@ public class MeasureProcessingTime implements MeasurementState{
 	}
 	
 	@Override
-	public void eventProduced(CompoundEvent event, String patternId) {
+	public void eventProduced(CompoundEvent event, String type) {
 		// Count events.
-		if(patternId.equals("measurement-pattern")){
+		if(type.equals("org/types/ComplexMeasurementEvent'")){
 			logger.debug("New complex m event received. ");
 			measurementEventCounter++;
 			//Use time of MeasurementUnit.mEvents

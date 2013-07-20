@@ -30,6 +30,7 @@ import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
+import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
@@ -42,6 +43,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 	private static final long serialVersionUID = 100L;
 	private static Logger logger = LoggerFactory.getLogger(JtalisOutputProvider.class);
+	
+	MeasurementUnit measurementUnit;
 
 	boolean shutdownEtalis = false; // If true ETALIS will shutdown.
 
@@ -55,11 +58,12 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	private final static Node EVENTPATTERN = TypeConversion.toJenaNode(Event.EVENTPATTERN);
 	private final static Node SOURCE = TypeConversion.toJenaNode(Event.SOURCE);
 
-	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, BdplQuery> registeredQueries, EcConnectionManager ecConnectionManager) {
+	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, BdplQuery> registeredQueries, EcConnectionManager ecConnectionManager, MeasurementUnit measurementUnit) {
 		this.engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.recipients = recipients;
 		this.registeredQueries = registeredQueries;
 		this.historicData = new Engine(ecConnectionManager);
+		this.measurementUnit = measurementUnit;
 	}
 	
 	@Override
@@ -81,18 +85,18 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			// Publish complex event
 			CompoundEvent result = new CompoundEvent(quadruples);
 
-			//measurementUnit.eventProduced(result, event.getProperties()[1].toString());
+			measurementUnit.eventProduced(result, event.getName());
 			// event.getRuleID(); //TODO sobermeier use this.
 	
 			// Do not remove this line, needed for logs. :stuehmer
 			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
-			System.out.println(result);
-			
-			if(recipients.size()<1) logger.warn("No recipient for complex events.");
-			
-			for (SimplePublishApi recipient : recipients) {
-				recipient.publish(result);
-			}
+//			System.out.println(result);
+//			
+//			if(recipients.size()<1) logger.warn("No recipient for complex events.");
+//			
+//			for (SimplePublishApi recipient : recipients) {
+//				recipient.publish(result);
+//			}
 		} catch (Exception e) {
 			if(e instanceof RetractEventException){
 				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled." );
@@ -103,7 +107,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				logger.error("Exception appeard: " + e.getMessage());
 				e.printStackTrace();
 			}
-			
 		}
 	}
 	

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 
+import eu.play_project.dcep.api.measurement.MeasurementConstants;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -23,9 +24,10 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 	}
 
 	@Override
-	public void eventProduced(CompoundEvent event, String patternId) {
+	public void eventProduced(CompoundEvent event, String type) {
+		System.out.println("Fuck You: WW.................................................................");
 		// Count events.
-		if (patternId.equals("measurement-pattern")) {
+		if (type.equals(MeasurementConstants.MEASUREMENT_COMPLEX_TYPE)) {
 			logger.debug("New complex m event received. ");
 			measurementEventCounter++;
 			context.addSingleEventTime(calcTimeForEvent(event));

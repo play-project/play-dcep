@@ -60,6 +60,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		// Use measurement unit.
 		measurementUnit = new MeasurementUnit((DistributedEtalis)dEtalisConfigApi, engine, semWebLib);
 		
+		dEtalisConfigApi.setMeasurementUnit(measurementUnit);
 		dEtalisConfigApi.setEventInputProvider(new JtalisInputProvider(semWebLib));
 		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocal(inputRdfModelFile));
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());

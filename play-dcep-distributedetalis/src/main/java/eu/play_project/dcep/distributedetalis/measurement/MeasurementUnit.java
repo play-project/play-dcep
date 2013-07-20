@@ -42,8 +42,8 @@ public class MeasurementUnit implements MeasurementState{
 	private NodeMeasurementResult measuredValues; //Statistics data from cepEngine.
 	
 	//Config
-	public static int mEvents = 10; //Defines the number of events used to measure the performance. Default 10
-	public static int eventsPeriod = 5; // Defines the number of events send in one measuring period. Default 5
+	public static int mEvents = 1; //Defines the number of events used to measure the performance. How often eventsPeriod is sent.
+	public static int eventsPeriod = 10; // Defines the number of events send in one measuring period. Default 5
 
 	public void sendMeasureEvents(){
 		state.sendMeasuringEvent();
@@ -91,6 +91,7 @@ public class MeasurementUnit implements MeasurementState{
 			state = new Ready(etalis, this);
 		}else if (name.equals("MeasureProcessingTime")){
 			state = new MeasureProcessingTime(this, cepEngine, semWebLib);
+			System.out.println("New state: " + state.getName());
 		}else if (name.equals("WaitForComplexMeasurementEvents")){
 			state = new WaitForComplexMeasurementEvent(this, 0);
 		}else if (name.equals("WaitForMeasuredData")){
@@ -121,7 +122,9 @@ public class MeasurementUnit implements MeasurementState{
 	}
 
 	public void setState(MeasurementState state) {
+		logger.info("setState. State is " + this.state.getName() );
 		this.state = state;
+		logger.info("setState: " + this.state.getName() );
 	}
 
 	

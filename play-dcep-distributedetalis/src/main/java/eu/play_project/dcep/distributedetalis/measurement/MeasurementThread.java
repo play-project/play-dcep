@@ -35,12 +35,12 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		// Wait till measurement time is up. Send triger 5 measurements.
 		int measureEvents = eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit.eventsPeriod ;// Number of measurement events in one period.
 		
-			int partMPeriod = (measuringPeriod/measureEvents);
+			float partMPeriod = (measuringPeriod/measureEvents);
 			while(partMPeriod <= measuringPeriod){
 				// Send measuring event.
 				mainProgramm.sendMeasureEvents();
 				
-				// Note that event has ben sent.
+				// Note that event has been sent.
 				partMPeriod += measuringPeriod/measureEvents;
 
 				// Wait 
@@ -59,7 +59,7 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		NodeMeasurementResult values = getMeasuredValues();
 
 		// Cleanup
-		logger.debug("Delete measured data..");
+		logger.debug("Delete measured data.");
 		ctx.executeGoal("deleteMeasuredData");
 		
 		//

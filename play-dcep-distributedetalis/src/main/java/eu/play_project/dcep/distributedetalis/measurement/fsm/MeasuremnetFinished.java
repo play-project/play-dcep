@@ -47,7 +47,7 @@ public class MeasuremnetFinished implements MeasurementState {
 
 	@Override
 	public void eventProduced(CompoundEvent event, String patternId) {
-		// TODO Auto-generated method stub
+		System.out.println("Fuck You: FIN.................................................................");
 		
 	}
 
