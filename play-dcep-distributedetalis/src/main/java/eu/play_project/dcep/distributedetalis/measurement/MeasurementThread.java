@@ -32,10 +32,11 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		logger.debug("Start new measurement peride with " + measuringPeriod + "ms");
 
 		ctx.executeGoal("setMeasurementMode(on)");
+		
 		// Wait till measurement time is up. Send triger 5 measurements.
 		int measureEvents = eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit.eventsPeriod ;// Number of measurement events in one period.
 		
-			float partMPeriod = (measuringPeriod/measureEvents);
+			float partMPeriod = (measuringPeriod/measureEvents-10);
 			while(partMPeriod <= measuringPeriod){
 				// Send measuring event.
 				mainProgramm.sendMeasureEvents();
@@ -46,14 +47,14 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 				// Wait 
 				Thread.sleep((measuringPeriod/measureEvents));
 			}
-		
+
 		// Stop measurement
 		ctx.executeGoal("setMeasurementMode(off)");
 		logger.debug("Measurement mode: off");
-		
+
 		// Next state
 		mainProgramm.measuringPeriodIsUp();
-	
+
 		// Get measured data.
 		logger.debug("Get measured data form prolog.");
 		NodeMeasurementResult values = getMeasuredValues();
@@ -61,11 +62,11 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		// Cleanup
 		logger.debug("Delete measured data.");
 		ctx.executeGoal("deleteMeasuredData");
-		
+
 		//
 		mainProgramm.setMeasuredValues(values);
 		logger.info("Measurement periode is up.");
-		
+
 		// Return result.
 		return values;
 	}
@@ -84,7 +85,7 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		if (resultFromProlog != null) {
 			results = new LinkedList();
 			for (Hashtable<String, Object> hashtable : resultFromProlog) {
-				logger.info(hashtable.get("PatternID").toString()  + "aaaaaaaa \t ssssssssssss" +((jpl.Integer) hashtable.get("Value")).intValue());
+				logger.info("Pattern " + hashtable.get("PatternID").toString()  + " consumed " + ((jpl.Integer) hashtable.get("Value")).intValue() + " events.");
 				// Put data in ResultSet.
 				results.add(new PatternMeasuringResult(hashtable.get("PatternID").toString(), ((jpl.Integer) hashtable.get("Value")).intValue()));
 			}

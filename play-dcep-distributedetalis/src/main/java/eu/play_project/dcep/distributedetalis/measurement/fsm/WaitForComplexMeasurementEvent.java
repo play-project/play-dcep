@@ -25,9 +25,8 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 
 	@Override
 	public void eventProduced(CompoundEvent event, String type) {
-		System.out.println("Fuck You: WW.................................................................");
 		// Count events.
-		if (type.equals(MeasurementConstants.MEASUREMENT_COMPLEX_TYPE)) {
+		if (type.equals("org/types/ComplexMeasurementEvent'")) {
 			logger.debug("New complex m event received. ");
 			measurementEventCounter++;
 			context.addSingleEventTime(calcTimeForEvent(event));

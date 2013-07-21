@@ -43,7 +43,7 @@ public class MeasurementUnit implements MeasurementState{
 	
 	//Config
 	public static int mEvents = 1; //Defines the number of events used to measure the performance. How often eventsPeriod is sent.
-	public static int eventsPeriod = 10; // Defines the number of events send in one measuring period. Default 5
+	public static int eventsPeriod = 100; // Defines the number of events send in one measuring period. Default 5
 
 	public void sendMeasureEvents(){
 		state.sendMeasuringEvent();
@@ -195,7 +195,7 @@ public class MeasurementUnit implements MeasurementState{
 			measuredValues.setProcessingTimeForOneEvent(this.getSingleEventTime());
 			measuredValues.setNumberOfEventsProcessedSinceStartUp(totalInputEvents);
 			measuredValues.setNumberOfEtalisInputEvents(JtalisInputProvider.getEventCounter());
-			measuredValues.setCompontenQueue(cepEngine.getService().getRequestCount());
+			//measuredValues.setCompontenQueue(cepEngine.getService().getRequestCount());
 			measuredValues.setEtalisInputQueue(cepEngine.getEventInputProvider().getInputQueueSize());
 
 			return measuredValues;

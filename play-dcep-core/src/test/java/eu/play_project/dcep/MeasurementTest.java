@@ -56,7 +56,7 @@ public class MeasurementTest {
 
 		long startTime = System.currentTimeMillis();
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 1; i++) {
 
 			monitoringApi.measurePerformance(new MeasurementConfig(1000, null));
 
@@ -64,6 +64,10 @@ public class MeasurementTest {
 			Thread.sleep(2000);
 
 			NodeMeasurementResult dEtalis1Data = monitoringApi.getMeasuredData("measurement");
+			
+			System.out.println(dEtalis1Data.getMeasuredValues());
+			System.out.println(dEtalis1Data.getNumberOfComponentInputEvetns());
+			System.out.println(dEtalis1Data.getNumberOfOutputEvents());
 			//printUtilisation(dEtalis1Data);
 		}
 

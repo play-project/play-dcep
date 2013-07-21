@@ -2,7 +2,7 @@
 %If a counter does not exist it will be created.
 %If no counter for this pattern does not exist it will be added.
 %To get the value use: eventCounter(PatternID,X).
-incrementEventCounter(PatternID):- write('Increment counter'), nl,
+incrementEventCounter(PatternID):-
 	catch(eventCounter(PatternID, X1), E, assertCounter(E, PatternID))
 	 -> (eventCounter(PatternID, X1), 
 		X2 is X1 + 1, 
