@@ -46,11 +46,14 @@ installCEP_Engine(){
 
 installProActive(){
 	cd $INSTALL_DIR
-	wget http://www.activeeon.com/public_content/releases/ProActive/3.3.2/ProActiveProgramming-5.3.2_core_bin.zip
-	unzip ProActiveProgramming-5.3.2_core_bin.zip
+	# wget http://www.activeeon.com/public_content/releases/ProActive/3.3.2/ProActiveProgramming-5.3.2_core_bin.zip
+	# unzip ProActiveProgramming-5.3.2_core_bin.zip
+	
+	wget www.home.hs-karlsruhe.de/~obst1011/fzi/play/software/ProActiveProgramming.tar.gz
+	tar -xzf ProActiveProgramming.tar.gz
 	
 	# Delete bad slf4j version.
-	rm /opt/play/ProActiveProgramming-5.3.2_core_bin/dist/lib/slf4j-log4j12-1.5.3.jar
+	rm $INSTALL_DIR/ProActiveProgramming/dist/lib/slf4j-log4j12-1.5.3.jar
 
 }
 
