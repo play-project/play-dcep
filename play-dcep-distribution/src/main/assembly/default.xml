@@ -11,28 +11,34 @@
 		<format>zip</format>
 	</formats>
 
+
+	<dependencySets>
+		<dependencySet>
+		    <!-- Dependencies to be placed in lib/ -->
+			<useProjectArtifact>true</useProjectArtifact>
+			<outputDirectory>lib</outputDirectory>
+			<unpack>false</unpack>
+		</dependencySet>
+	</dependencySets>
+
 	<fileSets>
 		<fileSet>
 			<!-- Configuration files to be placed in conf/ -->
 			<directory>src/main/config</directory>
 			<outputDirectory>conf</outputDirectory>
+			<lineEnding>unix</lineEnding>
 		</fileSet>
 
 		<fileSet>
-			<directory>target/generated-resources/appassembler/jsw/dcep/conf</directory>
-			<outputDirectory>conf</outputDirectory>
-		</fileSet>
-		
-		<fileSet>
-			<directory>target/generated-resources/appassembler/jsw/dcep/bin</directory>
+			<!-- Unix scripts to be placed in bin/ -->
+			<directory>${project.build.scriptSourceDirectory}</directory>
 			<outputDirectory>bin</outputDirectory>
 			<filtered>true</filtered>
 			<fileMode>0744</fileMode>
-		</fileSet>
-		
-		<fileSet>
-			<directory>target/generated-resources/appassembler/jsw/dcep/lib</directory>
-			<outputDirectory>lib</outputDirectory>
+			<lineEnding>unix</lineEnding>
+			<includes>
+				<include>dcep</include>
+			</includes>
 		</fileSet>
 		
 	</fileSets>

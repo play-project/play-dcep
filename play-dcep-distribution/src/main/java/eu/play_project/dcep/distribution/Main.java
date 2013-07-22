@@ -2,6 +2,9 @@ package eu.play_project.dcep.distribution;
 
 import java.util.HashMap;
 
+import org.apache.commons.daemon.Daemon;
+import org.apache.commons.daemon.DaemonContext;
+import org.apache.commons.daemon.DaemonInitException;
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri.gcm.util.GCM;
 import org.objectweb.fractal.adl.Factory;
@@ -19,7 +22,7 @@ import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 
-public class Main {
+public class Main implements Daemon {
 
 	private static final String propertiesFile = "proactive.java.policy";
 	private static Logger logger;
@@ -67,6 +70,12 @@ public class Main {
 
 	}
 
+	@Override
+	public void init(DaemonContext context) throws DaemonInitException,
+			Exception {
+	}
+
+	@Override
 	public void start() throws Exception {
 		logger = LoggerFactory.getLogger(Main.class);
 
@@ -119,6 +128,7 @@ public class Main {
 		}
 	}
 
+	@Override
 	public void stop() throws Exception {
 		try {
 			// Stop and terminate GCM Components
@@ -143,5 +153,10 @@ public class Main {
 		} catch (NoSuchInterfaceException e) {
 			logger.error(e.getMessage());
 		}
+	}
+
+	@Override
+	public void destroy() {
+	
 	}
 }

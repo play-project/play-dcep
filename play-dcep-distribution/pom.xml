@@ -38,55 +38,6 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>appassembler-maven-plugin</artifactId>
-				<version>1.4</version>
-				<configuration>
-					<repositoryLayout>flat</repositoryLayout>
-					<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
-		
-					<daemons>
-						<daemon>
-							<id>dcep</id>
-							<mainClass>eu.play_project.dcep.distribution.Main</mainClass>
-							<platforms>
-								<platform>jsw</platform>
-							</platforms>
-							<jvmSettings>
-								<systemProperties>
-									<systemProperty>java.security.policy=conf/proactive.java.policy</systemProperty>
-									<systemProperty>proactive.communication.protocol=pnp</systemProperty>
-									<systemProperty>proactive.pnp.port=9250</systemProperty>
-									<systemProperty>proactive.http.port=9251</systemProperty>
-								</systemProperties>
-								<extraArguments>
-									<extraArgument>-server</extraArgument>
-								</extraArguments>
-							</jvmSettings>
-							<generatorConfigurations>
-								<generatorConfiguration>
-									<generator>jsw</generator>
-									<includes>
-										<include>linux-x86-32</include>
-										<include>linux-x86-64</include>
-										<include>windows-x86-32</include>
-									</includes>
-								</generatorConfiguration>
-							</generatorConfigurations>							
-						</daemon>
-					</daemons>
-				</configuration>
-				<executions>
-					<execution>
-						<id>generate-jsw-scripts</id>
-						<phase>package</phase>
-						<goals>
-							<goal>generate-daemons</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
    			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -244,6 +195,11 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-test-srbench-simulator</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-daemon</groupId>
+			<artifactId>commons-daemon</artifactId>
+			<version>1.0.15</version>
 		</dependency>
 	</dependencies>
 
