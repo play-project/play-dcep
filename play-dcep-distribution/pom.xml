@@ -22,6 +22,10 @@
 				<filtering>true</filtering>
 			</resource>
 			<resource>
+				<directory>src/main/config</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
 				<directory>src/main/adl/</directory>
 			</resource>
 		</resources>
@@ -35,29 +39,65 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.4</version>
 				<configuration>
-					<finalName>dcep</finalName>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner</mainClass>
-						</manifest>
-					</archive>
-					<argLine>-Djava.security.manager
-						-Djava.security.policy=proactive.java.policy
-						-Dproactive.communication.protocol=pnp
-						-Dproactive.pnp.port=9000
-						-Dproactive.http.port=9001
-						-Dproactive.rmi.port=1099
-					</argLine>
+					<repositoryLayout>flat</repositoryLayout>
+					<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+		
+					<daemons>
+						<daemon>
+							<id>dcep</id>
+							<mainClass>eu.play_project.dcep.distribution.Main</mainClass>
+							<platforms>
+								<platform>jsw</platform>
+							</platforms>
+							<jvmSettings>
+								<systemProperties>
+									<systemProperty>java.security.policy=conf/proactive.java.policy</systemProperty>
+									<systemProperty>proactive.communication.protocol=pnp</systemProperty>
+									<systemProperty>proactive.pnp.port=9250</systemProperty>
+									<systemProperty>proactive.http.port=9251</systemProperty>
+								</systemProperties>
+								<extraArguments>
+									<extraArgument>-server</extraArgument>
+								</extraArguments>
+							</jvmSettings>
+							<generatorConfigurations>
+								<generatorConfiguration>
+									<generator>jsw</generator>
+									<includes>
+										<include>linux-x86-32</include>
+										<include>linux-x86-64</include>
+										<include>windows-x86-32</include>
+									</includes>
+								</generatorConfiguration>
+							</generatorConfigurations>							
+						</daemon>
+					</daemons>
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-my-jar-with-dependencies</id>
+						<id>generate-jsw-scripts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-daemons</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+   			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/default.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>assembly</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
@@ -65,7 +105,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+ 		</plugins>
 	</build>
 
 	<dependencies>
