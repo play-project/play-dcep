@@ -2,9 +2,6 @@ package eu.play_project.dcep.distribution;
 
 import java.util.HashMap;
 
-import org.apache.commons.daemon.Daemon;
-import org.apache.commons.daemon.DaemonContext;
-import org.apache.commons.daemon.DaemonInitException;
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri.gcm.util.GCM;
 import org.objectweb.fractal.adl.Factory;
@@ -22,14 +19,14 @@ import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 
-public class Main implements Daemon {
+public class Main {
 
 	private static final String propertiesFile = "proactive.java.policy";
 	private static Logger logger;
 	private Component root;
 
 	/**
-	 * Start DCEP. There are three ways to stop it: (1) by killing the main
+	 * Start DCEP. There are several ways to stop it: (1) by killing the main
 	 * thread a shutdownhook is caught (2) by sending 3 newlines on stdin (3)
 	 * when an exception happens during start.
 	 */
@@ -70,12 +67,6 @@ public class Main implements Daemon {
 
 	}
 
-	@Override
-	public void init(DaemonContext context) throws DaemonInitException,
-			Exception {
-	}
-
-	@Override
 	public void start() throws Exception {
 		logger = LoggerFactory.getLogger(Main.class);
 
@@ -128,7 +119,6 @@ public class Main implements Daemon {
 		}
 	}
 
-	@Override
 	public void stop() throws Exception {
 		try {
 			// Stop and terminate GCM Components
@@ -153,10 +143,5 @@ public class Main implements Daemon {
 		} catch (NoSuchInterfaceException e) {
 			logger.error(e.getMessage());
 		}
-	}
-
-	@Override
-	public void destroy() {
-	
 	}
 }

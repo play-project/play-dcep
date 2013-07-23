@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.ow2.play</groupId>
@@ -38,12 +39,52 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
-   			<plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.4</version>
+				<configuration>
+					<repositoryLayout>flat</repositoryLayout>
+					<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+
+					<daemons>
+						<daemon>
+							<id>dcep</id>
+							<mainClass>eu.play_project.dcep.distribution.Main</mainClass>
+							<platforms>
+								<platform>booter-unix</platform>
+								<platform>booter-windows</platform>
+							</platforms>
+							<jvmSettings>
+								<systemProperties>
+									<systemProperty>java.security.policy=conf/proactive.java.policy</systemProperty>
+									<systemProperty>proactive.communication.protocol=pnp</systemProperty>
+									<systemProperty>proactive.pnp.port=9250</systemProperty>
+									<systemProperty>proactive.http.port=9251</systemProperty>
+								</systemProperties>
+								<extraArguments>
+									<extraArgument>-server</extraArgument>
+								</extraArguments>
+							</jvmSettings>
+						</daemon>
+					</daemons>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate-daemons</goal>
+							<goal>create-repository</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<descriptors>
-						<descriptor>src/main/assembly/default.xml</descriptor>
+						<descriptor>src/main/assembly/booter.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
@@ -56,10 +97,15 @@
 					</execution>
 				</executions>
 			</plugin>
- 		</plugins>
+		</plugins>
 	</build>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.codehaus.mojo.appassembler</groupId>
+			<artifactId>appassembler-booter</artifactId>
+			<version>1.4</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -108,6 +154,10 @@
 				<exclusion>
 					<artifactId>play-commons-constants</artifactId>
 					<groupId>eu.play-project</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-asm</artifactId>
+					<groupId>org.springframework</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -189,17 +239,16 @@
 					<artifactId>jena-core</artifactId>
 					<groupId>org.apache.jena</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>asm-all-repackaged</artifactId>
+					<groupId>org.glassfish.hk2.external</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-test-srbench-simulator</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-daemon</groupId>
-			<artifactId>commons-daemon</artifactId>
-			<version>1.0.15</version>
 		</dependency>
 	</dependencies>
 
@@ -224,6 +273,11 @@
 				<artifactId>cxf-bundle-minimal</artifactId>
 				<groupId>org.apache.cxf</groupId>
 				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>asm</groupId>
+				<artifactId>asm</artifactId>
+				<version>1.5.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
