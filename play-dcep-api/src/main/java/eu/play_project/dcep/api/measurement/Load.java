@@ -3,7 +3,7 @@ package eu.play_project.dcep.api.measurement;
 import java.util.List;
 
 
-public class Load extends MeasuringResult implements Comparable<Load> {
+public class Load extends MeasurementResult implements Comparable<Load> {
 	
 	/**
 	 * 

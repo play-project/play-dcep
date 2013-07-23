@@ -18,7 +18,11 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 
+import eu.play_project.dcep.api.DcepMonitoringApi;
+import eu.play_project.dcep.api.measurement.MeasurementConfig;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -29,6 +33,7 @@ public class MeasurementTest {
 
 	public static QueryDispatchApi queryDispatchApi;
 	public static DistributedEtalisTestApi testApi;
+	public static DcepMonitoringApi monitoringApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;
@@ -49,32 +54,42 @@ public class MeasurementTest {
 		// Compile query
 		String paternID1 = queryDispatchApi.registerQuery("measurement", queryString);
 
+		long startTime = System.currentTimeMillis();
 
-		
+		for (int i = 0; i < 1; i++) {
 
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				logger.info("Terminating component: "
-						+ subcomponent.getFcType());
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
+			monitoringApi.measurePerformance(new MeasurementConfig(1000, null));
 
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
+			// Wait and pull data
+			Thread.sleep(2000);
+
+			NodeMeasurementResult dEtalis1Data = monitoringApi.getMeasuredData("measurement");
+			
+			System.out.println(dEtalis1Data.getMeasuredValues());
+			System.out.println(dEtalis1Data.getNumberOfComponentInputEvetns());
+			System.out.println(dEtalis1Data.getNumberOfOutputEvents());
+			//printUtilisation(dEtalis1Data);
 		}
+
+			// Stop and terminate GCM Components
+			try {
+				GCM.getGCMLifeCycleController(root).stopFc();
+				// Terminate all subcomponents.
+				for (Component subcomponent : GCM.getContentController(root)
+						.getFcSubComponents()) {
+					logger.info("Terminating component: "
+							+ subcomponent.getFcType());
+					GCM.getGCMLifeCycleController(subcomponent)
+							.terminateGCMComponent();
+				}
+
+			} catch (IllegalLifeCycleException e) {
+				e.printStackTrace();
+			} catch (NoSuchInterfaceException e) {
+				e.printStackTrace();
+			}
 	}
 
-
-
-
-	
 
 	public static void InstantiatePlayPlatform()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
@@ -96,6 +111,8 @@ public class MeasurementTest {
 				.getFcInterface("QueryDispatchApi"));
 		testApi = (DistributedEtalisTestApi) root
 				.getFcInterface("DistributedEtalisTestApi");
+		
+		monitoringApi = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface("DcepMonitoringApi"));
 
 		try {
 			Thread.sleep(10000);
@@ -109,61 +126,61 @@ public class MeasurementTest {
 		LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 
 		Quadruple q1 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://events.event-processing.org/types/stream"),
-				Node.createURI("http://streams.event-processing.org/ids/Srbench#stream"));
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+				NodeFactory.createURI("http://streams.event-processing.org/ids/Srbench#stream"));
 
 		Quadruple q3 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e2"),
-				Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#WindSpeedObservation"));
+				NodeFactory.createURI("http://prefix.example.com/e2"),
+				NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#WindSpeedObservation"));
 
 		Quadruple q4 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e2"),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#observedProperty"),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#_WindSpeed"));
+				NodeFactory.createURI("http://prefix.example.com/e2"),
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#observedProperty"),
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#_WindSpeed"));
 
 		Quadruple q5 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e2"),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#result"),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"));
+				NodeFactory.createURI("http://prefix.example.com/e2"),
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#result"),
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"));
 
 		Quadruple q6 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
-				Node.createURI(value + ""));
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"),
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
+				NodeFactory.createURI(value + ""));
 
 		// Quadruple q7 = new Quadruple(
-		// Node.createURI("http://events.event-processing.org/eventId/"
+		// NodeFactory.createURI("http://events.event-processing.org/eventId/"
 		// + eventId),
-		// Node.createURI("http://prefix.example.com/e1"),
-		// Node.createURI("http://events.event-processing.org/types/endTime"),
-		// Node.createURI(new SimpleDateFormat(
+		// NodeFactory.createURI("http://prefix.example.com/e1"),
+		// NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+		// NodeFactory.createURI(new SimpleDateFormat(
 		// eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601)
 		// .format(new Date())));
 		Quadruple q7 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://events.event-processing.org/types/endTime"),
-				Node.createURI(System.currentTimeMillis() + ""));
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+				NodeFactory.createURI(System.currentTimeMillis() + ""));
 
 		Quadruple q8 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e2"),
-				Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#procedure"),
-				Node.createURI("http://sensor.example.com/S1"));
+				NodeFactory.createURI("http://prefix.example.com/e2"),
+				NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#procedure"),
+				NodeFactory.createURI("http://sensor.example.com/S1"));
 
 		quads.add(q1);
 		// quads.add(q2);
@@ -182,39 +199,39 @@ public class MeasurementTest {
 		LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 
 		Quadruple q1 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://events.event-processing.org/types/stream"),
-				Node.createURI("http://streams.event-processing.org/ids/FacebookStatusFeed#stream"));
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+				NodeFactory.createURI("http://streams.event-processing.org/ids/FacebookStatusFeed#stream"));
 
 		Quadruple q3 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-				Node.createURI("http://events.event-processing.org/types/FacebookStatusFeedEvent"));
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+				NodeFactory.createURI("http://events.event-processing.org/types/FacebookStatusFeedEvent"));
 
 		Quadruple q4 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://events.event-processing.org/types/status"),
-				Node.createURI("Tea"));
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://events.event-processing.org/types/status"),
+				NodeFactory.createURI("Tea"));
 
 		Quadruple q5 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://events.event-processing.org/types/status"),
-				Node.createURI("Coffee"));
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://events.event-processing.org/types/status"),
+				NodeFactory.createURI("Coffee"));
 
 		Quadruple q6 = new Quadruple(
-				Node.createURI("http://events.event-processing.org/eventId/"
+				NodeFactory.createURI("http://events.event-processing.org/eventId/"
 						+ eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://graph.facebook.com/schema/user#name"),
-				Node.createURI("Max"));
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://graph.facebook.com/schema/user#name"),
+				NodeFactory.createURI("Max"));
 
 		quads.add(q1);
 		quads.add(q3);

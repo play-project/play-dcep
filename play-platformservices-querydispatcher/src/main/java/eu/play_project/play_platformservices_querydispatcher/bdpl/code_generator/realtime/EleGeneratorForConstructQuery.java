@@ -238,8 +238,8 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		TriplestoreQuery();
 		FilterExpression();
 		ReferenceCounter();
-		//elePattern += ", ";
-		//PerformanceMeasurement();
+		elePattern += ", ";
+		PerformanceMeasurement();
 		
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";

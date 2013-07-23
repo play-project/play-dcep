@@ -116,10 +116,6 @@
 			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>
-					<artifactId>proactive</artifactId>
-					<groupId>org.objectweb.proactive</groupId>
-				</exclusion>
-				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
 				</exclusion>

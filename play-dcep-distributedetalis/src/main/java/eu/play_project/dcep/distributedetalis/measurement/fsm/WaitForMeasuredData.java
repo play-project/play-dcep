@@ -3,7 +3,7 @@ package eu.play_project.dcep.distributedetalis.measurement.fsm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -26,7 +26,7 @@ public class WaitForMeasuredData implements MeasurementState{
 
 
 	@Override
-	public NodeMeasuringResult getMeasuringResults() {
+	public NodeMeasurementResult getMeasuringResults() {
 		return null;
 	}
 
@@ -35,7 +35,7 @@ public class WaitForMeasuredData implements MeasurementState{
 	}
 
 	@Override
-	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+	public void setMeasuredData(NodeMeasurementResult measuredValues) {
 		logger.debug("Measured data set.");
 		logger.info("" + measuredValues.getProcessingTimeForOneEvent());
 		logger.info("" + measuredValues.getNumberOfEtalisInputEvents());
@@ -45,7 +45,7 @@ public class WaitForMeasuredData implements MeasurementState{
 		context.setNumberOfOutputEvents(context.getNumberOfOutputEvents()+numberOfProducedEvents);
 		context.setNumberOfInputEvents(context.getNumberOfInputEvents() + numberOfConsumedEvents);
 		
-		context.setState( context.create("MeasurementFinished"));
+		context.setState( context.createMeasurementState("MeasurementFinished"));
 	}
 
 

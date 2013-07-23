@@ -13,7 +13,7 @@ installBasicSoftware(){
 	apt-get -y update
 	
 	#Install tools.
-	apt-get -y install screen vim maven2 subversion sun-java6-jdk ntpdate
+	apt-get -y install screen vim maven2 subversion sun-java6-jdk ntpdate unzip
 	update-alternatives --set java /usr/lib/jvm/java-6-sun/jre/bin/java
 	export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/
 }
@@ -42,6 +42,26 @@ installCEP_Engine(){
 	wget $TOOL_URL/cep-engine.sh
 	chmod u+x cep-engine.sh
 	screen ./cep-engine.sh etalis$2.dcep.s-node.de
+}
+
+installProActive(){
+	cd $INSTALL_DIR
+	# wget http://www.activeeon.com/public_content/releases/ProActive/3.3.2/ProActiveProgramming-5.3.2_core_bin.zip
+	# unzip ProActiveProgramming-5.3.2_core_bin.zip
+	
+	wget www.home.hs-karlsruhe.de/~obst1011/fzi/play/software/ProActiveProgramming.tar.gz
+	tar -xzf ProActiveProgramming.tar.gz
+	
+	# Delete bad slf4j version.
+	rm $INSTALL_DIR/ProActiveProgramming/dist/lib/slf4j-log4j12-1.5.3.jar
+
+}
+
+setEnvironemenVariables(){
+	echo TODO setEnvironemenVariables
+	# TODO Update Bash environment variables
+	# .bashrc
+	# For ssh login.
 }
 
 getTool(){
@@ -76,13 +96,17 @@ case "$1" in
 	installCEP_Engine
 	setIP_Adress "$2"
   ;;
-  measure)
+  ProActiveNode)
 	installBasicSoftware
+	installProActive
+	setEnvironemenVariables
+	installCEP_Engine
 	setIP_Adress "$2"
   ;;
  
+ 
  *)
-	echo "Configure PLAY-Node: {cep-engine|publisher|subscriber} ip-postfix"
+	echo "Configure PLAY-Node: {cep-engine|publisher|subscriber|ProActiveNode} ip-postfix"
 	exit 1
   ;;
 esac

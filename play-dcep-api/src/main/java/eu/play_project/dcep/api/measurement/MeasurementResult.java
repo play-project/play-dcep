@@ -2,7 +2,7 @@ package eu.play_project.dcep.api.measurement;
 
 import java.io.Serializable;
 
-public abstract class MeasuringResult implements Serializable{
+public abstract class MeasurementResult implements Serializable{
 	/**
 	 * 
 	 */
@@ -17,12 +17,12 @@ public abstract class MeasuringResult implements Serializable{
 	private long inputBuffer = 0;
 	private long outputBuffer = 0;
 	
-	public MeasuringResult(){}
-	public MeasuringResult( String name){
+	public MeasurementResult(){}
+	public MeasurementResult( String name){
 		this.name = name;
 	}
 	
-	public MeasuringResult( String name, int period){
+	public MeasurementResult( String name, int period){
 		this.name = name;
 		this.measuringPeriod = period;
 	}

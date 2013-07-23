@@ -1,6 +1,6 @@
 package eu.play_project.dcep.api.measurement;
 
-public class PatternMeasuringResult extends MeasuringResult implements Comparable<PatternMeasuringResult>{
+public class PatternMeasuringResult extends MeasurementResult implements Comparable<PatternMeasuringResult>{
 	/**
 	 * 
 	 */

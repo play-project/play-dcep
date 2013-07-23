@@ -7,8 +7,8 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.measurement.MeasuringResult;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.MeasurementResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementThread;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
@@ -39,9 +39,9 @@ public class Ready implements MeasurementState{
 
 		MeasurementThread task = new MeasurementThread(time, prologContext, context);
 
-		Future<MeasuringResult> future = measureExecutor.submit(task);
+		Future<MeasurementResult> future = measureExecutor.submit(task);
 
-		context.setState(context.create("MeasureProcessingTime"));
+		context.setState(context.createMeasurementState("MeasureProcessingTime"));
 	}
 
 	@Override
@@ -51,14 +51,14 @@ public class Ready implements MeasurementState{
 
 
 	@Override
-	public NodeMeasuringResult getMeasuringResults() {
+	public NodeMeasurementResult getMeasuringResults() {
 		return null;
 		//Reflexive edge.
 	}
 
 
 	@Override
-	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+	public void setMeasuredData(NodeMeasurementResult measuredValues) {
 	}
 
 	@Override

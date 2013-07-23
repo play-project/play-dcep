@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.MeasurementConstants;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -23,9 +24,9 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 	}
 
 	@Override
-	public void eventProduced(CompoundEvent event, String patternId) {
+	public void eventProduced(CompoundEvent event, String type) {
 		// Count events.
-		if (patternId.equals("measurement-pattern")) {
+		if (type.equals("org/types/ComplexMeasurementEvent'")) {
 			logger.debug("New complex m event received. ");
 			measurementEventCounter++;
 			context.addSingleEventTime(calcTimeForEvent(event));
@@ -46,12 +47,12 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 			context.setNumberOfOutputEvents(context.getNumberOfOutputEvents() + complexEventCounter);
 			context.setNumberOfInputEvents(context.getNumberOfInputEvents() + numberOfConsumedEvents);
 
-			context.setState(context.create("WaitForMeasuredData"));
+			context.setState(context.createMeasurementState("WaitForMeasuredData"));
 		}
 	}
 
 	@Override
-	public NodeMeasuringResult getMeasuringResults() {
+	public NodeMeasurementResult getMeasuringResults() {
 		return null;
 	}
 
@@ -67,7 +68,7 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 	}
 	
 	@Override
-	public void setMeasuredData(NodeMeasuringResult measuredValues) {
+	public void setMeasuredData(NodeMeasurementResult measuredValues) {
 	}
 
 	private long calcTimeForEvent(CompoundEvent event) {

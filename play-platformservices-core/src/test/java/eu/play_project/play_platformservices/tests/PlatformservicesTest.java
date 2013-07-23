@@ -72,7 +72,7 @@ public class PlatformservicesTest {
 		 * Stop server
 		 */
 		GCM.getGCMLifeCycleController(root).stopFc();
-		GCM.getGCMLifeCycleController(root).terminateGCMComponent();
+		//GCM.getGCMLifeCycleController(root).terminateGCMComponent();
 	}
 
 }

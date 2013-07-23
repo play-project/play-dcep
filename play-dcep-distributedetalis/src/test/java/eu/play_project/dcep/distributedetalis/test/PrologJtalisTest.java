@@ -28,6 +28,7 @@ import jpl.Query;
 import jpl.Term;
 
 import org.event_processing.events.types.AvgTempEvent;
+import org.junit.Assert;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
@@ -40,8 +41,8 @@ import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-import eu.play_project.dcep.api.measurement.MeasuringResult;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.MeasurementResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.RetractEventException;
@@ -659,6 +660,53 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
+	public void useAgregateFunctionsWithEleTest() throws IOException, InterruptedException {
+			long delay = 500;
+			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
+			
+			PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
+			JtalisContext context = new JtalisContextImpl(engine);
+			context.addEventTrigger("complex/_");
+
+			context.registerOutputProvider(new AbstractJtalisEventProvider() {
+				@Override
+				public void outputEvent(EtalisEvent event) {
+					System.out.println(event);
+					list.add(event);
+				}
+			});
+
+			LoadPrologCode prologCodeLoader = new LoadPrologCode();
+			prologCodeLoader.loadCode("Aggregatfunktions.pl", ((PlayJplEngineWrapper)context.getEngineWrapper()));
+			prologCodeLoader.loadCode("Helpers.pl", ((PlayJplEngineWrapper)context.getEngineWrapper()));
+			
+			// The complex event contains average value of Va, Vb, Vc and the max value of this variables.
+			String ruleId = context.addDynamicRule("" +
+				"complex(Avg, Max) do (calcAverage(patternId1, 9000, Avg), " +
+				"                      maxValue(patternId1, Max), " +
+				"                      resetMaxT(patternId1)" +
+				"                     ) " +
+				"                     <-" +
+				"                     (a(Va) 'WHERE'(addAgregatValue(patternId1, Va), storeMaxT(patternId1, Va)))" +
+				"                       'SEQ'" +
+				"                     (b(Vb) 'WHERE'(addAgregatValue(patternId1, Vb), storeMaxT(patternId1, Vb)))" +
+				"                       'SEQ'" +
+				"                     (c(Vc) 'WHERE'(addAgregatValue(patternId1, Vc), storeMaxT(patternId1, Vc)))"
+			);
+			
+			context.pushEvent(new EtalisEvent("a", 2));
+			context.pushEvent(new EtalisEvent("b", 4));
+			context.pushEvent(new EtalisEvent("c", 8));
+			Thread.sleep(delay); // wait a little bit for the events to be processed
+
+			// Check if result is OK.
+			Assert.assertTrue(list.size() == 1);
+			Assert.assertTrue(list.get(0).equals(new EtalisEvent("complex", 4.666666666666667, 8)));
+
+			context.removeDynamicRule(ruleId);
+	}
+	
+	@Test
 	public void AverageTestNoValues() throws InterruptedException{
 		if(ctx==null){
 			this.init();
@@ -773,7 +821,7 @@ public class PrologJtalisTest {
 		MeasurementThread task = new MeasurementThread(5000, engine, null); //TODO change
 
 		// Execute task.
-		Future<MeasuringResult> future = measureExecutor.submit(task);
+		Future<MeasurementResult> future = measureExecutor.submit(task);
 
 		// Simulate events.
 		for(int i=0; i<10; i++){
@@ -790,9 +838,9 @@ public class PrologJtalisTest {
 		}
 
 
-		NodeMeasuringResult measuredValues = null;
+		NodeMeasurementResult measuredValues = null;
 		try {
-			measuredValues = (NodeMeasuringResult) future.get();
+			measuredValues = (NodeMeasurementResult) future.get();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {

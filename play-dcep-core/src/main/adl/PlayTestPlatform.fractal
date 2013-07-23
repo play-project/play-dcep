@@ -7,12 +7,12 @@
     <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
     <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="client"/>
     <content class="eu.play_project.play_platformservices.PlayPlatformservices"/>
-    <virtual-node name="platformServices-node"/>
+    <virtual-node name="VN"/>
   </component>
   <component name="Dcep">
     <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
     <content class="eu.play_project.dcep.Dcep"/>
-    <virtual-node name="dcep-node"/>
+    <virtual-node name="VN"/>
   </component>
   <binding client="this.QueryDispatchApi" server="PlatformServices.QueryDispatchApi"/>
   <binding client="PlatformServices.DcepManagmentApi" server="Dcep.DcepManagmentApi"/>

@@ -27,7 +27,7 @@ import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
-import eu.play_project.dcep.api.measurement.NodeMeasuringResult;
+import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
@@ -81,7 +81,7 @@ Serializable {
 				.getSimpleName());
 		try {
 			GCM.getGCMLifeCycleController(this.dEtalis).stopFc();
-			GCM.getGCMLifeCycleController(this.dEtalis).terminateGCMComponent();
+			//GCM.getGCMLifeCycleController(this.dEtalis).terminateGCMComponent();
 		} catch (IllegalLifeCycleException e) {
 			logger.error("Error terminating subcomponent.", e);
 		} catch (NullPointerException e) {
@@ -221,7 +221,7 @@ Serializable {
 	}
 
 	@Override
-	public NodeMeasuringResult getMeasuredData(String queryId) {
+	public NodeMeasurementResult getMeasuredData(String queryId) {
 		if(!init) init();
 		return dEtalisMonitoring.getMeasuredData(queryId);
 	}

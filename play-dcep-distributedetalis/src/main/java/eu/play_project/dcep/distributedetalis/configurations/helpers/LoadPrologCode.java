@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -15,7 +16,14 @@ import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
  * @author Stefan Obermeier
  *
  */
-public class LoadPrologCode {
+public class LoadPrologCode implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 100L;
+
+	public LoadPrologCode(){}
 	
 	public void loadCode(String fliename, PlayJplEngineWrapper engine) throws IOException{
 		List<String> methods= getPrologMethods(fliename);

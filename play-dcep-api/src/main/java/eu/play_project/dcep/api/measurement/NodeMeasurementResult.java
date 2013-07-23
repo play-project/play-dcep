@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class NodeMeasuringResult extends MeasuringResult implements Comparable<NodeMeasuringResult>{
+public class NodeMeasurementResult extends MeasurementResult implements Comparable<NodeMeasurementResult>{
 
 	private static final long serialVersionUID = 100L;
 	private List<PatternMeasuringResult> measuredValues; //PatternID number of processed events.
@@ -18,14 +18,14 @@ public class NodeMeasuringResult extends MeasuringResult implements Comparable<N
 	private int etalisInputQueue = 0;
 	private int period;
 
-	public NodeMeasuringResult(String nodeName) {
+	public NodeMeasurementResult(String nodeName) {
 		super(nodeName);
 		this.ltsMap = new HashMap<String, LoadTimeSeries>();
 		this.ltsList = new LinkedList<LoadTimeSeries>();
 	}
 	
 
-	public NodeMeasuringResult(String nodeName, int period, List<PatternMeasuringResult> values) {
+	public NodeMeasurementResult(String nodeName, int period, List<PatternMeasuringResult> values) {
 		super(nodeName, period);
 		this.measuredValues = values;
 		this.ltsMap = new HashMap<String, LoadTimeSeries>();
@@ -93,7 +93,7 @@ public class NodeMeasuringResult extends MeasuringResult implements Comparable<N
 
 
 	@Override
-	public int compareTo(NodeMeasuringResult o) {
+	public int compareTo(NodeMeasurementResult o) {
 		if(this.totalLoad < o.getTotalLoad()){
 			return -1;
 		}else if(this.totalLoad == o.getTotalLoad()){
