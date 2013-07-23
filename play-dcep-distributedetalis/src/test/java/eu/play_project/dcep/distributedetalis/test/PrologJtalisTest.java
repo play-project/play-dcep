@@ -28,6 +28,7 @@ import jpl.Query;
 import jpl.Term;
 
 import org.event_processing.events.types.AvgTempEvent;
+import org.junit.Assert;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
@@ -656,6 +657,50 @@ public class PrologJtalisTest {
 		
 		assertTrue(values.length == 0);
 
+	}
+	
+	@Test
+	public void useAgregateFunctionsWithEleTest() throws IOException, InterruptedException {
+			long delay = 500;
+			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
+			
+			PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
+			JtalisContext context = new JtalisContextImpl(engine);
+			context.addEventTrigger("complex/_");
+
+			context.registerOutputProvider(new AbstractJtalisEventProvider() {
+				@Override
+				public void outputEvent(EtalisEvent event) {
+					System.out.println(event);
+					list.add(event);
+				}
+			});
+
+			LoadPrologCode prologCodeLoader = new LoadPrologCode();
+			prologCodeLoader.loadCode("Aggregatfunktions.pl", ((PlayJplEngineWrapper)context.getEngineWrapper()));
+			prologCodeLoader.loadCode("Helpers.pl", ((PlayJplEngineWrapper)context.getEngineWrapper()));
+			
+			// The complex event contains average value of Va, Vb, Vc and the max value of this variables.
+			String ruleId = context.addDynamicRule("complex(Avg, Max) do (calcAverage(patternId1, 9000, Avg), " +
+					"													  maxValue(patternId1, Max), " +
+					"													  resetMaxT(patternId1)" +
+					"													) <-" +
+					"												(a(Va) 'WHERE'(addAgregatValue(patternId1, Va), storeMaxT(patternId1, Va)))" +
+					"												 'SEQ'" +
+					"												 (b(Vb) 'WHERE'(addAgregatValue(patternId1, Vb), storeMaxT(patternId1, Vb)))" +
+					"												 'SEQ'" +
+					"												 (c(Vc) 'WHERE'(addAgregatValue(patternId1, Vc), storeMaxT(patternId1, Vc)))");
+			
+			context.pushEvent(new EtalisEvent("a", 2));
+			context.pushEvent(new EtalisEvent("b", 4));
+			context.pushEvent(new EtalisEvent("c", 8));
+			Thread.sleep(delay); // wait a little bit for the events to be processed
+
+			// Check if result is OK.
+			Assert.assertTrue(list.size() == 1);
+			Assert.assertTrue(list.get(0).equals(new EtalisEvent("complex", 4.666666666666667, 8)));
+
+			context.removeDynamicRule(ruleId);
 	}
 	
 	@Test
