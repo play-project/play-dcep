@@ -686,7 +686,7 @@ public class PrologJtalisTest {
 				"                      maxValue(patternId1, Max), " +
 				"                      resetMaxT(patternId1)" +
 				"                     ) " +
-				"					  <-" +
+				"                     <-" +
 				"                     (a(Va) 'WHERE'(addAgregatValue(patternId1, Va), storeMaxT(patternId1, Va)))" +
 				"                       'SEQ'" +
 				"                     (b(Vb) 'WHERE'(addAgregatValue(patternId1, Vb), storeMaxT(patternId1, Vb)))" +
