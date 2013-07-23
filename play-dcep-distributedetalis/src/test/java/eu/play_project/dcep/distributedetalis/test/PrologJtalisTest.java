@@ -682,14 +682,14 @@ public class PrologJtalisTest {
 			
 			// The complex event contains average value of Va, Vb, Vc and the max value of this variables.
 			String ruleId = context.addDynamicRule("complex(Avg, Max) do (calcAverage(patternId1, 9000, Avg), " +
-					"													  maxValue(patternId1, Max), " +
-					"													  resetMaxT(patternId1)" +
-					"													) <-" +
-					"												(a(Va) 'WHERE'(addAgregatValue(patternId1, Va), storeMaxT(patternId1, Va)))" +
-					"												 'SEQ'" +
-					"												 (b(Vb) 'WHERE'(addAgregatValue(patternId1, Vb), storeMaxT(patternId1, Vb)))" +
-					"												 'SEQ'" +
-					"												 (c(Vc) 'WHERE'(addAgregatValue(patternId1, Vc), storeMaxT(patternId1, Vc)))");
+					"                                                      maxValue(patternId1, Max), " +
+					"                                                      resetMaxT(patternId1)" +
+					"                                                     ) <-" +
+					"                                                (a(Va) 'WHERE'(addAgregatValue(patternId1, Va), storeMaxT(patternId1, Va)))" +
+					"                                                'SEQ'" +
+					"                                                (b(Vb) 'WHERE'(addAgregatValue(patternId1, Vb), storeMaxT(patternId1, Vb)))" +
+					"                                                'SEQ'" +
+					"                                                (c(Vc) 'WHERE'(addAgregatValue(patternId1, Vc), storeMaxT(patternId1, Vc)))");
 			
 			context.pushEvent(new EtalisEvent("a", 2));
 			context.pushEvent(new EtalisEvent("b", 4));
