@@ -19,13 +19,11 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.petalslink.dsb.commons.service.api.Service;
-import org.petalslink.dsb.notification.commons.NotificationException;
 import org.petalslink.dsb.notification.service.NotificationConsumerService;
 import org.petalslink.dsb.soap.CXFExposer;
 import org.petalslink.dsb.soap.api.Exposer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 import virtuoso.jdbc4.VirtuosoDataSource;
 
@@ -40,9 +38,8 @@ import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
-import eu.play_project.play_commons.eventformat.EventFormatHelpers;
-import eu.play_project.play_eventadapter.AbstractReceiver;
-import eu.play_project.play_eventadapter.AbstractSender;
+import eu.play_project.play_eventadapter.AbstractReceiverRest;
+import eu.play_project.play_eventadapter.AbstractSenderRest;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishSubscribeConstants;
@@ -53,8 +50,8 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private Connection virtuosoConnection;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
 	private boolean init = false;
-	private AbstractReceiver rdfReceiver;
-	private AbstractSender rdfSender;
+	private AbstractReceiverRest rdfReceiver;
+	private AbstractSenderRest rdfSender;
 	private final DistributedEtalis dEtalis;
 	private EcConnectionListenerVirtuoso dsbListener;
 	static final Properties constants = DcepConstants.getProperties();
@@ -98,14 +95,11 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
 		
-		this.rdfReceiver = new AbstractReceiver(
-				constants.getProperty("dsb.subscribe.endpoint"),
-				constants.getProperty("dsb.unsubscribe.endpoint")) {};
+		this.rdfReceiver = new AbstractReceiverRest(
+				constants.getProperty("dsb.subscribe.endpoint")) {};
 				
 		// Use an arbitrary topic as default:
-		this.rdfSender = new AbstractSender(Stream.FacebookCepResults.getTopicQName()) {};
-		this.rdfSender.setDsbNotify(constants.getProperty(
-				"dsb.notify.endpoint"));
+		this.rdfSender = new AbstractSenderRest(Stream.FacebookCepResults.getTopicQName()) {};
 
 		try {
         	this.dsbListener = new EcConnectionListenerVirtuoso(this.rdfReceiver);
@@ -263,8 +257,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		// Send event to DSB:
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		RDFDataMgr.write(out, quadruplesToDatasetGraph(event), RDFFormat.TRIG_BLOCKS);
-		Element notifPayload = EventFormatHelpers.wrapWithDomNativeMessageElement(new String(out.toByteArray()));
-		this.rdfSender.notify(notifPayload, getTopic(cloudId));
+		this.rdfSender.notify(new String(out.toByteArray()), cloudId);
 		
 		// Store event in Virtuoso:
 		this.putDataInCloud(event, cloudId);
@@ -298,22 +291,15 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 
-		try {
-			if (this.subscriptions.containsKey(cloudId)) {
-				logger.info("Still subscribed to topic {}.", cloudId);
-				this.subscriptions.get(cloudId).usage++;
-			}
-			else {
-				logger.info("Subscribing to topic {}.", cloudId);
-				QName topic = getTopic(cloudId);
-				String subId = this.rdfReceiver.subscribe(topic, notificationReceiverEndpoint);
-				this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
+		if (this.subscriptions.containsKey(cloudId)) {
+			logger.info("Still subscribed to topic {}.", cloudId);
+			this.subscriptions.get(cloudId).usage++;
+		}
+		else {
+			logger.info("Subscribing to topic {}.", cloudId);
+			String subId = this.rdfReceiver.subscribe(cloudId, notificationReceiverEndpoint);
+			this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
 
-			}
-		} catch (NotificationException e) {
-			String errorMesg = String.format("Problem subscribing to topic %s: %s", cloudId, e.getMessage());
-			logger.error(errorMesg);
-			throw new EcConnectionmanagerException(errorMesg);
 		}
 	}
 
@@ -325,21 +311,17 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 		
-		try {
-			if (this.subscriptions.containsKey(cloudId)) {
-				this.subscriptions.get(cloudId).usage--;
-				
-				if (this.subscriptions.get(cloudId).usage == 0) {
-					logger.info("Unsubscribing from topic {}.", cloudId);
-					rdfReceiver.unsubscribe(subId);
-					this.subscriptions.remove(cloudId);
-				}
-				else {
-					logger.info("Still subscribed to topic {}.", cloudId);
-				}
+		if (this.subscriptions.containsKey(cloudId)) {
+			this.subscriptions.get(cloudId).usage--;
+			
+			if (this.subscriptions.get(cloudId).usage == 0) {
+				logger.info("Unsubscribing from topic {}.", cloudId);
+				rdfReceiver.unsubscribe(subId);
+				this.subscriptions.remove(cloudId);
 			}
-		} catch (NotificationException e) {
-			logger.error("Problem unsubscribing from topic {}: {}", cloudId, e.getMessage());
+			else {
+				logger.info("Still subscribed to topic {}.", cloudId);
+			}
 		}
 	}
 	

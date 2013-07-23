@@ -151,10 +151,6 @@
 					<artifactId>play-commons-constants</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
-				<exclusion>
-					<artifactId>spring-asm</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -235,10 +231,6 @@
 					<artifactId>jena-core</artifactId>
 					<groupId>org.apache.jena</groupId>
 				</exclusion>
-				<exclusion>
-					<artifactId>asm-all-repackaged</artifactId>
-					<groupId>org.glassfish.hk2.external</groupId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -269,11 +261,6 @@
 				<artifactId>cxf-bundle-minimal</artifactId>
 				<groupId>org.apache.cxf</groupId>
 				<version>${cxf.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>asm</groupId>
-				<artifactId>asm</artifactId>
-				<version>1.5.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -13,7 +13,7 @@ import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
 
 import eu.play_project.dcep.distributedetalis.utils.DsbHelpers;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_eventadapter.AbstractReceiver;
+import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.NoRdfEventException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -21,10 +21,10 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 
 	private static final long serialVersionUID = 100L;
 	private DistributedEtalis dEtalis;
-	private final AbstractReceiver rdfReceiver;
+	private final AbstractReceiverRest rdfReceiver;
 	private final Logger logger;
 	
-	public EcConnectionListenerVirtuoso(AbstractReceiver rdfReceiver) {
+	public EcConnectionListenerVirtuoso(AbstractReceiverRest rdfReceiver) {
 		this.rdfReceiver = rdfReceiver;
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
@@ -61,5 +61,5 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 	public void setDetalis(DistributedEtalis dEtalis) {
 		this.dEtalis = dEtalis;
 	}
-	
+
 }

@@ -51,12 +51,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfreceiver</artifactId>
+			<artifactId>play-eventadapter-abstractrdfreceiver-rest</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfsender</artifactId>
+			<artifactId>play-eventadapter-abstractrdfsender-rest</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
