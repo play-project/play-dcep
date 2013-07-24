@@ -241,7 +241,7 @@ removeOutdatedValuesImp([H|T], ListFull, WindowSize, Time, CleanList):-
 	getTimeAndValue(H,TimeO, Value),
 	(TimeO >= (Time-WindowSize)) % Check if this element is in window.
 	-> 
-		removeOutdatedValuesImpl(T, ListFull, WindowSize, Time, CleanList)
+		removeOutdatedValuesImp(T, ListFull, WindowSize, Time, CleanList)
 	; 
 		subtract(ListFull, [H], New), % Stop recursion and remove all elements which are outdated.
 		subtract(New, T, ListNew)

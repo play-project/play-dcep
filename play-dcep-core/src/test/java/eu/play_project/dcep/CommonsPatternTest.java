@@ -249,7 +249,6 @@ public class CommonsPatternTest {
 		
 		// Wait
 		delay();
-System.out.println(subscriber.getComplexEvents().size());
 		assertTrue(subscriber.getComplexEvents().size()==3);
 		
 		// Stop and terminate GCM Components

@@ -81,7 +81,7 @@ public class MeasurementUnit implements MeasurementState{
 		numberOfInputEvents =0;
 		numberOfOutputEvents = 0;
 		singleEventTime = new ArrayList<Long>();
-		this.setInMeasurementMode(true);
+		//this.setInMeasurementMode(true); // Start it later
 		
 		state.startMeasurement(period);
 	}

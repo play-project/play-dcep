@@ -6,9 +6,12 @@ import static org.junit.Assert.fail;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
@@ -25,14 +28,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
+import com.jtalis.core.JtalisContext;
+import com.jtalis.core.JtalisContextImpl;
+import com.jtalis.core.event.AbstractJtalisEventProvider;
+import com.jtalis.core.event.EtalisEvent;
+import com.jtalis.core.plengine.JPLEngineWrapper;
+import com.jtalis.core.plengine.PrologEngineWrapper;
 
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
+import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
