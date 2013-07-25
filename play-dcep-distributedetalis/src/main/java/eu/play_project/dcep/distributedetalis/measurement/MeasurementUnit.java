@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
@@ -18,8 +17,6 @@ import eu.play_project.dcep.distributedetalis.measurement.fsm.MeasuremnetFinishe
 import eu.play_project.dcep.distributedetalis.measurement.fsm.Ready;
 import eu.play_project.dcep.distributedetalis.measurement.fsm.WaitForComplexMeasurementEvent;
 import eu.play_project.dcep.distributedetalis.measurement.fsm.WaitForMeasuredData;
-import eu.play_project.play_platformservices.api.BdplQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
@@ -58,19 +55,6 @@ public class MeasurementUnit implements MeasurementState{
 		this.state = createMeasurementState("Start");
 		
 		this.singleEventTime = new ArrayList<Long>();
-		
-		//Register measurement pattern.
-		BdplQuery bdpl = BdplQuery.nonValidatingBuilder()
-				.ele("complexN(MeasureCEID,'measurement-pattern') do (generateConstructResult(['http://play-project.eu/measurement/event'],['http://play-project.eu/timeOneEvent'],[Vtime],MeasureCEID))<-('measurementEvent'(ViD1) 'WHERE' (rdf(Vs, 'http://play-project.eu/startTime', Vtime, ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1), incrementReferenceCounter(ViD1),random(1000000, 9000000, MeasureCEID)))")
-				//.ele("complex(MeasureCEID) <- 'measurementEvent'(ViD1)")
-				.details(new QueryDetails("'measurement-pattern'"))
-				.build();
-
-		try {
-			cepEngine.registerEventPattern(bdpl);
-		} catch (DcepManagementException e) {
-			logger.error("Error while registering measurement query: " + e.getMessage());
-		}
 	}
 
 	@Override

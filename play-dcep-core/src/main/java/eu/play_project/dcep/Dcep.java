@@ -81,7 +81,7 @@ Serializable {
 				.getSimpleName());
 		try {
 			GCM.getGCMLifeCycleController(this.dEtalis).stopFc();
-			//GCM.getGCMLifeCycleController(this.dEtalis).terminateGCMComponent();
+			GCM.getGCMLifeCycleController(this.dEtalis).terminateGCMComponent();
 		} catch (IllegalLifeCycleException e) {
 			logger.error("Error terminating subcomponent.", e);
 		} catch (NullPointerException e) {
