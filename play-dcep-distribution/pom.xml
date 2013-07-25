@@ -40,56 +40,29 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>appassembler-maven-plugin</artifactId>
-				<version>1.4</version>
-				<configuration>
-					<repositoryLayout>flat</repositoryLayout>
-					<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
-
-					<daemons>
-						<daemon>
-							<id>dcep</id>
-							<mainClass>eu.play_project.dcep.distribution.Main</mainClass>
-							<platforms>
-								<platform>booter-unix</platform>
-								<platform>booter-windows</platform>
-							</platforms>
-							<jvmSettings>
-								<systemProperties>
-									<systemProperty>java.security.policy=conf/proactive.java.policy</systemProperty>
-									<systemProperty>proactive.communication.protocol=pnp</systemProperty>
-									<systemProperty>proactive.pnp.port=9250</systemProperty>
-									<systemProperty>proactive.http.port=9251</systemProperty>
-								</systemProperties>
-								<extraArguments>
-									<extraArgument>-server</extraArgument>
-								</extraArguments>
-							</jvmSettings>
-						</daemon>
-					</daemons>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generate-daemons</goal>
-							<goal>create-repository</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/booter.xml</descriptor>
-					</descriptors>
+					<finalName>cep_engine</finalName>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner</mainClass>
+						</manifest>
+					</archive>
+					<argLine>-Djava.security.manager
+						-Djava.security.policy=proactive.java.policy
+						-Dproactive.communication.protocol=pnp
+						-Dproactive.pnp.port=9000
+						-Dproactive.http.port=9001
+						-Dproactive.rmi.port=1099
+					</argLine>
 				</configuration>
 				<executions>
 					<execution>
-						<id>assembly</id>
+						<id>make-my-jar-with-dependencies</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
