@@ -17,8 +17,6 @@ import eu.play_project.dcep.distributedetalis.measurement.fsm.MeasuremnetFinishe
 import eu.play_project.dcep.distributedetalis.measurement.fsm.Ready;
 import eu.play_project.dcep.distributedetalis.measurement.fsm.WaitForComplexMeasurementEvent;
 import eu.play_project.dcep.distributedetalis.measurement.fsm.WaitForMeasuredData;
-import eu.play_project.play_platformservices.api.BdplQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
