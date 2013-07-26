@@ -49,8 +49,8 @@ installProActive(){
 	# wget http://www.activeeon.com/public_content/releases/ProActive/3.3.2/ProActiveProgramming-5.3.2_core_bin.zip
 	# unzip ProActiveProgramming-5.3.2_core_bin.zip
 	
-	wget www.home.hs-karlsruhe.de/~obst1011/fzi/play/software/ProActiveProgramming.tar.gz
-	tar -xzf ProActiveProgramming.tar.gz
+	wget www.home.hs-karlsruhe.de/~obst1011/fzi/play/software/ProActiveProgramming-EC_5.4.0-7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac.tar.gz
+	tar -xzf ProActiveProgramming-EC_5.4.0-7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac.tar.gz
 	
 	# Delete bad slf4j version.
 	rm $INSTALL_DIR/ProActiveProgramming/dist/lib/slf4j-log4j12-1.5.3.jar
