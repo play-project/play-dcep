@@ -53,7 +53,7 @@ installProActive(){
 	tar -xzf ProActiveProgramming-EC_5.4.0-7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac.tar.gz
 	
 	# Delete bad slf4j version.
-	rm $INSTALL_DIR/ProActiveProgramming/dist/lib/slf4j-log4j12-1.5.3.jar
+	rm $INSTALL_DIR/ProActiveProgramming-EC_5.4.0-7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac/dist/lib/slf4j-log4j12-1.5.3.jar
 
 }
 
