@@ -13,6 +13,14 @@
 
 	<fileSets>
 		<fileSet>
+			<directory>${basedir}</directory>
+			<includes>
+				<include>README*</include>
+				<include>LICENSE*</include>
+				<include>NOTICE*</include>
+			</includes>
+		</fileSet>
+	    <fileSet>
 			<directory>target/appassembler/repo</directory>
 			<outputDirectory>repo</outputDirectory>
 			<excludes>
