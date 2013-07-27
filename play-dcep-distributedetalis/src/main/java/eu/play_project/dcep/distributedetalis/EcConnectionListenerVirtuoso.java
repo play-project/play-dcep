@@ -20,8 +20,8 @@ import fr.inria.eventcloud.api.CompoundEvent;
 class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializable {
 
 	private static final long serialVersionUID = 100L;
-	private DistributedEtalis dEtalis;
 	private final AbstractReceiver rdfReceiver;
+	private DistributedEtalis dEtalis;
 	private final Logger logger;
 	
 	public EcConnectionListenerVirtuoso(AbstractReceiver rdfReceiver) {
@@ -61,5 +61,4 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 	public void setDetalis(DistributedEtalis dEtalis) {
 		this.dEtalis = dEtalis;
 	}
-	
 }
