@@ -41,6 +41,9 @@ import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 public class DcepManager {
 	Logger logger;
 	List<PAComponentRepresentative>  dEtalis; // Mapping between instance name and instance.
+	//String destinations[]= {"127.0.0.1", "dEtalis1.s-node.de"};
+	String destinations[]= {"127.0.0.1"};
+
 	int lastUsedNode;
 	
 	DcepManager(){
@@ -52,17 +55,12 @@ public class DcepManager {
 	 * Instantiate dEtalises.
 	 */
 	public void init() {
-		System.out.println("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 		createInstances();
-		System.out.println("0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-
-		
-		//TODO read deployment from file or ...
-		String destinations[] = {"127.0.0.1"};
 		
 		for (int i = 0; i < destinations.length; i++) {
+			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa");
 			try {
-				dEtalis.add(connectToInstance("dEtalis", destinations[0]));
+				dEtalis.add(connectToInstance("dEtalis", destinations[i]));
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (NamingException e) {
@@ -70,33 +68,42 @@ public class DcepManager {
 			}
 		}	
 	}
-	
+
 	private void createInstances() {
 		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
-		
-		try{
-		// Start node
-		GCMApplication gcma = PAGCMDeployment.loadApplicationDescriptor(DistributedEtalis.class.getResource("/dEtalisApplicationDescriptor.xml"));
-		gcma.startDeployment();
 
-		GCMVirtualNode vn = gcma.getVirtualNode("dEtalis-node");
-		vn.waitReady();
+		for (int i = 0; i < (destinations.length - 1); i++) {
+			try {
+				// Start node
+				GCMApplication gcma = PAGCMDeployment
+						.loadApplicationDescriptor(DistributedEtalis.class
+								.getResource("/dEtalisApplicationDescriptor-"
+										+ i + ".xml"));
+				gcma.startDeployment();
 
-		// Start component.
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, GCMApplication> context = new HashMap<String, GCMApplication>(1);
-		context.put("deployment-descriptor", gcma);
+				GCMVirtualNode vn = gcma.getVirtualNode("dEtalis-node");
+				vn.waitReady();
 
-		Component root = (Component) factory.newComponent("DistributedEtalis", context);
-		GCM.getGCMLifeCycleController(root).startFc();
+				// Start component.
+				Factory factory = FactoryFactory.getFactory();
+				HashMap<String, GCMApplication> context = new HashMap<String, GCMApplication>(
+						1);
+				context.put("deployment-descriptor", gcma);
 
-		// Register apis
-		java.rmi.registry.Registry registry = LocateRegistry.getRegistry();
+				Component root = (Component) factory.newComponent(
+						"DistributedEtalis", context);
+				GCM.getGCMLifeCycleController(root).startFc();
 
-		Fractive.registerByName(root, "dEtalis");
-		}catch(Exception e){
-			logger.error("Error while instanciating dEtalis instances. " + e.getMessage());
-			e.printStackTrace();
+				// Register apis
+				java.rmi.registry.Registry registry = LocateRegistry
+						.getRegistry();
+
+				Fractive.registerByName(root, "dEtalis");
+			} catch (Exception e) {
+				logger.error("Error while instanciating dEtalis instances. "
+						+ e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 	

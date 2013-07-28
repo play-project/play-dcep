@@ -22,9 +22,14 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.body.ComponentEndActive;
 import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.objectweb.proactive.core.xml.VariableContractImpl;
+import org.objectweb.proactive.core.xml.VariableContractType;
 import org.objectweb.proactive.extensions.gcmdeployment.PAGCMDeployment;
+import org.objectweb.proactive.extensions.gcmdeployment.core.TopologyImpl;
 import org.objectweb.proactive.gcmdeployment.GCMApplication;
+import org.objectweb.proactive.gcmdeployment.GCMHost;
 import org.objectweb.proactive.gcmdeployment.GCMVirtualNode;
+import org.objectweb.proactive.gcmdeployment.Topology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +70,6 @@ Serializable {
 	private Component dEtalis;
 	private Logger logger;
 	private boolean init = false; // Shows if variables for other components are initialized.
-	private List<String> dEtalisNodes = new LinkedList<String>();
-	private int instanceCounter = 0;
 
 	public Dcep() {
 	}
@@ -153,12 +156,6 @@ Serializable {
 			logger.warn("{} has already been initialized. Skipping.", this.getClass().getSimpleName());
 		}
 		else {
-			
-			dEtalisNodes.add("dEtalis1.s-node.de");
-			
-			
-			if(instanceCounter == 0){
-				instanceCounter = 1;
 			Factory factory;
 			
 			dcepManager = new DcepManager();
@@ -203,42 +200,7 @@ Serializable {
 				e.printStackTrace();
 			}
 			
-			}
-			
-			
 			init = true;
-		}
-		
-		if(instanceCounter < dEtalisNodes.size()){
-			logger.info("Instanciate remote instance.");
-			instanceCounter++;
-			
-			CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
-			
-			try{
-			// Start node
-			GCMApplication gcma = PAGCMDeployment.loadApplicationDescriptor(DistributedEtalis.class.getResource("/dEtalisApplicationDescriptor.xml"));
-			gcma.startDeployment();
-
-			GCMVirtualNode vn = gcma.getVirtualNode("dEtalis-node");
-			vn.waitReady();
-
-			// Start component.
-			Factory factory = FactoryFactory.getFactory();
-			HashMap<String, GCMApplication> context = new HashMap<String, GCMApplication>(1);
-			context.put("deployment-descriptor", gcma);
-
-			Component root = (Component) factory.newComponent("DistributedEtalis", context);
-			GCM.getGCMLifeCycleController(root).startFc();
-
-			// Register apis
-			java.rmi.registry.Registry registry = LocateRegistry.getRegistry();
-
-			Fractive.registerByName(root, "dEtalis");
-			}catch(Exception e){
-				logger.error("Error while instanciating dEtalis instances. " + e.getMessage());
-				e.printStackTrace();
-			}
 		}
 		return init;
 	}

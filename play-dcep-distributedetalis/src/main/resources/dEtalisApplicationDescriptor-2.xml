@@ -24,7 +24,7 @@
 
     <resources>
         <nodeProvider id="NodeProvider">
-            <file path="dEtalisDeploymentDescriptor.xml"/>
+            <file path="dEtalisDeploymentDescriptor-2.xml"/>
         </nodeProvider>
     </resources>
 
