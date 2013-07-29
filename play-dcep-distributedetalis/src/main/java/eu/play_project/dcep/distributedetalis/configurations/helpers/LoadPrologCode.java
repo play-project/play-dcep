@@ -31,7 +31,6 @@ public class LoadPrologCode implements Serializable {
 		//Add methods to engine.
 		for (String code : methods) {
 			engine.execute("assert((" + code + "))");
-			System.out.println(code);
 		}
 	}
 	
