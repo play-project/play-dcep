@@ -41,8 +41,8 @@ import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 public class DcepManager {
 	Logger logger;
 	List<PAComponentRepresentative>  dEtalis; // Mapping between instance name and instance.
-	String destinations[]= {"127.0.0.1", "dEtalis1.s-node.de"};
-	//String destinations[]= {"127.0.0.1"};
+	//String destinations[]= {"127.0.0.1", "dEtalis1.s-node.de"};
+	String destinations[]= {"127.0.0.1"};
 
 	int lastUsedNode;
 	
