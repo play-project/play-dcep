@@ -36,9 +36,8 @@ public class Distibutor {
 		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
 		
 		// Start node
-		GCMApplication gcma = PAGCMDeployment
-				.loadApplicationDescriptor(Distibutor.class
-						.getResource("/dEtalisApplicationDescriptor.xml"));
+		GCMApplication gcma = PAGCMDeployment.loadApplicationDescriptor(Distibutor.class
+						.getResource("/dEtalisApplicationDescriptor-1.xml"));
 		gcma.startDeployment();
 
 		GCMVirtualNode vn = gcma.getVirtualNode("dEtalis-node");
