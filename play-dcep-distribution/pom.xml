@@ -14,7 +14,7 @@
 	<packaging>jar</packaging>
 
 	<name>play-dcep-distribution</name>
-	<description>The DCEP distribution which produces a complete executable package of DCEP and Platformservices with all dependencies.</description>
+	<description>The DCEP distribution: a complete executable package of DCEP and Platformservices with all dependencies.</description>
 
 	<build>
 		<resources>
@@ -41,11 +41,15 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
-					<finalName>cep_engine</finalName>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
+					<finalName>dcep</finalName>
+					<descriptors>
+						<!-- Use descriptor for one-jar  -->
+						<descriptor>src/main/assembly/jar-with-dependencies.xml</descriptor>
+						<!-- Use custom descriptor to build final package -->
+						<descriptor>src/main/assembly/install.xml</descriptor>
+					</descriptors>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
@@ -62,7 +66,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-my-jar-with-dependencies</id>
+						<id>make-assembly</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
