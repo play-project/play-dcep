@@ -20,7 +20,6 @@ import fr.inria.eventcloud.api.CompoundEvent;
 class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializable {
 
 	private static final long serialVersionUID = 100L;
-	private final AbstractReceiver rdfReceiver;
 	private DistributedEtalis dEtalis;
 	private final AbstractReceiverRest rdfReceiver;
 	private final Logger logger;
