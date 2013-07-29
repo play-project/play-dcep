@@ -51,8 +51,7 @@ installProActive(){
 	
 	# git checkout 7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac
 	wget www.home.hs-karlsruhe.de/~obst1011/fzi/play/software/ProActiveProgramming-EC_5.4.0-7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac.tar.gz
-	mkdir ProActiveProgramming
-	tar -xzf ProActiveProgramming-EC_5.4.0-7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac.tar.gz -C ProActiveProgramming
+	tar -xzf ProActiveProgramming-EC_5.4.0-7b8befc7fd37b4c2a479ec1b3f3ae14c36d41aac.tar.gz
 
 
 	# Delete bad slf4j version.
