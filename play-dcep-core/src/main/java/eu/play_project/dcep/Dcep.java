@@ -158,8 +158,6 @@ Serializable {
 		else {
 			Factory factory;
 			
-			dcepManager = new DcepManager();
-			dcepManager.init();
 			
 			try {
 				factory = FactoryFactory.getFactory();
@@ -200,6 +198,8 @@ Serializable {
 				e.printStackTrace();
 			}
 			
+			dcepManager = new DcepManager();
+			dcepManager.init();
 			init = true;
 		}
 		return init;

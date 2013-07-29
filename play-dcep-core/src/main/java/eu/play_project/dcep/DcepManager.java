@@ -58,7 +58,6 @@ public class DcepManager {
 		createInstances();
 		
 		for (int i = 0; i < destinations.length; i++) {
-			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa");
 			try {
 				dEtalis.add(connectToInstance("dEtalis", destinations[i]));
 			} catch (IOException e) {
