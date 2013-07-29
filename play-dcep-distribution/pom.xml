@@ -45,10 +45,10 @@
 				<configuration>
 					<finalName>dcep</finalName>
 					<descriptors>
-						<!-- Use predefined descriptor ref for one-jar  -->
+						<!-- Use descriptor for one-jar  -->
 						<descriptor>src/main/assembly/jar-with-dependencies.xml</descriptor>
 						<!-- Use custom descriptor to build final package -->
-						<descriptor>src/main/assembly/default.xml</descriptor>
+						<descriptor>src/main/assembly/install.xml</descriptor>
 					</descriptors>
 					<archive>
 						<manifest>
