@@ -34,7 +34,7 @@ serviceName="${project.name}"
                                                       # service name
 serviceUser="root"                                    # OS user name for the service
 serviceGroup="root"                                   # OS group name for the service
-applDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )../"
+applDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
                                                       # home directory of the service application
 serviceLogFile="${applDir}/log/$serviceNameLo.log"    # log file for StdOut/StdErr
 maxShutdownTime=15                                    # maximum number of seconds to wait for the daemon to terminate normally
@@ -44,7 +44,7 @@ javaExe="$javaCommand"                                # file name of the Java ap
 javaArgs="${java.arguments} -cp ${applDir}/conf/:${applDir}/lib/dcep-jar-with-dependencies.jar eu.play_project.dcep.distribution.Main"
                                                       # arguments for Java launcher
 javaCommandLine="$javaExe $javaArgs"                  # command line to start the Java service application
-javaCommandLineKeyword="${project.build.finalName}"
+javaCommandLineKeyword="dcep-jar-with-dependencies.jar"
                                                       # a keyword that occurs on the commandline, used to detect an already running service process and to distinguish it from others
 
 # Makes the file $1 writable by the group $serviceGroup.

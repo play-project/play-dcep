@@ -23,7 +23,7 @@ elastic CEP service which dynamically adapts to fluctuating event frequencies.
 DCEP is a native RDF event processor, which means RDF can be used directly for
 events and there is no need to model mappings to binary formats.
 
-Installation
+Dependencies
 ------------
 Tested on `CentOS release 6.3 (Final)`:
 
@@ -40,11 +40,6 @@ rpm -i pl-*.rpm
 ```
 Add `--nodeps` to the rpm command if there is a problem with an old version of libjpeg which is actually on your system already.
 
-#### Tomcat (>=6)
-```
-yum install tomcat6 tomcat6-admin-webapps
-chkconfig tomcat6 on
-```
 #### Virtuoso (>=6.1.7, optional)
 I created an SRPM based on 6.1.6 myself using instructions from http://wiki.centos.org/HowTos/RebuildSRPM 
 ```
@@ -73,48 +68,27 @@ Use the init.d start script from here: [RedHat, CentOS](https://gist.github.com/
 ```
 chkconfig virtuoso on
 ```
-#### PLAY DSB
-https://github.com/PetalsLinkLabs/petals-dsb/
 
-### Build Requirements:
-#### Maven (3.x)
-There is no well-packaged Maven 3 for CentOS, so you must unzip Maven yourself, somewhere in `/opt/maven` and add `/opt/maven/bin` to your `$PATH`
-#### Git
-```
-yum install git
-```
-
-Building DCEP
--------------
-We will build DCEP in `/tmp` and later run in in `/opt/play-platform-stable`:
+Build
+-----
+To build DCEP in `/tmp`:
 ```
 cd /tmp
 git clone https://github.com/play-project/play-dcep.git
 cd play-dcep/
-mvn install
-
-mkdir --parents /opt/play-platform-stable/
-cp play-dcep-distribution/target/dcep-jar-with-dependencies.jar /opt/play-platform-stable/
+mvn install -DskipTests
 ```
+The installer package `dcep-install.zip` will be in `/tmp/play-dcep/play-dcep-distribution/target/`
 
-Configuring DCEP
+Unpack/Configure
 ----------------
-The installation directory `/opt/play-platform-stable` will be on the Java classpath so you can place some customized configuration files there.
+1. Download or build (see above) the file `dcep-install.zip`
+2. Unzip
+3. `cd dcep`
+4. Edit `conf/play-commons-constants.properties` for endpoints where events can be received and sent. Adapt the file from these defaults: [default properties](https://github.com/play-project/play-commons/blob/master/play-commons-constants/src/main/resources/play-commons-constants-defaults.properties)
+5. Edit `conf/play-dcep-distribution.properties` for startup behaviour. Adapt the file from these defaults: [default properties](https://github.com/play-project/play-dcep/blob/master/play-dcep-api/src/main/resources/play-dcep-distribution-defaults.properties)
 
-- `play-commons-constants.properties` adapt it from these defaults: [default properties](https://github.com/play-project/play-commons/blob/master/play-commons-constants/src/main/resources/play-commons-constants-defaults.properties)
-- `play-dcep-distribution.properties` adapt it from these defaults: [default properties](https://github.com/play-project/play-dcep/blob/master/play-dcep-api/src/main/resources/play-dcep-distribution-defaults.properties)
-
-Running DCEP
-------------
-We will run DCEP from `/opt/play-platform-stable`:
-```
-cd /opt/play-platform-stable
-screen
-java -Djava.security.policy=proactive.java.policy -Dproactive.communication.protocol=pnp -Dproactive.pnp.port=9150 -Dproactive.http.port=9151 -cp .:dcep-jar-with-dependencies.jar eu.play_project.dcep.distribution.Main
-```
-You can press `CTRL-A, D` to put the screen terminal in background and enter `screen -x` to re-attach it back in foreground later.
-
-
-Issues
-------
-For issues and bug reporting, please go to https://github.com/play-project/play/issues?labels=dcep&amp;page=1&amp;state=open
+Run
+---
+1. Run `bin/dcep start` on Unix
+2. The program can be terminated early using `bin/dcep stop`

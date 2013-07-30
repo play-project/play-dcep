@@ -19,9 +19,9 @@
 	<properties>
 		<!-- Properties used in Assembly and Linux scripts -->
 		<service.name>dcep</service.name>
-		<java.arguments>-Djava.security.manager -Djava.security.policy=proactive.java.policy -Dproactive.communication.protocol=pnp -Dproactive.pnp.port=9000 -Dproactive.http.port=9001 -Dproactive.rmi.port=1099 -server</java.arguments>
+		<java.arguments><![CDATA[-Djava.security.manager -Djava.security.policy=proactive.java.policy -Dproactive.communication.protocol=pnp -Dproactive.pnp.port=9250 -Dproactive.http.port=9251 -Dproactive.rmi.port=1099 -server]]></java.arguments>
 	</properties>
-	
+
 	<build>
 		<resources>
 			<resource>
@@ -48,29 +48,42 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
-				<configuration>
-					<finalName>dcep</finalName>
-					<descriptors>
-						<!-- Use descriptor for one-jar  -->
-						<descriptor>src/main/assembly/jar-with-dependencies.xml</descriptor>
-						<!-- Use custom descriptor to build final install package -->
-						<descriptor>src/main/assembly/install.xml</descriptor>
-					</descriptors>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner</mainClass>
-						</manifest>
-					</archive>
-					<argLine>${java.arguments}</argLine>
-				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
+						<!-- (I) First execution to build one-jar -->
+						<id>make-one-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
+						<configuration>
+							<finalName>${service.name}</finalName>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner</mainClass>
+								</manifest>
+							</archive>
+							<argLine>${java.arguments}</argLine>
+						</configuration>
+					</execution>
+					<execution>
+						<!-- (II) Second execution to build installer zip -->
+						<id>make-installer-package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>${service.name}</finalName>
+							<descriptors>
+								<!-- Use custom descriptor to build final install package -->
+								<descriptor>src/main/assembly/install.xml</descriptor>
+							</descriptors>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
