@@ -13,7 +13,7 @@ import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepManagmentApi;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -76,25 +76,25 @@ public class ConnectToExistingInstance {
 	public static CompoundEvent createEvent(String eventId, int value,
 			String type) {
 
-		List quads = new ArrayList();
+		List<Quadruple> quads = new ArrayList<Quadruple>();
 
 		Quadruple q1 = new Quadruple(
-				Node.createURI("http://prefix.example.com/" + eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-				Node.createURI("http://prefix.example.com/" + type));
+				NodeFactory.createURI("http://prefix.example.com/" + eventId),
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+				NodeFactory.createURI("http://prefix.example.com/" + type));
 
 		Quadruple q2 = new Quadruple(
-				Node.createURI("http://prefix.example.com/" + eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://prefix.example.com/value"),
-				Node.createURI(System.currentTimeMillis() + ""));
+				NodeFactory.createURI("http://prefix.example.com/" + eventId),
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://prefix.example.com/value"),
+				NodeFactory.createURI(System.currentTimeMillis() + ""));
 
 		Quadruple q3 = new Quadruple(
-				Node.createURI("http://prefix.example.com/" + eventId),
-				Node.createURI("http://prefix.example.com/e1"),
-				Node.createURI("http://prefix.example.com/math/value"),
-				Node.createURI(value + ""));
+				NodeFactory.createURI("http://prefix.example.com/" + eventId),
+				NodeFactory.createURI("http://prefix.example.com/e1"),
+				NodeFactory.createURI("http://prefix.example.com/math/value"),
+				NodeFactory.createURI(value + ""));
 
 		quads.add(q1);
 		quads.add(q3);
