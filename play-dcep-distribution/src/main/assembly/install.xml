@@ -35,7 +35,7 @@
 		<!-- /conf -->
 		<fileSet>
 			<directory>src/main/config</directory>
-			<outputDirectory>etc</outputDirectory>
+			<outputDirectory>conf</outputDirectory>
 			<lineEnding>unix</lineEnding>
 			<filtered>true</filtered>
 		</fileSet>

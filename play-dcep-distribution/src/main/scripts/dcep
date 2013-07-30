@@ -7,7 +7,7 @@
 #
 # Derived from -
 # Home page: http://www.source-code.biz
-# License:   GNU/LGPL (http://www.gnu.org/licenses/lgpl.html)
+# License: GNU/LGPL (http://www.gnu.org/licenses/lgpl.html)
 # Copyright 2006 Christian d'Heureuse, Inventec Informatik AG, Switzerland.
 #
 # History:
@@ -19,17 +19,18 @@
 # 2006-07-10 chdh: Changes for SUSE 10.0.
 
 ### BEGIN INIT INFO
-# Provides:                   dcep
+# Provides:                   ${service.name}
 # Required-Start:             $network $local_fs $remote_fs
 # Required-Stop:              $network $local_fs $remote_fs
 # Default-Start:              3 4 5
 # Default-Stop:               0 1 2 6
-# Short-Description:          Distributed Complex Event Processing (DCEP)
-# Description:                A complete executable package of DCEP and Platformservices with all dependencies.
+# Short-Description:          ${project.name}
+# Description:                ${project.description}
 ### END INIT INFO
 
-serviceNameLo="dcep"                                  # service name with the first letter in lowercase
-serviceName="Distributed Complex Event Processing (DCEP)"
+serviceNameLo="${service.name}"
+                                                      # service name with the first letter in lowercase
+serviceName="${project.name}"
                                                       # service name
 serviceUser="root"                                    # OS user name for the service
 serviceGroup="root"                                   # OS group name for the service
@@ -40,10 +41,11 @@ maxShutdownTime=15                                    # maximum number of second
 pidFile="/var/run/$serviceNameLo.pid"                 # name of PID file (PID = process ID number)
 javaCommand="java"                                    # name of the Java launcher without the path
 javaExe="$javaCommand"                                # file name of the Java application launcher executable
-javaArgs="-jar $applDir/myservice.jar"
+javaArgs="${java.arguments} -cp ${applDir}/conf/:${applDir}/lib/dcep-jar-with-dependencies.jar eu.play_project.dcep.distribution.Main"
                                                       # arguments for Java launcher
 javaCommandLine="$javaExe $javaArgs"                  # command line to start the Java service application
-javaCommandLineKeyword="myservice.jar"                # a keyword that occurs on the commandline, used to detect an already running service process and to distinguish it from others
+javaCommandLineKeyword="${project.build.finalName}"
+                                                      # a keyword that occurs on the commandline, used to detect an already running service process and to distinguish it from others
 
 # Makes the file $1 writable by the group $serviceGroup.
 function makeFileWritable {

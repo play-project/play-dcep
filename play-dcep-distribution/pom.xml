@@ -13,9 +13,15 @@
 	<artifactId>play-dcep-distribution</artifactId>
 	<packaging>jar</packaging>
 
-	<name>play-dcep-distribution</name>
+	<name>Distributed Complex Event Processing (DCEP)</name>
 	<description>The DCEP distribution: a complete executable package of DCEP and Platformservices with all dependencies.</description>
 
+	<properties>
+		<!-- Properties used in Assembly and Linux scripts -->
+		<service.name>dcep</service.name>
+		<java.arguments>-Djava.security.manager -Djava.security.policy=proactive.java.policy -Dproactive.communication.protocol=pnp -Dproactive.pnp.port=9000 -Dproactive.http.port=9001 -Dproactive.rmi.port=1099 -server</java.arguments>
+	</properties>
+	
 	<build>
 		<resources>
 			<resource>
@@ -47,7 +53,7 @@
 					<descriptors>
 						<!-- Use descriptor for one-jar  -->
 						<descriptor>src/main/assembly/jar-with-dependencies.xml</descriptor>
-						<!-- Use custom descriptor to build final package -->
+						<!-- Use custom descriptor to build final install package -->
 						<descriptor>src/main/assembly/install.xml</descriptor>
 					</descriptors>
 					<archive>
@@ -56,13 +62,7 @@
 							<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner</mainClass>
 						</manifest>
 					</archive>
-					<argLine>-Djava.security.manager
-						-Djava.security.policy=proactive.java.policy
-						-Dproactive.communication.protocol=pnp
-						-Dproactive.pnp.port=9000
-						-Dproactive.http.port=9001
-						-Dproactive.rmi.port=1099
-					</argLine>
+					<argLine>${java.arguments}</argLine>
 				</configuration>
 				<executions>
 					<execution>
