@@ -20,6 +20,7 @@
 		<!-- Properties used in Assembly and Linux scripts -->
 		<service.name>dcep</service.name>
 		<java.arguments><![CDATA[-Djava.security.manager -Djava.security.policy=proactive.java.policy -Dproactive.communication.protocol=pnp -Dproactive.pnp.port=9250 -Dproactive.http.port=9251 -Dproactive.rmi.port=1099 -server]]></java.arguments>
+		<java.main.class>eu.play_project.dcep.distribution.Main</java.main.class>
 	</properties>
 
 	<build>
@@ -64,7 +65,7 @@
 							<archive>
 								<manifest>
 									<addClasspath>true</addClasspath>
-									<mainClass>eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstanceRunner</mainClass>
+									<mainClass>${java.main.class}</mainClass>
 								</manifest>
 							</archive>
 							<argLine>${java.arguments}</argLine>

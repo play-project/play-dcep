@@ -41,7 +41,7 @@ maxShutdownTime=15                                    # maximum number of second
 pidFile="/var/run/$serviceNameLo.pid"                 # name of PID file (PID = process ID number)
 javaCommand="java"                                    # name of the Java launcher without the path
 javaExe="$javaCommand"                                # file name of the Java application launcher executable
-javaArgs="${java.arguments} -cp ${applDir}/conf/:${applDir}/lib/${service.name}-jar-with-dependencies.jar eu.play_project.dcep.distribution.Main"
+javaArgs="${java.arguments} -cp ${applDir}/conf/:${applDir}/lib/${service.name}-jar-with-dependencies.jar ${java.main.class}"
                                                       # arguments for Java launcher
 javaCommandLine="$javaExe $javaArgs"                  # command line to start the Java service application
 javaCommandLineKeyword="${service.name}-jar-with-dependencies.jar"
