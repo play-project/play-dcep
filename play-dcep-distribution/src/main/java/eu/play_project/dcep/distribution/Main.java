@@ -69,6 +69,16 @@ public class Main {
 
 	public void start() throws Exception {
 		logger = LoggerFactory.getLogger(Main.class);
+		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
+		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
+		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
+		
+		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
+		System.getProperties().setProperty("proactive.pnp.port", PROACTIVE_PNP_PORT);
+		logger.debug("Setting system property 'proactive.http.port' to: " + PROACTIVE_HTTP_PORT);
+		System.getProperties().setProperty("proactive.http.port", PROACTIVE_HTTP_PORT);
+		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
+		System.getProperties().setProperty("proactive.rmi.port", PROACTIVE_RMI_PORT);
 
 		/*
 		 * Set up Components
