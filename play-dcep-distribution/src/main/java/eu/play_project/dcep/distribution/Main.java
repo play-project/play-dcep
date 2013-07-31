@@ -18,7 +18,6 @@ import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
-
 public class Main {
 
 	private static final String propertiesFile = "proactive.java.policy";
@@ -35,27 +34,28 @@ public class Main {
 
 		try {
 			main.start();
-			
-			Runtime.getRuntime().addShutdownHook(new Thread(){
-			    @Override
+
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
 				public void run() {
-			        logger.debug("Shutdown hook was invoked. Shutting down...");
-			        try {
+					logger.debug("Shutdown hook was invoked. Shutting down...");
+					try {
 						main.stop();
 					} catch (Exception e) {
 						logger.info(e.getMessage());
 					}
-			    }
+				}
 			});
-						
+
 			System.out.println("Press 3x RETURN to shutdown the application");
 			System.in.read();
 			System.in.read();
 			System.in.read();
 			
+			System.out.println("3x RETURN was read from stdin. Shutting down...");
 			main.stop();
-			
-		} catch (Exception e){
+
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -73,8 +73,10 @@ public class Main {
 		/*
 		 * Set up Components
 		 */
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue(propertiesFile);
-		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
+		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
+				.setValue(propertiesFile);
+		CentralPAPropertyRepository.GCM_PROVIDER
+				.setValue("org.objectweb.proactive.core.component.Fractive");
 
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
@@ -84,37 +86,43 @@ public class Main {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		boolean init = false;
-		
+
 		// Wait for all subcomponents to be started
 		while (!init) {
 			boolean overallInitStatus = true;
-			for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
-				overallInitStatus = overallInitStatus && GCM.getGCMLifeCycleController(subcomponent).getFcState().equals(LifeCycleController.STARTED);
+			for (Component subcomponent : GCM.getContentController(root)
+					.getFcSubComponents()) {
+				overallInitStatus = overallInitStatus
+						&& GCM.getGCMLifeCycleController(subcomponent)
+								.getFcState()
+								.equals(LifeCycleController.STARTED);
 			}
 			if (overallInitStatus == true) {
 				init = true;
-			}
-			else {
+			} else {
 				logger.info("Wait for all subcomponents to be started...");
 			}
 			Thread.sleep(500);
 		}
-				
-		
+
 		// Get interfaces
-		QueryDispatchApi queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface("QueryDispatchApi"));
+		QueryDispatchApi queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
+				.getFcInterface("QueryDispatchApi"));
 
 		/*
-		 *  Compile and Deploy Queries
+		 * Compile and Deploy Queries
 		 */
-		for (String queryFileName : DcepConstants.getProperties().getProperty("dcep.startup.registerqueries").split(",")) {
+		for (String queryFileName : DcepConstants.getProperties()
+				.getProperty("dcep.startup.registerqueries").split(",")) {
 			queryFileName = queryFileName.trim();
 			try {
-				String	queryString = IOUtils.toString(Main.class.getClassLoader().getResourceAsStream(queryFileName));
+				String queryString = IOUtils.toString(Main.class
+						.getClassLoader().getResourceAsStream(queryFileName));
 				logger.info(queryString);
 				queryDispatchApi.registerQuery(queryFileName, queryString);
 			} catch (QueryDispatchException e) {
-				logger.warn("Error registering query {} on startup: {}", queryFileName, e.getMessage());
+				logger.warn("Error registering query {} on startup: {}",
+						queryFileName, e.getMessage());
 			}
 		}
 	}
@@ -126,18 +134,20 @@ public class Main {
 			logger.trace("Send stopFc to all components");
 
 			if (root != null) {
-				
+
 				// Stop is recursive...
 				GCM.getGCMLifeCycleController(root).stopFc();
 				// Terminate is not recursive:
-				for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
-					GCM.getGCMLifeCycleController(subcomponent).terminateGCMComponent();
+				for (Component subcomponent : GCM.getContentController(root)
+						.getFcSubComponents()) {
+					GCM.getGCMLifeCycleController(subcomponent)
+							.terminateGCMComponent();
 				}
 				GCM.getGCMLifeCycleController(root).terminateGCMComponent();
-				
-				//TODO stuehmer: use root.join(2000) to wait for shutdown
+
+				// TODO stuehmer: use root.join(2000) to wait for shutdown
 			}
-			
+
 		} catch (IllegalLifeCycleException e) {
 			logger.error(e.getMessage());
 		} catch (NoSuchInterfaceException e) {

@@ -11,6 +11,7 @@
 # Copyright 2006 Christian d'Heureuse, Inventec Informatik AG, Switzerland.
 #
 # History:
+# 2013-07-03 Roland Stühmer: Add Maven property variables to be replaced during packaging
 # 2013-07-29 Roland Stühmer: Adapt to find "java" on the $PATH and run from an installation directory as opposed to /etc/init.d/
 # 2010-09-21 Josh Davis: Changed 'sudo' to 'su', fix some typos, removed unused variables
 # 2009-03-04 Josh Davis: Ubuntu/Redhat version.
@@ -34,17 +35,17 @@ serviceName="${project.name}"
                                                       # service name
 serviceUser="root"                                    # OS user name for the service
 serviceGroup="root"                                   # OS group name for the service
-applDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
-                                                      # home directory of the service application
+applDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+                                                      # home directory of the service application, may be set absolute e.g., /opt/myservice
 serviceLogFile="${applDir}/log/$serviceNameLo.log"    # log file for StdOut/StdErr
 maxShutdownTime=15                                    # maximum number of seconds to wait for the daemon to terminate normally
 pidFile="/var/run/$serviceNameLo.pid"                 # name of PID file (PID = process ID number)
 javaCommand="java"                                    # name of the Java launcher without the path
 javaExe="$javaCommand"                                # file name of the Java application launcher executable
-javaArgs="${java.arguments} -cp ${applDir}/conf/:${applDir}/lib/${service.name}-jar-with-dependencies.jar ${java.main.class}"
+javaArgs="${java.arguments} -cp ${applDir}/conf/:${applDir}/lib/${serviceNameLo}-jar-with-dependencies.jar ${java.main.class}"
                                                       # arguments for Java launcher
 javaCommandLine="$javaExe $javaArgs"                  # command line to start the Java service application
-javaCommandLineKeyword="${service.name}-jar-with-dependencies.jar"
+javaCommandLineKeyword="${applDir}/lib/${serviceNameLo}-jar-with-dependencies.jar"
                                                       # a keyword that occurs on the commandline, used to detect an already running service process and to distinguish it from others
 
 # Makes the file $1 writable by the group $serviceGroup.
@@ -94,7 +95,7 @@ fi
 return 0; }
 
 function stopServiceProcess {
-kill $pid || return 1
+kill -15 $pid || return 1
 for ((i=0; i<maxShutdownTime*10; i++)); do
 checkProcessIsRunning $pid
 if [ $? -ne 0 ]; then
