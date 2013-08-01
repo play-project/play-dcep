@@ -42,7 +42,7 @@ public class DcepManager {
 	Logger logger;
 	List<PAComponentRepresentative>  dEtalis; // Mapping between instance name and instance.
 	//String destinations[]= {"127.0.0.1", "dEtalis1.s-node.de"};
-	String destinations[]= {"127.0.0.1"};
+	String destinations[]= {"localhost"};
 
 	int lastUsedNode;
 	
@@ -76,8 +76,7 @@ public class DcepManager {
 				// Start node
 				GCMApplication gcma = PAGCMDeployment
 						.loadApplicationDescriptor(DcepManager.class
-								.getResource("/dEtalisApplicationDescriptor-"
-										+ i + ".xml"));
+								.getResource("/dEtalisApplicationDescriptor-" + i + ".xml"));
 				gcma.startDeployment();
 
 				GCMVirtualNode vn = gcma.getVirtualNode("dEtalis-node");
@@ -107,7 +106,9 @@ public class DcepManager {
 	}
 	
 	private PAComponentRepresentative connectToInstance(String name, String host) throws IOException, NamingException{
-		return Fractive.lookup(URIBuilder.buildURI(host, name, "rmi", 1099).toString());
+		return Fractive.lookup(URIBuilder.buildURI(host, name, "pnp", 9250).toString());
+		//return Fractive.lookup(URIBuilder.buildURI(host, name, CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL.getValueAsString(), CentralPAPropertyRepository.PA_PNP_PORT).toString());
+
 	}
 	
 	/**
