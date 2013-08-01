@@ -25,7 +25,7 @@ events and there is no need to model mappings to binary formats.
 
 Installation
 ------------
-[Install Guide](INSTALL.md)
+[Install Guide](https://github.com/play-project/play-dcep/tree/master/play-dcep-distribution)
 
 Issues
 ------

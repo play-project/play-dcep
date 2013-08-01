@@ -35,7 +35,7 @@
 		<!-- /conf -->
 		<fileSet>
 			<directory>src/main/config</directory>
-			<outputDirectory>etc</outputDirectory>
+			<outputDirectory>conf</outputDirectory>
 			<lineEnding>unix</lineEnding>
 			<filtered>true</filtered>
 		</fileSet>
@@ -57,7 +57,7 @@
 			<directory>target</directory>
 			<outputDirectory>lib</outputDirectory>
 			<includes>
-				<include>*-jar-with-dependencies.jar</include>
+				<include>${service.name}-jar-with-dependencies.jar</include>
 			</includes>
 		</fileSet>
 

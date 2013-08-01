@@ -20,7 +20,7 @@ import org.objectweb.proactive.core.util.URIBuilder;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 import org.ow2.play.srbench.SrBenchExtendedSimulator;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -164,59 +164,59 @@ public class SingleDistributedEtalisInstancePublisher {
 	}
 	public static CompoundEvent createEvent(String eventId) {
 
-		List quads = new ArrayList<Quadruple>();
+		List<Quadruple> quads = new ArrayList<Quadruple>();
 
 		 Quadruple q1 = new Quadruple(
-				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
-				 Node.createURI("http://prefix.example.com/e1"),
-				 Node.createURI("http://events.event-processing.org/types/stream"),
-				 Node.createURI("http://streams.event-processing.org/ids/Srbench#stream"));
+				 NodeFactory.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 NodeFactory.createURI("http://prefix.example.com/e1"),
+				 NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+				 NodeFactory.createURI("http://streams.event-processing.org/ids/Srbench#stream"));
 		 
 		 Quadruple q3 = new Quadruple(
-				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
-				 Node.createURI("http://prefix.example.com/e2"),
-				 Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#WindSpeedObservation"));
+				 NodeFactory.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 NodeFactory.createURI("http://prefix.example.com/e2"),
+				 NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#WindSpeedObservation"));
 		 
 		 Quadruple q4 = new Quadruple(
-				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
-				 Node.createURI("http://prefix.example.com/e2"),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#observedProperty"),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#_WindSpeed"));
+				 NodeFactory.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 NodeFactory.createURI("http://prefix.example.com/e2"),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#observedProperty"),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/weather.owl#_WindSpeed"));
 		 
 		 Quadruple q5 = new Quadruple(
-				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
-				 Node.createURI("http://prefix.example.com/e2"),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#result"),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"));
+				 NodeFactory.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 NodeFactory.createURI("http://prefix.example.com/e2"),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#result"),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"));
 		 
 		 Quadruple q6 = new Quadruple(
-				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
-				 Node.createURI("10.0"));
+				 NodeFactory.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#ffff"),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#floatValue"),
+				 NodeFactory.createURI("10.0"));
 		 
 		 Quadruple q7 = new Quadruple(
-				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
-				 Node.createURI("http://prefix.example.com/e1"),
-				 Node.createURI("http://events.event-processing.org/types/endTime"),
-				 Node.createURI(new SimpleDateFormat(eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601).format(new Date())));
+				 NodeFactory.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 NodeFactory.createURI("http://prefix.example.com/e1"),
+				 NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+				 NodeFactory.createURI(new SimpleDateFormat(eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601).format(new Date())));
 		 
 		 Quadruple q8 = new Quadruple(
-				 Node.createURI("http://events.event-processing.org/eventId/" + eventId),
-				 Node.createURI("http://prefix.example.com/e2"),
-				 Node.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#procedure"),
-				 Node.createURI("http://sensor.example.com/S1"));
+				 NodeFactory.createURI("http://events.event-processing.org/eventId/" + eventId),
+				 NodeFactory.createURI("http://prefix.example.com/e2"),
+				 NodeFactory.createURI("http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#procedure"),
+				 NodeFactory.createURI("http://sensor.example.com/S1"));
 
 
 		
 
 
 //		Quadruple q3 = new Quadruple(
-//				Node.createURI("http://prefix.example.com/" + eventId),
-//				Node.createURI("http://prefix.example.com/e1"),
-//				Node.createURI("http://prefix.example.com/math/value"),
-//				Node.createURI(value + ""));
+//				NodeFactory.createURI("http://prefix.example.com/" + eventId),
+//				NodeFactory.createURI("http://prefix.example.com/e1"),
+//				NodeFactory.createURI("http://prefix.example.com/math/value"),
+//				NodeFactory.createURI(value + ""));
 
 		quads.add(q1);
 	//	quads.add(q2);
