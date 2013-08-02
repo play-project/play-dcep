@@ -47,13 +47,15 @@ public class Main {
 				}
 			});
 
-			System.out.println("Press 3x RETURN to shutdown the application");
-			System.in.read();
-			System.in.read();
-			System.in.read();
-			
-			System.out.println("3x RETURN was read from stdin. Shutting down...");
-			main.stop();
+			System.out.println("For now DCEP cannot be stopped by pressing 3x RETURN, use 'kill' or 'kill -15'");
+
+//			System.out.println("Press 3x RETURN to shutdown the application");
+//			System.in.read();
+//			System.in.read();
+//			System.in.read();
+//
+//			System.out.println("3x RETURN was read from stdin. Shutting down...");
+//			main.stop();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
