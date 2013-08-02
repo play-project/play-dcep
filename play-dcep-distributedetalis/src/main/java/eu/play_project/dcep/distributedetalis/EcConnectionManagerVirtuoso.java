@@ -95,8 +95,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
 		
-		this.rdfReceiver = new AbstractReceiverRest(
-				constants.getProperty("dsb.subscribe.endpoint")) {};
+		this.rdfReceiver = new AbstractReceiverRest() {};
 				
 		// Use an arbitrary topic as default:
 		this.rdfSender = new AbstractSenderRest(Stream.FacebookCepResults.getTopicQName()) {};
