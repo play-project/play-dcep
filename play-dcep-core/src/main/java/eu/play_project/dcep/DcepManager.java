@@ -1,7 +1,6 @@
 package eu.play_project.dcep;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -10,12 +9,9 @@ import java.util.List;
 import javax.naming.NamingException;
 
 import org.etsi.uri.gcm.util.GCM;
-import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
-import org.objectweb.fractal.api.control.IllegalLifeCycleException;
-import org.objectweb.proactive.core.ProActiveException;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
@@ -27,11 +23,8 @@ import org.objectweb.proactive.gcmdeployment.GCMVirtualNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.distributedetalis.DistributedEtalis;
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.constants.DcepConstants;
 
 /**
  * Manage dEtalis instances.
@@ -65,7 +58,7 @@ public class DcepManager {
 			} catch (NamingException e) {
 				e.printStackTrace();
 			}
-		}	
+		}
 	}
 
 	private void createInstances() {
@@ -106,7 +99,7 @@ public class DcepManager {
 	}
 	
 	private PAComponentRepresentative connectToInstance(String name, String host) throws IOException, NamingException{
-		return Fractive.lookup(URIBuilder.buildURI(host, name, "pnp", 9250).toString());
+		return Fractive.lookup(URIBuilder.buildURI(host, name, "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString());
 		//return Fractive.lookup(URIBuilder.buildURI(host, name, CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL.getValueAsString(), CentralPAPropertyRepository.PA_PNP_PORT).toString());
 
 	}
