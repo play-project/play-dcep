@@ -5,21 +5,49 @@
 %
 % @author Stefan Obermeier
 
-
-%% removeOutdatedValues(+ListIn, +WindowSize:int, -ListOut)
+%% calcAverage(+Id, +WindowSize, -Avg)
 %
-% Remove all elements which are out of window. (To free memory).
+% Calculate average (Arithmetic mean) of the values in the last period.
 %
-% @param ListIn List of aggregateValue data structure. (aggregatDb(Id,List))
-% @param WindowSize window size in ms.
-% @param ListOut updated list.
-removeOutdatedValues(ListIn, WindowSize, ListOut) :-
+% Returns false if window is empty.
+% @param WindowSize Window size in seconds.
+calcAverage(Id, WindowSize, Avg) :- 
 (
 	get_time(Time),
-	removeOutdatedValuesImp(ListIn, ListIn, WindowSize, Time, ListOut)
+	calcAverage(Id, WindowSize, Time, Avg)
 ).
 
+%% sum(+Id, +WindowSize, -Sum)
+%
+% Calculate sum of all values in the given time window.
+% This method uses values stored with addAgregatValue (+Id, +Element).
+%
+% @param Id Id corresponding to data stored in addAgregatValue (+Id, +Element).
+% @param WindowSize Window size in seconds.
+% @param Sum result will be stored hear as float value.
+sum(Id, WindowSize, Sum) :-
+(
+	get_time(Time),
+	sum(Id, WindowSize, Time, Sum)
+).
 
+%% sum(+Id, +WindowSize, +Time, -Sum)
+%
+% Calculate sum of all values in the given time window.
+% This method uses values stored with addAgregatValue (+Id, +Element).
+%
+% @param Id Id 		Corresponding to data stored in addAgregatValue (+Id, +Element).
+% @param WindowSize 	Window size in seconds.
+% @param Time		Start time. The window begins at this time.
+% @param Sum 		Result will be stored hear as float value.
+sum(Id, WindowSize, Time, Sum) :-
+(
+	aggregatDb(Id,List),
+	sumIter(List, Id, (Time-WindowSize), 0, Sum),     %Calc sum recursively
+	removeOutdatedValues(List, WindowSize, UpdatedList), %Clean up.
+	retractall(aggregatDb(Id, _Dc)),
+	assert(aggregatDb(Id, UpdatedList))  
+).
 
 
 %% storeMaxT(+ID, +Value:int)
@@ -106,18 +134,6 @@ addAgregatValue(Id, Time, Element) :-
 		assert(aggregatDb(Id,[[Time,Element]])) % Put element in new list.
 ).
  
-%% calcAverage(+Id, +WindowSize, -Avg)
-%
-% Calculate average (Arithmetic mean) of the values in the last period.
-%
-% Returns false if window is empty.
-% @param WindowSize Window size in seconds.
-calcAverage(Id, WindowSize, Avg) :- 
-(
-	get_time(Time),
-	calcAverage(Id, WindowSize, Time, Avg)
-).
-
 %% calcAverage(+Id, +WindowSize, +Time, -Avg)
 %
 % Calculate average (Arithmetic mean) of the values in the last period.
@@ -142,7 +158,18 @@ cleanAggregateDb(Id):-
 resetMaxT(Id):- 
 	retractall(maxValue(Id, _)).
 
-
+%% removeOutdatedValues(+ListIn, +WindowSize:int, -ListOut)
+%
+% Remove all elements which are out of window. (To free memory).
+%
+% @param ListIn List of aggregateValue data structure. (aggregatDb(Id,List))
+% @param WindowSize window size in ms.
+% @param ListOut updated list.
+removeOutdatedValues(ListIn, WindowSize, ListOut) :-
+(
+	get_time(Time),
+	removeOutdatedValuesImp(ListIn, ListIn, WindowSize, Time, ListOut)
+).
 
 
 % TODO use this.
@@ -179,7 +206,8 @@ getTimeAndValue([H|T], Time, Value) :-
 	Time is H, 
 	nextV(T,1,Value)
 ).
-nextV([H|T], 1, Value) :- 
+
+nextV([H|_T], 1, Value) :- 
 	Value = H.
 
 % Organize values in increasing order.
@@ -218,7 +246,7 @@ calcAvgIter([], _Id, _WindowEnd, Sum, N, Result):-
 calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :- 
 (
 	getTimeAndValue(H,Time, Value),
-	\+ var(Value), % Return false no value stored.
+	\+ var(Value), % Return false if no value stored.
 	(Time >= WindowEnd)
 ->
 	transformToNumber(Value, Hn), 
@@ -230,15 +258,36 @@ calcAvgIter([H|T], Id, WindowEnd, Sum, N, Result) :-
 	calcAvgIter([], Id, WindowEnd, Sum, N, Result)  % Stop recursion if value is out of window.
 ). 
 
+% Iter to calc sum
+sumIter([], _Id, _WindowEnd, Sum, Result):- 
+(
+	Result is Sum
+).
+
+sumIter([H|T], Id, WindowEnd, Sum, Result) :- 
+(
+	getTimeAndValue(H,Time, Value),
+	\+ var(Value), % Return false if no value stored.
+	(Time >= WindowEnd)
+->
+	transformToNumber(Value, Hn), 
+	sumIter(T, Id, WindowEnd, (Sum + Hn), Result)
+;
+	getTimeAndValue(H, Time, Value),
+	\+ var(Value),
+	sumIter([], Id, WindowEnd, Sum, Result)  % Stop recursion if value is out of window.
+). 
+
+
 % Implementation to remove all elements which are out of window.
-removeOutdatedValuesImp([], ListFull,  WindowSize, Time, CleanList) :- 
+removeOutdatedValuesImp([], ListFull,  _WindowSize, _Time, CleanList) :- 
 (
 	CleanList = ListFull  % No outdated element found.
 ).
 
 removeOutdatedValuesImp([H|T], ListFull, WindowSize, Time, CleanList):-
 (
-	getTimeAndValue(H,TimeO, Value),
+	getTimeAndValue(H,TimeO, _Value),
 	(TimeO >= (Time-WindowSize)) % Check if this element is in window.
 	-> 
 		removeOutdatedValuesImp(T, ListFull, WindowSize, Time, CleanList)
@@ -257,7 +306,7 @@ removeOutdatedValuesImp([H|T], ListFull, WindowSize, Time, CleanList):-
 % In the function the result has to be stored in variable named Result.
 % Values stored in variable In can be used in the function.
 assertFunction(Id, Exp) :- 
-	assert(function(Id, In, Result) :- (Exp)).
+	assert(function(Id, _In, _Result) :- (Exp)).
 
 % Execute function with id given in variable Id. 
 % Parameters in variable In will be used. 
