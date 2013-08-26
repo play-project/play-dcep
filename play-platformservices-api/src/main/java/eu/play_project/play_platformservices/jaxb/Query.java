@@ -13,13 +13,17 @@ import eu.play_project.play_platformservices.api.BdplQuery;
 @XmlRootElement
 public class Query {
 	
-	public Query() {};
+	public Query() {} // JAXB needs this
 	
 	public Query(BdplQuery bdplQuery) {
 		this.id = bdplQuery.getDetails().getQueryId();
 		this.content = bdplQuery.getBdpl();
-	};
-	
+	}
+
+	public Query(String queryId, String queryString) {
+		this.id = queryId;
+		this.content = queryString;
+	}
 
     public String name;
 
@@ -28,4 +32,9 @@ public class Query {
     public String content;
 
     public String recordDate;
+    
+    @Override
+    public String toString() {
+    	return content;
+    }
 }

@@ -11,9 +11,6 @@
 	<logger name="com.hp">
 		<level value="debug" />
 	</logger>
-		<logger name="main">
-		<level value="debug" />
-	</logger>
 
 	<logger name="proactive">
 		<level value="info" />

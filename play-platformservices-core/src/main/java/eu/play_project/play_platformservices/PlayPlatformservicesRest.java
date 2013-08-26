@@ -1,38 +1,34 @@
 package eu.play_project.play_platformservices;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.moxy.json.MoxyJsonConfig;
-import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
-import org.glassfish.jersey.moxy.xml.MoxyXmlFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
+import eu.play_project.play_platformservices.jaxb.Query;
 
 @Singleton
-@Path("/id")
+@Path("/patterns")
+@Consumes(MediaType.TEXT_PLAIN)
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class PlayPlatformservicesRest implements QueryDispatchApi {
 
     // Base URI the Grizzly HTTP server will listen on
@@ -45,9 +41,6 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
  
 		final ResourceConfig rc = new ResourceConfig();
 		rc.register(this);
-		rc.register(new MoxyJsonFeature());
-		rc.register(new MoxyXmlFeature());
-		rc.registerInstances(new JsonMoxyConfigurationContextResolver());
 
        this.playPlatformservices = playPlatformservices;
 
@@ -56,71 +49,65 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
         this.server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
 	}
 
+	@POST
+	@Path("{id}/analyse")
+	@Override
+	public QueryDetails analyseQuery(@PathParam("id") String queryId, String queryString)
+			throws QueryDispatchException {
+		return this.playPlatformservices.analyseQuery(queryId, queryString);
+	}
+
 	@PUT
 	@Path("{id}")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML})
 	@Override
-	public String registerQuery(@PathParam("id") String queryId, String epSparqlQuery)
+	public String registerQuery(@PathParam("id") String queryId, String queryString)
 			throws QueryDispatchException {
-		return this.playPlatformservices.registerQuery(queryId, epSparqlQuery);
+		return this.playPlatformservices.registerQuery(queryId, queryString);
 	}
 
 	@DELETE
 	@Path("{id}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML})
 	@Override
 	public void unregisterQuery(@PathParam("id") String queryId) {
 		this.playPlatformservices.unregisterQuery(queryId);
 	}
 
-	@POST
-	@Path("analyse")
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Override
-	public QueryDetails analyseQuery(@HeaderParam("id") String queryId, String query)
-			throws QueryDispatchException {
-		return this.playPlatformservices.analyseQuery(queryId, query);
-	}
-
 	@GET
 	@Path("{id}")
-	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML})
 	@Override
-	public eu.play_project.play_platformservices.jaxb.Query getRegisteredQuery(@PathParam("id") String queryId)
-			throws QueryDispatchException {
-		return this.playPlatformservices.getRegisteredQuery(queryId);
+	public Query getRegisteredQuery(@PathParam("id") String queryId) {
+		try {
+			return this.playPlatformservices.getRegisteredQuery(queryId);
+		} catch (QueryDispatchException e) {
+			throw new WebApplicationException(e, 404);
+		}
 	}
 
+	/**
+	 * Additional getter specifically to return a String instead of a
+	 * {@linkplain Query}.
+	 * 
+	 * @param queryId
+	 * @return
+	 */
 	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Path("{id}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getRegisteredQueryAsString(@PathParam("id") String queryId) {
+		try {
+			return this.playPlatformservices.getRegisteredQuery(queryId).content;
+		} catch (QueryDispatchException e) {
+			throw new WebApplicationException(e, 404);
+		}
+	}
+	
+	@GET
 	@Override
-	public List<eu.play_project.play_platformservices.jaxb.Query> getRegisteredQueries() {
+	public List<Query> getRegisteredQueries() {
 		return this.playPlatformservices.getRegisteredQueries();
 	}
 
     public void destroy() {
     	this.server.stop();
     }
-	
-	@Provider
-	private final static class JsonMoxyConfigurationContextResolver implements
-			ContextResolver<MoxyJsonConfig> {
-
-		@Override
-		public MoxyJsonConfig getContext(Class<?> objectType) {
-			final MoxyJsonConfig configuration = new MoxyJsonConfig();
-
-			Map<String, String> namespacePrefixMapper = new HashMap<String, String>(
-					1);
-			namespacePrefixMapper.put(
-					"http://www.w3.org/2001/XMLSchema-instance", "xsi");
-
-			configuration.setNamespacePrefixMapper(namespacePrefixMapper);
-			configuration.setNamespaceSeparator(':');
-
-			return configuration;
-		}
-	}
 }

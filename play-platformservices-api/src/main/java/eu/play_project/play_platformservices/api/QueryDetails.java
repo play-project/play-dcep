@@ -26,13 +26,13 @@ public class QueryDetails implements Serializable {
 	private List<String> rdfDbQueries;
 	private String complexType;  //Type name of the complex event.
 	
-	public QueryDetails(){}
+	public QueryDetails(){} // JAXB needs this
 	
 	public QueryDetails(String queryId){
 		this.queryId = queryId;
 		// Init with valid values which have no functional effect.
-		etalisProperty = "";
-		tumblingWindow = "true";
+		this.etalisProperty = "";
+		this.tumblingWindow = "true";
 	}
 	
 	public String getQueryId() {

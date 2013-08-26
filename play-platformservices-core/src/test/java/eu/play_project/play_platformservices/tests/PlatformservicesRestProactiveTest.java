@@ -7,9 +7,10 @@ import java.util.HashMap;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
 
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri.gcm.util.GCM;
@@ -25,10 +26,13 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
 import eu.play_project.play_platformservices.PlayPlatformservicesRest;
+import eu.play_project.play_platformservices.api.QueryDetails;
 
-public class PlayPlatformservicesRestTest {
+public class PlatformservicesRestProactiveTest {
     
 	private Component root;
+	private Client client;
+	private WebTarget targetId;
 	
 	/**
 	 * Start Platformservices server
@@ -46,19 +50,24 @@ public class PlayPlatformservicesRestTest {
 		
 		root = (Component) factory.newComponent("PlatformServicesTest", context);
 		GCM.getGCMLifeCycleController(root).startFc();
+		
+		client = ClientBuilder.newClient();
+		targetId = client.target(PlayPlatformservicesRest.BASE_URI).path("patterns");
 	}
 	
-	/**
-	 * Start client and send some requests
-	 */
 	@Test
-	public void testPlayPlatformservicesRest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
-		String file = "play-bdpl-crisis-01a-radiation.eprq";
-		String query = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(file), "UTF-8");
-		
-	    Client client = ClientBuilder.newClient();
-	    Response response = client.target(UriBuilder.fromUri(PlayPlatformservicesRest.BASE_URI).path("id")).request(MediaType.APPLICATION_JSON).get();
-	    assertEquals(500, response.getStatus());
+	public void testAnalyseQuery() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
+		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), "UTF-8");
+		Response response;
+	    String queryId = "0001";
+	    
+	    response = targetId.path(queryId).path("analyse").request(MediaType.APPLICATION_JSON).post(Entity.text(queryString));
+	    assertEquals(200, response.getStatus());
+	    assertEquals(queryId, response.readEntity(QueryDetails.class).getQueryId());
+
+	    response = targetId.path(queryId).path("analyse").request(MediaType.APPLICATION_XML).post(Entity.text(queryString));
+	    assertEquals(200, response.getStatus());
+	    assertEquals(queryId, response.readEntity(QueryDetails.class).getQueryId());
 	}
        
 	/**
@@ -66,6 +75,7 @@ public class PlayPlatformservicesRestTest {
 	 */
    	@After
    	public void destroy() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
+   		client.close();
 		GCM.getGCMLifeCycleController(root).stopFc();
 		GCM.getGCMLifeCycleController(root).terminateGCMComponent();
 		
