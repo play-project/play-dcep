@@ -2,6 +2,7 @@ package eu.play_project.play_platformservices;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
@@ -13,7 +14,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -25,6 +29,17 @@ import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.jaxb.Query;
 
+/**
+ * The PLAY REST Web Service to manage event patterns. See
+ * {@linkplain PlayPlatformservices} for the corresponding SOAP service.
+ * 
+ * N.B.: New event patterns (i.e. queries) are registered by using HTTP PUT on
+ * the respective URI using a caller-specified unique URI. There is currently no
+ * way (e.g. using HTTP POST) where the unique ID does not need to be known
+ * before the request.
+ * 
+ * @author Roland Stühmer
+ */
 @Singleton
 @Path("/patterns")
 @Consumes(MediaType.TEXT_PLAIN)
@@ -33,7 +48,10 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest.local");
-
+    
+    @Context
+	private UriInfo uriInfo;
+    
     private final HttpServer server;
 	private final QueryDispatchApi playPlatformservices;
 
@@ -55,6 +73,19 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	public QueryDetails analyseQuery(@PathParam("id") String queryId, String queryString)
 			throws QueryDispatchException {
 		return this.playPlatformservices.analyseQuery(queryId, queryString);
+	}
+	
+	/**
+	 * A setter (only evailable in REST service not SOAP
+	 * {@linkplain PlayPlatformservices}) to add an anonymous query without ID.
+	 * A random {@linkplain UUID} will be assigned and the child-resource created.
+	 */
+	@POST
+	public Response registerQuery(String queryString)
+			throws QueryDispatchException {
+		String queryId = this.playPlatformservices.registerQuery(UUID.randomUUID().toString(), queryString);
+		URI uri = uriInfo.getAbsolutePathBuilder().path(queryId).build();
+		return Response.created(uri).entity(queryId).build();
 	}
 
 	@PUT
@@ -84,11 +115,9 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	}
 
 	/**
-	 * Additional getter specifically to return a String instead of a
-	 * {@linkplain Query}.
-	 * 
-	 * @param queryId
-	 * @return
+	 * A getter (only evailable in REST service not SOAP
+	 * {@linkplain PlayPlatformservices}) specifically to return a String
+	 * instead of a {@linkplain Query} for human-readable browsing.
 	 */
 	@GET
 	@Path("{id}")

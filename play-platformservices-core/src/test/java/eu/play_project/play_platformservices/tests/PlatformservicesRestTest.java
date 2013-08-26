@@ -84,11 +84,10 @@ public class PlatformservicesRestTest {
 	    assertEquals(1, response.readEntity(new GenericType<List<Query>>(){}).size());
 	    assertEquals(200, response.getStatus());
 
-	    // Put a query
+	    // Post a query
 		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01b-radiationincrease.eprq"), "UTF-8");
-	    queryId = "0002";
-	    response = targetId.path(queryId).request(MediaType.APPLICATION_JSON).put(Entity.text(queryString));
-	    assertEquals(200, response.getStatus());
+	    response = targetId.request(MediaType.APPLICATION_JSON).post(Entity.text(queryString));
+	    assertEquals(201, response.getStatus());
 
 	    // Get all queries, should be 2
 	    response = targetId.request(MediaType.APPLICATION_JSON).get();

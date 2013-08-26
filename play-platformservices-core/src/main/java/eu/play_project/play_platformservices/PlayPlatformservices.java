@@ -40,6 +40,12 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
+/**
+ * The PLAY SOAP Web Service to manage event patterns. See
+ * {@linkplain PlayPlatformservicesRest} for the corresponding RESTful service.
+ * 
+ * @author Roland Stühmer
+ */
 @WebService(
 		serviceName = "QueryDispatchApi",
 		portName = "QueryDispatchApiPort",
