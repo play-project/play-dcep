@@ -21,6 +21,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
@@ -61,7 +62,7 @@ public class BdplEleTest {
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
+		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
@@ -84,7 +85,7 @@ public class BdplEleTest {
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		
 		// Set id.
-		String patternId = "http://patternID.example.com/" + Math.random() * 1000000;
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
 		visitor1.setPatternId(patternId);
 		
 		// Parse query
@@ -159,7 +160,7 @@ public class BdplEleTest {
 
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
+		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
@@ -196,7 +197,7 @@ public class BdplEleTest {
 
 		
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-
+		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
@@ -214,10 +215,8 @@ public class BdplEleTest {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
-
-		
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-
+		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 

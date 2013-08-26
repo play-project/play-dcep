@@ -21,6 +21,7 @@ import com.hp.hpl.jena.query.Syntax;
 
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
@@ -59,7 +60,7 @@ public class RegisterQueriesTest {
 		
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
+		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
