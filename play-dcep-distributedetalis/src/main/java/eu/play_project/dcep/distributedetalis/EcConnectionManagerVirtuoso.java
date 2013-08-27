@@ -2,6 +2,7 @@ package eu.play_project.dcep.distributedetalis;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -13,13 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.ws.rs.ext.RuntimeDelegate;
 import javax.xml.namespace.QName;
 
-import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.petalslink.dsb.commons.service.api.Service;
 import org.petalslink.dsb.notification.service.NotificationConsumerService;
@@ -62,7 +63,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	static final Properties constants = DcepConstants.getProperties();
 	public static String notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint");
 	private Service notifyReceiverSoap;
-	private Server notifyReceiverRest;
+	private HttpServer notifyReceiverRest;
     // Base URI the Grizzly HTTP notifyReceiverRest will listen on
     public static final String BASE_URI = Constants.getProperties().getProperty("dcep.notify.rest.local");
 
@@ -144,11 +145,12 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
         	this.dsbRestListener = new EcConnectionListenerRestVirtuoso(this.rdfReceiver);
         	this.dsbRestListener.setDetalis(this.dEtalis);
 
-        	RuntimeDelegate delegate = RuntimeDelegate.getInstance();
-	        JAXRSServerFactoryBean bean = delegate.createEndpoint(this.dsbRestListener, JAXRSServerFactoryBean.class);
-	        bean.setAddress(BASE_URI);
-	        this.notifyReceiverRest = bean.create();
-	        this.notifyReceiverRest.start();
+    		final ResourceConfig rc = new ResourceConfig();
+    		rc.register(dsbRestListener);
+
+            // create and start a new instance of grizzly http server
+            // exposing the Jersey application at BASE_URI
+            this.notifyReceiverRest = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
 	    } catch (Exception e) {
 	        throw new DistributedEtalisException("Error while starting DSB listener (REST service).", e);
 	    }
@@ -175,7 +177,6 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
     	if (this.notifyReceiverRest != null) {
     		this.notifyReceiverRest.stop();
-    		this.notifyReceiverRest.destroy();
     	}
      	
   		init = false;
