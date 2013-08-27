@@ -13,8 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.ws.rs.ext.RuntimeDelegate;
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
@@ -37,6 +40,7 @@ import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.AbstractSenderRest;
@@ -54,9 +58,13 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private AbstractSenderRest rdfSender;
 	private final DistributedEtalis dEtalis;
 	private EcConnectionListenerVirtuoso dsbListener;
+	private EcConnectionListenerRestVirtuoso dsbRestListener;
 	static final Properties constants = DcepConstants.getProperties();
 	public static String notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint");
-	private Service notifyReceiverServer;
+	private Service notifyReceiverSoap;
+	private Server notifyReceiverRest;
+    // Base URI the Grizzly HTTP notifyReceiverRest will listen on
+    public static final String BASE_URI = Constants.getProperties().getProperty("dcep.notify.rest.local");
 
 
 	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws DistributedEtalisException {
@@ -100,6 +108,9 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		// Use an arbitrary topic as default:
 		this.rdfSender = new AbstractSenderRest(Stream.FacebookCepResults.getTopicQName()) {};
 
+        /*
+         * Expose the SOAP service to receive notifications
+         */
 		try {
         	this.dsbListener = new EcConnectionListenerVirtuoso(this.rdfReceiver);
         	this.dsbListener.setDetalis(this.dEtalis);
@@ -110,24 +121,41 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
                     "NotificationConsumerService");
             QName endpointName = new QName("http://docs.oasis-open.org/wsn/bw-2",
                     "NotificationConsumerPort");
-            // expose the service
+ 
             final String notificationReceiverEndpointLocal = constants.getProperty("dcep.notify.endpoint.local");
             logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpointLocal, notificationReceiverEndpoint);
             NotificationConsumerService service = new NotificationConsumerService(interfaceName,
                     serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpointLocal,
                     this.dsbListener);
             Exposer exposer = new CXFExposer();
-            notifyReceiverServer = exposer.expose(service);
-            notifyReceiverServer.start();
-
+            notifyReceiverSoap = exposer.expose(service);
+            notifyReceiverSoap.start();
         } catch (Exception e) {
-        	
-        	if (notifyReceiverServer != null) {
-        		notifyReceiverServer.stop();
-        	}
-            throw new DistributedEtalisException("Error while starting DSB listener.", e);
+            throw new DistributedEtalisException("Error while starting DSB listener (SOAP service).", e);
         }
-        
+		finally {
+        	destroy();
+		}
+		
+        /*
+         * Expose the REST service to receive notifications
+         */
+		try {
+        	this.dsbRestListener = new EcConnectionListenerRestVirtuoso(this.rdfReceiver);
+        	this.dsbRestListener.setDetalis(this.dEtalis);
+
+        	RuntimeDelegate delegate = RuntimeDelegate.getInstance();
+	        JAXRSServerFactoryBean bean = delegate.createEndpoint(this.dsbRestListener, JAXRSServerFactoryBean.class);
+	        bean.setAddress(BASE_URI);
+	        this.notifyReceiverRest = bean.create();
+	        this.notifyReceiverRest.start();
+	    } catch (Exception e) {
+	        throw new DistributedEtalisException("Error while starting DSB listener (REST service).", e);
+	    }
+		finally {
+        	destroy();
+		}
+		
 		init = true;
 	}
 	
@@ -141,10 +169,15 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		this.rdfReceiver.unsubscribeAll();
 		subscriptions.clear();
 		
-    	if (this.notifyReceiverServer != null) {
-    		this.notifyReceiverServer.stop();
+    	if (this.notifyReceiverSoap != null) {
+    		this.notifyReceiverSoap.stop();
     	}
-    	
+
+    	if (this.notifyReceiverRest != null) {
+    		this.notifyReceiverRest.stop();
+    		this.notifyReceiverRest.destroy();
+    	}
+     	
   		init = false;
 	}
 
@@ -362,5 +395,4 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 
         return dsg;
     }
-
 }

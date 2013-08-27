@@ -24,6 +24,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import eu.play_project.play_commons.constants.Constants;
+import eu.play_project.play_commons.constants.Pattern;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -41,7 +42,7 @@ import eu.play_project.play_platformservices.jaxb.Query;
  * @author Roland Stühmer
  */
 @Singleton
-@Path("/patterns")
+@Path(Pattern.PATTERN_PATH)
 @Consumes(MediaType.TEXT_PLAIN)
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class PlayPlatformservicesRest implements QueryDispatchApi {
@@ -49,6 +50,7 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest.local");
     
+    /* Injected by Jersey */
     @Context
 	private UriInfo uriInfo;
     
@@ -81,6 +83,7 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	 * A random {@linkplain UUID} will be assigned and the child-resource created.
 	 */
 	@POST
+	@Path("/")
 	public Response registerQuery(String queryString)
 			throws QueryDispatchException {
 		String queryId = this.playPlatformservices.registerQuery(UUID.randomUUID().toString(), queryString);
@@ -131,6 +134,7 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	}
 	
 	@GET
+	@Path("/")
 	@Override
 	public List<Query> getRegisteredQueries() {
 		return this.playPlatformservices.getRegisteredQueries();

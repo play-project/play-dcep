@@ -25,6 +25,7 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
+import eu.play_project.play_commons.constants.Pattern;
 import eu.play_project.play_platformservices.PlayPlatformservicesRest;
 import eu.play_project.play_platformservices.api.QueryDetails;
 
@@ -52,7 +53,7 @@ public class PlatformservicesRestProactiveTest {
 		GCM.getGCMLifeCycleController(root).startFc();
 		
 		client = ClientBuilder.newClient();
-		targetId = client.target(PlayPlatformservicesRest.BASE_URI).path("patterns");
+		targetId = client.target(PlayPlatformservicesRest.BASE_URI).path(Pattern.PATTERN_PATH);
 	}
 	
 	@Test
