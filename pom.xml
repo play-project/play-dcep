@@ -187,4 +187,16 @@
  		</plugins>
 	</reporting>
 
+	<repositories>
+		<!-- Repository to retrieve snapshots of the parent  -->
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<id>ow2-snapshot</id>
+			<name>OW2 Snapshot Repository</name>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
 </project>
