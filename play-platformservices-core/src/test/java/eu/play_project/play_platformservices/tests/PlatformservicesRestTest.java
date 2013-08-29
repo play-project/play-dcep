@@ -66,6 +66,10 @@ public class PlatformservicesRestTest {
 	    response = targetId.path(queryId).request(MediaType.APPLICATION_JSON).put(Entity.text(queryString));
 	    assertEquals(200, response.getStatus());
 
+	    // Put a query again
+	    response = targetId.path(queryId).request(MediaType.APPLICATION_JSON).put(Entity.text(queryString));
+	    assertEquals(500, response.getStatus());
+
 	    // Get it as JSON
 	    response = targetId.path(queryId).request(MediaType.APPLICATION_JSON).get();
 	    assertEquals(queryId, response.readEntity(Query.class).id);
@@ -98,7 +102,11 @@ public class PlatformservicesRestTest {
 	    // Delete one query
 	    response = targetId.path(queryId).request().delete();
 	    assertEquals(204, response.getStatus());
-	    
+
+	    // Delete the query again
+	    response = targetId.path(queryId).request().delete();
+	    assertEquals(204, response.getStatus());
+
 	    // Get all queries, should be 1
 	    response = targetId.request(MediaType.APPLICATION_JSON).get();
 	    assertEquals(1, response.readEntity(new GenericType<List<Query>>(){}).size());
@@ -121,6 +129,9 @@ public class PlatformservicesRestTest {
 		@Override
 		public String registerQuery(String queryId, String epSparqlQuery)
 				throws QueryDispatchException {
+			if (this.registeredQueries.containsKey(queryId)) {
+				throw new QueryDispatchException();
+			}
 			this.registeredQueries.put(queryId, new Query(queryId, epSparqlQuery));
 			return queryId;
 		}

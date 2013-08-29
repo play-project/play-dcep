@@ -62,10 +62,12 @@ public class PlatformservicesRestProactiveTest {
 		Response response;
 	    String queryId = "0001";
 	    
+	    // Analyse a query accepting JSON response
 	    response = targetId.path(queryId).path("analyse").request(MediaType.APPLICATION_JSON).post(Entity.text(queryString));
 	    assertEquals(200, response.getStatus());
 	    assertEquals(queryId, response.readEntity(QueryDetails.class).getQueryId());
 
+	    // Analyse a query accepting XML response
 	    response = targetId.path(queryId).path("analyse").request(MediaType.APPLICATION_XML).post(Entity.text(queryString));
 	    assertEquals(200, response.getStatus());
 	    assertEquals(queryId, response.readEntity(QueryDetails.class).getQueryId());
