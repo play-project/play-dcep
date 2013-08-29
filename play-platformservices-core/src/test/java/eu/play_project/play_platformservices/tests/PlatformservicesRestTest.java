@@ -1,8 +1,11 @@
 package eu.play_project.play_platformservices.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -50,10 +54,10 @@ public class PlatformservicesRestTest {
 	}
 	
 	/**
-	 * Start client and send some requests
+	 * Start client and send some consecutive requests
 	 */
 	@Test
-	public void testPlayPlatformservicesRest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
+	public void testVariousVerbs() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
 		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), "UTF-8");
 		Response response;
 	    String queryId = "0001";
@@ -73,15 +77,6 @@ public class PlatformservicesRestTest {
 	    // Get it as JSON
 	    response = targetId.path(queryId).request(MediaType.APPLICATION_JSON).get();
 	    assertEquals(queryId, response.readEntity(Query.class).id);
-	    assertEquals(200, response.getStatus());
-
-	    // Get it as XML
-	    response = targetId.path(queryId).request(MediaType.APPLICATION_XML).get();
-	    assertEquals(queryId, response.readEntity(Query.class).id);
-	    assertEquals(200, response.getStatus());
-
-	    // Get it as Text
-	    response = targetId.path(queryId).request(MediaType.TEXT_PLAIN).get();
 	    assertEquals(200, response.getStatus());
 
 	    // Get all queries, should be 1
@@ -111,7 +106,36 @@ public class PlatformservicesRestTest {
 	    response = targetId.request(MediaType.APPLICATION_JSON).get();
 	    assertEquals(1, response.readEntity(new GenericType<List<Query>>(){}).size());
 	    assertEquals(200, response.getStatus());
-}
+	}
+	
+	/**
+	 * Start client and test various request formats
+	 */
+	@Test
+	public void testVariousMediatypes() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
+		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), "UTF-8");
+		Response response;
+
+	    // Post a query via form (and get the new query location URI)
+		Form form = new Form();
+		form.param("queryString", queryString);
+	    response = targetId.request(MediaType.APPLICATION_JSON).post(Entity.form(form));
+	    assertEquals(201, response.getStatus());
+	    assertNotNull(response.getLocation());
+	    URI queryUri = response.getLocation();
+	    WebTarget targetNew = client.target(queryUri);
+
+	    // Get it as XML
+	    response = targetNew.request(MediaType.APPLICATION_XML).get();
+	    assertTrue(queryUri.toString().endsWith(response.readEntity(Query.class).id));
+	    assertEquals(200, response.getStatus());
+
+	    // Get it as Text
+	    response = targetNew.request(MediaType.TEXT_PLAIN).get();
+	    assertEquals(200, response.getStatus());
+	    
+	
+	}
        
 	/**
 	 * Stop server

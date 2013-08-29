@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -76,6 +77,14 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 			throws QueryDispatchException {
 		return this.playPlatformservices.analyseQuery(queryId, queryString);
 	}
+
+	@POST
+	@Path("{id}/analyse")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public QueryDetails analyseQueryViaForm(@PathParam("id") String queryId, @FormParam("queryString") String queryString)
+			throws QueryDispatchException {
+		return analyseQuery(queryId, queryString);
+	}
 	
 	/**
 	 * A setter (only evailable in REST service not SOAP
@@ -90,6 +99,14 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 		URI uri = uriInfo.getAbsolutePathBuilder().path(queryId).build();
 		return Response.created(uri).entity(queryId).build();
 	}
+	
+	@POST
+	@Path("/")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response registerQueryViaForm(@FormParam("queryString") String queryString)
+			throws QueryDispatchException {
+		return registerQuery(queryString);
+	}
 
 	@PUT
 	@Path("{id}")
@@ -99,6 +116,14 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 		return this.playPlatformservices.registerQuery(queryId, queryString);
 	}
 
+	@PUT
+	@Path("{id}")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public String registerQueryViaForm(@PathParam("id") String queryId, @FormParam("queryString") String queryString)
+			throws QueryDispatchException {
+		return registerQuery(queryId, queryString);
+	}
+	
 	@DELETE
 	@Path("{id}")
 	@Override
