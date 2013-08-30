@@ -127,14 +127,16 @@ public class Main {
 		for (String queryFileName : DcepConstants.getProperties()
 				.getProperty("dcep.startup.registerqueries").split(",")) {
 			queryFileName = queryFileName.trim();
-			try {
-				String queryString = IOUtils.toString(Main.class
-						.getClassLoader().getResourceAsStream(queryFileName));
-				logger.info(queryString);
-				queryDispatchApi.registerQuery(queryFileName, queryString);
-			} catch (QueryDispatchException e) {
-				logger.warn("Error registering query {} on startup: {}",
-						queryFileName, e.getMessage());
+			if (!queryFileName.isEmpty()) {
+				try {
+					String queryString = IOUtils.toString(Main.class
+							.getClassLoader().getResourceAsStream(queryFileName));
+					logger.info(queryString);
+					queryDispatchApi.registerQuery(queryFileName, queryString);
+				} catch (QueryDispatchException e) {
+					logger.warn("Error registering query {} on startup: {}",
+							queryFileName, e.getMessage());
+				}
 			}
 		}
 	}
