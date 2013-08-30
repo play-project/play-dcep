@@ -16,10 +16,13 @@ import javax.ws.rs.core.Response;
 
 import junit.framework.Assert;
 
+import org.apache.cxf.BusFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.event_processing.events.types.UcTelcoCall;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,33 +42,38 @@ import eu.play_project.play_eventadapter.NoRdfEventException;
 
 public class EcConnectionManagerVirtuosoTest {
 
-	private static HttpServer server;
-	private static final String BASE_URI = "http://localhost:8085/notifyRest";
+	private static final String REST_URI = "http://localhost:8085/notifyRest";
 	private static final List<Model> eventSink = Collections.synchronizedList(new ArrayList<Model>());
 	private static Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuosoTest.class);
+	private static Server notifyReceiverRest;
 
 	@BeforeClass
-	public static void setupBeforeClass() {
+	public static void setupBeforeClass() throws Exception {
 		TestListenerRest listener = new TestListenerRest(eventSink);
-		
+
 		final ResourceConfig rc = new ResourceConfig();
 		rc.register(listener);
-
-        // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
-        server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+		
+		BusFactory.getDefaultBus(true);
+		
+		notifyReceiverRest = new Server(URI.create(REST_URI).getPort());
+        ServletContextHandler context = new ServletContextHandler();
+        context.setContextPath("/");
+        ServletHolder h = new ServletHolder(new ServletContainer(rc));
+        context.addServlet(h, "/");
+        notifyReceiverRest.setHandler(context);
+        notifyReceiverRest.start();
 
         logger.info("Test server started.");
 	}
-	
-		
+
 	@Test
-	public void test() throws InvalidEventException {
+	public void testRestfulSendAndReceive() throws InvalidEventException {
 
 		/*
 		 * (1) Send event
 		 */
-		AbstractSenderRest rdfSender = new AbstractSenderRest("http://example.com/topic", BASE_URI);
+		AbstractSenderRest rdfSender = new AbstractSenderRest("http://example.com/topic", REST_URI);
 		
 		String eventId = EventHelpers.createRandomEventId("UnitTest");
 		UcTelcoCall event = new UcTelcoCall(EventHelpers.createEmptyModel(eventId),
@@ -96,11 +104,16 @@ public class EcConnectionManagerVirtuosoTest {
 	
 	@AfterClass
 	public static void tearDownAfterClass() {
-		server.stop();
+		try {
+			notifyReceiverRest.stop();
+		} catch (Exception e) {
+			logger.error("Exception while stoppping REST server. Nothing we can do now. " + e.getMessage());
+		}
+		notifyReceiverRest.destroy();
         logger.info("Test server stopped.");
 	}
 
-	@Path("/") // overwrite the Path from PublishService
+	@Path("/notifyRest") // overwrite the Path from interface PublishService
 	@Singleton
 	static class TestListenerRest extends Application implements PublishService {
 

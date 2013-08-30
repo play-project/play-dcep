@@ -101,7 +101,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.info("New event pattern is being registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), bdplQuery
 				.getDetails().getQueryId());
-		logger.info("ELE: " + bdplQuery.getEleQuery());
+		logger.debug("ELE: " + bdplQuery.getEleQuery());
 
 		if(this.registeredQueries.containsKey(bdplQuery.getDetails().getQueryId())) {
 			String error = "Pattern ID already exists: " + bdplQuery.getDetails().getQueryId();
@@ -301,7 +301,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	public void measurePerformance(MeasurementConfig config) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}	
+		}
 		measurementUnit.startMeasurement(config.getMeasurementPeriod());
 	}
 	

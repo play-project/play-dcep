@@ -18,9 +18,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.petalslink.dsb.commons.service.api.Service;
 import org.petalslink.dsb.notification.service.NotificationConsumerService;
@@ -61,11 +63,10 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private EcConnectionListenerVirtuoso dsbListener;
 	private EcConnectionListenerRestVirtuoso dsbRestListener;
 	static final Properties constants = DcepConstants.getProperties();
-	public static String notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint");
+	public static final String SOAP_URI = constants.getProperty("dcep.notify.endpoint");
+    public static final String REST_URI = Constants.getProperties().getProperty("dcep.notify.rest.local");
 	private Service notifyReceiverSoap;
-	private HttpServer notifyReceiverRest;
-    // Base URI the Grizzly HTTP notifyReceiverRest will listen on
-    public static final String BASE_URI = Constants.getProperties().getProperty("dcep.notify.rest.local");
+	private Server notifyReceiverRest;
 
 
 	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws DistributedEtalisException {
@@ -124,7 +125,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
                     "NotificationConsumerPort");
  
             final String notificationReceiverEndpointLocal = constants.getProperty("dcep.notify.endpoint.local");
-            logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpointLocal, notificationReceiverEndpoint);
+            logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpointLocal, SOAP_URI);
             NotificationConsumerService service = new NotificationConsumerService(interfaceName,
                     serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpointLocal,
                     this.dsbListener);
@@ -148,9 +149,18 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
     		final ResourceConfig rc = new ResourceConfig();
     		rc.register(dsbRestListener);
 
+    		notifyReceiverRest = new Server(URI.create(REST_URI).getPort());
+            ServletContextHandler context = new ServletContextHandler();
+            context.setContextPath("/");
+            ServletHolder h = new ServletHolder(new ServletContainer(rc));
+            context.addServlet(h, "/");
+            notifyReceiverRest.setHandler(context);
+            notifyReceiverRest.start();
+        	
+
             // create and start a new instance of grizzly http server
-            // exposing the Jersey application at BASE_URI
-            this.notifyReceiverRest = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+            // exposing the Jersey application at REST_URI
+            //this.notifyReceiverRest = GrizzlyHttpServerFactory.createHttpServer(URI.create(REST_URI), rc);
 	    } catch (Exception e) {
 	        throw new DistributedEtalisException("Error while starting DSB listener (REST service).", e);
 	    }
@@ -176,7 +186,12 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
     	}
 
     	if (this.notifyReceiverRest != null) {
-    		this.notifyReceiverRest.stop();
+    		try {
+				this.notifyReceiverRest.stop();
+			} catch (Exception e) {
+				logger.error("Exception while stoppping REST server. Nothing we can do now. " + e.getMessage());
+			}
+    		this.notifyReceiverRest.destroy();
     	}
      	
   		init = false;
@@ -330,7 +345,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		}
 		else {
 			logger.info("Subscribing to topic {}.", cloudId);
-			String subId = this.rdfReceiver.subscribe(cloudId, notificationReceiverEndpoint);
+			String subId = this.rdfReceiver.subscribe(cloudId, SOAP_URI);
 			this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
 
 		}

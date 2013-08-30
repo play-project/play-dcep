@@ -1,7 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
 import javax.inject.Singleton;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -18,7 +17,6 @@ import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.NoRdfEventException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
-@Path("/") // overwrite the Path from PublishService
 @Singleton
 public class EcConnectionListenerRestVirtuoso extends Application implements PublishService {
 

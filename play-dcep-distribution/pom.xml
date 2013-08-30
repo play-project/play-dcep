@@ -47,11 +47,75 @@
 				</configuration>
 			</plugin>
 			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-shade-plugin</artifactId>
+		        <version>2.1</version>
+	            <executions>
+	                <execution>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>shade</goal>
+	                    </goals>
+	                    <configuration>
+	                        <transformers>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+	                                <resource>META-INF/spring.handlers</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+	                                <resource>META-INF/spring.schemas</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+	                                <resource>META-INF/services/com.sun.tools.xjc.Plugin</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+	                                <resource>META-INF/cxf/cxf.extension</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+	                                <resource>META-INF/extensions.xml</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+	                                <resource>META-INF/cxf/extensions.xml</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+	                                <resource>META-INF/cxf/bus-extensions.txt</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+	                                <resource>META-INF/cxf/bus-extensions.xml</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+	                                <resource>META-INF/wsdl.plugin.xml</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+	                                <resource>META-INF/tools.service.validator.xml</resource>
+	                            </transformer>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.XmlAppendingTransformer">
+	                                <resource>META-INF/cxf/java2wsbeans.xml</resource>
+	                            </transformer>
+          	                </transformers>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+	                        <shadedArtifactAttached>false</shadedArtifactAttached>
+	                        <createDependencyReducedPom>false</createDependencyReducedPom>
+	                      	<finalName>${service.name}-jar-with-dependencies</finalName>
+	                    </configuration>
+	                </execution>
+	            </executions>
+	        </plugin>
+   			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4</version>
 				<executions>
+<!-- 
 					<execution>
-						<!-- (I) First execution to build one-jar -->
+						(I) First execution to build one-jar 
 						<id>make-one-jar</id>
 						<phase>package</phase>
 						<goals>
@@ -71,6 +135,7 @@
 							<argLine>${java.arguments}</argLine>
 						</configuration>
 					</execution>
+-->
 					<execution>
 						<!-- (II) Second execution to build installer zip -->
 						<id>make-installer-package</id>
@@ -181,6 +246,7 @@
 			<artifactId>janino</artifactId>
 			<version>2.6.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-platformservices-eventvalidation</artifactId>
@@ -253,6 +319,21 @@
 				<groupId>org.apache.cxf</groupId>
 				<version>${cxf.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-frontend-jaxws</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-transports-http-jetty</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>		
 		</dependencies>
 	</dependencyManagement>
 </project>

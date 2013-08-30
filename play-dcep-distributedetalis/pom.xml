@@ -18,20 +18,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfreceiver-rest</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfsender-rest</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-grizzly2-http</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-frontend-jaxws</artifactId>
 			<version>${cxf.version}</version>
@@ -42,6 +28,36 @@
 			<version>${cxf.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http-jetty</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-eventadapter-abstractrdfreceiver-rest</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-eventadapter-abstractrdfsender-rest</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>7.5.4.v20111024</version>
+		</dependency>
+   		<dependency>
 			<groupId>jtalis</groupId>
 			<artifactId>jtalis-core</artifactId>
 			<version>1.2</version>
@@ -120,6 +136,12 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>governance-platform-userapi</artifactId>
 			<version>1.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jsr311-api</artifactId>
+					<groupId>javax.ws.rs</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
