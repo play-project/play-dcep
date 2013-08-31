@@ -8,9 +8,11 @@ import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.pfunction.library.str;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 import eu.play_project.play_commons.constants.Stream;
@@ -75,9 +77,11 @@ public class StreamIdCollector {
 
 		for (Element element : query.getEventQuery()) {
 			element.visit(valueOrganizerVisitor);
-			if (valueOrganizerVisitor.getStreamURI() != null) {
-				String streamId = valueOrganizerVisitor.getStreamURI();
-				streams.add(Stream.toTopicUri(streamId));
+			if (valueOrganizerVisitor.getStreamURIs() != null) {
+				Set<String> streamIds = valueOrganizerVisitor.getStreamURIs();
+				for (String id : streamIds) {
+					streams.add(Stream.toTopicUri(id));
+				}
 			}
 		}
 
@@ -91,48 +95,53 @@ public class StreamIdCollector {
 	 * @return
 	 */
 	private Set<String> getHistoricStreams(Query query) {
-		Set<String> streams = new HashSet<String>();
+		Set<String> streams = null;
 		ValueOrganizerVisitor valueOrganizerVisitor = new ValueOrganizerVisitor();
 
-		for (Element element : query.getHistoricQuery()) {
-			element.visit(valueOrganizerVisitor);
-			if (valueOrganizerVisitor.getStreamURI() != null) {
-				String streamId = valueOrganizerVisitor.getStreamURI();
-				streams.add(Stream.toTopicUri(streamId));
+		Element element = query.getQueryPattern(); //Historic query.
+		element.visit(valueOrganizerVisitor);
+		if (valueOrganizerVisitor.getStreamURIs().size() > 0) {
+			streams = new HashSet<String>();
+			for (String stream : valueOrganizerVisitor.getStreamURIs()) {
+				streams.add(Stream.toTopicUri(stream));
 			}
 		}
-
 		return streams;
 	}
 
 	// Return value of URI elment and travers form ElementPathBlock to URI
 	// elment.
 	private class ValueOrganizerVisitor extends GenericVisitor {
-		boolean elementContainsInputStream = false;
-		String ok = "OK";
-		String streamURI;
+		Set<String> streamURIs;
 
+		public ValueOrganizerVisitor(){
+			streamURIs =  new HashSet<String>();
+		}
+		
 		@Override
 		public void visit(ElementPathBlock el) {
-			Iterator<TriplePath> iter = el.getPattern().getList().iterator();
 			TypeCheckVisitor v = new TypeCheckVisitor();
 			UriValueVisitor valueVisotor = new UriValueVisitor();
 			for (TriplePath tmpTriplePath : el.getPattern().getList()) {
-				streamURI = null;
 				// Check if type is ok
 				if (tmpTriplePath.getPredicate().visitWith(v) != null) {
 					if (tmpTriplePath.getObject().visitWith(valueVisotor) == null) {
 						throw new RuntimeException("Input stream Id is not a URI or Literal");
 					} else {
-						streamURI = (String) tmpTriplePath.getObject().visitWith(valueVisotor);
+						streamURIs.add((String) tmpTriplePath.getObject().visitWith(valueVisotor));
 						break;
 					}
 				}
 			}
 		}
 
-		public String getStreamURI() {
-			return streamURI;
+		@Override
+		public void visit(ElementNamedGraph el){
+			el.getElement().visit(this);
+		}
+		
+		public Set<String> getStreamURIs() {
+			return streamURIs;
 		}
 
 		@Override
@@ -143,8 +152,8 @@ public class StreamIdCollector {
 		@Override
 		public void visit(ElementGroup el) {
 			// Visit all group elements
-			for (int i = 0; i < el.getElements().size(); i++) {
-				el.getElements().get(i).visit(this);
+			for (Element element : el.getElements()) {
+				element.visit(this);
 			}
 		}
 	}

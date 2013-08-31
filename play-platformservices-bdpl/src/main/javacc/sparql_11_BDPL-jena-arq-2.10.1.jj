@@ -258,7 +258,7 @@ String SourceSelector() : { String iri ; }
 {
   iri = iri() { return iri ; }
 }
-// Modified whereClause for ep-sparql Stefan
+// Modified whereClause for ep-sparql 
 void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testExp; Window win; }
 {
    (<WHERE>)?
@@ -1921,7 +1921,6 @@ TOKEN:
 
 
 // PLAY extensions
-// Stefan
 Element EventGraphPattern() :{ Element el; Node n;}
 {
   {ElementGroup elg = new ElementGroup();}
@@ -1935,9 +1934,7 @@ Element EventGraphPattern() :{ Element el; Node n;}
   	elg.addElement(el);}
   < RBRACE >
   
-  {
-    endGroup(elg);
-  }
+  {endGroup(elg);}
   {
 //    getQuery().setQueryPattern(new ElementEventGraph(n, elg)); // Save Event in ARQ AST
 //    return new ElementEventGraph(n, elg);

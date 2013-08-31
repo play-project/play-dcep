@@ -91,7 +91,6 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     // Event Data
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private ArrayList<Element> eventQuery = new ArrayList<Element>() ;
-    private ArrayList<Element> historicQuery = new ArrayList<Element>() ;
     private final List<ElementEventBinOperator> eventBinOperator = new ArrayList<ElementEventBinOperator>();
     private Window window = new DummyWindow();
 
@@ -115,18 +114,6 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 
 	public void addEventElement(Element element){
     	eventQuery.add(element);
-    }
- 
-    public List<Element> getHistoricQuery() {
-		return historicQuery;
-	}
-
-	public void setHistoricQuery(ArrayList<Element> historicQuery) {
-		this.historicQuery = historicQuery;
-	}
-
-	public void addHistoricElement(Element element){
-		historicQuery.add(element);
     }
 
 	public void clearCEPData(){

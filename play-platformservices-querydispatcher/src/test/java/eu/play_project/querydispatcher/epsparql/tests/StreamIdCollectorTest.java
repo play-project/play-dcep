@@ -69,6 +69,7 @@ public class StreamIdCollectorTest {
 		streamIdCollector.getStreamIds(q, qd);
 
 		// Test output stream
+		System.out.println(qd.getOutputStream());
 		assertTrue(qd.getOutputStream().equals(expectedOutputStream));
 		
 		// Test input streams
