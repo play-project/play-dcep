@@ -22,6 +22,7 @@ public class Main {
 
 	private static final String propertiesFile = "proactive.java.policy";
 	private static Logger logger;
+	private static boolean running;
 	private Component root;
 
 	/**
@@ -31,9 +32,9 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		final Main main = new Main();
+		running = true;
 
 		try {
-			main.start();
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
@@ -47,15 +48,18 @@ public class Main {
 				}
 			});
 
-			System.out.println("For now DCEP cannot be stopped by pressing 3x RETURN, use 'kill' or 'kill -15'");
+			main.start();
+			System.out.println("For now DCEP cannot be stopped by pressing 3x RETURN, use 'kill' or 'kill -15' instead");
 
-//			System.out.println("Press 3x RETURN to shutdown the application");
-//			System.in.read();
-//			System.in.read();
-//			System.in.read();
-//
-//			System.out.println("3x RETURN was read from stdin. Shutting down...");
-//			main.stop();
+			// Keep the main thread running because otherwise Proactive terminates
+//			synchronized (Main.class) {
+//				while (running) {
+//					try {
+//						Main.class.wait();
+//					}
+//					catch (InterruptedException e) {}
+//				}
+//			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -113,8 +117,9 @@ public class Main {
 				init = true;
 			} else {
 				logger.info("Wait for all subcomponents to be started...");
+				Thread.sleep(500);
 			}
-			Thread.sleep(500);
+
 		}
 
 		// Get interfaces
@@ -166,6 +171,8 @@ public class Main {
 			logger.error(e.getMessage());
 		} catch (NoSuchInterfaceException e) {
 			logger.error(e.getMessage());
+		} finally {
+			running = false;
 		}
 	}
 }
