@@ -411,7 +411,7 @@ public class BdplEleTest {
 				sb.append(line);
 				sb.append("\n");
 			}
-			// System.out.println(sb.toString());
+
 			br.close();
 			is.close();
 
