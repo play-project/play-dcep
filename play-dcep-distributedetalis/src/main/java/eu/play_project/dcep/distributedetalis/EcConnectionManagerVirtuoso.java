@@ -43,7 +43,6 @@ import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.AbstractSenderRest;
@@ -64,7 +63,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	private EcConnectionListenerRestVirtuoso dsbRestListener;
 	static final Properties constants = DcepConstants.getProperties();
 	public static final String SOAP_URI = constants.getProperty("dcep.notify.endpoint");
-    public static final String REST_URI = Constants.getProperties().getProperty("dcep.notify.rest.local");
+    public static final String REST_URI = constants.getProperty("dcep.notify.rest.local");
 	private Service notifyReceiverSoap;
 	private Server notifyReceiverRest;
 
