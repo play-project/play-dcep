@@ -8,7 +8,10 @@ import eu.play_project.play_commons.constants.Constants;
  * Properties for DCEP. This class reads the file
  * {@code play-dcep-distribution.properties} from the classpath and also has a
  * default file included in the JAR. If a property is not found in these files
- * the class further falls back to look in {@linkplain Constants}.
+ * the class further falls back to look in
+ * {@linkplain Constants#getProperties()}. You can create your own properties
+ * file by adapting
+ * <a href="https://github.com/play-project/play-dcep/blob/master/play-dcep-api/src/main/resources/play-dcep-distribution-defaults.properties"> the defaults</a>.
  * 
  * @author Roland Stühmer
  */
