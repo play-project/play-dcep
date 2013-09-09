@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.etsi.uri.gcm.util.GCM;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
@@ -38,7 +40,8 @@ public class RegisterQueriesTest {
 	/**
 	 * Load pattern which are loaded at DCEP startup.
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void registerCommonPatterns() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException{
 		
 		InstantiatePlayPlatform();
@@ -54,7 +57,8 @@ public class RegisterQueriesTest {
 		}
 	}
 	
-	//@Test
+	@Ignore
+	@Test
 	public void parsSRBenchQueries(){
 		Query query = QueryFactory.create(getSparqlQueries("benchmarks/srbench/q2.eprq"), Syntax.syntaxBDPL);
 		

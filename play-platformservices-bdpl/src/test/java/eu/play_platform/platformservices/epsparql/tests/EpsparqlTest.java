@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.hp.hpl.jena.query.QueryException;
@@ -25,7 +26,8 @@ public class EpsparqlTest {
 		EP_SPARQL_Query, EP_SPARQL_BROKEN_QUERY
 	}
 	
-	//@Test
+	@Ignore
+	@Test
 	public void manualTest(){
 		QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxBDPL);
 	}

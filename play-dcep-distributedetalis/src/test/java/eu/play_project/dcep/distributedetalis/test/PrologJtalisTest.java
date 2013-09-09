@@ -29,6 +29,7 @@ import jpl.Term;
 
 import org.event_processing.events.types.AvgTempEvent;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
@@ -65,7 +66,8 @@ public class PrologJtalisTest {
 	 * Instantiate ETALIS
 	 * @throws InterruptedException
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void instantiateJtalis() throws InterruptedException{
 
 		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -79,7 +81,8 @@ public class PrologJtalisTest {
 	/**
 	 * Instantiate ETALIS and register eventpatterns.
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void registerEventpatterns(){
 		
 		//Result should be overwritten by an complex event from etalis.
@@ -107,7 +110,8 @@ public class PrologJtalisTest {
 	/**
 	 * No event will be generated because b appears to late.
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void registerEventpatternsWithWindow(){
 		//Result should not be overwritten by an complex event from etalis.
 		result = new EtalisEvent("complex", 42);
@@ -149,7 +153,8 @@ public class PrologJtalisTest {
 //		delay();
 //	}
 	
-	//@Test
+	@Ignore
+	@Test
 	public void instantiatePrologSemWebLib(){
 
 		prologSemWebLib = new PrologSemWebLib();
@@ -158,8 +163,8 @@ public class PrologJtalisTest {
 		delay();
 	}
 	
-	
-	//@Test
+	@Ignore
+	@Test
 	public void addEventsInTriplestore(){
 
 		// Create an event ID used in RDF context and RDF subject
@@ -195,7 +200,8 @@ public class PrologJtalisTest {
 	/**
 	 * Read data from prolog triplestore. (directly not using PrologSemWebLib class).
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void getEventsFromTriplestore(){
 		
 		/*
@@ -312,7 +318,8 @@ public class PrologJtalisTest {
 	 * Load methods from file and add it to prolog.
 	 * @throws InterruptedException
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void loadPrologMethods() throws InterruptedException{
 		if(ctx == null) instantiateJtalis();
 		
@@ -389,8 +396,8 @@ public class PrologJtalisTest {
 		context.addDynamicRule(""
 				+ "c(CID) "
 				+ "	do forall((a(Eid1, Da), b(Eid2, Db)), (storeEdata(CID, Da), storeEdata(CID, Db))) "
-				+ "<- " + 
-				"(a(Eid) 'WHERE' (checkConditions(Eid))) " + 
+				+ "<- " +
+				"(a(Eid) 'WHERE' (checkConditions(Eid))) " +
 				"seq " +
 				"(b(Eid2) 'WHERE' (checkConditions(Eid2), newCid(CID)))");
 
