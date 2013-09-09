@@ -17,7 +17,6 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepMonitoringApi;
@@ -46,15 +45,13 @@ public class MeasurementTest {
 
 		String queryString;
 
-		InstantiatePlayPlatform();
+		instantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQueries("measurement.eprq");
+		queryString = getSparqlQueries("patterns/measurement.eprq");
 
 		// Compile query
-		String paternID1 = queryDispatchApi.registerQuery("measurement", queryString);
-
-		long startTime = System.currentTimeMillis();
+		queryDispatchApi.registerQuery("measurement", queryString);
 
 		for (int i = 0; i < 1; i++) {
 
@@ -91,7 +88,7 @@ public class MeasurementTest {
 	}
 
 
-	public static void InstantiatePlayPlatform()
+	public static void instantiatePlayPlatform()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
@@ -266,13 +263,4 @@ public class MeasurementTest {
 		return null;
 
 	}
-
-	private void delay() {
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
 }
