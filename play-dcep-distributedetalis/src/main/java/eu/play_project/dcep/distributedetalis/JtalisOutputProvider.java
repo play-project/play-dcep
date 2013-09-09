@@ -57,6 +57,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	private final static Node ENDTIME = TypeConversion.toJenaNode(Event.ENDTIME);
 	private final static Node EVENTPATTERN = TypeConversion.toJenaNode(Event.EVENTPATTERN);
 	private final static Node SOURCE = TypeConversion.toJenaNode(Event.SOURCE);
+	
+	private final static String PATTERN_BASE_URI = DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest");
 
 	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, BdplQuery> registeredQueries, EcConnectionManager ecConnectionManager, MeasurementUnit measurementUnit) {
 		this.engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -86,26 +88,22 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			CompoundEvent result = new CompoundEvent(quadruples);
 
 			measurementUnit.eventProduced(result, event.getName());
-			// event.getRuleID(); //TODO sobermeier use this.
 	
 			// Do not remove this line, needed for logs. :stuehmer
 			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
-//			System.out.println(result);
-//			
-//			if(recipients.size()<1) logger.warn("No recipient for complex events.");
-//			
-//			for (SimplePublishApi recipient : recipients) {
-//				recipient.publish(result);
-//			}
+
+			if(recipients.size()<1) {logger.warn("No recipients for complex events.");}
+			
+			for (SimplePublishApi recipient : recipients) {
+				recipient.publish(result);
+			}
 		} catch (Exception e) {
 			if(e instanceof RetractEventException){
 				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled." );
-			}else if(e instanceof java.io.UTFDataFormatException){ //FIXME find the reason for this exception.
-				logger.error("It is not possible to deliver this event. " + e.getMessage() + "\n" + event);
-				e.printStackTrace();
+			}else if(e instanceof java.io.UTFDataFormatException){
+				logger.error("It is not possible to deliver this event. " + e.getMessage() + "\n" + event, e);
 			}else{
-				logger.error("Exception appeard: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Exception appeared: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -129,7 +127,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				EVENTID,
 				EVENTPATTERN,
 				//Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getRuleID()))); // FIXME sobermeier
-				NodeFactory.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
+				NodeFactory.createURI(PATTERN_BASE_URI + event.getStringProperty(1))));
 
 		quadruples.add(new Quadruple(
 				GRAPHNAME,
@@ -153,7 +151,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				SOURCE,
 				NodeFactory.createURI(Source.Dcep.toString())));
 
-		//TODO Add :members to the event (an RDF list of all simple events which were detected)
+		//TODO sobermeier: Add :members to the event (an RDF list of all simple events which were detected)
 		
 		/*
 		 * Add payload data to event:
