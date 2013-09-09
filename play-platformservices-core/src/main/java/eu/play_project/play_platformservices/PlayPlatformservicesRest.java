@@ -35,11 +35,6 @@ import eu.play_project.play_platformservices.jaxb.Query;
  * The PLAY REST Web Service to manage event patterns. See
  * {@linkplain PlayPlatformservices} for the corresponding SOAP service.
  * 
- * N.B.: New event patterns (i.e. queries) are registered by using HTTP PUT on
- * the respective URI using a caller-specified unique URI. There is currently no
- * way (e.g. using HTTP POST) where the unique ID does not need to be known
- * before the request.
- * 
  * @author Roland Stühmer
  */
 @Singleton

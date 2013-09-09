@@ -101,7 +101,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 
 	@Override
-	public void initComponentActivity(Body body) {
+	public synchronized void initComponentActivity(Body body) {
 		if (!init) {
 			
 			this.logger = LoggerFactory.getLogger(this.getClass());
@@ -111,7 +111,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			eleGenerator = new EleGeneratorForConstructQuery();
 	
 			/*
-			 * Provide PublishApi as SOAP Webservice
+			 * Provide QueryDispatchApi as SOAP Webservice
 			 */
 			try {
 				String address = Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint");
@@ -122,7 +122,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			}
 	
 			/*
-			 * Provide PublishApi as REST Webservice
+			 * Provide QueryDispatchApi as REST Webservice
 			 */
 			try {
 				restServer = new PlayPlatformservicesRest(this);
@@ -137,8 +137,9 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 	
 	@Override
-	public void endComponentActivity(Body arg0) {
+	public synchronized void endComponentActivity(Body arg0) {
 		logger.info("Terminating {} component.", this.getClass().getSimpleName());
+		this.init = false;
 		
 		if (this.soapServer != null) {
 			this.soapServer.stop();
@@ -147,8 +148,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		if (this.restServer != null) {
 			this.restServer.destroy();
 		}
-
-		this.init = false;
 	}
 	
 
