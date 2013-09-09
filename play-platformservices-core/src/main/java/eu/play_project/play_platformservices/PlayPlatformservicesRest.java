@@ -92,7 +92,6 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	 * A random {@linkplain UUID} will be assigned and the child-resource created.
 	 */
 	@POST
-	@Path("/")
 	public Response registerQuery(String queryString)
 			throws QueryDispatchException {
 		String queryId = this.playPlatformservices.registerQuery(UUID.randomUUID().toString(), queryString);
@@ -101,7 +100,6 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	}
 	
 	@POST
-	@Path("/")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response registerQueryViaForm(@FormParam("queryString") String queryString)
 			throws QueryDispatchException {
@@ -159,7 +157,6 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	}
 	
 	@GET
-	@Path("/")
 	@Override
 	public List<Query> getRegisteredQueries() {
 		return this.playPlatformservices.getRegisteredQueries();
