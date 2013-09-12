@@ -27,8 +27,8 @@ public class EventPublisher {
 	String eventCloudRegistryUrl;
 	String outputCloudId;
 
-	public EventPublisher(String eventCloudRegistryUrl, String cloudId){
-		outputCloudId = cloudId;
+	public EventPublisher(String eventCloudRegistryUrl, Stream cloudId){
+		outputCloudId = cloudId.getTopicUri();
 		this.eventCloudRegistryUrl = eventCloudRegistryUrl;
 	}
 	
@@ -38,6 +38,7 @@ public class EventPublisher {
 		}
 
 		for (int i = 0; i < numberOfEvents; i++) {
+			System.out.printf("Publishing event %s/%s\n", i+1, numberOfEvents);
 			publishProxy.publish(createTaxiUCCallEvent("http://example.com/" + Math.random()));
 			
 			try {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<configuration xmlns:log4j="http://jakarta.apache.org/log4j/" status="WARN">
+
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
 			<!-- Print the date in ISO 8601 format -->
@@ -8,25 +8,19 @@
 		</layout>
 	</appender>
 
-	<logger name="fr.">
-		<level value="debug" />
-	</logger>
-	
-	<logger name="org.">
-		<level value="debug" />
-	</logger>
-	
-	<logger name="com.hp">
-		<level value="debug" />
-	</logger>
-	
-	<logger name="eu.play_project">
-		<level value="debug" />
-	</logger>
+    <logger name="org.apache.cxf" level="ERROR" />
+    <logger name="org.eclipse.jetty" level="ERROR" />
 
+    <logger name="org.objectweb.proactive" level="WARN" />
+    <logger name="fr.inria" level="WARN" />
+    <logger name="components.adl" level="WARN" />
+    
+    <logger name="eu.play_project" level="DEBUG" />
+    <logger name="org.ow2.play" level="DEBUG" />
+    <logger name="main" level="DEBUG" />
 
-	<root>
-		<priority value="debug" />
+	<root level="INFO">
 		<appender-ref ref="console" />
 	</root>
-</log4j:configuration>
+	
+</configuration>
