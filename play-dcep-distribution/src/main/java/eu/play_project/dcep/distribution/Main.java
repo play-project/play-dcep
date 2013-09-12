@@ -11,6 +11,7 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.fractal.api.control.LifeCycleController;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.objectweb.proactive.extensions.pnp.PNPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,6 @@ import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 public class Main {
 
-	private static final String propertiesFile = "proactive.java.policy";
 	private static Logger logger;
 	private static boolean running;
 	private Component root;
@@ -51,15 +51,15 @@ public class Main {
 			main.start();
 			System.out.println("For now DCEP cannot be stopped by pressing 3x RETURN, use 'kill' or 'kill -15' instead");
 
-			// Keep the main thread running because otherwise Proactive terminates
-//			synchronized (Main.class) {
-//				while (running) {
-//					try {
-//						Main.class.wait();
-//					}
-//					catch (InterruptedException e) {}
-//				}
-//			}
+			// Keep the main thread alive because otherwise Proactive terminates
+			synchronized (Main.class) {
+				while (running) {
+					try {
+						Main.class.wait();
+					}
+					catch (InterruptedException e) {}
+				}
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -67,7 +67,7 @@ public class Main {
 			try {
 				main.stop();
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
+				logger.error(e.getMessage());
 			}
 		}
 
@@ -78,22 +78,32 @@ public class Main {
 		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
 		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
 		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
+		final String PROACTIVE_COMMUNICATION_PROTOCOL = "pnp";
 		
+		logger.debug("Setting system property 'proactive.communication.protocol' to: " + PROACTIVE_COMMUNICATION_PROTOCOL);
+		CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL.setValue(PROACTIVE_COMMUNICATION_PROTOCOL);
+
 		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
-		System.getProperties().setProperty("proactive.pnp.port", PROACTIVE_PNP_PORT);
+		PNPConfig.PA_PNP_PORT.setValue(Integer.parseInt(PROACTIVE_PNP_PORT));
+		
 		logger.debug("Setting system property 'proactive.http.port' to: " + PROACTIVE_HTTP_PORT);
-		System.getProperties().setProperty("proactive.http.port", PROACTIVE_HTTP_PORT);
+		CentralPAPropertyRepository.PA_XMLHTTP_PORT.setValue(Integer.parseInt(PROACTIVE_HTTP_PORT));
+		
 		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
-		System.getProperties().setProperty("proactive.rmi.port", PROACTIVE_RMI_PORT);
+		CentralPAPropertyRepository.PA_RMI_PORT.setValue(Integer.parseInt(PROACTIVE_RMI_PORT));
+		
+		logger.debug("Setting system property 'proactive.runtime.ping' to: false");
+		CentralPAPropertyRepository.PA_RUNTIME_PING.setValue(false);
+		
+		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
+				.setValue("proactive.java.policy");
+
+		CentralPAPropertyRepository.GCM_PROVIDER
+				.setValue(org.objectweb.proactive.core.component.Fractive.class.getName());
 
 		/*
 		 * Set up Components
 		 */
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-				.setValue(propertiesFile);
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
-
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 
@@ -146,7 +156,7 @@ public class Main {
 		}
 	}
 
-	public void stop() throws Exception {
+	public synchronized void stop() throws Exception {
 		try {
 			// Stop and terminate GCM Components
 			logger.info("Terminate application");
@@ -163,8 +173,6 @@ public class Main {
 							.terminateGCMComponent();
 				}
 				GCM.getGCMLifeCycleController(root).terminateGCMComponent();
-
-				// TODO stuehmer: use root.join(2000) to wait for shutdown
 			}
 
 		} catch (IllegalLifeCycleException e) {
@@ -173,6 +181,7 @@ public class Main {
 			logger.error(e.getMessage());
 		} finally {
 			running = false;
+			Main.class.notifyAll();
 		}
 	}
 }
