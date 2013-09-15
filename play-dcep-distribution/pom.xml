@@ -19,7 +19,7 @@
 	<properties>
 		<!-- Properties used in Assembly and Linux scripts -->
 		<service.name>dcep</service.name>
-		<java.arguments><![CDATA[-Djava.security.manager -Djava.security.policy=proactive.java.policy -server]]></java.arguments>
+		<java.arguments><![CDATA[-Djava.security.manager -Djava.security.policy=conf/proactive.java.policy -server]]></java.arguments>
 		<java.main.class>eu.play_project.dcep.distribution.Main</java.main.class>
 	</properties>
 
