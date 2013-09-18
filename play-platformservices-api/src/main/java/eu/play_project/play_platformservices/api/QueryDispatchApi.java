@@ -7,10 +7,10 @@ import javax.jws.WebService;
 import eu.play_project.play_platformservices.jaxb.Query;
 
 /**
- * Accepts an EP-SPARQL query to decompose.
+ * Accepts a BDPL query to decompose.
  * 
- * @author sobermeier
- * @author stuehmer
+ * @author Stefan Obermeier
+ * @author Roland Stühmer
  */
 @WebService
 public interface QueryDispatchApi {
