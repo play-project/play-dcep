@@ -109,27 +109,29 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			throw new DcepManagementException(error);
 		}
 		
-		this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
-		
-		logger.debug("Register query: " + bdplQuery.getEleQuery());
-		
-		etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
-		// Start tumbling window. (If a tumbling window was defined.)
-		etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
-		
-		//Register db queries.
-		for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
-			etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
-		}
-		
-		// Configure ETALIS to inform output listener if complex event of new type appeared.
-		etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
-		
-		//Register ele query.
 		try {
+			this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
+		
+			logger.debug("Register query: " + bdplQuery.getEleQuery());
+			
+			etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
+			// Start tumbling window. (If a tumbling window was defined.)
+			etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
+			
+			//Register db queries.
+			for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
+				etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
+			}
+			
+			// Configure ETALIS to inform output listener if complex event of new type appeared.
+			etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
+		
+			// Make subscriptions.
 			this.ecConnectionManager.registerEventPattern(bdplQuery);
 		} catch (EcConnectionmanagerException e) {
 			throw new DcepManagementException(e.getMessage());
+		} finally {
+			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
 		}
 	}
 
