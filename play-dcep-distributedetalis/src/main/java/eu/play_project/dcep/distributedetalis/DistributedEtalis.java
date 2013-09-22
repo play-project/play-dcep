@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import jpl.PrologException;
+
 import org.objectweb.proactive.Body;
 import org.objectweb.proactive.Service;
 import org.objectweb.proactive.core.component.body.ComponentEndActive;
@@ -128,6 +130,8 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		
 			// Make subscriptions.
 			this.ecConnectionManager.registerEventPattern(bdplQuery);
+		} catch (PrologException e) {
+			throw new DcepManagementException(e.getMessage());
 		} catch (EcConnectionmanagerException e) {
 			throw new DcepManagementException(e.getMessage());
 		} finally {
@@ -170,7 +174,11 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		if (this.registeredQueries.containsKey(queryId)) {
 			logger.info("Removing event pattern at 'DistributedEtalis' Rule ID = "
 					+ queryId);
-			etalis.removeDynamicRule(queryId);
+			try {
+				etalis.removeDynamicRule(queryId);
+			} catch (PrologException e) {
+				logger.warn(String.format("Problem removing event pattern '%s': %s: %s", queryId, e.getClass().getSimpleName(), e.getMessage()));
+			}
 			this.ecConnectionManager.unregisterEventPattern(registeredQueries
 					.get(queryId));
 			this.registeredQueries.remove(queryId);
