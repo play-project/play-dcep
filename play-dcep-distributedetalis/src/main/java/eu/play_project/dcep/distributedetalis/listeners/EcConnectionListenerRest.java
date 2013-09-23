@@ -1,36 +1,43 @@
-package eu.play_project.dcep.distributedetalis;
+package eu.play_project.dcep.distributedetalis.listeners;
 
-import java.io.Serializable;
+import javax.inject.Singleton;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.util.ModelUtils;
+import org.ow2.play.governance.platform.user.api.rest.PublishService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.abstraction.Notify;
-import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.utils.WsnbException;
-import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
-
-import eu.play_project.dcep.distributedetalis.utils.DsbHelpers;
+import eu.play_project.dcep.distributedetalis.DistributedEtalis;
+import eu.play_project.dcep.distributedetalis.EcConnectionManagerVirtuoso;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.NoRdfEventException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
-class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializable {
+@Singleton
+public class EcConnectionListenerRest extends Application implements PublishService {
 
-	private static final long serialVersionUID = 100L;
 	private DistributedEtalis dEtalis;
 	private final AbstractReceiverRest rdfReceiver;
 	private final Logger logger;
+
+	public EcConnectionListenerRest() { // For JAXB
+		this.rdfReceiver = null;
+		this.logger = null;
+	}
 	
-	public EcConnectionListenerVirtuoso(AbstractReceiverRest rdfReceiver) {
+	public EcConnectionListenerRest(AbstractReceiverRest rdfReceiver) {
 		this.rdfReceiver = rdfReceiver;
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
 	
 	@Override
-	public void notify(Notify notify) throws WsnbException {
+	public Response notify(String stream, String notify) {
 		if (this.dEtalis == null) {
 			String msg = "Detalis was not set in " + this.getClass().getSimpleName();
 			throw new IllegalStateException(msg);
@@ -40,11 +47,12 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 			throw new IllegalStateException(msg);
 		}
 		
+		String topic = Stream.toTopicUri(stream);
+		
 	    try {
-	    	Model rdf = this.rdfReceiver.parseRdf(notify);
+	    	Model rdf = this.rdfReceiver.parseRdfRest(notify);
 	    	ModelUtils.deanonymize(rdf);
 	    	CompoundEvent event = EventCloudHelpers.toCompoundEvent(rdf);
-	    	String topic = DsbHelpers.topicToUri(notify.getNotificationMessage().get(0).getTopic());
 	    	logger.debug("Received event {} on topic {} from the DSB.", event.getGraph(), topic);
 	    	
 		    // Forward the event to Detalis:
@@ -56,10 +64,11 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
 		}
+	    
+	    return Response.status(Status.ACCEPTED).build();
 	}
 
 	public void setDetalis(DistributedEtalis dEtalis) {
 		this.dEtalis = dEtalis;
 	}
-
 }
