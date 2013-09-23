@@ -164,7 +164,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			dcepManagmentApi.registerEventPattern(epQuery);
 		} catch (Exception e) {
 			logger.error("Error while registering query: " + queryId, e);
-			throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage()));
+			throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s: %s", queryId, e.getClass().getSimpleName(), e.getMessage()));
 		}
 		return queryId;
 	}

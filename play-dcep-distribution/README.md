@@ -25,7 +25,7 @@ events and there is no need to model mappings to binary formats.
 
 Dependencies
 ------------
-Tested on `CentOS release 6.3 (Final)`:
+Tested on `CentOS release 6.3 (Final) 64bit`:
 
 ### Runtime Requirements:
 #### Java (>=1.6)
@@ -33,12 +33,19 @@ Tested on `CentOS release 6.3 (Final)`:
 ```
 yum install readline-devel libjpeg
 cd /tmp
-wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-static-5.10.2-3.fc15.x86_64.rpm
-wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-jpl-5.10.2-3.fc15.x86_64.rpm
-wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-5.10.2-3.fc15.x86_64.rpm
+wget http://kojipkgs.fedoraproject.org/packages/pl/5.10.2/3.fc15/x86_64/pl-static-5.10.2-3.fc15.x86_64.rpm
+wget http://kojipkgs.fedoraproject.org/packages/pl/5.10.2/3.fc15/x86_64/pl-jpl-5.10.2-3.fc15.x86_64.rpm
+wget http://kojipkgs.fedoraproject.org/packages/pl/5.10.2/3.fc15/x86_64/pl-5.10.2-3.fc15.x86_64.rpm
 rpm -i pl-*.rpm
 ```
 Add `--nodeps` to the rpm command if there is a problem with an old version of libjpeg which is actually on your system already.
+
+
+Add JPL library (`libjpl.so`) to `$LD_LIBRARY_PATH` (do this permanently by adding to `/etc/profile.d/swipl.sh`):
+```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/swipl-jpl:/usr/lib/
+```
+
 
 #### Virtuoso (>=6.1.7, optional)
 I created an SRPM based on 6.1.6 myself using instructions from http://wiki.centos.org/HowTos/RebuildSRPM 
@@ -91,4 +98,4 @@ Unpack/Configure
 Run
 ---
 1. Run `bin/dcep start` on Unix
-2. The program can be terminated early using `bin/dcep stop`
+2. The program can be terminated using `bin/dcep stop`
