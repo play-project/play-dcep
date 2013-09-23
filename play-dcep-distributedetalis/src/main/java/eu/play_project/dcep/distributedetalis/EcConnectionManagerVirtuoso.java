@@ -326,7 +326,10 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	@Override
 	public void unregisterEventPattern(BdplQuery bdplQuery) {
 		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
-			unsubscribe(cloudId, this.subscriptions.get(cloudId).sub);
+			SubscriptionUsage sub = this.subscriptions.get(cloudId);
+			if (sub != null) {
+				unsubscribe(cloudId, sub.sub);
+			}
 		}
 	}
 
