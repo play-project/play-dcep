@@ -112,7 +112,7 @@ public class EventCloudHelpers {
 	 * {@code rdf:type} statements in the event and finally defaults to the basic event type of
 	 * {@linkplain Event.RDFS_CLASS}
 	 * 
-	 * @see EventTypeMetadata#getEventType(Model)
+	 * @see EventTypeMetadata#getType(Model)
 	 */
 	public static String getEventType(CompoundEvent event) {
 		com.hp.hpl.jena.graph.Node primaryType = null;
