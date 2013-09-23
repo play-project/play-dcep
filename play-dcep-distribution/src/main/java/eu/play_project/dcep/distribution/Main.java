@@ -21,7 +21,7 @@ import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 public class Main {
 
-	private static Logger logger;
+	private static Logger logger = LoggerFactory.getLogger(Main.class);
 	private static boolean running;
 	private Component root;
 
@@ -74,7 +74,6 @@ public class Main {
 	}
 
 	public void start() throws Exception {
-		logger = LoggerFactory.getLogger(Main.class);
 		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
 		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
 		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
