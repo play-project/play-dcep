@@ -13,6 +13,8 @@
     <logger name="fr.inria" level="WARN" />
     <logger name="components.adl" level="WARN" />
     
+    <logger name="eu.play_project.play_platformservices_querydispatcher.bdpl.visitor" level="INFO" />
+    
     <logger name="eu.play_project" level="DEBUG" />
     <logger name="org.ow2.play" level="DEBUG" />
     <logger name="main" level="DEBUG" />
