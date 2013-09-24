@@ -89,6 +89,7 @@ public class QueryDetails implements Serializable {
         sb.append("inputStreams=").append(inputStreams).append(", ");
         sb.append("outputStream=").append(outputStream).append(", ");
         sb.append("historicStreams=").append(historicStreams).append(", ");
+        sb.append("... ");
         sb.append("}");
 		return sb.toString();
 	}
@@ -124,4 +125,6 @@ public class QueryDetails implements Serializable {
 	public void setComplexType(String complexType) {
 		this.complexType = complexType;
 	}
+	
+	// TODO stuehmer: add a builder for QueryDetails to validate a few mandatory settings upon build()
 }
