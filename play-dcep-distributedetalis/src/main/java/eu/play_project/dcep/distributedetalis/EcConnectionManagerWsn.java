@@ -48,7 +48,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 	protected boolean init = false;
 	private AbstractReceiverRest rdfReceiver;
 	private AbstractSenderRest rdfSender;
-	private DistributedEtalis dEtalis;
+	private final DistributedEtalis dEtalis;
 	private EcConnectionListenerWsn dsbListener;
 	private EcConnectionListenerRest dsbRestListener;
 	static final Properties constants = DcepConstants.getProperties();
@@ -56,8 +56,6 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
     public static final String REST_URI = constants.getProperty("dcep.notify.rest.local");
 	private Service notifyReceiverSoap;
 	private Server notifyReceiverRest;
-
-	public EcConnectionManagerWsn() {}
 	
 	public EcConnectionManagerWsn(DistributedEtalis dEtalis) {
 		this.dEtalis = dEtalis;

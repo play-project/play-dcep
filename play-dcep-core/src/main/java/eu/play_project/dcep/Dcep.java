@@ -34,6 +34,7 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfig4store;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigVirtuoso;
@@ -181,12 +182,14 @@ Serializable {
 			try {
 				Registry registry = LocateRegistry.getRegistry();
 			} catch (RemoteException e) {
-				e.printStackTrace();
+				logger.error("Error initialising DCEP: ", e);
+				//throw new DcepException("Error initialising DCEP: ", e);
 			}
 			try {
 				Fractive.registerByName(this.dEtalis, "dEtalis");
 			} catch (ProActiveException e) {
-				e.printStackTrace();
+				logger.error("Error initialising DCEP: ", e);
+				//throw new DcepException("Error initialising DCEP: ", e);
 			}
 			
 			dcepManager = new DcepManager();
@@ -208,6 +211,9 @@ Serializable {
 		}
 		else if(middleware.equals("virtuoso")) {
 			configApi.setConfig(new DetalisConfigVirtuoso());
+		}
+		else if(middleware.equals("4store")) {
+			configApi.setConfig(new DetalisConfig4store());
 		}
 		else {
 			logger.error("Specified middleware is not implemented: {}.", middleware);

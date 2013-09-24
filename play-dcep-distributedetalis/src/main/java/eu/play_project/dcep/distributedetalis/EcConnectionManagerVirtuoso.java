@@ -23,8 +23,6 @@ import fr.inria.eventcloud.api.Quadruple;
 public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 	private Connection virtuosoConnection;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
-
-	public EcConnectionManagerVirtuoso() {}
 	
 	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws DistributedEtalisException {
 		this(
