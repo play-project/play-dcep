@@ -46,7 +46,7 @@ public class PlatformservicesRestTest {
 	 * Start Platformservices server
 	 */
 	@Before
-	public void setup() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
+	public void setup() throws Exception {
 		platformservice = new PlayPlatformservicesRest(new MockPlatformservice());
 		
 		client = ClientBuilder.newClient();

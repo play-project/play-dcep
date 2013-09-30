@@ -20,9 +20,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_commons.constants.Pattern;
@@ -45,24 +50,35 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest.local");
-    
+
+	private final Logger logger = LoggerFactory.getLogger(PlayPlatformservicesRest.class);
+
     /* Injected by Jersey */
     @Context
 	private UriInfo uriInfo;
     
-    private final HttpServer server;
 	private final QueryDispatchApi playPlatformservices;
 
-	public PlayPlatformservicesRest(QueryDispatchApi playPlatformservices) {
+	private final Server server;
+
+	public PlayPlatformservicesRest(QueryDispatchApi playPlatformservices) throws Exception {
  
-		final ResourceConfig rc = new ResourceConfig();
-		rc.register(this);
+		final ResourceConfig rc = new ResourceConfig()
+				.register(this)
+				.register(MoxyJsonFeature.class);
 
-       this.playPlatformservices = playPlatformservices;
+		this.playPlatformservices = playPlatformservices;
 
-        // create and start a new instance of grizzly http server
-        // exposing the Jersey application at BASE_URI
-        this.server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+		// create and start a new instance of the http server
+		// exposing the Jersey application at BASE_URI
+		server = new Server(URI.create(BASE_URI).getPort());
+		ServletContextHandler context = new ServletContextHandler();
+		context.setContextPath("/");
+		ServletHolder h = new ServletHolder(new ServletContainer(rc));
+		context.addServlet(h, "/");
+		server.setHandler(context);
+		server.start();
+
 	}
 
 	@POST
@@ -158,6 +174,13 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	}
 
     public void destroy() {
-    	this.server.stop();
+    	if (this.server != null) {
+    		try {
+				this.server.stop();
+			} catch (Exception e) {
+				logger.error("Exception while stoppping REST server. Nothing we can do now. " + e.getMessage());
+			}
+    		this.server.destroy();
+    	}
     }
 }

@@ -14,6 +14,7 @@ import org.apache.jena.riot.RDFFormat;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.petalslink.dsb.commons.service.api.Service;
@@ -109,8 +110,9 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
         	this.dsbRestListener = new EcConnectionListenerRest(this.rdfReceiver);
         	this.dsbRestListener.setDetalis(this.dEtalis);
 
-    		final ResourceConfig rc = new ResourceConfig();
-    		rc.register(dsbRestListener);
+    		final ResourceConfig rc = new ResourceConfig()
+    			.register(dsbRestListener)
+    			.register(MoxyJsonFeature.class);
 
     		notifyReceiverRest = new Server(URI.create(REST_URI).getPort());
             ServletContextHandler context = new ServletContextHandler();

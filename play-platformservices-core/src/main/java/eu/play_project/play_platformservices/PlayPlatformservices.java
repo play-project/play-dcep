@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jws.WebService;
-import javax.ws.rs.ProcessingException;
 import javax.xml.ws.Endpoint;
 
 import org.objectweb.fractal.api.NoSuchInterfaceException;
@@ -128,7 +127,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 				restServer = new PlayPlatformservicesRest(this);
 	        	logger.info(String.format("QueryDispatch REST service started at %s with WADL remotely available at "
 	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI, Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest")));
-			} catch (ProcessingException e) {
+			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch REST Service", e);
 			}
 			
