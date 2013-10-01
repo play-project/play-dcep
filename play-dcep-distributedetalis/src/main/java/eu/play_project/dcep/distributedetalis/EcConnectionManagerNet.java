@@ -20,6 +20,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.EventCloudId;
 import fr.inria.eventcloud.api.PublishApi;
 import fr.inria.eventcloud.api.PutGetApi;
+import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
 import fr.inria.eventcloud.api.SubscriptionId;
@@ -92,6 +93,21 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		ResultSetWrapper rw = response.getResult();
 		return new ResultRegistry(rw);
 	}
+	
+	/**
+	 * Persist data in historic storage.
+	 * 
+	 * @param event event containing quadruples
+	 * @param cloudId the cloud ID to allow partitioning of storage
+	 */
+	@Override
+	public void putDataInCloud(CompoundEvent event, String cloudId) throws EcConnectionmanagerException {
+		PutGetApi putGetApi = getHistoricCloud(cloudId);
+		for (Quadruple quad : event) {
+			putGetApi.add(quad);
+		}
+	}
+
 
 	private PutGetApi getHistoricCloud(String cloudId)
 			throws EcConnectionmanagerException {

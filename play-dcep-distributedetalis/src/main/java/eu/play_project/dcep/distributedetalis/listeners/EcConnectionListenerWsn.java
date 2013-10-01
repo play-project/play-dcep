@@ -12,7 +12,7 @@ import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.utils.WsnbExcept
 import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
 
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
-import eu.play_project.dcep.distributedetalis.EcConnectionManagerVirtuoso;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.utils.DsbHelpers;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
@@ -53,10 +53,12 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Serializa
 		    this.dEtalis.publish(event);
 		    
 		    // Store the event in Virtuoso:
-		    ((EcConnectionManagerVirtuoso)this.dEtalis.getEcConnectionManager()).putDataInCloud(event, topic);
+		    this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
 		    
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
+		} catch (EcConnectionmanagerException e) {
+			logger.error("Could not store event for historic storage: " + e.getMessage());
 		}
 	}
 

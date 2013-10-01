@@ -28,7 +28,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class EcConnectionManager4store extends EcConnectionManagerWsn {
-	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
+	private final Logger logger = LoggerFactory.getLogger(EcConnectionManager4store.class);
 	private Client fourStoreClient;
 	private final String FOURSTORE_REST_URI;
 	private WebTarget dataTarget;
@@ -162,6 +162,9 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 
 		Connection con = null;
 		ResultSet res = null;
+		
+		// FIXME stuehmer: finish this
+		
 //		try {
 //			con = virtuosoConnection;
 //			Statement sta = con.createStatement();

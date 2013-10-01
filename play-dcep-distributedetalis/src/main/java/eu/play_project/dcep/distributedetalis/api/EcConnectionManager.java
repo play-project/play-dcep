@@ -18,4 +18,6 @@ public interface EcConnectionManager extends SimplePublishApi{
 
 	public void destroy();
 
+	public void putDataInCloud(CompoundEvent event, String topic) throws EcConnectionmanagerException;;
+
 }
