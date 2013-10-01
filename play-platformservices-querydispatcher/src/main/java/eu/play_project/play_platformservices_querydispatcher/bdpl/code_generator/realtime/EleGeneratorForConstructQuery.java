@@ -39,7 +39,7 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
 public class EleGeneratorForConstructQuery implements EleGenerator {
 	private Query inputQuery;
 	// Contains the generated code.
-	private String elePattern; 
+	private String elePattern;
 	// Currently selected element in the tree.
 	private Element currentElement = null;
 	// Manages variables which are globally unique.
@@ -58,7 +58,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private VariableTypeManager nameManager;
 	
 	private List<String> rdfDbQueries; // Rdf db queries represents the semantic web part of a BDPL query. ETALIS calls this queries to check conditions for the current events.
-	private int eventCounter; // Count number of events in a query. 
+	private int eventCounter; // Count number of events in a query.
 	
 	private String patternId;
 	
@@ -158,7 +158,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 														+ ","
 														+ triple.getObject().visitWith(
 																generateConstructResultVisitor) + ","
-														+ uniqueNameManager.getCeid() + 
+														+ uniqueNameManager.getCeid() +
 													") ");
 												
 												if (constructTemplIter.hasNext()) {
@@ -238,8 +238,8 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		TriplestoreQuery();
 		FilterExpression();
 		ReferenceCounter();
-		elePattern += ", ";
-		PerformanceMeasurement();
+//		elePattern += ", ";
+//		PerformanceMeasurement();
 		
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";
@@ -344,7 +344,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	/**
-	 * Generate rdf db method declerations. 
+	 * Generate rdf db method declerations.
 	 * E.g. dbQuery_abc_e1(Ve1).
 	 * @param q Parsed Jena query.
 	 * @return
