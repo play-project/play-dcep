@@ -3,8 +3,12 @@ package eu.play_project.dcep.distributedetalis;
 import java.util.Hashtable;
 
 import jpl.Atom;
+import jpl.PrologException;
 import jpl.Query;
 import jpl.Term;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jtalis.core.event.EtalisEventListener;
 import com.jtalis.core.plengine.EngineOutputListener;
@@ -24,11 +28,12 @@ import eu.play_project.dcep.distributedetalis.api.PrologEngineWrapperPlayExtensi
  * @author sobermeier
  * 
  */
-public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWrapperPlayExtensions {
+public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, PrologEngineWrapperPlayExtensions {
 
-	private JPLEngineWrapper engine;
+	private final JPLEngineWrapper engine;
 	private static PlayJplEngineWrapper localEngine = new PlayJplEngineWrapper();
-	
+	private final Logger logger = LoggerFactory.getLogger(PlayJplEngineWrapper.class);
+
 	private PlayJplEngineWrapper(){
 		engine = new JPLEngineWrapper();
 	}
@@ -37,57 +42,67 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 		return localEngine;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized Hashtable<String, Object>[] execute(String command) {
-		Hashtable<String, Object>[] result;
-		// Get data from triplestore
-		Query q = new Query(command);
-
-			result = q.allSolutions();
-		//q.close();
-		return result;
+		try {
+			// Get data from triplestore
+			Query q = new Query(command);
+			return q.allSolutions();
+		} catch (PrologException e) {
+			logger.error("Error shutting down Etalis." + e.getMessage());
+			return new Hashtable[0];
+		}
 	}
 
 	@Override
 	public synchronized boolean execute(com.jtalis.core.plengine.logic.Term term) {
-		try{
+		try {
 			return engine.execute(term);
-		}catch(Exception e){
-			e.printStackTrace();
+		} catch(PrologException e){
+			logger.error("Errow executing Prolog goal." + e.getMessage());
+			return false;
 		}
-		return false;
 	}
 
 	@Override
-	public  boolean executeGoal(String goal) {
-		Query q = new Query(goal);
-		return q.hasSolution();
+	public boolean executeGoal(String goal) {
+		try {
+			Query q = new Query(goal);
+			return q.hasSolution();
+		} catch (PrologException e) {
+			logger.error("Error executing Prolog goal." + e.getMessage());
+			return false;
+		}
 	}
 
 	@Override
 	public synchronized Object registerPushNotification(EtalisEventListener listener) {
-			return engine.registerPushNotification(listener);	
+		return engine.registerPushNotification(listener);
 	}
 
 	@Override
 	public synchronized void unregisterPushNotification(EtalisEventListener listener) {
-			engine.unregisterPushNotification(listener);
+		engine.unregisterPushNotification(listener);
 	}
 
 
 	@Override
 	public synchronized void shutdown() {
-		engine.shutdown();
-		
-		//It is not possible to shutdown completly. We will clean up the database.
-		//this.executeGoal("retractall(_)");
-		this.executeGoal("rdf_retractall(_S,_P,_O,_DB)");
-		this.executeGoal("reset_etalis");
+		try {
+			engine.shutdown();
+			//It is not possible to shutdown completly. We will clean up the database.
+			//this.executeGoal("retractall(_)");
+			this.executeGoal("rdf_retractall(_S,_P,_O,_DB)");
+			this.executeGoal("reset_etalis");
+		} catch (PrologException e) {
+			logger.error("Error shutting down Etalis." + e.getMessage());
+		}
 	}
 
 	@Override
 	public synchronized void addOutputListener(EngineOutputListener listener) {
-			engine.addOutputListener(listener);
+		engine.addOutputListener(listener);
 	}
 
 	@Override
@@ -95,40 +110,54 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper, PrologEngineWr
 		return engine.getName();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Hashtable<String, Object>[] getTriplestoreData(String triplestoreID) {
 		
-		//Get data from triplestore
-		Hashtable<String, Object>[] result = this.execute("rdfTest(S,P,O, " + triplestoreID + ")");
-		
-		// Free space
-		this.executeGoal("retractall(rdfTest(_S,_P,_O, " + triplestoreID + "))");
-		
+		Hashtable<String, Object>[] result;
+		try {
+			//Get data from triplestore
+			result = this.execute("rdfTest(S,P,O, " + triplestoreID + ")");
+		} catch (PrologException e) {
+			logger.error("Error getting data from Prolog." + e.getMessage());
+			result = new Hashtable[0];
+		} finally {
+			try {
+				// Free space
+				this.executeGoal("retractall(rdfTest(_S,_P,_O, " + triplestoreID + "))");
+				
+			} catch (PrologException e) {}
+		}
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Hashtable<String, Object>[] getVariableValues(String queryId){
 		StringBuffer comand = new StringBuffer();
-
+		
 		comand.append("variableValues(");
 		comand.append(queryId);
 		comand.append(", _, Value)");
 		
-		// Get Variables and values
-		Hashtable<String, Object>[] result = this.execute((comand.toString()));
-		
-		return result;
+		try {
+			// Get Variables and values
+			return this.execute((comand.toString()));
+		} catch (PrologException e) {
+			logger.error("Error getting values from Prolog." + e.getMessage());
+			return new Hashtable[0];
+		}
 	}
-	
 	
 	@Override
 	public synchronized boolean consult(String file) {
-	    Query consult_query =
-	            new Query(
-	                "consult",
-	                new Term[] {new Atom(file)}
-	            );
-	    	return consult_query.hasSolution();
+		try {
+			Query consult_query = new Query("consult",
+					new Term[] { new Atom(file) });
+			return consult_query.hasSolution();
+		} catch (PrologException e) {
+			logger.error("Error consulting Prolog file." + e.getMessage());
+			return false;
+		}
 	}
 
 	@Override
