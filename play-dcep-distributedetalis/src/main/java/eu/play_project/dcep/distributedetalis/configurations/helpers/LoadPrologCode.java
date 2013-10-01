@@ -18,14 +18,11 @@ import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
  */
 public class LoadPrologCode implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 100L;
 
 	public LoadPrologCode(){}
 	
-	public void loadCode(String fliename, PlayJplEngineWrapper engine) throws IOException{
+	public void loadCode(String fliename, PlayJplEngineWrapper engine) throws IOException {
 		List<String> methods= getPrologMethods(fliename);
 		
 		//Add methods to engine.

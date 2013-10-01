@@ -14,10 +14,10 @@ import eu.play_project.dcep.api.measurement.PatternMeasuringResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 
 public class MeasurementThread implements Callable<MeasurementResult> {
-	private Logger logger;
+	private final Logger logger;
 	private int measuringPeriod = 0;
-	private PlayJplEngineWrapper ctx; // CEP-Engine
-	private MeasurementUnit mainProgramm;
+	private final PlayJplEngineWrapper ctx; // CEP-Engine
+	private final MeasurementUnit mainProgramm;
 
 	public MeasurementThread(int measuringPeriod, PlayJplEngineWrapper ctx, MeasurementUnit mainProgramm) {
 		logger = LoggerFactory.getLogger(MeasurementThread.class);
@@ -44,7 +44,7 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 				// Note that event has been sent.
 				partMPeriod += measuringPeriod/measureEvents;
 
-				// Wait 
+				// Wait
 				Thread.sleep((measuringPeriod/measureEvents));
 			}
 
@@ -79,11 +79,11 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		comand.append("eventCounter(PatternID,Value)");
 
 		// Get patternIDs and values
-		Hashtable<String, Object>[] resultFromProlog = ctx.execute((comand.toString()));
+		Hashtable<String, Object>[] resultFromProlog = ctx.execute(comand.toString());
 
 		// Create result object
 		if (resultFromProlog != null) {
-			results = new LinkedList();
+			results = new LinkedList<PatternMeasuringResult>();
 			for (Hashtable<String, Object> hashtable : resultFromProlog) {
 				logger.info("Pattern " + hashtable.get("PatternID").toString()  + " consumed " + ((jpl.Integer) hashtable.get("Value")).intValue() + " events.");
 				// Put data in ResultSet.
