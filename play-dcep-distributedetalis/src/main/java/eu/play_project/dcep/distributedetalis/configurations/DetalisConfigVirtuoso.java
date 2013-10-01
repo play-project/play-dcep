@@ -3,6 +3,8 @@ package eu.play_project.dcep.distributedetalis.configurations;
 import java.io.IOException;
 import java.io.Serializable;
 
+import jpl.PrologException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +31,9 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 	@Override
 	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
-		logger = LoggerFactory.getLogger(DetalisConfigVirtuoso.class);
+		logger = LoggerFactory.getLogger(this.getClass());
+		logger.info("Configuring DistributedEtalis using " + this.getClass().getSimpleName());
+
 		cl = new LoadPrologCode();
 		
 		try {
@@ -74,15 +78,11 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 				cl.loadCode("Helpers.pl", engine);
 				cl.loadCode("Math.pl", engine);
 			} catch (IOException e) {
-				logger.error("It is not possible to load prolog code. " + e.getMessage());
-				e.printStackTrace();
-			}catch(Exception e){
-				logger.error("It is not possible to load prolog code. " + e.getMessage());
-				e.printStackTrace();
+				throw new DistributedEtalisException("It is not possible to load prolog code. IOException. " + e.getMessage());
+			}catch(PrologException e){
+				throw new DistributedEtalisException("It is not possible to load prolog code. PrologException. " + e.getMessage());
 			}
 
-	
-			// Set ETALIS properties.
 			// Set ETALIS properties.
 			etalis.setEtalisFlags("save_ruleId", "on");
 			etalis.addEventTrigger("complex/_");

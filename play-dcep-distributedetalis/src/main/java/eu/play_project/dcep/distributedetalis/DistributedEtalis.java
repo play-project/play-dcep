@@ -52,7 +52,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private JtalisContextImpl etalis; // ETALIS Object
 	private JtalisOutputProvider eventOutputProvider;
 	private JtalisInputProvider eventInputProvider;
-	private Logger logger;
+	private final Logger logger = LoggerFactory.getLogger(DistributedEtalis.class);
 	private Map<String, BdplQuery> registeredQueries = Collections.synchronizedMap(new HashMap<String, BdplQuery>());
 	private EcConnectionManager ecConnectionManager;
 	private MeasurementUnit measurementUnit;
@@ -75,8 +75,6 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	@Override
 	public void initComponentActivity(Body body) {
-
-		logger = LoggerFactory.getLogger(DistributedEtalis.class);
 		logger.info("Initialising {} component.", this.getClass().getSimpleName());
 	}
 
@@ -131,11 +129,11 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			// Make subscriptions.
 			this.ecConnectionManager.registerEventPattern(bdplQuery);
 		} catch (PrologException e) {
+			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		} catch (EcConnectionmanagerException e) {
-			throw new DcepManagementException(e.getMessage());
-		} finally {
 			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
+			throw new DcepManagementException(e.getMessage());
 		}
 	}
 

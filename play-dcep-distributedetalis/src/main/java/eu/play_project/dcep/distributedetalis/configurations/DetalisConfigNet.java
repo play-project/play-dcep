@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
+import jpl.PrologException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +38,9 @@ public class DetalisConfigNet implements Configuration, Serializable{
 	@Override
 	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
-		logger = LoggerFactory.getLogger(DetalisConfigNet.class);
+		logger = LoggerFactory.getLogger(this.getClass());
+		logger.info("Configuring DistributedEtalis using " + this.getClass().getSimpleName());
+
 		cl = new LoadPrologCode();
 		
 		// Init ETALIS
@@ -81,11 +85,9 @@ public class DetalisConfigNet implements Configuration, Serializable{
 			cl.loadCode("Helpers.pl", engine);
 			cl.loadCode("Math.pl", engine);
 		} catch (IOException e) {
-			logger.error("It is not possible to load prolog code. " + e.getMessage());
-			e.printStackTrace();
-		}catch(Exception e){
-			logger.error("It is not possible to load prolog code. " + e.getMessage());
-			e.printStackTrace();
+			throw new DistributedEtalisException("It is not possible to load prolog code. IOException. " + e.getMessage());
+		}catch(PrologException e){
+			throw new DistributedEtalisException("It is not possible to load prolog code. PrologException. " + e.getMessage());
 		}
 		
 		
