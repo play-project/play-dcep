@@ -240,6 +240,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		ReferenceCounter();
 //		elePattern += ", ";
 //		PerformanceMeasurement();
+		// FIXME sobermeier: re-add these lines and test for PrologException on simple events
 		
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";
