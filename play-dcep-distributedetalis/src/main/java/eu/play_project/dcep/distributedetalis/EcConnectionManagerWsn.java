@@ -96,11 +96,9 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
             Exposer exposer = new CXFExposer();
             notifyReceiverSoap = exposer.expose(service);
             notifyReceiverSoap.start();
-        } catch (Exception e) {
-            throw new DistributedEtalisException("Error while starting DSB listener (SOAP service).", e);
-        }
-		finally {
-        	destroy();
+		} catch (Exception e) {
+			throw new DistributedEtalisException(
+					"Error while starting DSB listener (SOAP service).", e);
 		}
 		
         /*
@@ -111,8 +109,8 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
         	this.dsbRestListener.setDetalis(this.dEtalis);
 
     		final ResourceConfig rc = new ResourceConfig()
-    			.register(dsbRestListener)
-    			.register(MoxyJsonFeature.class);
+    				.register(MoxyJsonFeature.class)
+    				.register(dsbRestListener);
 
     		notifyReceiverRest = new Server(URI.create(REST_URI).getPort());
             ServletContextHandler context = new ServletContextHandler();
@@ -121,11 +119,9 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
             context.addServlet(h, "/");
             notifyReceiverRest.setHandler(context);
             notifyReceiverRest.start();
-   	    } catch (Exception e) {
-	        throw new DistributedEtalisException("Error while starting DSB listener (REST service).", e);
-	    }
-		finally {
-        	destroy();
+		} catch (Exception e) {
+			throw new DistributedEtalisException(
+					"Error while starting DSB listener (REST service).", e);
 		}
 		
 		init = true;
@@ -163,6 +159,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 	 * @param event event containing quadruples
 	 * @param cloudId the cloud ID to allow partitioning of storage
 	 */
+	@Override
 	public abstract void putDataInCloud(CompoundEvent event, String cloudId);
 
 	/**
