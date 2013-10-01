@@ -105,6 +105,7 @@ public class BdplEleTest {
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);
+		details.setRdfDbQueries(visitor1.getRdfDbQueries());
 		
 		BdplQuery bdplQuery = BdplQuery.builder()
 				.ele(etalisPattern)
