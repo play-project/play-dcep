@@ -21,6 +21,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.event_processing.events.types.UcTelcoCall;
+import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.junit.AfterClass;
@@ -51,8 +52,9 @@ public class EcConnectionManagerVirtuosoTest {
 	public static void setupBeforeClass() throws Exception {
 		TestListenerRest listener = new TestListenerRest(eventSink);
 
-		final ResourceConfig rc = new ResourceConfig();
-		rc.register(listener);
+		final ResourceConfig rc = new ResourceConfig()
+				.register(listener)
+				.register(MoxyJsonFeature.class);
 		
 		BusFactory.getDefaultBus(true);
 		

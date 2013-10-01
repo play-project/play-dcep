@@ -27,6 +27,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.event_processing.events.types.Event;
 import org.event_processing.events.types.UcTelcoCall;
+import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.junit.AfterClass;
@@ -66,9 +67,10 @@ public class EcConnectionManager4storeTest {
 		Application listener = new TestListenerRest(eventSink);
 		Application fourstore = new TestFourstore(rdfSink);
 
-		final ResourceConfig rc = new ResourceConfig();
-		rc.register(listener);
-		rc.register(fourstore);
+		final ResourceConfig rc = new ResourceConfig()
+				.register(listener)
+				.register(fourstore)
+				.register(MoxyJsonFeature.class);
 		
 		BusFactory.getDefaultBus(true);
 		
