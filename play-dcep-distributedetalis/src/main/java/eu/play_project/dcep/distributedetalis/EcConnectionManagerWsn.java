@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -122,6 +123,15 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 		} catch (Exception e) {
 			throw new DistributedEtalisException(
 					"Error while starting DSB listener (REST service).", e);
+		}
+		
+		final List<String> topics = this.rdfReceiver.getTopics();
+		if (topics.isEmpty()) {
+			logger.warn("No topics were found in DSB, possible misconfiguration of event adapters.");
+		} else {
+			for (String topic : topics) {
+				logger.info("Topic on the DSB: " + topic);
+			}
 		}
 		
 		init = true;
