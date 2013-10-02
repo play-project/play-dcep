@@ -47,6 +47,7 @@ import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.RetractEventException;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementThread;
@@ -155,7 +156,7 @@ public class PrologJtalisTest {
 	
 	@Ignore
 	@Test
-	public void instantiatePrologSemWebLib(){
+	public void instantiatePrologSemWebLib() throws DistributedEtalisException{
 
 		prologSemWebLib = new PrologSemWebLib();
 		prologSemWebLib.init(ctx);
@@ -252,7 +253,7 @@ public class PrologJtalisTest {
 	
 	
 	// @Test FIXME find problem for AssertinError.
-	public void generateCartesinProductOfTriples() throws IOException, RetractEventException, InterruptedException{
+	public void generateCartesinProductOfTriples() throws IOException, RetractEventException, InterruptedException, DistributedEtalisException{
 		LoadPrologCode lpc = new LoadPrologCode();
 		lpc.loadCode("ComplexEventData.pl", PlayJplEngineWrapper.getPlayJplEngineWrapper());
 		
@@ -449,7 +450,7 @@ public class PrologJtalisTest {
 	
 
 	@Test
-	public void getVariableValues(){
+	public void getVariableValues() throws DistributedEtalisException{
 		
 		if(ctx==null){
 			this.init();
@@ -494,7 +495,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTest1secondFromNow() throws InterruptedException{
+	public void AverageTest1secondFromNow() throws InterruptedException, DistributedEtalisException{
 		if(ctx==null){
 			this.init();
 		}
@@ -528,7 +529,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTestOneValueFormPast() throws InterruptedException{
+	public void AverageTestOneValueFormPast() throws InterruptedException, DistributedEtalisException{
 		if(ctx==null){
 			this.init();
 		}
@@ -563,7 +564,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTest3Values() throws InterruptedException{
+	public void AverageTest3Values() throws InterruptedException, DistributedEtalisException{
 		if(ctx==null){
 			this.init();
 		}
@@ -598,7 +599,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTestOutOfWindow() throws InterruptedException{
+	public void AverageTestOutOfWindow() throws InterruptedException, DistributedEtalisException{
 		if(ctx==null){
 			this.init();
 		}
@@ -632,7 +633,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTestSystemTime() throws InterruptedException{
+	public void AverageTestSystemTime() throws InterruptedException, DistributedEtalisException{
 		if(ctx==null){
 			this.init();
 		}
@@ -667,7 +668,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void useAgregateFunctionsWithEleTest() throws IOException, InterruptedException {
+	public void useAgregateFunctionsWithEleTest() throws IOException, InterruptedException, DistributedEtalisException {
 			long delay = 500;
 			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
 			
@@ -714,7 +715,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTestNoValues() throws InterruptedException{
+	public void AverageTestNoValues() throws InterruptedException, DistributedEtalisException{
 		if(ctx==null){
 			this.init();
 		}
@@ -738,7 +739,7 @@ public class PrologJtalisTest {
 
 	
 	@Test
-	public void deleteUnusedTripleStoresTest(){
+	public void deleteUnusedTripleStoresTest() throws DistributedEtalisException{
 		if(ctx==null){
 			this.init();
 		}
@@ -868,7 +869,7 @@ public class PrologJtalisTest {
 		}
 	}
 	
-	private void init(){
+	private void init() throws DistributedEtalisException{
 		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);
 

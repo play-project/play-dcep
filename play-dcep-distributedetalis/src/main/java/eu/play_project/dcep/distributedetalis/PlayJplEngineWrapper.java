@@ -15,6 +15,7 @@ import com.jtalis.core.plengine.EngineOutputListener;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.PrologEngineWrapperPlayExtensions;
 
 /**
@@ -44,7 +45,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized Hashtable<String, Object>[] execute(String command) {
+	public synchronized Hashtable<String, Object>[] execute(String command) throws DistributedEtalisException {
 		try {
 			// Get data from triplestore
 			Query q = new Query(command);
@@ -121,6 +122,9 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 		} catch (PrologException e) {
 			logger.error("Error getting data from Prolog. " + e.getMessage());
 			result = new Hashtable[0];
+		} catch (DistributedEtalisException e) {
+			logger.error("Error getting data from Prolog. " + e.getMessage());
+			result = new Hashtable[0];
 		} finally {
 			try {
 				// Free space
@@ -142,6 +146,9 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 		try {
 			// Get Variables and values
 			return this.execute((comand.toString()));
+		} catch (DistributedEtalisException e) {
+			logger.error("Error getting values from Prolog. " + e.getMessage());
+			return new Hashtable[0];
 		} catch (PrologException e) {
 			logger.error("Error getting values from Prolog. " + e.getMessage());
 			return new Hashtable[0];

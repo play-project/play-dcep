@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 
 /**
  * Load prolog code form files in class path and add it to engine.
@@ -22,7 +23,7 @@ public class LoadPrologCode implements Serializable {
 
 	public LoadPrologCode(){}
 	
-	public void loadCode(String fliename, PlayJplEngineWrapper engine) throws IOException {
+	public void loadCode(String fliename, PlayJplEngineWrapper engine) throws IOException, DistributedEtalisException {
 		List<String> methods= getPrologMethods(fliename);
 		
 		//Add methods to engine.

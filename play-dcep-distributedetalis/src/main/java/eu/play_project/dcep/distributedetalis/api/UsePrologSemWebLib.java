@@ -12,15 +12,13 @@ import fr.inria.eventcloud.api.CompoundEvent;
 public interface UsePrologSemWebLib {
 	
 	/**
-	 * Load Semantic Web library.
+	 * Load SWI libraries.
 	 */
-	public void init(JtalisContextImpl ctx);
+	public void init(JtalisContextImpl ctx) throws DistributedEtalisException;
 	
 	/**
 	 * Put data in RDF Triple Store.
 	 * @param event Event with date for the Triple Store.
-	 * @return 
-	 * @throws Exception 
 	 */
 	public Boolean addEvent(CompoundEvent event) throws Exception;
 
