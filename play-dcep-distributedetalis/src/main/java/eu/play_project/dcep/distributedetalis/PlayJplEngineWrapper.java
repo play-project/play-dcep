@@ -61,7 +61,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 		try {
 			return engine.execute(term);
 		} catch(PrologException e){
-			logger.error("Errow executing Prolog goal. " + e.getMessage());
+			logger.error("Error executing Prolog goal. " + e.getMessage());
 			return false;
 		}
 	}
