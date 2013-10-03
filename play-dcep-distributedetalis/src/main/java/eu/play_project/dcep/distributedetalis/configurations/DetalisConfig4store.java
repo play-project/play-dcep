@@ -19,6 +19,7 @@ import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 
@@ -96,8 +97,8 @@ public class DetalisConfig4store extends DetalisConfigNet implements Configurati
 	
 			// Instatiate measurement unit.
 			// this.measurementUnit = new MeasurementUnit(this,
-		} catch (DistributedEtalisException e) {
-			throw new DistributedEtalisException("Error configuring DistributedEtalis: " + e.getMessage(), e);
+		} catch (EcConnectionmanagerException e) {
+			throw new DistributedEtalisException("Error configuring DistributedEtalis: " + e.getMessage());
 		}
 	}
 }

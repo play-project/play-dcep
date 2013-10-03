@@ -19,7 +19,6 @@ import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
@@ -36,14 +35,14 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 	public static final String DATA_PATH = "data/";
 	public static final String UPDATE_PATH = "update/";
 	
-	public EcConnectionManager4store(DistributedEtalis dEtalis) throws DistributedEtalisException {
+	public EcConnectionManager4store(DistributedEtalis dEtalis) throws EcConnectionmanagerException {
 		this(
 				constants.getProperty("dcep.4store.rest"),
 				dEtalis
 				);
 	}
 	
-	public EcConnectionManager4store(String fourStoreEndpoint, DistributedEtalis dEtalis) throws DistributedEtalisException {
+	public EcConnectionManager4store(String fourStoreEndpoint, DistributedEtalis dEtalis) throws EcConnectionmanagerException {
 		super(dEtalis);
 		this.FOURSTORE_REST_URI = fourStoreEndpoint;
 
@@ -51,7 +50,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 	}
 	
 	@Override
-	public void init() throws DistributedEtalisException {
+	public void init() throws EcConnectionmanagerException {
         super.init();
 
         fourStoreClient = ClientBuilder.newClient();

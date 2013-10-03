@@ -4,7 +4,7 @@ import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
-public interface EcConnectionManager extends SimplePublishApi{
+public interface EcConnectionManager extends SimplePublishApi {
 
 	public SelectResults getDataFromCloud(String query,
 			String cloudId) throws EcConnectionmanagerException;
@@ -18,6 +18,6 @@ public interface EcConnectionManager extends SimplePublishApi{
 
 	public void destroy();
 
-	public void putDataInCloud(CompoundEvent event, String topic) throws EcConnectionmanagerException;;
+	public void putDataInCloud(CompoundEvent event, String topic) throws EcConnectionmanagerException;
 
 }

@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
 
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
@@ -63,7 +62,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 		this.dEtalis = dEtalis;
 	}
 	
-	public void init() throws DistributedEtalisException {
+	public void init() throws EcConnectionmanagerException {
 		if (init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has ALREADY been initialized.");
 		}
@@ -98,8 +97,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
             notifyReceiverSoap = exposer.expose(service);
             notifyReceiverSoap.start();
 		} catch (Exception e) {
-			throw new DistributedEtalisException(
-					"Error while starting DSB listener (SOAP service).", e);
+			throw new EcConnectionmanagerException("Error while starting DSB listener (SOAP service).", e);
 		}
 		
         /*
@@ -121,8 +119,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
             notifyReceiverRest.setHandler(context);
             notifyReceiverRest.start();
 		} catch (Exception e) {
-			throw new DistributedEtalisException(
-					"Error while starting DSB listener (REST service).", e);
+			throw new EcConnectionmanagerException("Error while starting DSB listener (REST service).", e);
 		}
 		
 		final List<String> topics = this.rdfReceiver.getTopics();

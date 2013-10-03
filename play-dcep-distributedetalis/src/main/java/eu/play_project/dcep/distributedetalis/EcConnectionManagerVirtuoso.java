@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import virtuoso.jdbc4.VirtuosoDataSource;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
@@ -24,7 +23,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 	private Connection virtuosoConnection;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
 	
-	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws DistributedEtalisException {
+	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws EcConnectionmanagerException {
 		this(
 				constants.getProperty("dcep.virtuoso.servername"),
 				Integer.parseInt(constants.getProperty("dcep.virtuoso.port")),
@@ -34,7 +33,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 				);
 	}
 	
-	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws DistributedEtalisException {
+	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws EcConnectionmanagerException {
 		super(dEtalis);
 		
 		VirtuosoDataSource virtuoso = new VirtuosoDataSource();
@@ -48,7 +47,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 			virtuoso.getConnection().close();
 			virtuosoConnection = virtuoso.getConnection();
 		} catch (SQLException e) {
-			throw new DistributedEtalisException("Could not connect to Virtuoso.", e);
+			throw new EcConnectionmanagerException("Could not connect to Virtuoso.", e);
 		}
 
 		init();

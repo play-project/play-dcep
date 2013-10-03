@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.EcConnectionManager4store;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.platformservices.eventvalidation.InvalidEventException;
 import eu.play_project.platformservices.eventvalidation.Validator;
@@ -121,7 +121,7 @@ public class EcConnectionManager4storeTest {
 	}
 	
 	@Test
-	public void test4store() throws DistributedEtalisException {
+	public void test4store() throws EcConnectionmanagerException {
 		EcConnectionManager4store eccm = new EcConnectionManager4store(REST_URI + FOURSTORE_PATH, new DistributedEtalis("Detalis"));
 		final String cloudId = "http://domain.invalid/testCloud";
 		

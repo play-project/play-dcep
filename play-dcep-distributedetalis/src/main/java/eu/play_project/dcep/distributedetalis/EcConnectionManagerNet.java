@@ -1,9 +1,11 @@
 package eu.play_project.dcep.distributedetalis;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
+import fr.inria.eventcloud.factories.EventCloudsRegistryFactory;
 import fr.inria.eventcloud.factories.ProxyFactory;
 
 public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
@@ -52,18 +55,33 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	public EcConnectionManagerNet() {}
 
 	public EcConnectionManagerNet(String eventCloudRegistry,
-			DistributedEtalis dEtalis) {
+			DistributedEtalis dEtalis) throws EcConnectionmanagerException {
+		
 		logger = LoggerFactory.getLogger(EcConnectionManagerNet.class);
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
 
 		putGetClouds = new HashMap<String, PutGetApi>();
 		outputClouds = new HashMap<String, PublishApi>();
 		inputClouds = new HashMap<String, SubscribeApi>();
-		this.eventCloudRegistryUrl = eventCloudRegistry;
+		eventCloudRegistryUrl = eventCloudRegistry;
 		eventInputQueue = new LinkedList<CompoundEvent>();
-		this.eventCloudListener = new EcConnectionListenerNet();
+		eventCloudListener = new EcConnectionListenerNet();
 		getEventThread = new GetEventThread(dEtalis); // Publish events from queue to dEtalis.
 		new Thread(getEventThread).start();
+		
+		try {
+			final Set<EventCloudId> cloudIds = EventCloudsRegistryFactory.lookupEventCloudsRegistry(eventCloudRegistryUrl).listEventClouds();
+			if (cloudIds.isEmpty()) {
+				logger.warn("No cloudIds were found in EventCloud, possible misconfiguration.");
+			} else {
+				for (EventCloudId cloudId : cloudIds) {
+					logger.info("CloudId in EventCloud: " + cloudId);
+				}
+			}
+		} catch (IOException e) {
+			throw new EcConnectionmanagerException(String.format("Error probing EventCloud registry at: '%s': %s", eventCloudRegistryUrl, e.getMessage()));
+		}
+		
 		this.init = true;
 	}
 
