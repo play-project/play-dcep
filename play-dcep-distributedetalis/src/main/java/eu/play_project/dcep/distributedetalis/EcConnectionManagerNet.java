@@ -25,9 +25,7 @@ import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
-import fr.inria.eventcloud.api.SubscriptionId;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
-import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
@@ -360,21 +358,5 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	        getEventThread = null;
 	        stopMe.interrupt();
 	    }
-
-	}
-	
-	public class EcConnectionListenerNet2 extends CompoundEventNotificationListener implements Serializable {
-		private static final long serialVersionUID = 100L;
-
-		// For ProActive:
-		public EcConnectionListenerNet2(){}
-
-		@Override
-		public void onNotification(SubscriptionId id, CompoundEvent event) {
-			synchronized(eventInputQueue){
-				eventInputQueue.add(event);
-				eventInputQueue.notifyAll();
-			}
-		}
 	}
 }
