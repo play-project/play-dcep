@@ -108,6 +108,10 @@
 					<artifactId>play-commons-constants</artifactId>
 					<groupId>eu.play-project</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -121,6 +125,14 @@
 				<exclusion>
 					<artifactId>spring-context</artifactId>
 					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-logging-api</artifactId>
+					<groupId>commons-logging</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -156,6 +168,10 @@
 			<artifactId>play-platformservices-eventvalidation</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 	</dependencies>
 

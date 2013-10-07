@@ -134,6 +134,9 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		} catch (EcConnectionmanagerException e) {
 			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
 			throw new DcepManagementException(e.getMessage());
+		} catch (Exception e) {
+			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
+			throw new DcepManagementException(e.getMessage());
 		}
 	}
 

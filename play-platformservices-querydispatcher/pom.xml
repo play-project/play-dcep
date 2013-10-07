@@ -71,6 +71,10 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-eventtypes</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 	</dependencies>
 
 	<!-- Attention -->

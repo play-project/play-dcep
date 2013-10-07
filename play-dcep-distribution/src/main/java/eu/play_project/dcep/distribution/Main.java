@@ -39,19 +39,15 @@ public class Main {
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
-					logger.debug("Shutdown hook was invoked. Shutting down...");
-					try {
-						main.stop();
-					} catch (Exception e) {
-						logger.info(e.getMessage());
-					}
+					logger.info("Shutting down...");
+					main.stop();
 				}
 			});
 
 			main.start();
 			System.out.println("For now DCEP cannot be stopped by pressing 3x RETURN, use 'kill' or 'kill -15' instead");
 
-			// Keep the main thread alive because otherwise Proactive terminates
+			// Keep the main thread alive because otherwise Proactive will terminate
 			synchronized (Main.class) {
 				while (running) {
 					try {
@@ -64,11 +60,7 @@ public class Main {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			try {
-				main.stop();
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-			}
+			main.stop();
 		}
 
 	}
@@ -155,27 +147,38 @@ public class Main {
 		}
 	}
 
-	public synchronized void stop() throws Exception {
+	public synchronized void stop() {
 		try {
 			// Stop and terminate GCM Components
 			logger.info("Terminate application");
-			logger.trace("Send stopFc to all components");
+			logger.debug("Send stopFc to all components");
 
 			if (root != null) {
 
 				// Stop is recursive...
-				GCM.getGCMLifeCycleController(root).stopFc();
+				try {
+					GCM.getGCMLifeCycleController(root).stopFc();
+				} catch (IllegalLifeCycleException e) {
+					logger.error(e.getMessage());
+				}
+				
 				// Terminate is not recursive:
 				for (Component subcomponent : GCM.getContentController(root)
 						.getFcSubComponents()) {
-					GCM.getGCMLifeCycleController(subcomponent)
-							.terminateGCMComponent();
+					try {
+						GCM.getGCMLifeCycleController(subcomponent)
+								.terminateGCMComponent();
+					} catch (IllegalLifeCycleException e) {
+						logger.error(e.getMessage());
+					}
 				}
-				GCM.getGCMLifeCycleController(root).terminateGCMComponent();
+				try {
+					GCM.getGCMLifeCycleController(root).terminateGCMComponent();
+				} catch (IllegalLifeCycleException e) {
+					logger.error(e.getMessage());
+				}
 			}
 
-		} catch (IllegalLifeCycleException e) {
-			logger.error(e.getMessage());
 		} catch (NoSuchInterfaceException e) {
 			logger.error(e.getMessage());
 		} finally {
