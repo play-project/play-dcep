@@ -143,6 +143,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			}
 		} catch (EventCloudIdNotManaged e) {
 			throw new EcConnectionmanagerException(e.getMessage(), e);
+		} catch (Exception e) { // we get various runtime exceptions here
+			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		return putGetClouds.get(cloudId);
 	}
@@ -162,6 +164,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 			}
 		} catch (EventCloudIdNotManaged e) {
 			throw new EcConnectionmanagerException(e.getMessage(), e);
+		} catch (Exception e) { // we get various runtime exceptions here
+			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		return inputClouds.get(cloudId);
 	}
@@ -180,6 +184,8 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 				outputClouds.put(cloudId, proxy);
 			}
 		} catch (EventCloudIdNotManaged e) {
+			throw new EcConnectionmanagerException(e.getMessage(), e);
+		} catch (Exception e) { // we get various runtime exceptions here
 			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		return outputClouds.get(cloudId);
