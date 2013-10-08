@@ -67,6 +67,10 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+		</dependency>		
+		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-eventtypes</artifactId>
 			<exclusions>
