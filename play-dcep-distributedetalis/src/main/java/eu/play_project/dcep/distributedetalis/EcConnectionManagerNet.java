@@ -125,7 +125,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 	}
 
 
-	private PutGetApi getHistoricCloud(String cloudId)
+	private synchronized PutGetApi getHistoricCloud(String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
@@ -147,7 +147,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		return putGetClouds.get(cloudId);
 	}
 
-	private SubscribeApi getInputCloud(String cloudId)
+	private synchronized SubscribeApi getInputCloud(String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
@@ -166,7 +166,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable,
 		return inputClouds.get(cloudId);
 	}
 
-	private PublishApi getOutputCloud(String cloudId)
+	private synchronized PublishApi getOutputCloud(String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
