@@ -2,6 +2,8 @@ package eu.play_project.dcep.distribution;
 
 import java.util.HashMap;
 
+import javax.jms.IllegalStateException;
+
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri.gcm.util.GCM;
 import org.objectweb.fractal.adl.Factory;
@@ -9,6 +11,7 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.fractal.api.control.LifeCycleController;
+import org.objectweb.proactive.core.body.exceptions.BodyTerminatedRequestException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.extensions.pnp.PNPConfig;
@@ -23,15 +26,18 @@ public class Main {
 
 	private static Logger logger = LoggerFactory.getLogger(Main.class);
 	private static boolean running;
-	private Component root;
+	private static Component root;
 
 	/**
 	 * Start DCEP. There are several ways to stop it: (1) by killing the main
 	 * thread a shutdownhook is caught (2) by sending 3 newlines on stdin (3)
 	 * when an exception happens during start.
 	 */
-	public static void main(String[] args) {
-		final Main main = new Main();
+	public static void main(String[] args) throws IllegalStateException {
+		if (running) {
+			throw new IllegalStateException("Already running...");
+		}
+		
 		running = true;
 
 		try {
@@ -40,11 +46,11 @@ public class Main {
 				@Override
 				public void run() {
 					logger.info("Shutting down...");
-					main.stop();
+					Main.stop();
 				}
 			});
 
-			main.start();
+			Main.start();
 			System.out.println("For now DCEP cannot be stopped by pressing 3x RETURN, use 'kill' or 'kill -15' instead");
 
 			// Keep the main thread alive because otherwise Proactive will terminate
@@ -60,12 +66,12 @@ public class Main {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			main.stop();
+			Main.stop();
 		}
 
 	}
 
-	public void start() throws Exception {
+	public static void start() throws Exception {
 		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
 		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
 		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
@@ -147,7 +153,7 @@ public class Main {
 		}
 	}
 
-	public synchronized void stop() {
+	public static synchronized void stop() {
 		try {
 			// Stop and terminate GCM Components
 			logger.info("Terminate application");
@@ -160,6 +166,8 @@ public class Main {
 					GCM.getGCMLifeCycleController(root).stopFc();
 				} catch (IllegalLifeCycleException e) {
 					logger.error(e.getMessage());
+				} catch (BodyTerminatedRequestException e) {
+					logger.error(e.getMessage());
 				}
 				
 				// Terminate is not recursive:
@@ -169,6 +177,8 @@ public class Main {
 						GCM.getGCMLifeCycleController(subcomponent)
 								.terminateGCMComponent();
 					} catch (IllegalLifeCycleException e) {
+						logger.error(e.getMessage());
+					} catch (BodyTerminatedRequestException e) {
 						logger.error(e.getMessage());
 					}
 				}
