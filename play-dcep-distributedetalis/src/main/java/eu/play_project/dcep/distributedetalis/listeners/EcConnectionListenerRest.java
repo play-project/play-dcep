@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
-import eu.play_project.dcep.distributedetalis.EcConnectionManagerVirtuoso;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
@@ -58,8 +58,12 @@ public class EcConnectionListenerRest extends Application implements PublishServ
 		    // Forward the event to Detalis:
 		    this.dEtalis.publish(event);
 		    
-		    // Store the event in Virtuoso:
-		    ((EcConnectionManagerVirtuoso)this.dEtalis.getEcConnectionManager()).putDataInCloud(event, topic);
+		    // Store the event in Triple Store:
+		    try {
+				this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
+			} catch (EcConnectionmanagerException e) {
+				logger.warn("Could not persist event in historic triple store: " + e.getMessage());
+			}
 		    
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
