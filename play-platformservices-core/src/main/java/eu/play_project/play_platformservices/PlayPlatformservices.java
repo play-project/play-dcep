@@ -126,7 +126,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			try {
 				restServer = new PlayPlatformservicesRest(this);
 	        	logger.info(String.format("QueryDispatch REST service started at %s with WADL remotely available at "
-	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI, Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest")));
+	        			+ "%s/application.wadl\n", PlayPlatformservicesRest.BASE_URI, Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest")));
 			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch REST Service", e);
 			}
