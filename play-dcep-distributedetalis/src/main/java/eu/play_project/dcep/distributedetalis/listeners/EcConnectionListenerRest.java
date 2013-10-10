@@ -62,11 +62,11 @@ public class EcConnectionListenerRest extends Application implements PublishServ
 		    try {
 				this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
 			} catch (EcConnectionmanagerException e) {
-				logger.warn("Could not persist event in historic triple store: " + e.getMessage());
+				logger.warn("Could not persist event in historic triple store: {}: {}", e.getClass().getSimpleName(), e.getMessage());
 			}
 		    
 	    } catch (NoRdfEventException e) {
-			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
+			logger.error("Received a non-RDF event from the DSB: {}", e.getMessage());
 		}
 	    
 	    return Response.status(Status.ACCEPTED).build();
