@@ -34,28 +34,26 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 	private WebTarget updateTarget;
 	public static final String DATA_PATH = "data/";
 	public static final String UPDATE_PATH = "update/";
-	
+
 	public EcConnectionManager4store(DistributedEtalis dEtalis) throws EcConnectionmanagerException {
-		this(
-				constants.getProperty("dcep.4store.rest"),
-				dEtalis
-				);
+		this(constants.getProperty("dcep.4store.rest"), dEtalis);
 	}
-	
-	public EcConnectionManager4store(String fourStoreEndpoint, DistributedEtalis dEtalis) throws EcConnectionmanagerException {
+
+	public EcConnectionManager4store(String fourStoreEndpoint, DistributedEtalis dEtalis)
+			throws EcConnectionmanagerException {
 		super(dEtalis);
 		this.FOURSTORE_REST_URI = fourStoreEndpoint;
 
 		init();
 	}
-	
+
 	@Override
 	public void init() throws EcConnectionmanagerException {
-        super.init();
+		super.init();
 
-        fourStoreClient = ClientBuilder.newClient();
-        dataTarget = fourStoreClient.target(FOURSTORE_REST_URI).path(DATA_PATH);
-        updateTarget = fourStoreClient.target(FOURSTORE_REST_URI).path(UPDATE_PATH);
+		fourStoreClient = ClientBuilder.newClient();
+		dataTarget = fourStoreClient.target(FOURSTORE_REST_URI).path(DATA_PATH);
+		updateTarget = fourStoreClient.target(FOURSTORE_REST_URI).path(UPDATE_PATH);
 	}
 
 	@Override
@@ -67,25 +65,29 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		super.destroy();
 	}
 
+	/**
+	 * Persist data in historic storage.
+	 * 
+	 * @param event
+	 *            event containing quadruples
+	 * @param cloudId
+	 *            the cloud ID to allow partitioning of storage
+	 */
+	@Override
+	public void putDataInCloud(CompoundEvent event, String cloudId) {
+		// Chose one implementation (SPARQL Update or SPARQL Graph Store
+		// Protocol):
+		// SPARQL Update is currently faster:
+		putDataInCloudUsingSparqlUpdate(event, cloudId);
+	}
 
 	/**
 	 * Persist data in historic storage.
 	 * 
-	 * @param event event containing quadruples
-	 * @param cloudId the cloud ID to allow partitioning of storage
-	 */
-	@Override
-	public void putDataInCloud(CompoundEvent event, String cloudId) {
-		// Chose one implementation (SPARQL Update or SPARQL Graph Store Protocol):
-		// SPARQL Update is currently faster:
-		putDataInCloudUsingSparqlUpdate(event, cloudId);
-	}
-	
-	/**
-	 * Persist data in historic storage.
-	 * 
-	 * @param event event containing quadruples
-	 * @param cloudId the cloud ID to allow partitioning of storage
+	 * @param event
+	 *            event containing quadruples
+	 * @param cloudId
+	 *            the cloud ID to allow partitioning of storage
 	 */
 	public void putDataInCloudUsingSparqlUpdate(CompoundEvent event, String cloudId) {
 
@@ -98,60 +100,63 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		}
 		s.append("}}\n");
 		String query = s.toString();
-		
+
 		logger.debug("Putting event in cloud '" + cloudId + "':\n" + query);
 
-    	Form form = new Form();
-    	form.param("update", query);
-      	
-        Response response = updateTarget.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+		Form form = new Form();
+		form.param("update", query);
 
-        if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
-    		logger.debug("Putting event in cloud '" + cloudId + "': successful: " + response);
-        }
-        else {
-    		logger.error("Putting event in cloud '" + cloudId + "': UNsuccessful: " + response);
-        }
+		Response response = updateTarget.request().post(
+				Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+		if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
+			logger.debug("Putting event in cloud '" + cloudId + "': successful: " + response);
+		} else {
+			logger.error("Putting event in cloud '" + cloudId + "': UNsuccessful: " + response);
+		}
 		response.close();
-   	}
+	}
 
 	/**
 	 * Persist data in historic storage.
 	 * 
-	 * @param event event containing quadruples
-	 * @param cloudId the cloud ID to allow partitioning of storage
+	 * @param event
+	 *            event containing quadruples
+	 * @param cloudId
+	 *            the cloud ID to allow partitioning of storage
 	 */
 	public void putDataInCloudUsingGraphStoreProtocol(CompoundEvent event, String cloudId) {
 
 		String query = EventCloudHelpers.toRdf2go(event).serialize(Syntax.Turtle);
-		
+
 		logger.debug("Putting event in cloud '" + cloudId + "':\n" + query);
 
-    	Form form = new Form();
-    	form.param("mime-type", Syntax.Turtle.getMimeType());
-    	form.param("graph", event.getGraph().toString());
-    	form.param("data", query);
-      	
-        Response response = dataTarget.request().post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+		Form form = new Form();
+		form.param("mime-type", Syntax.Turtle.getMimeType());
+		form.param("graph", event.getGraph().toString());
+		form.param("data", query);
 
-        if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
-    		logger.debug("Putting event in cloud '" + cloudId + "': successful: " + response);
-        }
-        else {
-    		logger.error("Putting event in cloud '" + cloudId + "': UNsuccessful: " + response);
-        }
+		Response response = dataTarget.request().post(
+				Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
+
+		if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
+			logger.debug("Putting event in cloud '" + cloudId + "': successful: " + response);
+		} else {
+			logger.error("Putting event in cloud '" + cloudId + "': UNsuccessful: " + response);
+		}
 		response.close();
-   	}
-	
+	}
+
 	/**
-	 * Retreive data from historic storage using a SPARQL SELECT query. SPARQL 1.1
-	 * enhancements like the VALUES clause are allowed.
+	 * Retreive data from historic storage using a SPARQL SELECT query. SPARQL
+	 * 1.1 enhancements like the VALUES clause are allowed.
 	 */
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
+			throw new IllegalStateException(this.getClass().getSimpleName()
+					+ " has not been initialized.");
 		}
 
 		logger.debug("Sending historical query to Virtuoso: \n" + query);
@@ -161,45 +166,46 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 
 		Connection con = null;
 		ResultSet res = null;
-		
+
 		// FIXME stuehmer: finish this
-		
-//		try {
-//			con = virtuosoConnection;
-//			Statement sta = con.createStatement();
-//			res = sta.executeQuery("sparql "+query);
-//
-//			ResultSetMetaData rmd = res.getMetaData();
-//			int colNum = rmd.getColumnCount();
-//			for(int i = 1; i <= colNum; i++){
-//				variables.add(rmd.getColumnName(i));
-//			}
-//			logger.debug("Vars: {}", variables);
-//
-//			//TODO result create, select variable analyze, create
-//			while(res.next()){
-//				ArrayList<Object> data = new ArrayList<Object>();
-//				for(int i = 1; i <= colNum; i++) {
-//					data.add(res.getObject(i));
-//				}
-//				result.add(data);
-//				logger.debug("Data: {}", data);
-//			}
-//
-//		} catch (SQLException e) {
-//			throw new EcConnectionmanagerException("Exception with Virtuoso.", e);
-//		} finally {
-//			try {
-//				if (res != null) {
-//					res.close();
-//				}
-//				if(con != null) {
-//					con.close();
-//				}
-//			} catch (SQLException e) {
-//				// Do nothing
-//			}
-//		}
+
+		// try {
+		// con = virtuosoConnection;
+		// Statement sta = con.createStatement();
+		// res = sta.executeQuery("sparql "+query);
+		//
+		// ResultSetMetaData rmd = res.getMetaData();
+		// int colNum = rmd.getColumnCount();
+		// for(int i = 1; i <= colNum; i++){
+		// variables.add(rmd.getColumnName(i));
+		// }
+		// logger.debug("Vars: {}", variables);
+		//
+		// //TODO result create, select variable analyze, create
+		// while(res.next()){
+		// ArrayList<Object> data = new ArrayList<Object>();
+		// for(int i = 1; i <= colNum; i++) {
+		// data.add(res.getObject(i));
+		// }
+		// result.add(data);
+		// logger.debug("Data: {}", data);
+		// }
+		//
+		// } catch (SQLException e) {
+		// throw new EcConnectionmanagerException("Exception with Virtuoso.",
+		// e);
+		// } finally {
+		// try {
+		// if (res != null) {
+		// res.close();
+		// }
+		// if(con != null) {
+		// con.close();
+		// }
+		// } catch (SQLException e) {
+		// // Do nothing
+		// }
+		// }
 
 		ResultRegistry rr = new ResultRegistry();
 		rr.setResult(result);
