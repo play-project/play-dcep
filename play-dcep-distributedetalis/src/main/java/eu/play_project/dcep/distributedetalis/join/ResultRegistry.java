@@ -3,6 +3,9 @@ package eu.play_project.dcep.distributedetalis.join;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.ontoware.aifbcommons.collection.ClosableIterator;
+import org.ontoware.rdf2go.model.QueryResultTable;
+import org.ontoware.rdf2go.model.QueryRow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,13 +26,7 @@ public class ResultRegistry implements SelectResults {
 	private List<String> variables;
 	// result data
 	private List<List> result = new ArrayList<List>();
-	
-	private final Logger logger = LoggerFactory.getLogger(ResultRegistry.class);
-
-	public ResultRegistry(ResultSet rs) {
-		makeResult(rs);
-	}
-	
+		
 	public ResultRegistry(){
 	}
 	
@@ -65,34 +62,70 @@ public class ResultRegistry implements SelectResults {
 		this.size = result.size();
 	}
 	
-	/*
-	 * Translate the ResultSetWrapper into List<List> as results
+	/**
+	 * Create a {@link ResultRegistry} from a Jena {@link ResultSet}.
 	 */
-	private void makeResult(ResultSet rs){
+	public static ResultRegistry makeResult(ResultSet rs){
+		final Logger logger = LoggerFactory.getLogger(ResultRegistry.class);
+
+		ResultRegistry result = new ResultRegistry();
 		if(rs == null){
-			this.variables = new ArrayList<String>(0);
-			this.size = 0;
-			return;
+			result.variables = new ArrayList<String>(0);
+			result.size = 0;
+			return result;
 		}
-		this.variables = rs.getResultVars();
+		
+		result.variables = rs.getResultVars();
 		
 		//TODO size = 0??
 		// result has duplicated entries ???
 		//size = rw.getRowNumber();
 			//logger.info("size: "+size);
 		
-		int colNum = this.variables.size();
-		this.size = 0;
+		int colNum = result.variables.size();
+		result.size = 0;
 		QuerySolution qs;
 		while(rs.hasNext()){
 			qs = rs.next();
 			List<String> data = new ArrayList<String>(colNum);
 			for(int i = 0; i < colNum; i++){
-				//logger.debug("add: "+qs.get(variables.get(i)).toString());
-				data.add(qs.get(variables.get(i)).toString());
+				data.add(qs.get(result.variables.get(i)).toString());
 			}
-			result.add(data);
-			size++;
+			result.getResult().add(data);
+			result.size++;
 		}
+		logger.debug("Found {} results for historical query.", result.size);
+		return result;
 	}
+	
+	
+	/**
+	 * Create a {@link ResultRegistry} from a RDF2Go {@link QueryResultTable}.
+	 */
+	public static ResultRegistry makeResult(QueryResultTable queryResult){
+		final Logger logger = LoggerFactory.getLogger(ResultRegistry.class);
+
+		ResultRegistry result = new ResultRegistry();
+		
+		result.variables = queryResult.getVariables();
+				
+		int colNum = result.variables.size();
+		result.size = 0;
+		
+		ClosableIterator<QueryRow> it = queryResult.iterator();
+		
+		while(it.hasNext()){
+			QueryRow qr = it.next();
+			List<String> data = new ArrayList<String>(colNum);
+			for (String var : result.variables) {
+				data.add(qr.getValue(var).toString());
+			}
+			result.getResult().add(data);
+			result.size++;
+		}
+		logger.debug("Found {} results for historical query.", result.size);
+		return result;
+	}
+
+	
 }

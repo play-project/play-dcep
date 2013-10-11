@@ -1,10 +1,5 @@
 package eu.play_project.dcep.distributedetalis;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -14,7 +9,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.ontoware.rdf2go.RDF2Go;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
+import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +27,15 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManager4store.class);
 	private Client fourStoreClient;
 	private final String FOURSTORE_REST_URI;
-	private WebTarget dataTarget;
-	private WebTarget updateTarget;
+	private WebTarget dataEndpoint;
+	private WebTarget updateEndpoint;
+	private WebTarget sparqlEndpoint;
+	/*
+	 * TODO stuehmer: to enable federated queries with arbitrary 4store nodes,
+	 * we can use the cloudId in the future instead of this constant
+	 * sparqlEndpoint
+	 */
+	public static final String SPARQL_PATH = "sparql/";
 	public static final String DATA_PATH = "data/";
 	public static final String UPDATE_PATH = "update/";
 
@@ -52,8 +56,10 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		super.init();
 
 		fourStoreClient = ClientBuilder.newClient();
-		dataTarget = fourStoreClient.target(FOURSTORE_REST_URI).path(DATA_PATH);
-		updateTarget = fourStoreClient.target(FOURSTORE_REST_URI).path(UPDATE_PATH);
+		
+		dataEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(DATA_PATH);
+		updateEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(UPDATE_PATH);
+		sparqlEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(SPARQL_PATH);
 	}
 
 	@Override
@@ -106,7 +112,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		Form form = new Form();
 		form.param("update", query);
 
-		Response response = updateTarget.request().post(
+		Response response = updateEndpoint.request().post(
 				Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
 		if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
@@ -136,7 +142,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		form.param("graph", event.getGraph().toString());
 		form.param("data", query);
 
-		Response response = dataTarget.request().post(
+		Response response = dataEndpoint.request().post(
 				Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
 		if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
@@ -152,64 +158,17 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 	 * 1.1 enhancements like the VALUES clause are allowed.
 	 */
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
+	public SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
 
-		logger.debug("Sending historical query to Virtuoso: \n" + query);
+		logger.debug("Sending historical query to 4store: \n" + query);
 
-		List<String> variables = new ArrayList<String>();
-		List<List> result = new ArrayList<List>();
+		QueryResultTable sparqlResults = RDF2Go.getModelFactory().sparqlSelect(sparqlEndpoint.getUri().toString(), query);
 
-		Connection con = null;
-		ResultSet res = null;
-
-		// FIXME stuehmer: finish this
-
-		// try {
-		// con = virtuosoConnection;
-		// Statement sta = con.createStatement();
-		// res = sta.executeQuery("sparql "+query);
-		//
-		// ResultSetMetaData rmd = res.getMetaData();
-		// int colNum = rmd.getColumnCount();
-		// for(int i = 1; i <= colNum; i++){
-		// variables.add(rmd.getColumnName(i));
-		// }
-		// logger.debug("Vars: {}", variables);
-		//
-		// //TODO result create, select variable analyze, create
-		// while(res.next()){
-		// ArrayList<Object> data = new ArrayList<Object>();
-		// for(int i = 1; i <= colNum; i++) {
-		// data.add(res.getObject(i));
-		// }
-		// result.add(data);
-		// logger.debug("Data: {}", data);
-		// }
-		//
-		// } catch (SQLException e) {
-		// throw new EcConnectionmanagerException("Exception with Virtuoso.",
-		// e);
-		// } finally {
-		// try {
-		// if (res != null) {
-		// res.close();
-		// }
-		// if(con != null) {
-		// con.close();
-		// }
-		// } catch (SQLException e) {
-		// // Do nothing
-		// }
-		// }
-
-		ResultRegistry rr = new ResultRegistry();
-		rr.setResult(result);
-		rr.setVariables(variables);
-		return rr;
+		return ResultRegistry.makeResult(sparqlResults);
 	}
 }

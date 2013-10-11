@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.EcConnectionManager4store;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
+import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.platformservices.eventvalidation.InvalidEventException;
 import eu.play_project.platformservices.eventvalidation.Validator;
@@ -215,6 +216,24 @@ public class EcConnectionManager4storeTest {
 			this.rdfSink.add(data);
 			return Response.ok().build();
 		}
+	}
+	
+	/**
+	 * Manual test using external SPARQL endpoint.
+	 */
+	public static void main(String[] args) throws EcConnectionmanagerException {
+		EcConnectionManager4store eccm = new EcConnectionManager4store("http://app.event-processing.org/4store", new DistributedEtalis("Detalis"));
+		
+		String query =
+				" PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+				+ " PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+				+ " SELECT * WHERE {"
+				+ "   ?s ?p ?o"
+				+ " } LIMIT 10";
+		
+		SelectResults result = eccm.getDataFromCloud(query, "");
+		System.out.println(result.getSize());
+		
 	}
 }
 

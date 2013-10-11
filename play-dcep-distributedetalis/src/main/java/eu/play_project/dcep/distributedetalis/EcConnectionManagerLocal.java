@@ -93,7 +93,7 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 
 		ResultRegistry results = null;
 		try {
-			results = new ResultRegistry(new ResultSetWrapper(qexec.execSelect()));
+			results = ResultRegistry.makeResult(new ResultSetWrapper(qexec.execSelect()));
 		} finally {
 			qexec.close();
 		}

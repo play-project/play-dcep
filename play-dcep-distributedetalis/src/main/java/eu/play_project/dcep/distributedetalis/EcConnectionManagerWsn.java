@@ -43,6 +43,12 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
 
+/**
+ * An abstract connection manager implementing common methods needed to receive
+ * events via WS-Notification.
+ * 
+ * @author Roland Stühmer
+ */
 public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerWsn.class);
@@ -136,8 +142,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 	
 	@Override
 	public void destroy() {
-		logger.info("Terminating {}.", this.getClass()
-				.getSimpleName());
+		logger.info("Terminating {}.", this.getClass().getSimpleName());
 		logger.info("Unsubscribe from Topics");
 	
 		// Unsubscribe
