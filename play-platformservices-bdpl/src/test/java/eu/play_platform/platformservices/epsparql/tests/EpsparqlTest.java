@@ -15,7 +15,6 @@ import org.junit.Test;
 
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QueryParseException;
 import com.hp.hpl.jena.query.Syntax;
 
 
@@ -97,9 +96,8 @@ public class EpsparqlTest {
 				}
 				
 				try {
-					//QueryFactory.create(query[0], Syntax.syntaxBDPL); // TODO test whats wrong
-	
-				} catch (QueryParseException e) {
+					QueryFactory.create(query[0], Syntax.syntaxBDPL);
+				} catch (QueryException e) {
 					if (!e.getMessage().contains(query[1])) { // Test if expected exception
 						e.printStackTrace();
 						throw new Exception("Not expected exception was thrown in " + fileName + "\n" + query[1] + " is expected");
@@ -108,10 +106,7 @@ public class EpsparqlTest {
 			} catch (IOException e1) {
 				fail("Could not read query file: " + fileName);
 			}
-
 		}
-
-		// Assert.assertTrue(numberOfFailedTests==negativeTestFiles.length);
 	}
 	
 	/**
@@ -166,7 +161,7 @@ public class EpsparqlTest {
 
 		ArrayList<String> filenames = new ArrayList<String>();
 
-		File[] files = dir.listFiles(); // FIXME sobermeier test this from inside jar
+		File[] files = dir.listFiles();
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				if(type == TestType.EP_SPARQL_BROKEN_QUERY){

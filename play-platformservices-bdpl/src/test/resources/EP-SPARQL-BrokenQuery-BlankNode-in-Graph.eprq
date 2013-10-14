@@ -1,4 +1,7 @@
 # abc @expectedException<Was expecting one of: \n <IRIref> ...\>
 PREFIX pl: <http://play-project.eu/ep-sparql> 
-CONSTRUCT { ?a pl:name ?name } 
-WHERE {    GRAPH ?a { [] pl:name ?name }}
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://events.event-processing.org/types/>
+
+CONSTRUCT { :e rdf:type :Temperature . ?a pl:name ?name } 
+WHERE { EVENT ?id1 {?s ?p ?o}   GRAPH ?a { [] pl:name ?name }}

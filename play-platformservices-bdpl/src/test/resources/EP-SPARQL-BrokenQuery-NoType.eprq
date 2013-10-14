@@ -1,4 +1,4 @@
-# abc @expectedException< ff>
+# abc @expectedException<rdf:type not found\>
 PREFIX : <http://play-project.eu/ep-sparql> 
 CONSTRUCT   { ?a ?b ?c }
-WHERE    { GRAPH ?a { :a :b [ :c :d ] }}
+WHERE    { EVENT ?id1 {?s ?p ?o} GRAPH ?a { :a :b [ :c :d ] }}
