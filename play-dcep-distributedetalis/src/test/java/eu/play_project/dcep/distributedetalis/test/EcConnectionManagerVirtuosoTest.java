@@ -43,7 +43,7 @@ import eu.play_project.play_eventadapter.NoRdfEventException;
 
 public class EcConnectionManagerVirtuosoTest {
 
-	private static final String REST_URI = "http://localhost:8085/notifyRest";
+	private static final String REST_URI = "http://localhost:9085/notifyRest";
 	private static final List<Model> eventSink = Collections.synchronizedList(new ArrayList<Model>());
 	private static Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuosoTest.class);
 	private static Server notifyReceiverRest;

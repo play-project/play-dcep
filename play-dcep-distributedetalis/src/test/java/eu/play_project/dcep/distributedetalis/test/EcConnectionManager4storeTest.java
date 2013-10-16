@@ -55,7 +55,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 
 public class EcConnectionManager4storeTest {
 
-	private static final String REST_URI = "http://localhost:8085";
+	private static final String REST_URI = "http://localhost:9085";
 	private static final String NOTIFY_PATH = "/notifyRest";
 	private static final String FOURSTORE_PATH = "/4store";
 	private static final List<Model> eventSink = Collections.synchronizedList(new ArrayList<Model>());
