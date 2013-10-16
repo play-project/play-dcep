@@ -37,12 +37,12 @@
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-rt-transports-http-jetty</artifactId>
 			<version>${cxf.version}</version>
-		</dependency>		
+		</dependency>
 		<dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.version}</version>
-		</dependency>		
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-server</artifactId>
@@ -61,7 +61,7 @@
 			<artifactId>play-eventadapter-abstractrdfsender-rest</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-   		<dependency>
+		<dependency>
 			<groupId>jtalis</groupId>
 			<artifactId>jtalis-core</artifactId>
 			<version>1.2</version>
@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-eventtypes</artifactId>
@@ -216,8 +216,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-Djava.security.manager
-						-Djava.security.policy=src/main/resources/proactive.java.policy</argLine>
+					<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/main/resources/proactive.java.policy -Djava.library.path="${env.SWI_HOME_DIR}/bin";"${env.SWI_HOME_DIR}/lib"]]></argLine>
+					<environmentVariables>
+						<PATH>${env.SWI_HOME_DIR}/bin;${env.SWI_HOME_DIR}/lib</PATH>
+					</environmentVariables>
+					<forkCount>0</forkCount>
 				</configuration>
 			</plugin>
 		</plugins>
