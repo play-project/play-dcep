@@ -146,7 +146,10 @@ public class Main {
 					logger.info(queryString);
 					queryDispatchApi.registerQuery(queryFileName, queryString);
 				} catch (QueryDispatchException e) {
-					logger.warn("Error registering query {} on startup: {}",
+					logger.warn("Error registering query '{}' on startup: {}",
+							queryFileName, e.getMessage());
+				} catch (NullPointerException e) {
+					logger.warn("Error registering query '{}' on startup: {}",
 							queryFileName, e.getMessage());
 				}
 			}
