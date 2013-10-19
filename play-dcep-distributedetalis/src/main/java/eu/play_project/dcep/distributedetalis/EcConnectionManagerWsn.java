@@ -221,7 +221,10 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 
 			// Do not remove this line, needed for logs. :stuehmer
 			logger.info("DCEP Exit " + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
-
+			if (logger.isDebugEnabled()) {
+				logger.debug("DCEP Complex Event:\n{}", event.toString());
+			}
+			
 			this.rdfSender.notify(new String(out.toByteArray()), cloudId);
 			
 			// Store event in Triple Store:

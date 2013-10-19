@@ -235,6 +235,9 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 			try {
 				// Do not remove this line, needed for logs. :stuehmer
 				logger.info("DCEP Exit " + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
+				if (logger.isDebugEnabled()) {
+					logger.debug("DCEP Complex Event:\n{}", event.toString());
+				}
 
 				this.getOutputCloud(cloudId).publish(event);
 			} catch (EcConnectionmanagerException e) {

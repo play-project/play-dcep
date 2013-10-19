@@ -87,10 +87,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			CompoundEvent result = new CompoundEvent(quadruples);
 
 			measurementUnit.eventProduced(result, event.getName());
-	
-			if (logger.isDebugEnabled()) {
-				logger.debug(result.toString());
-			}
 			
 			if(recipients.size() < 1) {
 				logger.warn("No recipients for complex events.");

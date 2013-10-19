@@ -59,6 +59,9 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 			else {
 				// Do not remove this line, needed for logs. :stuehmer
 				logger.info("DCEP Entry " + eventId);
+				if (logger.isDebugEnabled()) {
+					logger.debug("DCEP Simple Event:\n{}", event.toString());
+				}
 				duplicatesCache.add(eventId);
 			}
 		}
