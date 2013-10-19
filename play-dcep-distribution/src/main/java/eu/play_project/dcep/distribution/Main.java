@@ -51,7 +51,7 @@ public class Main {
 			});
 
 			Main.start();
-			System.out.println("For now DCEP cannot be stopped by pressing 3x RETURN, use 'kill' or 'kill -15' instead");
+			System.out.println("DCEP is running. Use '${DCEP_HOME}/bin/dcep stop', 'kill' or 'kill -15' to stop it.");
 
 			// Keep the main thread alive because otherwise Proactive will terminate
 			synchronized (Main.class) {
