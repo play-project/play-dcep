@@ -1,5 +1,9 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_EXIT;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_EXIT;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.net.URI;
@@ -220,9 +224,9 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 			RDFDataMgr.write(out, quadruplesToDatasetGraph(event), RDFFormat.TRIG_BLOCKS);
 
 			// Do not remove this line, needed for logs. :stuehmer
-			logger.info("DCEP Exit " + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
+			logger.info(LOG_DCEP_EXIT + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
 			if (logger.isDebugEnabled()) {
-				logger.debug("DCEP Complex Event:\n{}", event.toString());
+				logger.debug(LOG_DCEP + "Complex Event:\n{}", event.toString());
 			}
 			
 			this.rdfSender.notify(new String(out.toByteArray()), cloudId);
@@ -231,7 +235,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 			this.putDataInCloud(event, cloudId);
 		}
 		else {
-			logger.warn("Got empty cloud ID from event '{}', don't know which cloud to publish to. Discarding complex event.", event.getGraph() + Event.EVENT_ID_SUFFIX);
+			logger.warn(LOG_DCEP_FAILED_EXIT + "Got empty cloud ID from event '{}', don't know which cloud to publish to. Discarding complex event.", event.getGraph() + Event.EVENT_ID_SUFFIX);
 		}
 	}
 

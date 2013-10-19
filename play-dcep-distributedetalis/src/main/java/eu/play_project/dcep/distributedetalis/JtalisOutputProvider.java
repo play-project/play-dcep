@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_EXIT;
 import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
@@ -89,16 +90,16 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			measurementUnit.eventProduced(result, event.getName());
 			
 			if(recipients.size() < 1) {
-				logger.warn("No recipients for complex events.");
+				logger.warn(LOG_DCEP_FAILED_EXIT + "No recipients for complex events.");
 			}
 			
 			for (SimplePublishApi recipient : recipients) {
 				recipient.publish(result);
 			}
 		} catch (RetractEventException e) {
-				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled.");
+			logger.info(LOG_DCEP_FAILED_EXIT + "Retract ... an event was not created because its historic part was not fulfilled.");
 		} catch (Exception e) {
-				logger.error("Exception appeared: " + e.getMessage(), e);
+			logger.error(LOG_DCEP_FAILED_EXIT + "Exception appeared: " + e.getMessage(), e);
 		}
 	}
 	
