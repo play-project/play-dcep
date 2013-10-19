@@ -22,6 +22,7 @@ import eu.play_project.dcep.distributedetalis.persistence.PersistenceException;
 import eu.play_project.dcep.distributedetalis.persistence.Sqlite;
 import eu.play_project.dcep.distributedetalis.persistence.Sqlite.SubscriptionPerCloud;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.play_commons.constants.Event;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.EventCloudId;
@@ -228,10 +229,18 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 
 		String cloudId = EventCloudHelpers.getCloudId(event);
 
-		try {
-			this.getOutputCloud(cloudId).publish(event);
-		} catch (EcConnectionmanagerException e) {
-			logger.error("Event could not be published to cloud {}.", cloudId);
+		if (!cloudId.isEmpty()) {
+			try {
+				// Do not remove this line, needed for logs. :stuehmer
+				logger.info("DCEP Exit " + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
+
+				this.getOutputCloud(cloudId).publish(event);
+			} catch (EcConnectionmanagerException e) {
+				logger.error("Event could not be published to cloud '{}'.", cloudId);
+			}
+		}
+		else {
+			logger.warn("Got empty cloud ID from event '{}', don't know which cloud to publish to. Discarding complex event.", event.getGraph() + Event.EVENT_ID_SUFFIX);
 		}
 	}
 

@@ -35,6 +35,7 @@ import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerRest;
 import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerWsn;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.play_commons.constants.Event;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.AbstractSenderRest;
@@ -190,13 +191,22 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 		
 		String cloudId = EventCloudHelpers.getCloudId(event);
         
-		// Send event to DSB:
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		RDFDataMgr.write(out, quadruplesToDatasetGraph(event), RDFFormat.TRIG_BLOCKS);
-		this.rdfSender.notify(new String(out.toByteArray()), cloudId);
-		
-		// Store event in Triple Store:
-		this.putDataInCloud(event, cloudId);
+		if (!cloudId.isEmpty()) {
+			// Send event to DSB:
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			RDFDataMgr.write(out, quadruplesToDatasetGraph(event), RDFFormat.TRIG_BLOCKS);
+
+			// Do not remove this line, needed for logs. :stuehmer
+			logger.info("DCEP Exit " + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
+
+			this.rdfSender.notify(new String(out.toByteArray()), cloudId);
+			
+			// Store event in Triple Store:
+			this.putDataInCloud(event, cloudId);
+		}
+		else {
+			logger.warn("Got empty cloud ID from event '{}', don't know which cloud to publish to. Discarding complex event.", event.getGraph() + Event.EVENT_ID_SUFFIX);
+		}
 	}
 
 	@Override

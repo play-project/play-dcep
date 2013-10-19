@@ -31,7 +31,6 @@ import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
-import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
@@ -89,25 +88,21 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 			measurementUnit.eventProduced(result, event.getName());
 	
-			// Do not remove this line, needed for logs. :stuehmer
-			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
-
 			if (logger.isDebugEnabled()) {
 				logger.debug(result.toString());
 			}
-			if(recipients.size()<1) {logger.warn("No recipients for complex events.");}
+			
+			if(recipients.size() < 1) {
+				logger.warn("No recipients for complex events.");
+			}
 			
 			for (SimplePublishApi recipient : recipients) {
 				recipient.publish(result);
 			}
+		} catch (RetractEventException e) {
+				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled.");
 		} catch (Exception e) {
-			if(e instanceof RetractEventException){
-				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled." );
-			}else if(e instanceof java.io.UTFDataFormatException){
-				logger.error("It is not possible to deliver this event. " + e.getMessage() + "\n" + event, e);
-			}else{
 				logger.error("Exception appeared: " + e.getMessage(), e);
-			}
 		}
 	}
 	
@@ -160,6 +155,10 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		 * Add payload data to event:
 		 */
 		Hashtable<String, Object>[] triples =  engine.getTriplestoreData(event.getStringProperty(0));
+		
+		if (triples.length < 1) {
+			logger.warn("No event attributes (triples) were returned from Etalis for event '{}'", eventId);
+		}
 
 		for(Hashtable<String, Object> item : triples) {
 			// Remove single quotes around Prolog strings

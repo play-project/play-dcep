@@ -103,16 +103,63 @@ public class EventCloudHelpersTest {
 	 */
 	@Test
 	public void testGetCloudId() {
-		List<Quadruple> quadruple = new ArrayList<Quadruple>();
-
+		List<Quadruple> quadruple;
+		CompoundEvent event;
+		
+		// check proper graph, subject and predicate
+		quadruple = new ArrayList<Quadruple>();
 		quadruple.add(new Quadruple(
 				GRAPHNAME,
 				SUBJECT,
 				STREAM,
 				NodeFactory.createURI(Stream.ActivityEventStream.getUri())));
-
-		CompoundEvent event = new CompoundEvent(quadruple);
-		
+		event = new CompoundEvent(quadruple);
 		assertEquals(Stream.ActivityEventStream.getTopicUri(), EventCloudHelpers.getCloudId(event));
+		
+		// check proper graph, subject and predicate with manually created URIs
+		quadruple = new ArrayList<Quadruple>();
+		quadruple.add(new Quadruple(
+				GRAPHNAME,
+				SUBJECT,
+				NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+				NodeFactory.createURI("http://streams.event-processing.org/ids/TaxiUCESRRecomDcep#stream")));
+		event = new CompoundEvent(quadruple);
+		assertEquals(NodeFactory.createURI("http://streams.event-processing.org/ids/TaxiUCESRRecomDcep").toString(), EventCloudHelpers.getCloudId(event));
+
+		// check proper graph, predicate an improper subject
+		quadruple = new ArrayList<Quadruple>();
+		quadruple.add(new Quadruple(
+				GRAPHNAME,
+				OTHER_SUBJECT,
+				STREAM,
+				NodeFactory.createURI(Stream.ActivityEventStream.getUri())));
+		event = new CompoundEvent(quadruple);
+		assertEquals(Stream.ActivityEventStream.getTopicUri(), EventCloudHelpers.getCloudId(event));
+
+		// check if proper subject overrules improper subject (primary choice)
+		quadruple = new ArrayList<Quadruple>();
+		quadruple.add(new Quadruple(
+				GRAPHNAME,
+				OTHER_SUBJECT,
+				STREAM,
+				NodeFactory.createURI(Stream.TwitterFeed.getUri())));
+		quadruple.add(new Quadruple(
+				GRAPHNAME,
+				SUBJECT,
+				STREAM,
+				NodeFactory.createURI(Stream.ActivityEventStream.getUri())));
+		event = new CompoundEvent(quadruple);
+		assertEquals(Stream.ActivityEventStream.getTopicUri(), EventCloudHelpers.getCloudId(event));
+
+		// check improper predicate (no stream can be found, empty string is returned)
+		quadruple = new ArrayList<Quadruple>();
+		quadruple.add(new Quadruple(
+				GRAPHNAME,
+				SUBJECT,
+				NodeFactory.createURI("http://domain.invalid/bogus_uri"),
+				NodeFactory.createURI(Stream.ActivityEventStream.getUri())));
+		event = new CompoundEvent(quadruple);
+		assertEquals("", EventCloudHelpers.getCloudId(event));
+
 	}
 }
