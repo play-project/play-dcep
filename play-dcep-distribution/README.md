@@ -76,6 +76,20 @@ Use the init.d start script from here: [RedHat, CentOS](https://gist.github.com/
 chkconfig virtuoso on
 ```
 
+#### 4store (>=1.1.5, optional)
+See http://4store.org/trac/wiki/Download or build 4store form source to get the newest bugfixes and SPARQL 1.1 features.
+```
+yum install mhash yajl mpfr redland rasqal avahi-glib
+rpm --import http://repo.sparql.pro/RPM-GPG-KEY-SPARQL-PRO
+rpm -Uvh http://repo.sparql.pro/centos/6/x86_64/4store-1.1.5-4.x86_64.rpm
+```
+* `--nodeps` can be added to the last command if the dependencies are not properly recognized.
+* This might also be needed to fix the dependencies:
+```
+ln -s /usr/lib64/libyajl.so.2 /usr/lib64/libyajl.so.1
+ln -s /usr/lib64/libmpfr.so.4 /usr/lib64/libmpfr.so.1
+```
+
 Build
 -----
 To build DCEP in `/tmp`:
