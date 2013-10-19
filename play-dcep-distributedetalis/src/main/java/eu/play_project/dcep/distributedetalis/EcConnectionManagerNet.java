@@ -18,6 +18,7 @@ import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerNet;
+import eu.play_project.dcep.distributedetalis.persistence.Persistence;
 import eu.play_project.dcep.distributedetalis.persistence.PersistenceException;
 import eu.play_project.dcep.distributedetalis.persistence.Sqlite;
 import eu.play_project.dcep.distributedetalis.persistence.Sqlite.SubscriptionPerCloud;
@@ -31,6 +32,7 @@ import fr.inria.eventcloud.api.PutGetApi;
 import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.SubscribeApi;
 import fr.inria.eventcloud.api.Subscription;
+import fr.inria.eventcloud.api.SubscriptionId;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
@@ -53,7 +55,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 	static GetEventThread getEventThread;
 	private boolean init = false;
 	private Logger logger;
-	private Sqlite persistence;
+	private Persistence persistence;
 	static final Properties constants = DcepConstants.getProperties();
 	public static final String REST_URI = constants.getProperty("dcep.notify.rest.local");
 
@@ -99,7 +101,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 
 				try {
 					ProxyFactory.newSubscribeProxy(eventCloudRegistryUrl,
-							new EventCloudId(sub.cloudId)).unsubscribe(sub.subscriptionId);
+							new EventCloudId(sub.cloudId)).unsubscribe(SubscriptionId.parseSubscriptionId(sub.subscriptionId));
 				} catch (Exception e) {
 					logger.debug(e.getMessage());
 				}
@@ -284,7 +286,7 @@ public class EcConnectionManagerNet implements SimplePublishApi, Serializable, E
 				logger.info("Subscribing to eventcloud {}.", cloudId);
 				this.getInputCloud(cloudId).subscribe(sub, eventCloudListener);
 				this.subscriptions.put(getInputCloud(cloudId), new SubscriptionUsage(sub));
-				this.persistence.storeSubscription(cloudId, sub.getId());
+				this.persistence.storeSubscription(cloudId, sub.getId().toString());
 			}
 		} catch (EcConnectionmanagerException e) {
 			logger.error("Problem subscribing to event cloud {}: {}", cloudId, e.getMessage());

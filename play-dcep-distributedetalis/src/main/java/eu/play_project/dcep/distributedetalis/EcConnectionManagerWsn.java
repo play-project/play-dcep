@@ -34,6 +34,10 @@ import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerRest;
 import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerWsn;
+import eu.play_project.dcep.distributedetalis.persistence.Persistence;
+import eu.play_project.dcep.distributedetalis.persistence.PersistenceException;
+import eu.play_project.dcep.distributedetalis.persistence.Sqlite;
+import eu.play_project.dcep.distributedetalis.persistence.Sqlite.SubscriptionPerCloud;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Event;
 import eu.play_project.play_commons.constants.Stream;
@@ -64,6 +68,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
     public static final String REST_URI = constants.getProperty("dcep.notify.rest.local");
 	private Service notifyReceiverSoap;
 	private Server notifyReceiverRest;
+	private Persistence persistence;
 	
 	public EcConnectionManagerWsn(DistributedEtalis dEtalis) {
 		this.dEtalis = dEtalis;
@@ -138,6 +143,23 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 			}
 		}
 		
+		try {
+			persistence = new Sqlite();
+			for (SubscriptionPerCloud sub : persistence.getSubscriptions()) {
+				logger.info("Cleaning stale subscription from cloud {}: {}", sub.cloudId,
+						sub.subscriptionId);
+
+				try {
+					rdfReceiver.unsubscribe(sub.subscriptionId);
+				} catch (Exception e) {
+					logger.debug(e.getMessage());
+				}
+			}
+
+		} catch (PersistenceException e) {
+			throw new EcConnectionmanagerException(e.getMessage(), e);
+		}
+		
 		init = true;
 	}
 	
@@ -149,6 +171,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 		// Unsubscribe
 		this.rdfReceiver.unsubscribeAll();
 		subscriptions.clear();
+		persistence.deleteAllSubscriptions();
 		
     	if (this.notifyReceiverSoap != null) {
     		this.notifyReceiverSoap.stop();
@@ -248,6 +271,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 			logger.info("Subscribing to topic {}.", cloudId);
 			String subId = this.rdfReceiver.subscribe(cloudId, SOAP_URI);
 			this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
+			this.persistence.storeSubscription(cloudId, subId);
 		}
 	}
 
