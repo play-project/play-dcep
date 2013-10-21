@@ -27,6 +27,7 @@ Finally:
 * LOG4J writes to STDOUT (configured in `conf/logback.xml`)
 * STDOUT is redirected to `log/dcep.log` in the install directory (see [README.md](README.md)).
 
+```
     DCEP -------------.
 	                   \
     EventCloud ---------. 
@@ -40,4 +41,4 @@ Finally:
                                       /
                                      /
     ProActive/GCM ----------- LOG4J ´
-
+```

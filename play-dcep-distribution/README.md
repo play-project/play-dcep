@@ -85,6 +85,7 @@ rpm -Uvh http://repo.sparql.pro/centos/6/x86_64/4store-1.1.5-4.x86_64.rpm
 ```
 * `--nodeps` can be added to the last command if the dependencies are not properly recognized.
 * This might also be needed to fix the dependencies:
+
 ```
 ln -s /usr/lib64/libyajl.so.2 /usr/lib64/libyajl.so.1
 ln -s /usr/lib64/libmpfr.so.4 /usr/lib64/libmpfr.so.1
