@@ -211,16 +211,6 @@
 	</repositories>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/main/resources/proactive.java.policy]]></argLine>
-					<forkCount>0</forkCount>
-				</configuration>
-			</plugin>
-		</plugins>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
