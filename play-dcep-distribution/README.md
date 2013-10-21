@@ -14,8 +14,8 @@
     ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                                                       ASCII Art: GlassGiant.com
 
-PLAY Distributed Complex Event Processing (DCEP) INSTALLATION
-=============================================================
+Installation of DCEP
+====================
 DCEP is the complex event processor in PLAY. Our approach is based on declarative
 (logic) rules. We will bring this approach to the cloud creating a large-scale,
 elastic CEP service which dynamically adapts to fluctuating event frequencies.
@@ -113,3 +113,5 @@ Run
 ---
 1. Run `bin/dcep start` on Unix
 2. The program can be terminated using `bin/dcep stop`
+3. The log file can be found in `log/dcep.log`, see also [README.logging.md](README.logging.md)
+

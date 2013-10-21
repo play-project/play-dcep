@@ -15,6 +15,7 @@ import org.objectweb.proactive.core.component.body.ComponentEndActive;
 import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.jtalis.core.JtalisContextImpl;
 
@@ -63,6 +64,19 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	Service service;
 
+	{
+		/*
+		 * Set up logging for jtalis (using JUL -> slf4j)
+		 */
+		
+		// Optionally remove existing handlers attached to j.u.l root logger
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		
+		// add SLF4JBridgeHandler to j.u.l's root logger, should be done once
+		// during the initialization phase of your application
+		SLF4JBridgeHandler.install();
+	}
+	
 	// Only for ProActive
 	public DistributedEtalis() {
 	}
