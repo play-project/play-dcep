@@ -36,8 +36,8 @@ Finally:
 	                     /                 /
                         /                 /
     Jersey 2.x --- JUL ´                 /
-                 /                      /
-    jtalis ---- ´                      /
+                  /                     /
+    jtalis ----- ´                     /
                                       /
                                      /
     ProActive/GCM ----------- LOG4J ´
