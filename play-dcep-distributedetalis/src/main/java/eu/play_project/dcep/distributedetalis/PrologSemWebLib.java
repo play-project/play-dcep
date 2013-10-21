@@ -130,9 +130,9 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	 * strings are meanto to be used as <i>quoted atoms</i> in Prolog, between
 	 * single quotes.
 	 * 
-	 * @see http
-	 *      ://www.swi-prolog.org/pldoc/doc_for?object=section%284,%272.15.1.2
-	 *      %27,swi%28%27/doc/Manual/syntax.html%27%29%29
+	 * @see <a
+	 *      href="http://www.swi-prolog.org/pldoc/doc_for?object=section%284,%272.15.1.2%27,swi%28%27/doc/Manual/syntax.html%27%29%29">SWI
+	 *      Prolog Character Escape Syntax</a>
 	 */
 	public static String escapeForProlog(String s) {
 		return s.replaceAll("'", "\'");
