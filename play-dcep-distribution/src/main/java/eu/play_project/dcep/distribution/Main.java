@@ -30,8 +30,8 @@ public class Main {
 
 	/**
 	 * Start DCEP. There are several ways to stop it: (1) by killing the main
-	 * thread a shutdownhook is caught (2) by sending 3 newlines on stdin (3)
-	 * when an exception happens during start.
+	 * thread a shutdownhook is caught (2) when an exception happens during
+	 * start.
 	 */
 	public static void main(String[] args) throws IllegalStateException {
 		if (running) {
@@ -39,7 +39,7 @@ public class Main {
 		}
 		
 		running = true;
-
+		 
 		try {
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
