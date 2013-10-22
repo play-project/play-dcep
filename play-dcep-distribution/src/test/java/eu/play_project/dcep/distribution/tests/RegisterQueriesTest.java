@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Ignore;
@@ -16,6 +15,7 @@ import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -35,7 +35,7 @@ public class RegisterQueriesTest {
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private final Logger logger = Logger.getAnonymousLogger();
+	private final org.slf4j.Logger logger = LoggerFactory.getLogger(RegisterQueriesTest.class);
 	
 	/**
 	 * Load pattern which are loaded at DCEP startup.

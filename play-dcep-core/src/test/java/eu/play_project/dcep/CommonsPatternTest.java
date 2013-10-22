@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.logging.Logger;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.event_processing.events.types.UcTelcoCall;
@@ -27,6 +26,7 @@ import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.node.NodeException;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
@@ -46,7 +46,7 @@ public class CommonsPatternTest {
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private final Logger logger = Logger.getAnonymousLogger();
+	private final org.slf4j.Logger logger = LoggerFactory.getLogger(CommonsPatternTest.class);
 	
 	@Test
 	public void testClic2callPattern() throws IllegalLifeCycleException,
@@ -182,7 +182,7 @@ public class CommonsPatternTest {
 		logger.info("Publish evetns");
 		for (int i = 0; i < 10; i++) {
 			CompoundEvent event = createTaxiUCCallEvent("example" + Math.random());
-			logger.fine("Publish event" +  event);
+			logger.debug("Publish event" +  event);
 			testApi.publish(event);
 		}
 

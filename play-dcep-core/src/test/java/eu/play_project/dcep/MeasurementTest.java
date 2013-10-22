@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.logging.Logger;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Test;
@@ -16,6 +15,7 @@ import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
@@ -36,7 +36,7 @@ public class MeasurementTest {
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private final Logger logger = Logger.getAnonymousLogger();
+	private final org.slf4j.Logger logger = LoggerFactory.getLogger(MeasurementTest.class);
 
 	@Test
 	public void basicMeasurementTest() throws IllegalLifeCycleException,
