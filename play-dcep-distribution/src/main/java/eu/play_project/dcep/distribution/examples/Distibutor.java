@@ -51,9 +51,10 @@ public class Distibutor {
 		Component root = (Component) factory.newComponent("DistributedEtalis", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 
-		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
+		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
+				.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
-		ConfigApi configApi = ((ConfigApi) root.getFcInterface("ConfigApi"));
+		ConfigApi configApi = ((ConfigApi) root.getFcInterface(ConfigApi.class.getSimpleName()));
 		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
 
 		// Register apis

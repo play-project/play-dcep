@@ -160,14 +160,14 @@ public class DEtalisTests implements Serializable {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		distributedEtalisTestApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
-				.getFcInterface("DistributedEtalisTestApi"));
+				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
 
-		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root.getFcInterface("ConfigApi"));
+		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root.getFcInterface(ConfigApi.class.getSimpleName()));
 		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-plus-tweet-historical-data.trig"));
 
-		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface("DcepManagmentApi"));
+		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 		
-		dEtalis = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface("DcepMonitoringApi"));
+		dEtalis = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
 
 		// Subscribe to get complex events.
 		try {

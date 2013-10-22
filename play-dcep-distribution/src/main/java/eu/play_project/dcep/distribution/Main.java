@@ -130,8 +130,8 @@ public class Main {
 		}
 
 		// Get interfaces
-		QueryDispatchApi queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
-				.getFcInterface("QueryDispatchApi"));
+		QueryDispatchApi queryDispatchApi = ((QueryDispatchApi) root
+				.getFcInterface(QueryDispatchApi.class.getSimpleName()));
 
 		/*
 		 * Compile and Deploy Queries

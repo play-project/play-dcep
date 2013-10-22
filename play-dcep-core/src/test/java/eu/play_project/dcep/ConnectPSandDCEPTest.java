@@ -267,9 +267,9 @@ public class ConnectPSandDCEPTest implements Serializable {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
-				.getFcInterface("QueryDispatchApi"));
+				.getFcInterface(QueryDispatchApi.class.getSimpleName()));
 		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
-				.getFcInterface("DistributedEtalisTestApi"));
+				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
 	}
 	
 	private String getSparqlQueries(String queryFile){

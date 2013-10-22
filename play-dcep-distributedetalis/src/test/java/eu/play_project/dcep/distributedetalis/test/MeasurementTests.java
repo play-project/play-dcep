@@ -32,7 +32,7 @@ public class MeasurementTests {
 		root = (Component) factory.newComponent("DistributedEtalis", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 		
-		 dEtalis = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface("DcepMonitoringApi"));
+		 dEtalis = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
 		
 		Thread.sleep(10000);
 	}

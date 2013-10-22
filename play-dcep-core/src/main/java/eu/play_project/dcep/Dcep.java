@@ -159,10 +159,10 @@ Serializable {
 				GCM.getGCMLifeCycleController(dEtalis).startFc();
 
 				dEtalisTest = ((DistributedEtalisTestApi) dEtalis
-						.getFcInterface("DistributedEtalisTestApi"));
+						.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
 				dEtalisMonitoring = ((DcepMonitoringApi) dEtalis
-						.getFcInterface("DcepMonitoringApi"));
-				configApi = ((ConfigApi)dEtalis.getFcInterface("ConfigApi"));
+						.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
+				configApi = ((ConfigApi)dEtalis.getFcInterface(ConfigApi.class.getSimpleName()));
 				configDEtalisInstance(configApi);
 			} catch (NoSuchInterfaceException e) {
 				logger.error("Error initialising DCEP: ", e);

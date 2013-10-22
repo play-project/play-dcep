@@ -105,11 +105,12 @@ public class MeasurementTest {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
-				.getFcInterface("QueryDispatchApi"));
+				.getFcInterface(QueryDispatchApi.class.getSimpleName()));
 		testApi = (DistributedEtalisTestApi) root
-				.getFcInterface("DistributedEtalisTestApi");
+				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName());
 		
-		monitoringApi = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface("DcepMonitoringApi"));
+		monitoringApi = ((eu.play_project.dcep.api.DcepMonitoringApi) root
+				.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
 
 		try {
 			Thread.sleep(10000);

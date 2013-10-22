@@ -48,7 +48,7 @@ public class SingleDistributedEtalisInstanceRunner {
 		Fractive.registerByName(root, "dEtalis1");
 		
 		//Configure component.
-		ConfigApi configApi = ((ConfigApi)root.getFcInterface("ConfigApi"));
+		ConfigApi configApi = ((ConfigApi)root.getFcInterface(ConfigApi.class.getSimpleName()));
 		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
 		
 		

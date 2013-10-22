@@ -216,9 +216,9 @@ public static void InstantiatePlayPlatform()
 	GCM.getGCMLifeCycleController(root).startFc();
 
 	queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
-			.getFcInterface("QueryDispatchApi"));
+			.getFcInterface(QueryDispatchApi.class.getSimpleName()));
 	dcepPublishApi = ((fr.inria.eventcloud.api.PublishApi) root
-			.getFcInterface("PublishApi"));
+			.getFcInterface(PublishApi.class.getSimpleName()));
 }
 public static CompoundEvent  createEvent(String eventId){
 
