@@ -110,6 +110,101 @@ public class CommonsPatternTest {
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getMatchObject().toString(), "\"Tea\"");
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(8).getMatchObject().toString(), "\"Coffee\"");
 	}
+	@Test
+	public void Crisis01Test() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException {
+		String queryString;
+		
+		instantiatePlayPlatform();
+
+		// Get query.
+		queryString = getSparqlQueries("play-bdpl-crisis-01a-radiation.eprq");
+
+		// Compile query
+		String paternID1 = queryDispatchApi.registerQuery("abc0", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		testApi.attach(subscriber);
+	
+		logger.info("Publish evetns");
+		for (int i = 0; i < 3; i++) {
+			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
+			Quadruple q1 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"));
+			Quadruple q2 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
+			Quadruple q3 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/source"),
+					NodeFactory.createURI("http://sources.event-processing.org/ids/WebApp#source"));
+			Quadruple q4 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+					NodeFactory.createURI("http://streams.event-processing.org/ids/situationalEvent#stream"));
+			Quadruple q5 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/localisation"),
+					NodeFactory.createURI("Karlsruhe"));
+			Quadruple q6 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/unit"),
+					NodeFactory.createURI("mSv"));
+			Quadruple q7 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
+					NodeFactory.createURI("110"));
+
+
+			
+			quads.add(q1);
+			quads.add(q2);
+			quads.add(q3);
+			quads.add(q4);
+			quads.add(q5);
+			quads.add(q6);
+			quads.add(q7);
+			testApi.publish(new CompoundEvent(quads));
+			NodeFactory.createURI("http://streams.event-processing.org/ids/FacebookStatusFeed#stream");
+		}
+
+		// Wait
+		delay();
+
+		assertTrue(subscriber.getComplexEvents().size()==3);
+		
+
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			for (Component subcomponent : GCM.getContentController(root)
+					.getFcSubComponents()) {
+				logger.info("Terminating component: "
+						+ subcomponent.getFcType());
+				GCM.getGCMLifeCycleController(subcomponent)
+						.terminateGCMComponent();
+			}
+			
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//@Test
 	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
