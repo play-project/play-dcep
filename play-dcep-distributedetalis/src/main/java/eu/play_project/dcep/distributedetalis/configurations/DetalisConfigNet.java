@@ -53,7 +53,7 @@ public class DetalisConfigNet implements Configuration, Serializable{
 				etalis = new JtalisContextImpl(engine);
 				dEtalisConfigApi.setEtalis(etalis);
 			} catch (Exception e) {
-				dEtalisConfigApi.getLogger().error("Error initializing ETALIS", e);
+				logger.error("Error initializing ETALIS", e);
 				throw new DistributedEtalisException("Error initializing ETALIS", e);
 			}
 			

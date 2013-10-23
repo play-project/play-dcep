@@ -3,8 +3,6 @@ package eu.play_project.dcep.distributedetalis.api;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
@@ -38,7 +36,6 @@ public interface DEtalisConfigApi {
 	public JtalisContextImpl getEtalis();
 	public JtalisOutputProvider getEventOutputProvider();
 	public JtalisInputProvider getEventInputProvider();
-	public Logger getLogger();
 	
 	/**
 	 * Complex events are delivered to ecConnectionManger. With this method it is possible to set a special version e.g. one with needs no internet connection.

@@ -55,7 +55,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 			etalis = new JtalisContextImpl(engine);
 			dEtalisConfigApi.setEtalis(etalis);
 		} catch (Exception e) {
-			dEtalisConfigApi.getLogger().error("Error initializing ETALIS", e);
+			logger.error("Error initializing ETALIS", e);
 		}
 		
 		// Load Semantic Web Library
@@ -71,8 +71,10 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocal(inputRdfModelFile));
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 		dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
-		dEtalisConfigApi.getEventSinks(), dEtalisConfigApi.getRegisteredQueries(),
-		dEtalisConfigApi.getEcConnectionManager(), measurementUnit));
+				dEtalisConfigApi.getEventSinks(),
+				dEtalisConfigApi.getRegisteredQueries(),
+				dEtalisConfigApi.getEcConnectionManager(),
+				measurementUnit));
 
 		dEtalisConfigApi.getEtalis().registerOutputProvider(dEtalisConfigApi.getEventOutputProvider());
 		dEtalisConfigApi.getEtalis().registerInputProvider(dEtalisConfigApi.getEventInputProvider());

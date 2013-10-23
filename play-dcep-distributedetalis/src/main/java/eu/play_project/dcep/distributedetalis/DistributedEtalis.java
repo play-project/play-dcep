@@ -288,11 +288,6 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public Logger getLogger() {
-		return logger;
-	}
-
-	@Override
 	public Map<String, BdplQuery> getRegisteredQueries() {
 		return registeredQueries;
 	}

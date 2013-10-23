@@ -46,7 +46,7 @@ public class DetalisConfig4store extends DetalisConfigNet implements Configurati
 				etalis = new JtalisContextImpl(engine);
 				dEtalisConfigApi.setEtalis(etalis);
 			} catch (Exception e) {
-				dEtalisConfigApi.getLogger().error("Error initializing ETALIS", e);
+				logger.error("Error initializing ETALIS", e);
 				throw new DistributedEtalisException("Error initializing ETALIS", e);
 			}
 			
