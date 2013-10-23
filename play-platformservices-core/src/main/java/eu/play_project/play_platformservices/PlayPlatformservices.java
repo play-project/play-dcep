@@ -157,6 +157,8 @@ public class PlayPlatformservices implements QueryDispatchApi,
 					+ this.getClass().getSimpleName());
 		}
 
+		logger.info("Registering query with ID '{}'", queryId);
+
 		BdplQuery epQuery = createCepQuery(queryId, query);
 		
 		try {
@@ -182,8 +184,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		// Generate CEP-language
 		eleGenerator.setPatternId(queryId);
 		eleGenerator.generateQuery(q);
-
-		logger.info("Registering query with ID " + queryId);
 
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);

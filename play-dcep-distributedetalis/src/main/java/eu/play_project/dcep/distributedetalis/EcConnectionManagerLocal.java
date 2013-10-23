@@ -124,5 +124,6 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 
 	@Override
 	public void destroy() {
+		logger.info("Terminating {}.", this.getClass().getSimpleName());
 	}
 }
