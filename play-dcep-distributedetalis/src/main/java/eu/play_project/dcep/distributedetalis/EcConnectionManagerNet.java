@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
-import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerNet;
@@ -44,7 +43,7 @@ import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 import fr.inria.eventcloud.factories.EventCloudsRegistryFactory;
 import fr.inria.eventcloud.factories.ProxyFactory;
 
-public class EcConnectionManagerNet implements SimplePublishApi, Serializable, EcConnectionManager {
+public class EcConnectionManagerNet implements Serializable, EcConnectionManager {
 
 	private static final long serialVersionUID = 100L;
 

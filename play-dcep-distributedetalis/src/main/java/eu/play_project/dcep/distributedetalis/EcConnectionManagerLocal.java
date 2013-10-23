@@ -1,7 +1,10 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_EXIT;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
 import org.ontoware.rdf2go.exception.SyntaxNotSupportedException;
@@ -17,47 +20,55 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QueryParseException;
 
+import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
-public class EcConnectionManagerLocal extends EcConnectionManagerNet{
+public class EcConnectionManagerLocal implements Serializable, EcConnectionManager {
 
 	private static final long serialVersionUID = 100L;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerLocal.class);
 	private String inputRdfModelFileName;
 
-	public EcConnectionManagerLocal(String inputRdfModelFileName){
+	public EcConnectionManagerLocal(String inputRdfModelFileName) {
 		this.inputRdfModelFileName = inputRdfModelFileName;
+		logger.info("Initialising {}.", this.getClass().getSimpleName());
 	}
-	
-	public EcConnectionManagerLocal(){}
-	
+
+	public EcConnectionManagerLocal() {
+	}
+
 	@Override
-	public void registerEventPattern(BdplQuery bdplQuery) {}
-	
+	public void registerEventPattern(BdplQuery bdplQuery) {
+	}
+
 	@Override
-	public void publish(CompoundEvent event) {}
-	
+	public void publish(CompoundEvent event) {
+		logger.info(LOG_DCEP_EXIT + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
+	}
+
 	@Override
-	public void unregisterEventPattern(BdplQuery bdplQuery) {}
-	
+	public void unregisterEventPattern(BdplQuery bdplQuery) {
+	}
+
 	@Override
 	public synchronized SelectResults getDataFromCloud(String query,
 			String cloudId) throws EcConnectionmanagerException {
 		// Create an empty model.
 		ModelSet rdf = EventHelpers.createEmptyModelSet();
 
-		if(inputRdfModelFileName==null){
+		if (inputRdfModelFileName == null) {
 			throw new RuntimeException("No data in jena model.");
 		}
-		
-	
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream(inputRdfModelFileName);
+
+		InputStream in = this.getClass().getClassLoader()
+				.getResourceAsStream(inputRdfModelFileName);
 		if (in == null) {
 			throw new IllegalArgumentException("File: " + inputRdfModelFileName + " not found");
 		}
@@ -67,7 +78,7 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 			logger.debug("Read historical data from file: " + inputRdfModelFileName + ".");
 			rdf.readFrom(in, Syntax.Trig);
 		} catch (SyntaxNotSupportedException e) {
-			logger.error("Syntax " + Syntax.Trig + " is not supported." );
+			logger.error("Syntax " + Syntax.Trig + " is not supported.");
 			e.printStackTrace();
 		} catch (ModelRuntimeException e) {
 			logger.error("ModelRuntimeException: " + e.getMessage());
@@ -76,18 +87,18 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 			logger.error("IO-Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		// Query data from model
 		Query jenaQuery;
 		Dataset jena;
-		try{
+		try {
 			jenaQuery = QueryFactory.create(query);
 			jena = (Dataset) rdf.getUnderlyingModelSetImplementation();
-		}catch(QueryParseException e){
+		} catch (QueryParseException e) {
 			logger.error("Query with pars error: " + query);
 			throw e;
 		}
-		
+
 		logger.debug("Execute historical query: " + query);
 		QueryExecution qexec = QueryExecutionFactory.create(jenaQuery, jena);
 
@@ -101,7 +112,17 @@ public class EcConnectionManagerLocal extends EcConnectionManagerNet{
 		return (results);
 	}
 
+	@Override
+	public void putDataInCloud(CompoundEvent event, String topic)
+			throws EcConnectionmanagerException {
+		throw new UnsupportedOperationException("not implemented");
+	}
+
 	public void setInputRdfModelFileName(String inputRdfModelFile) {
 		this.inputRdfModelFileName = inputRdfModelFile;
+	}
+
+	@Override
+	public void destroy() {
 	}
 }
