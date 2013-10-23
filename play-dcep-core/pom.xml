@@ -20,8 +20,11 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-Djava.security.manager
-						-Djava.security.policy=proactive.java.policy
+					<argLine>
+					    -Djava.security.manager 
+						-Djava.security.policy=proactive.java.policy 
+						-Dproactive.communication.protocol=pnp 
+						-Dproactive.pnp.port=9150
 					</argLine>
 				</configuration>
 			</plugin>
