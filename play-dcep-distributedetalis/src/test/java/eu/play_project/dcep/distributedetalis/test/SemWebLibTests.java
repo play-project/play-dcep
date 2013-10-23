@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 
 
 public class SemWebLibTests {
@@ -18,9 +19,10 @@ public class SemWebLibTests {
 	
 	/**
 	 * Get all subclasses of a given class. Class hierarchy is loaded from file.
+	 * @throws DistributedEtalisException
 	 */
 	@Test
-	public void rdfsSubclassExampleTest() throws IOException{
+	public void rdfsSubclassExampleTest() throws IOException, DistributedEtalisException{
 		
 		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);

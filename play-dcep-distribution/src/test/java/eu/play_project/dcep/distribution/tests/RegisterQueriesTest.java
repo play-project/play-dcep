@@ -4,9 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import org.etsi.uri.gcm.util.GCM;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
@@ -14,6 +15,7 @@ import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -21,6 +23,7 @@ import com.hp.hpl.jena.query.Syntax;
 
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
@@ -32,12 +35,13 @@ public class RegisterQueriesTest {
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private final Logger logger = Logger.getAnonymousLogger();
+	private final org.slf4j.Logger logger = LoggerFactory.getLogger(RegisterQueriesTest.class);
 	
 	/**
 	 * Load pattern which are loaded at DCEP startup.
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void registerCommonPatterns() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException{
 		
 		InstantiatePlayPlatform();
@@ -53,13 +57,14 @@ public class RegisterQueriesTest {
 		}
 	}
 	
-	//@Test
+	@Ignore
+	@Test
 	public void parsSRBenchQueries(){
 		Query query = QueryFactory.create(getSparqlQueries("benchmarks/srbench/q2.eprq"), Syntax.syntaxBDPL);
 		
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
+		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
@@ -83,8 +88,8 @@ public class RegisterQueriesTest {
 		root = (Component) factory.newComponent("DcepPsTest", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 
-		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface("QueryDispatchApi"));
-		testApi = (DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi");
+		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface(QueryDispatchApi.class.getSimpleName()));
+		testApi = (DistributedEtalisTestApi) root.getFcInterface(DistributedEtalisTestApi.class.getSimpleName());
 		
 		try {
 			Thread.sleep(20000);

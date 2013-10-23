@@ -153,13 +153,13 @@ public class DcepTest implements Serializable {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		dcepPublishApi = ((SimplePublishApi) root
-				.getFcInterface("SimplePublishApi"));
+				.getFcInterface(SimplePublishApi.class.getSimpleName()));
 
 		dcepManagmentApi = ((DcepManagmentApi) root
-				.getFcInterface("DcepManagmentApi"));
+				.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
 		dcepTestApi = ((DistributedEtalisTestApi) root
-				.getFcInterface("DistributedEtalisTestApi"));
+				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
 
 	}
 

@@ -14,8 +14,8 @@
     ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
                                                       ASCII Art: GlassGiant.com
 
-PLAY Distributed Complex Event Processing (DCEP) INSTALLATION
-=============================================================
+Installation of DCEP
+====================
 DCEP is the complex event processor in PLAY. Our approach is based on declarative
 (logic) rules. We will bring this approach to the cloud creating a large-scale,
 elastic CEP service which dynamically adapts to fluctuating event frequencies.
@@ -25,7 +25,7 @@ events and there is no need to model mappings to binary formats.
 
 Dependencies
 ------------
-Tested on `CentOS release 6.3 (Final)`:
+Tested on `CentOS release 6.3 (Final) 64bit`:
 
 ### Runtime Requirements:
 #### Java (>=1.6)
@@ -33,12 +33,19 @@ Tested on `CentOS release 6.3 (Final)`:
 ```
 yum install readline-devel libjpeg
 cd /tmp
-wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-static-5.10.2-3.fc15.x86_64.rpm
-wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-jpl-5.10.2-3.fc15.x86_64.rpm
-wget http://kojipkgs.fedoraproject.org//packages/pl/5.10.2/3.fc15/x86_64/pl-5.10.2-3.fc15.x86_64.rpm
+wget http://kojipkgs.fedoraproject.org/packages/pl/5.10.2/3.fc15/x86_64/pl-static-5.10.2-3.fc15.x86_64.rpm
+wget http://kojipkgs.fedoraproject.org/packages/pl/5.10.2/3.fc15/x86_64/pl-jpl-5.10.2-3.fc15.x86_64.rpm
+wget http://kojipkgs.fedoraproject.org/packages/pl/5.10.2/3.fc15/x86_64/pl-5.10.2-3.fc15.x86_64.rpm
 rpm -i pl-*.rpm
 ```
 Add `--nodeps` to the rpm command if there is a problem with an old version of libjpeg which is actually on your system already.
+
+
+Add JPL library (`libjpl.so`) to `$LD_LIBRARY_PATH` (do this permanently by adding to `/etc/profile.d/swipl.sh`):
+```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/swipl-jpl:/usr/lib/
+```
+
 
 #### Virtuoso (>=6.1.7, optional)
 I created an SRPM based on 6.1.6 myself using instructions from http://wiki.centos.org/HowTos/RebuildSRPM 
@@ -69,6 +76,21 @@ Use the init.d start script from here: [RedHat, CentOS](https://gist.github.com/
 chkconfig virtuoso on
 ```
 
+#### 4store (>=1.1.5, optional)
+See http://4store.org/trac/wiki/Download or build 4store form source to get the newest bugfixes and SPARQL 1.1 features.
+```
+yum install mhash yajl mpfr redland rasqal avahi-glib
+rpm --import http://repo.sparql.pro/RPM-GPG-KEY-SPARQL-PRO
+rpm -Uvh http://repo.sparql.pro/centos/6/x86_64/4store-1.1.5-4.x86_64.rpm
+```
+* `--nodeps` can be added to the last command if the dependencies are not properly recognized.
+* This might also be needed to fix the dependencies:
+
+```
+ln -s /usr/lib64/libyajl.so.2 /usr/lib64/libyajl.so.1
+ln -s /usr/lib64/libmpfr.so.4 /usr/lib64/libmpfr.so.1
+```
+
 Build
 -----
 To build DCEP in `/tmp`:
@@ -91,4 +113,6 @@ Unpack/Configure
 Run
 ---
 1. Run `bin/dcep start` on Unix
-2. The program can be terminated early using `bin/dcep stop`
+2. The program can be terminated using `bin/dcep stop`
+3. The log file can be found in `log/dcep.log`, see also [README.logging.md](README.logging.md)
+

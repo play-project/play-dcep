@@ -1,4 +1,7 @@
-# Simple CONSTRUCT emty ConstructTemplate @expectedException<Encountered " "where" "WHERE "" at line 2, column 57. \n Was expecting: \n "{" \>.
+# Simple CONSTRUCT emty ConstructTemplate @expectedException<Encountered " "where" "WHERE "" at line\>.
 PREFIX pl: <http://play-project.eu/ep-sparql> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX :   <http://events.event-processing.org/types/>
+
 CONSTRUCT 
 WHERE   { ?x pl:name ?name }

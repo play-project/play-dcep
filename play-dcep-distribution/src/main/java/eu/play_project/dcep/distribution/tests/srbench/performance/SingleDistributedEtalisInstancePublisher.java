@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
@@ -80,7 +81,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		String patternId = "http://patternID.example.com/" + Math.random() * 1000000;
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
 		//String patternId = "'p1'";
 		visitor1.setPatternId(patternId);
 

@@ -12,6 +12,8 @@ import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.event_processing.events.types.FacebookStatusFeedEvent;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
@@ -41,12 +43,14 @@ public class ConnectPSandDCEPTest implements Serializable {
 	static Component root;
 	public static boolean test;
 
-	//@Test
+	@Ignore
+	@Test
 	public void readQueryFromFileTest(){
 		System.out.println(getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq"));
 	}
 	
-	//@Test
+	@Ignore
+	@Test
 	public void instantiatePlayPlatformTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
@@ -117,18 +121,19 @@ public class ConnectPSandDCEPTest implements Serializable {
 }
 
 	/**
-	 * Test tumbling window functionality. 
+	 * Test tumbling window functionality.
 	 * The registered pattern generates a complex event if three simple events appear in one second (tumbling window).
 	 * In the beginning of the test four events (e1,e2,e3,e4) are sent and two seconds later two additional events (e5,e6).  After a break three events (e7,e8,e9) are sent.
-	 * This test will produce three complex events. The first four events generate two complex events (c1,c2). After the break of two 
-	 * seconds a new window (w2) opens and three events are needed to fulfill the pattern. But only two events (e5, e6) are sent - no complex event. 
-	 * In window w3 three events are sent.  For this reason one complex event (c3) is produced. 
+	 * This test will produce three complex events. The first four events generate two complex events (c1,c2). After the break of two
+	 * seconds a new window (w2) opens and three events are needed to fulfill the pattern. But only two events (e5, e6) are sent - no complex event.
+	 * In window w3 three events are sent.  For this reason one complex event (c3) is produced.
 	 * 
 	 * w1                        w2                        w3                       w4
 	 * |-e1----e2----e3----e4----|-----------e5----e6------|-e7----e8----e9----------|
 	 *               |-> c1 |-> c2                                       |-> c3
 	 */
-	//@Test
+	@Ignore
+	@Test
 	public void tumblingWindowTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
@@ -262,9 +267,9 @@ public class ConnectPSandDCEPTest implements Serializable {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
-				.getFcInterface("QueryDispatchApi"));
+				.getFcInterface(QueryDispatchApi.class.getSimpleName()));
 		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
-				.getFcInterface("DistributedEtalisTestApi"));
+				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
 	}
 	
 	private String getSparqlQueries(String queryFile){

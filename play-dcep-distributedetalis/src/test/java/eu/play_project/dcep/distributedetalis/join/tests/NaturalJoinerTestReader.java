@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.distributedetalis.join.tests;
+package eu.play_project.dcep.distributedetalis.join.tests;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

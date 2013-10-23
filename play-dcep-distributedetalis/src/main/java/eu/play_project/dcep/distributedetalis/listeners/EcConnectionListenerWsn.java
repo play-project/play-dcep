@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distributedetalis;
+package eu.play_project.dcep.distributedetalis.listeners;
 
 import java.io.Serializable;
 
@@ -11,20 +11,22 @@ import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.abstraction.Noti
 import com.ebmwebsourcing.wsstar.basenotification.datatypes.api.utils.WsnbException;
 import com.ebmwebsourcing.wsstar.wsnb.services.INotificationConsumer;
 
+import eu.play_project.dcep.distributedetalis.DistributedEtalis;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.utils.DsbHelpers;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.NoRdfEventException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
-class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializable {
+public class EcConnectionListenerWsn implements INotificationConsumer, Serializable {
 
 	private static final long serialVersionUID = 100L;
 	private DistributedEtalis dEtalis;
 	private final AbstractReceiverRest rdfReceiver;
 	private final Logger logger;
 	
-	public EcConnectionListenerVirtuoso(AbstractReceiverRest rdfReceiver) {
+	public EcConnectionListenerWsn(AbstractReceiverRest rdfReceiver) {
 		this.rdfReceiver = rdfReceiver;
 		this.logger = LoggerFactory.getLogger(this.getClass());
 	}
@@ -51,10 +53,12 @@ class EcConnectionListenerVirtuoso implements INotificationConsumer, Serializabl
 		    this.dEtalis.publish(event);
 		    
 		    // Store the event in Virtuoso:
-		    ((EcConnectionManagerVirtuoso)this.dEtalis.getEcConnectionManager()).putDataInCloud(event, topic);
+		    this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
 		    
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
+		} catch (EcConnectionmanagerException e) {
+			logger.error("Could not store event for historic storage: " + e.getMessage());
 		}
 	}
 

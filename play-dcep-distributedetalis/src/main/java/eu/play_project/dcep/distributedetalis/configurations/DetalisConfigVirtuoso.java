@@ -3,6 +3,8 @@ package eu.play_project.dcep.distributedetalis.configurations;
 import java.io.IOException;
 import java.io.Serializable;
 
+import jpl.PrologException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +19,7 @@ import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.api.Configuration;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 
@@ -29,7 +32,9 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 	@Override
 	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
-		logger = LoggerFactory.getLogger(DetalisConfigVirtuoso.class);
+		logger = LoggerFactory.getLogger(this.getClass());
+		logger.info("Configuring DistributedEtalis using " + this.getClass().getSimpleName());
+
 		cl = new LoadPrologCode();
 		
 		try {
@@ -41,7 +46,7 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 				etalis = new JtalisContextImpl(engine);
 				dEtalisConfigApi.setEtalis(etalis);
 			} catch (Exception e) {
-				dEtalisConfigApi.getLogger().error("Error initializing ETALIS", e);
+				logger.error("Error initializing ETALIS", e);
 				throw new DistributedEtalisException("Error initializing ETALIS", e);
 			}
 			
@@ -74,15 +79,11 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 				cl.loadCode("Helpers.pl", engine);
 				cl.loadCode("Math.pl", engine);
 			} catch (IOException e) {
-				logger.error("It is not possible to load prolog code. " + e.getMessage());
-				e.printStackTrace();
-			}catch(Exception e){
-				logger.error("It is not possible to load prolog code. " + e.getMessage());
-				e.printStackTrace();
+				throw new DistributedEtalisException("It is not possible to load prolog code. IOException. " + e.getMessage());
+			}catch(PrologException e){
+				throw new DistributedEtalisException("It is not possible to load prolog code. PrologException. " + e.getMessage());
 			}
 
-	
-			// Set ETALIS properties.
 			// Set ETALIS properties.
 			etalis.setEtalisFlags("save_ruleId", "on");
 			etalis.addEventTrigger("complex/_");
@@ -96,8 +97,8 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 	
 			// Instatiate measurement unit.
 			// this.measurementUnit = new MeasurementUnit(this,
-		} catch (DistributedEtalisException e) {
-			throw new DistributedEtalisException("Error configuring DistributedEtalis: " + e.getMessage(), e);
+		} catch (EcConnectionmanagerException e) {
+			throw new DistributedEtalisException("Error configuring DistributedEtalis: " + e.getMessage());
 		}
 	}
 }

@@ -110,12 +110,19 @@ public class DcepManager {
 	 */
 	public DcepManagmentApi getManagementApi(){
 		lastUsedNode++;
+		DcepManagmentApi result;
 		try {
-			return (DcepManagmentApi)dEtalis.get(lastUsedNode%dEtalis.size()).getFcInterface("DcepManagmentApi");
+			if (!dEtalis.isEmpty()) {
+				result = (DcepManagmentApi)dEtalis.get(lastUsedNode%dEtalis.size()).getFcInterface(DcepManagmentApi.class.getSimpleName());
+			}
+			else {
+				result = null;
+			}
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();
-			return null;
+			result = null;
 		}
+		return result;
 	}
 }
 	

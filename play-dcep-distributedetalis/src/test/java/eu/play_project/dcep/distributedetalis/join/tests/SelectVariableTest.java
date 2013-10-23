@@ -1,4 +1,4 @@
-package eu.play_project.distributedetalis.join.tests;
+package eu.play_project.dcep.distributedetalis.join.tests;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;

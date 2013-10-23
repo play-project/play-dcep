@@ -13,5 +13,5 @@ public interface PrologEngineWrapperPlayExtensions {
 	 */
 	public boolean consult(String file);
 	public boolean assertFromFile(String file);
-	public Hashtable<String, Object>[] execute(String command);
+	public Hashtable<String, Object>[] execute(String command) throws DistributedEtalisException;
 }

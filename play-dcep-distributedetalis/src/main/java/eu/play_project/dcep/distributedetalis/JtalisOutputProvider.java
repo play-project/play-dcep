@@ -1,5 +1,6 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_EXIT;
 import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
@@ -31,7 +32,6 @@ import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
-import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
@@ -57,6 +57,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	private final static Node ENDTIME = TypeConversion.toJenaNode(Event.ENDTIME);
 	private final static Node EVENTPATTERN = TypeConversion.toJenaNode(Event.EVENTPATTERN);
 	private final static Node SOURCE = TypeConversion.toJenaNode(Event.SOURCE);
+	
+	private final static String PATTERN_BASE_URI = DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest");
 
 	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, BdplQuery> registeredQueries, EcConnectionManager ecConnectionManager, MeasurementUnit measurementUnit) {
 		this.engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -86,27 +88,18 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			CompoundEvent result = new CompoundEvent(quadruples);
 
 			measurementUnit.eventProduced(result, event.getName());
-			// event.getRuleID(); //TODO sobermeier use this.
-	
-			// Do not remove this line, needed for logs. :stuehmer
-			logger.info("DCEP Exit " + result.getGraph() + " " + EventCloudHelpers.getMembers(result));
-//			System.out.println(result);
-//			
-//			if(recipients.size()<1) logger.warn("No recipient for complex events.");
-//			
-//			for (SimplePublishApi recipient : recipients) {
-//				recipient.publish(result);
-//			}
-		} catch (Exception e) {
-			if(e instanceof RetractEventException){
-				logger.info("DCEP Retract ... an event was not created because its historic part was not fulfilled." );
-			}else if(e instanceof java.io.UTFDataFormatException){ //FIXME find the reason for this exception.
-				logger.error("It is not possible to deliver this event. " + e.getMessage() + "\n" + event);
-				e.printStackTrace();
-			}else{
-				logger.error("Exception appeard: " + e.getMessage());
-				e.printStackTrace();
+			
+			if(recipients.size() < 1) {
+				logger.warn(LOG_DCEP_FAILED_EXIT + "No recipients for complex events.");
 			}
+			
+			for (SimplePublishApi recipient : recipients) {
+				recipient.publish(result);
+			}
+		} catch (RetractEventException e) {
+			logger.info(LOG_DCEP_FAILED_EXIT + "Retract ... an event was not created because its historic part was not fulfilled.");
+		} catch (Exception e) {
+			logger.error(LOG_DCEP_FAILED_EXIT + "Exception appeared: " + e.getMessage(), e);
 		}
 	}
 	
@@ -129,7 +122,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				EVENTID,
 				EVENTPATTERN,
 				//Node.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getRuleID()))); // FIXME sobermeier
-				NodeFactory.createURI(DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest") + event.getStringProperty(1))));
+				NodeFactory.createURI(PATTERN_BASE_URI + event.getStringProperty(1))));
 
 		quadruples.add(new Quadruple(
 				GRAPHNAME,
@@ -153,12 +146,16 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				SOURCE,
 				NodeFactory.createURI(Source.Dcep.toString())));
 
-		//TODO Add :members to the event (an RDF list of all simple events which were detected)
+		//TODO sobermeier: Add :members to the event (an RDF list of all simple events which were detected)
 		
 		/*
 		 * Add payload data to event:
 		 */
 		Hashtable<String, Object>[] triples =  engine.getTriplestoreData(event.getStringProperty(0));
+		
+		if (triples.length < 1) {
+			logger.warn("No event attributes (triples) were returned from Etalis for event '{}'", eventId);
+		}
 
 		for(Hashtable<String, Object> item : triples) {
 			// Remove single quotes around Prolog strings

@@ -7,12 +7,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import jpl.PrologException;
+
 import org.objectweb.proactive.Body;
 import org.objectweb.proactive.Service;
 import org.objectweb.proactive.core.component.body.ComponentEndActive;
 import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.jtalis.core.JtalisContextImpl;
 
@@ -50,7 +53,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private JtalisContextImpl etalis; // ETALIS Object
 	private JtalisOutputProvider eventOutputProvider;
 	private JtalisInputProvider eventInputProvider;
-	private Logger logger;
+	private final Logger logger = LoggerFactory.getLogger(DistributedEtalis.class);
 	private Map<String, BdplQuery> registeredQueries = Collections.synchronizedMap(new HashMap<String, BdplQuery>());
 	private EcConnectionManager ecConnectionManager;
 	private MeasurementUnit measurementUnit;
@@ -61,6 +64,19 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	Service service;
 
+	{
+		/*
+		 * Set up logging for jtalis (using JUL -> slf4j)
+		 */
+		
+		// Optionally remove existing handlers attached to j.u.l root logger
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		
+		// add SLF4JBridgeHandler to j.u.l's root logger, should be done once
+		// during the initialization phase of your application
+		SLF4JBridgeHandler.install();
+	}
+	
 	// Only for ProActive
 	public DistributedEtalis() {
 	}
@@ -73,8 +89,6 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	@Override
 	public void initComponentActivity(Body body) {
-
-		logger = LoggerFactory.getLogger(DistributedEtalis.class);
 		logger.info("Initialising {} component.", this.getClass().getSimpleName());
 	}
 
@@ -101,7 +115,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.info("New event pattern is being registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), bdplQuery
 				.getDetails().getQueryId());
-		logger.info("ELE: " + bdplQuery.getEleQuery());
+		logger.debug("ELE: " + bdplQuery.getEleQuery());
 
 		if(this.registeredQueries.containsKey(bdplQuery.getDetails().getQueryId())) {
 			String error = "Pattern ID already exists: " + bdplQuery.getDetails().getQueryId();
@@ -109,26 +123,33 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			throw new DcepManagementException(error);
 		}
 		
-		this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
-		
-		logger.debug("Register query: " + bdplQuery.getEleQuery());
-		
-		etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
-		// Start tumbling window. (If a tumbling window was defined.)
-		etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
-		
-		//Register db queries.
-		for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
-			etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
-		}
-		
-		// Configure ETALIS to inform output listener if complex event of new type appeared.
-		etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
-		
-		//Register ele query.
 		try {
+			this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
+		
+			logger.debug("Register query: " + bdplQuery.getEleQuery());
+			
+			etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
+			// Start tumbling window. (If a tumbling window was defined.)
+			etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
+			
+			//Register db queries.
+			for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
+				etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
+			}
+			
+			// Configure ETALIS to inform output listener if complex event of new type appeared.
+			etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
+		
+			// Make subscriptions.
 			this.ecConnectionManager.registerEventPattern(bdplQuery);
+		} catch (PrologException e) {
+			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
+			throw new DcepManagementException(e.getMessage());
 		} catch (EcConnectionmanagerException e) {
+			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
+			throw new DcepManagementException(e.getMessage());
+		} catch (Exception e) {
+			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		}
 	}
@@ -168,7 +189,11 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		if (this.registeredQueries.containsKey(queryId)) {
 			logger.info("Removing event pattern at 'DistributedEtalis' Rule ID = "
 					+ queryId);
-			etalis.removeDynamicRule(queryId);
+			try {
+				etalis.removeDynamicRule(queryId);
+			} catch (PrologException e) {
+				logger.warn(String.format("Problem removing event pattern '%s': %s: %s", queryId, e.getClass().getSimpleName(), e.getMessage()));
+			}
 			this.ecConnectionManager.unregisterEventPattern(registeredQueries
 					.get(queryId));
 			this.registeredQueries.remove(queryId);
@@ -263,11 +288,6 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public Logger getLogger() {
-		return logger;
-	}
-
-	@Override
 	public Map<String, BdplQuery> getRegisteredQueries() {
 		return registeredQueries;
 	}
@@ -301,7 +321,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	public void measurePerformance(MeasurementConfig config) {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}	
+		}
 		measurementUnit.startMeasurement(config.getMeasurementPeriod());
 	}
 	

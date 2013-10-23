@@ -1,65 +1,29 @@
 package eu.play_project.dcep.distributedetalis;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
-import javax.xml.namespace.QName;
-
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFFormat;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
-import org.petalslink.dsb.commons.service.api.Service;
-import org.petalslink.dsb.notification.service.NotificationConsumerService;
-import org.petalslink.dsb.soap.CXFExposer;
-import org.petalslink.dsb.soap.api.Exposer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import virtuoso.jdbc4.VirtuosoDataSource;
-
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
-
-import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
 import eu.play_project.dcep.distributedetalis.join.SelectResults;
-import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.constants.Stream;
-import eu.play_project.play_eventadapter.AbstractReceiverRest;
-import eu.play_project.play_eventadapter.AbstractSenderRest;
-import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
 
-public class EcConnectionManagerVirtuoso implements EcConnectionManager {
-	private final Map<String, SubscriptionUsage> subscriptions = new HashMap<String, SubscriptionUsage>();
+public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 	private Connection virtuosoConnection;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
-	private boolean init = false;
-	private AbstractReceiverRest rdfReceiver;
-	private AbstractSenderRest rdfSender;
-	private final DistributedEtalis dEtalis;
-	private EcConnectionListenerVirtuoso dsbListener;
-	static final Properties constants = DcepConstants.getProperties();
-	public static String notificationReceiverEndpoint = constants.getProperty("dcep.notify.endpoint");
-	private Service notifyReceiverServer;
-
-
-	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws DistributedEtalisException {
+	
+	public EcConnectionManagerVirtuoso(DistributedEtalis dEtalis) throws EcConnectionmanagerException {
 		this(
 				constants.getProperty("dcep.virtuoso.servername"),
 				Integer.parseInt(constants.getProperty("dcep.virtuoso.port")),
@@ -69,84 +33,24 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 				);
 	}
 	
-	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws DistributedEtalisException {
+	public EcConnectionManagerVirtuoso(String server, int port, String user, String pw, DistributedEtalis dEtalis) throws EcConnectionmanagerException {
+		super(dEtalis);
+		
 		VirtuosoDataSource virtuoso = new VirtuosoDataSource();
 		virtuoso.setServerName(server);
 		virtuoso.setPortNumber(port);
 		virtuoso.setUser(user);
 		virtuoso.setPassword(pw);
-		this.dEtalis = dEtalis;
 
 		// Test Virtuoso JDBC connection
 		try {
 			virtuoso.getConnection().close();
 			virtuosoConnection = virtuoso.getConnection();
 		} catch (SQLException e) {
-			throw new DistributedEtalisException("Could not connect to Virtuoso.", e);
+			throw new EcConnectionmanagerException("Could not connect to Virtuoso.", e);
 		}
 
 		init();
-	}
-	
-	private void init() throws DistributedEtalisException {
-		if (init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has ALREADY been initialized.");
-		}
-
-		logger.info("Initialising {}.", this.getClass().getSimpleName());
-		
-		this.rdfReceiver = new AbstractReceiverRest(
-				constants.getProperty("dsb.subscribe.endpoint")) {};
-				
-		// Use an arbitrary topic as default:
-		this.rdfSender = new AbstractSenderRest(Stream.FacebookCepResults.getTopicQName()) {};
-
-		try {
-        	this.dsbListener = new EcConnectionListenerVirtuoso(this.rdfReceiver);
-        	this.dsbListener.setDetalis(this.dEtalis);
-            
-            QName interfaceName = new QName("http://docs.oasis-open.org/wsn/bw-2",
-                    "NotificationConsumer");
-            QName serviceName = new QName("http://docs.oasis-open.org/wsn/bw-2",
-                    "NotificationConsumerService");
-            QName endpointName = new QName("http://docs.oasis-open.org/wsn/bw-2",
-                    "NotificationConsumerPort");
-            // expose the service
-            final String notificationReceiverEndpointLocal = constants.getProperty("dcep.notify.endpoint.local");
-            logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpointLocal, notificationReceiverEndpoint);
-            NotificationConsumerService service = new NotificationConsumerService(interfaceName,
-                    serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpointLocal,
-                    this.dsbListener);
-            Exposer exposer = new CXFExposer();
-            notifyReceiverServer = exposer.expose(service);
-            notifyReceiverServer.start();
-
-        } catch (Exception e) {
-        	
-        	if (notifyReceiverServer != null) {
-        		notifyReceiverServer.stop();
-        	}
-            throw new DistributedEtalisException("Error while starting DSB listener.", e);
-        }
-        
-		init = true;
-	}
-	
-	@Override
-	public void destroy() {
-		logger.info("Terminating {}.", this.getClass()
-				.getSimpleName());
-		logger.info("Unsubscribe from Topics");
-	
-		// Unsubscribe
-		this.rdfReceiver.unsubscribeAll();
-		subscriptions.clear();
-		
-    	if (this.notifyReceiverServer != null) {
-    		this.notifyReceiverServer.stop();
-    	}
-    	
-  		init = false;
 	}
 
 	/**
@@ -155,6 +59,7 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 	 * @param event event containing quadruples
 	 * @param cloudId the cloud ID to allow partitioning of storage
 	 */
+	@Override
 	public void putDataInCloud(CompoundEvent event, String cloudId) {
 
 		StringBuilder s = new StringBuilder();
@@ -237,131 +142,4 @@ public class EcConnectionManagerVirtuoso implements EcConnectionManager {
 		rr.setVariables(variables);
 		return rr;
 	}
-
-	/**
-	 * Produce a topic {@linkplain QName} for a given cloud ID.
-	 */
-	private QName getTopic(String cloudId) {
-		int index = cloudId.lastIndexOf("/");
-		return new QName(cloudId.substring(0, index+1), cloudId.substring(index + 1), "s");
-	}
-
-	@Override
-	public void publish(CompoundEvent event) {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}
-		
-		String cloudId = EventCloudHelpers.getCloudId(event);
-        
-		// Send event to DSB:
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		RDFDataMgr.write(out, quadruplesToDatasetGraph(event), RDFFormat.TRIG_BLOCKS);
-		this.rdfSender.notify(new String(out.toByteArray()), cloudId);
-		
-		// Store event in Virtuoso:
-		this.putDataInCloud(event, cloudId);
-	}
-
-	@Override
-	public void registerEventPattern(BdplQuery bdplQuery) throws EcConnectionmanagerException {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}
-		
-		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
-			subscribe(cloudId);
-		}
-
-		// Nothing to do for output streams, they are stateless
-	}
-
-	@Override
-	public void unregisterEventPattern(BdplQuery bdplQuery) {
-		for (String cloudId : bdplQuery.getDetails().getInputStreams()) {
-			unsubscribe(cloudId, this.subscriptions.get(cloudId).sub);
-		}
-	}
-
-	/**
-	 * Subscribe to a given topic on the DSB. Duplicate subscriptions are handled using counters.
-	 */
-	private void subscribe(String cloudId) throws EcConnectionmanagerException {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}
-
-		if (this.subscriptions.containsKey(cloudId)) {
-			logger.info("Still subscribed to topic {}.", cloudId);
-			this.subscriptions.get(cloudId).usage++;
-		}
-		else {
-			logger.info("Subscribing to topic {}.", cloudId);
-			String subId = this.rdfReceiver.subscribe(cloudId, notificationReceiverEndpoint);
-			this.subscriptions.put(cloudId, new SubscriptionUsage(subId));
-
-		}
-	}
-
-	/**
-	 * Unsubscribe from a given topic on the DSB. Duplicate subscriptions are handled using counters.
-	 */
-	private void unsubscribe(String cloudId, String subId) {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
-		}
-		
-		if (this.subscriptions.containsKey(cloudId)) {
-			this.subscriptions.get(cloudId).usage--;
-			
-			if (this.subscriptions.get(cloudId).usage == 0) {
-				logger.info("Unsubscribing from topic {}.", cloudId);
-				rdfReceiver.unsubscribe(subId);
-				this.subscriptions.remove(cloudId);
-			}
-			else {
-				logger.info("Still subscribed to topic {}.", cloudId);
-			}
-		}
-	}
-	
-	/**
-	 * Usage counter for a subscription.
-	 */
-	private class SubscriptionUsage implements Serializable {
-		
-		private static final long serialVersionUID = 100L;
-		
-		public SubscriptionUsage(String sub) {
-			this.sub = sub;
-			this.usage = 1;
-		}
-		
-		public String sub;
-		public int usage;
-	}
-
-    /**
-     * A private method to convert a collection of quadruples into the
-     * corresponding data set graph to be used in the event format writers
-     * 
-     * @author ialshaba
-     * 
-     * @param quads
-     *            the collection of the quadruples
-     * @return the corresponding data set graph
-     */
-    private static DatasetGraph quadruplesToDatasetGraph(CompoundEvent quads) {
-        DatasetGraph dsg = DatasetGraphFactory.createMem();
-        for (Quadruple q : quads) {
-            if (q.getPredicate() != PublishSubscribeConstants.EVENT_NB_QUADRUPLES_NODE) {
-                dsg.add(
-                        q.getGraph(), q.getSubject(), q.getPredicate(),
-                        q.getObject());
-            }
-        }
-
-        return dsg;
-    }
-
 }

@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.logging.Logger;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Test;
@@ -16,8 +15,8 @@ import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepMonitoringApi;
@@ -37,7 +36,7 @@ public class MeasurementTest {
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private final Logger logger = Logger.getAnonymousLogger();
+	private final org.slf4j.Logger logger = LoggerFactory.getLogger(MeasurementTest.class);
 
 	@Test
 	public void basicMeasurementTest() throws IllegalLifeCycleException,
@@ -46,15 +45,13 @@ public class MeasurementTest {
 
 		String queryString;
 
-		InstantiatePlayPlatform();
+		instantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQueries("measurement.eprq");
+		queryString = getSparqlQueries("patterns/measurement.eprq");
 
 		// Compile query
-		String paternID1 = queryDispatchApi.registerQuery("measurement", queryString);
-
-		long startTime = System.currentTimeMillis();
+		queryDispatchApi.registerQuery("measurement", queryString);
 
 		for (int i = 0; i < 1; i++) {
 
@@ -91,7 +88,7 @@ public class MeasurementTest {
 	}
 
 
-	public static void InstantiatePlayPlatform()
+	public static void instantiatePlayPlatform()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
@@ -108,11 +105,12 @@ public class MeasurementTest {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
-				.getFcInterface("QueryDispatchApi"));
+				.getFcInterface(QueryDispatchApi.class.getSimpleName()));
 		testApi = (DistributedEtalisTestApi) root
-				.getFcInterface("DistributedEtalisTestApi");
+				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName());
 		
-		monitoringApi = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface("DcepMonitoringApi"));
+		monitoringApi = ((eu.play_project.dcep.api.DcepMonitoringApi) root
+				.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
 
 		try {
 			Thread.sleep(10000);
@@ -266,13 +264,4 @@ public class MeasurementTest {
 		return null;
 
 	}
-
-	private void delay() {
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
 }

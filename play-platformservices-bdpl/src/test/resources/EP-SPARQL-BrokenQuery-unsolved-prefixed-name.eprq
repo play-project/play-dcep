@@ -1,5 +1,8 @@
 # Prefix dc and df is not defined. @expectedException<Unresolved prefixed name\>
-CONSTRUCT { ?a ?b ?c}
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX :   <http://events.event-processing.org/types/>
+
+CONSTRUCT { :e rdf:type :Temperature . ?a ?b ?c . }
 	 WHERE {
 	 	EVENT ?a{?x dc:title ?title}  
 	 	SEQ

@@ -1,44 +1,4 @@
-package eu.play_project.dcep;
 
-import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.logging.Logger;
-
-import org.etsi.uri.gcm.util.GCM;
-import org.event_processing.events.types.UcTelcoCall;
-import org.junit.Test;
-import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
-import org.objectweb.fractal.api.Component;
-import org.objectweb.fractal.api.NoSuchInterfaceException;
-import org.objectweb.fractal.api.control.IllegalLifeCycleException;
-import org.objectweb.proactive.ActiveObjectCreationException;
-import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
-import org.objectweb.proactive.core.node.NodeException;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.NodeFactory;
-
-import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.constants.Stream;
-import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.QueryDispatchApi;
-import eu.play_project.play_platformservices.api.QueryDispatchException;
-import fr.inria.eventcloud.api.CompoundEvent;
-import fr.inria.eventcloud.api.Quadruple;
 
 public class CommonsPatternTest {
 
@@ -149,101 +109,6 @@ public class CommonsPatternTest {
 		assertTrue(subscriber.getComplexEvents().size()==5);
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getMatchObject().toString(), "\"Tea\"");
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(8).getMatchObject().toString(), "\"Coffee\"");
-	}
-	
-	@Test
-	public void Crisis01Test() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException {
-		String queryString;
-		
-		InstantiatePlayPlatform();
-
-		// Get query.
-		queryString = getSparqlQueries("play-bdpl-crisis-01a-radiation.eprq");
-System.out.println(queryString);
-		// Compile query
-		String paternID1 = queryDispatchApi.registerQuery("abc0", queryString);
-		
-		
-		//Subscribe to get complex events.
-		SimplePublishApiSubscriber subscriber = null;
-		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
-		testApi.attach(subscriber);
-	
-		logger.info("Publish evetns");
-		for (int i = 0; i < 3; i++) {
-			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
-			Quadruple q1 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"));
-			Quadruple q2 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
-					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
-			Quadruple q3 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://events.event-processing.org/types/source"),
-					NodeFactory.createURI("http://sources.event-processing.org/ids/WebApp#source"));
-			Quadruple q4 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://events.event-processing.org/types/stream"),
-					NodeFactory.createURI("http://streams.event-processing.org/ids/situationalEvent#stream"));
-			Quadruple q5 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/localisation"),
-					NodeFactory.createURI("Karlsruhe"));
-			Quadruple q6 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/unit"),
-					NodeFactory.createURI("mSv"));
-			Quadruple q7 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
-					NodeFactory.createURI("110"));
-
-
-			
-			quads.add(q1);
-			quads.add(q2);
-			quads.add(q3);
-			quads.add(q4);
-			quads.add(q5);
-			quads.add(q6);
-			quads.add(q7);
-			testApi.publish(new CompoundEvent(quads));
-			NodeFactory.createURI("http://streams.event-processing.org/ids/FacebookStatusFeed#stream");
-		}
-
-		// Wait
-		delay();
-
-		assertTrue(subscriber.getComplexEvents().size()==3);
-		
-
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				logger.info("Terminating component: "
-						+ subcomponent.getFcType());
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
-			
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
 	}
 	//@Test
 	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
@@ -407,9 +272,6 @@ System.out.println(queryString);
 
 		CentralPAPropertyRepository.GCM_PROVIDER
 				.setValue("org.objectweb.proactive.core.component.Fractive");
-		
-		CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL.setValue("pnp");
-		//Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"));
 
 		
 		Factory factory = FactoryFactory.getFactory();

@@ -29,8 +29,9 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		PAComponentRepresentative root1 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
 
 		//Get interfaces.
-		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface("DistributedEtalisTestApi"));
-		
+		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1
+				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+
 		//Subscribe
 		subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
 		testApiI1.attach(subscriber);

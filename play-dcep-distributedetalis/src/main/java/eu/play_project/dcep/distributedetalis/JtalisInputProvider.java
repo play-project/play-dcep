@@ -1,5 +1,9 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_ENTRY;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_ENTRY;
+
 import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -52,14 +56,17 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 		 * events)
 		 */
 		synchronized (duplicatesCache) {
-			if (duplicatesCache.contains(eventId)) {
-				logger.info("DCEP Suppressed Duplicate Event: " + eventId);
-				return;
+			if (!duplicatesCache.contains(eventId)) {
+				// Do not remove this line, needed for logs. :stuehmer
+				logger.info(LOG_DCEP_ENTRY + eventId);
+				if (logger.isDebugEnabled()) {
+					logger.debug(LOG_DCEP + "Simple Event:\n{}", event.toString());
+				}
+				duplicatesCache.add(eventId);
 			}
 			else {
-				// Do not remove this line, needed for logs. :stuehmer
-				logger.info("DCEP Entry " + eventId);
-				duplicatesCache.add(eventId);
+				logger.info(LOG_DCEP_FAILED_ENTRY + "Duplicate Event suppressed: " + eventId);
+				return;
 			}
 		}
 		
@@ -70,9 +77,9 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 			// Trigger event in ETALIS:
 			events.put(new EtalisEvent("'" + eventType + "'", eventId));
 		} catch (InterruptedException e) {
-			logger.error("Error adding event to Jtalis queue.", e);
+			logger.error(LOG_DCEP_FAILED_ENTRY + "Error adding event to Jtalis queue.", e);
 		} catch (DistributedEtalisException e) {
-			logger.error("Error on new event. ", e);
+			logger.error(LOG_DCEP_FAILED_ENTRY + "Error on new event. ", e);
 		}
 	}
 

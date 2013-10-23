@@ -16,6 +16,7 @@ import org.ontoware.rdf2go.model.node.URI;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import eu.play_project.play_commons.constants.Stream;
+import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_commons.eventtypes.EventTypeMetadata;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
@@ -40,6 +41,20 @@ public class EventCloudHelpers {
 	public static final CompoundEvent toCompoundEvent(Event event) {
 		return toCompoundEvent(event.getModel());
 	}
+	
+	public static final Model toRdf2go(CompoundEvent compoundEvent) {
+		Model result = EventHelpers.createEmptyModel(compoundEvent.getGraph().toString());
+		for (Quadruple quadruple : compoundEvent) {
+			result.addStatement(
+					TypeConversion.toRDF2Go(quadruple.getSubject()).asResource(),
+					TypeConversion.toRDF2Go(quadruple.getPredicate()).asURI(),
+					TypeConversion.toRDF2Go(quadruple.getObject())
+			);
+
+		}
+		return result;
+	}
+	
 
 	public static final CompoundEvent toCompoundEvent(Model model) {
 		List<Quadruple> quadruples = new ArrayList<Quadruple>();
@@ -112,7 +127,7 @@ public class EventCloudHelpers {
 	 * {@code rdf:type} statements in the event and finally defaults to the basic event type of
 	 * {@linkplain Event.RDFS_CLASS}
 	 * 
-	 * @see EventTypeMetadata#getEventType(Model)
+	 * @see EventTypeMetadata#getType(Model)
 	 */
 	public static String getEventType(CompoundEvent event) {
 		com.hp.hpl.jena.graph.Node primaryType = null;

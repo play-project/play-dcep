@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jws.WebService;
-import javax.ws.rs.ProcessingException;
 import javax.xml.ws.Endpoint;
 
 import org.objectweb.fractal.api.NoSuchInterfaceException;
@@ -40,6 +39,12 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
+/**
+ * The PLAY SOAP Web Service to manage event patterns. See
+ * {@linkplain PlayPlatformservicesRest} for the corresponding RESTful service.
+ * 
+ * @author Roland Stühmer
+ */
 @WebService(
 		serviceName = "QueryDispatchApi",
 		portName = "QueryDispatchApiPort",
@@ -95,7 +100,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 
 	@Override
-	public void initComponentActivity(Body body) {
+	public synchronized void initComponentActivity(Body body) {
 		if (!init) {
 			
 			this.logger = LoggerFactory.getLogger(this.getClass());
@@ -105,7 +110,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			eleGenerator = new EleGeneratorForConstructQuery();
 	
 			/*
-			 * Provide PublishApi as SOAP Webservice
+			 * Provide QueryDispatchApi as SOAP Webservice
 			 */
 			try {
 				String address = Constants.getProperties().getProperty("platfomservices.querydispatchapi.endpoint");
@@ -116,13 +121,13 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			}
 	
 			/*
-			 * Provide PublishApi as REST Webservice
+			 * Provide QueryDispatchApi as REST Webservice
 			 */
 			try {
 				restServer = new PlayPlatformservicesRest(this);
 	        	logger.info(String.format("QueryDispatch REST service started at %s with WADL remotely available at "
-	        			+ "%sapplication.wadl\n", PlayPlatformservicesRest.BASE_URI, Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest")));
-			} catch (ProcessingException e) {
+	        			+ "%s/application.wadl\n", PlayPlatformservicesRest.BASE_URI, Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest")));
+			} catch (Exception e) {
 				logger.error("Exception while publishing QueryDispatch REST Service", e);
 			}
 			
@@ -131,8 +136,9 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	}
 	
 	@Override
-	public void endComponentActivity(Body arg0) {
+	public synchronized void endComponentActivity(Body arg0) {
 		logger.info("Terminating {} component.", this.getClass().getSimpleName());
+		this.init = false;
 		
 		if (this.soapServer != null) {
 			this.soapServer.stop();
@@ -141,8 +147,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		if (this.restServer != null) {
 			this.restServer.destroy();
 		}
-
-		this.init = false;
 	}
 	
 
@@ -153,13 +157,16 @@ public class PlayPlatformservices implements QueryDispatchApi,
 					+ this.getClass().getSimpleName());
 		}
 
+		logger.info("Registering query with ID '{}'", queryId);
+
 		BdplQuery epQuery = createCepQuery(queryId, query);
 		
 		try {
 			dcepManagmentApi.registerEventPattern(epQuery);
 		} catch (Exception e) {
-			logger.error("Error while registering query: " + queryId, e);
-			throw new QueryDispatchException(String.format("Error while registering query ID '%s': %s", queryId, e.getMessage()));
+			String msg = String.format("Error while registering query '%s': %s: %s", queryId, e.getClass().getSimpleName(), e.getMessage());
+			logger.error(msg);
+			throw new QueryDispatchException(msg);
 		}
 		return queryId;
 	}
@@ -177,8 +184,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		// Generate CEP-language
 		eleGenerator.setPatternId(queryId);
 		eleGenerator.generateQuery(q);
-
-		logger.info("Registering query with ID " + queryId);
 
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);

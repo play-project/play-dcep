@@ -18,6 +18,7 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
+import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalData;
@@ -82,7 +83,7 @@ public class QueryTemplateImplTest {
 		Query q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
 
 		// Generate CEP-language
-		eleGenerator.setPatternId("'" + "123" + "'"); // TODO sobermeier: Remove in the future, ETALIS will do this
+		eleGenerator.setPatternId("'" + Namespace.PATTERN.getUri() + "123" + "'"); // TODO sobermeier: Remove in the future, ETALIS will do this
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails

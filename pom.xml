@@ -55,6 +55,7 @@
 
 	<properties>
 		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
+		<jetty.version>7.5.4.v20111024</jetty.version>
 	</properties>
 
 	<dependencyManagement>
@@ -79,6 +80,15 @@
 
 	<build>
 		<plugins>
+			<!-- Run unit tests in single JVM because Prolog JNI (JPL) causes problems -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/main/resources/proactive.java.policy]]></argLine>
+					<forkCount>0</forkCount>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-doap-plugin</artifactId>
@@ -170,5 +180,17 @@
 			</plugin>
  		</plugins>
 	</reporting>
+
+	<repositories>
+		<!-- Repository to retrieve snapshots of the parent  -->
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<id>ow2-snapshot</id>
+			<name>OW2 Snapshot Repository</name>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
 
 </project>

@@ -15,21 +15,29 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class PrologSemWebLib implements UsePrologSemWebLib {
 	private static JtalisContextImpl ctx;
-	int oldValue =0;
+	int oldValue = 0;
 	long internalEventId = 0; // Ordered event ids. id_0 < id_1 < id2 ...
 	private static Logger logger = LoggerFactory.getLogger(PrologSemWebLib.class);
-	int triesToStoreData = 0;
+
 	@Override
-	public void init(JtalisContextImpl ctx) {
+	public void init(JtalisContextImpl ctx) throws DistributedEtalisException {
+		logger.debug("Initializing " + PrologSemWebLib.class.getSimpleName());
+		
 		PrologSemWebLib.ctx = ctx;
-		// Load SWI-Prolog Semantic Web Library
-		ctx.getEngineWrapper().executeGoal("[library(semweb/rdf_db)]");
-		ctx.getEngineWrapper().executeGoal("[library(xpath)]");
-		ctx.getEngineWrapper().executeGoal("use_module(library(xpath))");
-		ctx.getEngineWrapper().executeGoal("use_module(library(random))");
-		ctx.setEtalisFlags("garbage_clt", "on");
-		ctx.setEtalisFlags("garbage_control","general");
-		ctx.setEtalisFlags("save_ruleId", "on");
+
+		try {
+			// Load SWI-Prolog Semantic Web Library
+			logger.debug("Loading SWI-Prolog Semantic Web Library");
+			ctx.getEngineWrapper().executeGoal("[library(semweb/rdf_db)]");
+			ctx.getEngineWrapper().executeGoal("[library(xpath)]");
+			ctx.getEngineWrapper().executeGoal("use_module(library(xpath))");
+			ctx.getEngineWrapper().executeGoal("use_module(library(random))");
+			ctx.setEtalisFlags("garbage_clt", "on");
+			ctx.setEtalisFlags("garbage_control","general");
+			ctx.setEtalisFlags("save_ruleId", "on");
+		} catch (PrologException e) {
+			throw new DistributedEtalisException("Error loading SWI-Prolog libraries: " + e.getMessage());
+		}
 	}
 
 	@Override
@@ -94,16 +102,16 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 //			ctx.getEngineWrapper().executeGoal("printReferenceCounters");
 			
 			return result;
-		}catch (PrologException e) {
-			if(e.getMessage().contains("error(permission_error(write, rdf_db, default)")){
-				logger.error("Error db is blocked. Try againe. Count: ", triesToStoreData);
+		} catch (PrologException e) {
+			if (e.getMessage().contains("error(permission_error(write, rdf_db, default)")) {
+				logger.warn("Error: db is locked. Try again.");
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
 				return this.addPayloadToPlTriplestore(prologString);
-			}else{
+			} else {
 				logger.error("Error on new event.", e);
 				return false;
 			}
@@ -122,9 +130,9 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	 * strings are meanto to be used as <i>quoted atoms</i> in Prolog, between
 	 * single quotes.
 	 * 
-	 * @see http
-	 *      ://www.swi-prolog.org/pldoc/doc_for?object=section%284,%272.15.1.2
-	 *      %27,swi%28%27/doc/Manual/syntax.html%27%29%29
+	 * @see <a
+	 *      href="http://www.swi-prolog.org/pldoc/doc_for?object=section%284,%272.15.1.2%27,swi%28%27/doc/Manual/syntax.html%27%29%29">SWI
+	 *      Prolog Character Escape Syntax</a>
 	 */
 	public static String escapeForProlog(String s) {
 		return s.replaceAll("'", "\'");

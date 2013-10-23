@@ -1,7 +1,8 @@
-package eu.play_project.dcep.distributedetalis;
+package eu.play_project.dcep.distributedetalis.listeners;
 
 import java.io.Serializable;
 
+import eu.play_project.dcep.distributedetalis.EcConnectionManagerNet;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.SubscriptionId;
 import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;

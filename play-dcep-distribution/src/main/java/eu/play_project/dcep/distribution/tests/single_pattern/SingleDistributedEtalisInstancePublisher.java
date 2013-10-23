@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
@@ -57,8 +58,8 @@ public class SingleDistributedEtalisInstancePublisher {
 
 		// Connect to DistributedEtalis instance 1.
 		PAComponentRepresentative root1 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
-		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface("DistributedEtalisTestApi"));
-		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
+		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
 		// Register queries.
 		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q5.eprq")));
@@ -79,7 +80,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		String patternId = "http://patternID.example.com/" + Math.random() * 1000000;
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
 		//String patternId = "'p1'";
 		visitor1.setPatternId(patternId);
 
