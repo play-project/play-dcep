@@ -57,7 +57,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	private EcConnectionListenerNet eventCloudListener;
 	static GetEventThread getEventThread;
 	private boolean init = false;
-	private Logger logger;
+	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerNet.class);;
 	private Persistence persistence;
 	static final Properties constants = DcepConstants.getProperties();
 	public static final String REST_URI = constants.getProperty("dcep.notify.rest.local");
@@ -68,7 +68,6 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	public EcConnectionManagerNet(String eventCloudRegistry, DistributedEtalis dEtalis)
 			throws EcConnectionmanagerException {
 
-		logger = LoggerFactory.getLogger(this.getClass());
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
 
 		putGetClouds = new HashMap<String, PutGetApi>();
@@ -326,9 +325,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 
 	@Override
 	public void destroy() {
-		if (logger == null) {
-			logger = LoggerFactory.getLogger(EcConnectionManagerNet.class);
-		}
+
 		logger.info("Terminating {}.", this.getClass().getSimpleName());
 		logger.info("Unsubscribe from Event Clouds");
 

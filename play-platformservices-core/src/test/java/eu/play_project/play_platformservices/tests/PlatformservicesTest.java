@@ -19,6 +19,7 @@ import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.PlayPlatformservices;
+import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 public class PlatformservicesTest {
@@ -62,7 +63,7 @@ public class PlatformservicesTest {
 		e.printStackTrace();
 		}
 
-		QName serviceName = new QName("http://play_platformservices.play_project.eu/", "QueryDispatchApi");
+		QName serviceName = new QName("http://play_platformservices.play_project.eu/", QueryDispatchApi.class.getSimpleName());
 
 		Service service = Service.create(wsdl, serviceName);
 		service.getPort(eu.play_project.play_platformservices.api.QueryDispatchApi.class);

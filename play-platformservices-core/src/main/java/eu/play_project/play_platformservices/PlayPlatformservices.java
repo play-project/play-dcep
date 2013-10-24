@@ -54,34 +54,30 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		Serializable {
 
 	private static final long serialVersionUID = 100L;
-
 	private EleGenerator eleGenerator;
 	private DcepManagmentApi dcepManagmentApi;
 	private boolean init = false;
-
-	private Logger logger;
-
+	private final Logger logger = LoggerFactory.getLogger(PlayPlatformservices.class);
 	private Endpoint soapServer;
-
 	private PlayPlatformservicesRest restServer;
 
 	@Override
 	public String[] listFc() {
-		return new String[] { "DcepManagmentApi" };
+		return new String[] { DcepManagmentApi.class.getSimpleName() };
 	}
 
 	@Override
 	public Object lookupFc(String clientItfName) throws NoSuchInterfaceException {
-		if ("DcepManagmentApi".equals(clientItfName)) {
+		if (DcepManagmentApi.class.getSimpleName().equals(clientItfName)) {
 			return dcepManagmentApi;
 		} else {
-			throw new NoSuchInterfaceException("DcepManagmentApi");
+			throw new NoSuchInterfaceException(DcepManagmentApi.class.getSimpleName());
 		}
 	}
 
 	@Override
 	public void bindFc(String clientItfName, Object serverItf) throws NoSuchInterfaceException, IllegalBindingException, IllegalLifeCycleException {
-		if (clientItfName.equals("DcepManagmentApi")) {
+		if (clientItfName.equals(DcepManagmentApi.class.getSimpleName())) {
 			dcepManagmentApi = (DcepManagmentApi) serverItf;
 		}
 		else {
@@ -91,7 +87,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 
 	@Override
 	public void unbindFc(String clientItfName) throws NoSuchInterfaceException, IllegalBindingException, IllegalLifeCycleException {
-		if (clientItfName.equals("DcepManagmentApi")) {
+		if (clientItfName.equals(DcepManagmentApi.class.getSimpleName())) {
 			// do nothing, currently
 		}
 		else {
@@ -103,8 +99,6 @@ public class PlayPlatformservices implements QueryDispatchApi,
 	public synchronized void initComponentActivity(Body body) {
 		if (!init) {
 			
-			this.logger = LoggerFactory.getLogger(this.getClass());
-		
 			logger.info("Initialising {} component.", this.getClass().getSimpleName());
 	
 			eleGenerator = new EleGeneratorForConstructQuery();

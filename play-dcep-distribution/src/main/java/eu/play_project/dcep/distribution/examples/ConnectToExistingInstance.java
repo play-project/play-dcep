@@ -52,9 +52,9 @@ public class ConnectToExistingInstance {
 
 		try {
 			dcepPublishApi = ((fr.inria.eventcloud.api.PublishApi) root
-					.getFcInterface("PublishApi"));
+					.getFcInterface(PublishApi.class.getSimpleName()));
 			dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
-					.getFcInterface("DcepManagmentApi"));
+					.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();
 		}

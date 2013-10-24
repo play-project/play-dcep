@@ -26,7 +26,7 @@ public class ManualWebServiceTest {
 		e.printStackTrace();
 		}
 
-		QName serviceName = new QName("http://play_platformservices.play_project.eu/", "QueryDispatchApi");
+		QName serviceName = new QName("http://play_platformservices.play_project.eu/", QueryDispatchApi.class.getSimpleName());
 
 		Service service = Service.create(wsdl, serviceName);
 		QueryDispatchApi queryDispatchApi = service

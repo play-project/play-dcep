@@ -46,18 +46,18 @@ public class SingleDistributedEtalisInstancePublisher {
 
 		// Connect to DistributedEtalis instance 1.
 		PAComponentRepresentative root1 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
-		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface("DistributedEtalisTestApi"));
-		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface("DcepManagmentApi"));
+		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 		
 //		// Connect to DistributedEtalis instance 2.
 		PAComponentRepresentative root2 = Fractive.lookup(URIBuilder.buildURI(args[2], args[3], "rmi", 1099).toString());
-		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface("DistributedEtalisTestApi"));
-		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface("DcepManagmentApi"));
+		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 		
 //		// Connect to DistributedEtalis instance 3.
 //		PAComponentRepresentative root3 = Fractive.lookup(URIBuilder.buildURI(args[4], args[5], "rmi", 1099).toString());
-//		testApiI3 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root3.getFcInterface("DistributedEtalisTestApi"));
-//		managementApiI3 = ((eu.play_project.dcep.api.DcepManagmentApi) root3.getFcInterface("DcepManagmentApi"));
+//		testApiI3 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root3.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+//		managementApiI3 = ((eu.play_project.dcep.api.DcepManagmentApi) root3.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
 		BdplQuery q = generateEle(getSparqlQueries("benchmarks/srbench/q3.eprq"));
 		// Register queries.  mw
