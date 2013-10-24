@@ -240,7 +240,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		
 		// Check if id is alredy used.
 		if (dcepManagmentApi != null && dcepManagmentApi.getRegisteredEventPatterns().containsKey(queryId)) {
-			throw new QueryDispatchException("Query ID is alread used: " + queryId);
+			throw new QueryDispatchException("Query ID is already used: " + queryId);
 		}
 
 		// Set stream ids in QueryDetails.
