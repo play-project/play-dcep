@@ -50,7 +50,7 @@ public class CommonsPatternTest {
 	public static boolean test;
 	private final Logger logger = Logger.getAnonymousLogger();
 	
-	@Test
+	//@Test
 	public void Clic2callPatternTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
@@ -111,7 +111,7 @@ public class CommonsPatternTest {
 	/**
 	 * One events contains multiple topics a person is talking about.
 	 */
-	@Test
+	//@Test
 	public void setOperationTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException{
 	String queryString;
 		
@@ -151,6 +151,7 @@ public class CommonsPatternTest {
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getMatchObject().toString(), "\"Tea\"");
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(8).getMatchObject().toString(), "\"Coffee\"");
 	}
+	
 	@Test
 	public void Crisis01Test() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException {
 		String queryString;
