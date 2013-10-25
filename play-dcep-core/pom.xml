@@ -24,7 +24,7 @@
 					    -Djava.security.manager 
 						-Djava.security.policy=proactive.java.policy 
 						-Dproactive.communication.protocol=pnp 
-						-Dproactive.pnp.port=9150
+						-Dproactive.pnp.port=9250
 					</argLine>
 				</configuration>
 			</plugin>
