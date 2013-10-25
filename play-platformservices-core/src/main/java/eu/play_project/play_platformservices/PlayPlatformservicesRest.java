@@ -48,7 +48,7 @@ import eu.play_project.play_platformservices.jaxb.Query;
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class PlayPlatformservicesRest implements QueryDispatchApi {
 
-    // Base URI the Grizzly HTTP server will listen on
+    // Base URI the HTTP server will listen on
     public static final String BASE_URI = Constants.getProperties().getProperty("platfomservices.querydispatchapi.rest.local");
 
 	private final Logger logger = LoggerFactory.getLogger(PlayPlatformservicesRest.class);
