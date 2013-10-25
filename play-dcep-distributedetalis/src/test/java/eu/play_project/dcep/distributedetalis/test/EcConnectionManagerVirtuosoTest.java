@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import javax.inject.Singleton;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
@@ -33,6 +33,7 @@ import org.ow2.play.governance.platform.user.api.rest.PublishService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.platformservices.eventvalidation.InvalidEventException;
 import eu.play_project.platformservices.eventvalidation.Validator;
 import eu.play_project.play_commons.constants.Stream;
@@ -43,7 +44,8 @@ import eu.play_project.play_eventadapter.NoRdfEventException;
 
 public class EcConnectionManagerVirtuosoTest {
 
-	private static final String REST_URI = "http://localhost:9085/notifyRest";
+	private static final Properties constants = DcepConstants.getProperties();
+	private static final String REST_URI = constants.getProperty("dcep.notify.rest.local");
 	private static final List<Model> eventSink = Collections.synchronizedList(new ArrayList<Model>());
 	private static Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuosoTest.class);
 	private static Server notifyReceiverRest;
@@ -115,7 +117,6 @@ public class EcConnectionManagerVirtuosoTest {
         logger.info("Test server stopped.");
 	}
 
-	@Path("/notifyRest") // overwrite the Path from interface PublishService
 	@Singleton
 	static class TestListenerRest extends Application implements PublishService {
 

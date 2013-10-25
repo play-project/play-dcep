@@ -55,9 +55,9 @@ import fr.inria.eventcloud.api.CompoundEvent;
 
 public class EcConnectionManager4storeTest {
 
-	private static final String REST_URI = "http://localhost:9085";
-	private static final String NOTIFY_PATH = "/notifyRest";
+	private static final String NOTIFY_URI = "http://localhost:10085";
 	private static final String FOURSTORE_PATH = "/4store";
+	private static final String FOURSTORE_URI = "http://localhost:10085" + "/4store";
 	private static final List<Model> eventSink = Collections.synchronizedList(new ArrayList<Model>());
 	private static final List<String> rdfSink = Collections.synchronizedList(new ArrayList<String>());
 	private static Logger logger = LoggerFactory.getLogger(EcConnectionManager4storeTest.class);
@@ -75,7 +75,7 @@ public class EcConnectionManager4storeTest {
 		
 		BusFactory.getDefaultBus(true);
 		
-		notifyReceiverRest = new Server(URI.create(REST_URI).getPort());
+		notifyReceiverRest = new Server(URI.create(NOTIFY_URI).getPort());
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
         ServletHolder h = new ServletHolder(new ServletContainer(rc));
@@ -92,7 +92,7 @@ public class EcConnectionManager4storeTest {
 		/*
 		 * (1) Send event
 		 */
-		AbstractSenderRest rdfSender = new AbstractSenderRest("http://example.com/topic", REST_URI + NOTIFY_PATH);
+		AbstractSenderRest rdfSender = new AbstractSenderRest("http://example.com/topic", NOTIFY_URI + PublishService.PATH);
 		
 		String eventId = EventHelpers.createRandomEventId("UnitTest");
 		UcTelcoCall event = new UcTelcoCall(EventHelpers.createEmptyModel(eventId),
@@ -123,7 +123,7 @@ public class EcConnectionManager4storeTest {
 	
 	@Test
 	public void test4store() throws EcConnectionmanagerException {
-		EcConnectionManager4store eccm = new EcConnectionManager4store(REST_URI + FOURSTORE_PATH, new DistributedEtalis("Detalis"));
+		EcConnectionManager4store eccm = new EcConnectionManager4store(FOURSTORE_URI, new DistributedEtalis("Detalis"));
 		final String cloudId = "http://domain.invalid/testCloud";
 		
 		Event ev = EventHelpers.builder()
@@ -156,7 +156,6 @@ public class EcConnectionManager4storeTest {
         logger.info("Test server stopped.");
 	}
 
-	@Path(NOTIFY_PATH) // overwrite the Path from interface PublishService for this test
 	@Singleton
 	public static class TestListenerRest extends Application implements PublishService {
 
