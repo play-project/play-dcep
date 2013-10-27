@@ -20,7 +20,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
@@ -28,6 +34,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.webjars.WebJarAssetLocator;
 
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_commons.constants.Pattern;
@@ -69,16 +76,47 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 
 		this.playPlatformservices = playPlatformservices;
 
-		// create and start a new instance of the http server
-		// exposing the Jersey application at BASE_URI
+		// Web location / serves Jersey servlet:
 		server = new Server(URI.create(BASE_URI).getPort());
-		ServletContextHandler context = new ServletContextHandler();
-		context.setContextPath("/");
-		ServletHolder h = new ServletHolder(new ServletContainer(rc));
-		context.addServlet(h, "/");
-		server.setHandler(context);
-		server.start();
+		ServletContextHandler rootDir = new ServletContextHandler();
+		rootDir.setContextPath("/");
+		rootDir.addServlet(new ServletHolder(new ServletContainer(rc)), "/");
 
+		// Web location /html serves static content
+		ResourceHandler resourceHandler = new ResourceHandler();
+		resourceHandler.setDirectoriesListed(true);
+		resourceHandler.setResourceBase("./src/main/webapp/");
+		ContextHandler htmlDir = new ContextHandler();
+		htmlDir.setContextPath("/html");
+		htmlDir.setHandler(resourceHandler);
+		
+		// Web location /webjars serves static Javascript libraries:
+//		ResourceHandler webjarsHandler = new ResourceHandler();
+//		webjarsHandler.setDirectoriesListed(true);
+//		webjarsHandler.setBaseResource(Resource.newClassPathResource(WebJarAssetLocator.WEBJARS_PATH_PREFIX, false, true));
+//		ContextHandler webjarsDir = new ContextHandler();
+//		webjarsDir.setContextPath("/webjars");
+//		webjarsDir.setHandler(webjarsHandler);
+		
+		ServletContextHandler webjarsDir = new ServletContextHandler();
+		webjarsDir.setContextPath("/webjars");
+		webjarsDir.setResourceBase(this.getClass().getClassLoader().getResource(WebJarAssetLocator.WEBJARS_PATH_PREFIX).toExternalForm());
+		
+//		WebAppContext webjarsDir = new WebAppContext();
+//		webjarsDir.setContextPath("/webjars");
+//		webjarsDir.setBaseResource(Resource.newClassPathResource(WebJarAssetLocator.WEBJARS_PATH_PREFIX, false, true));
+		
+		System.out.println(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(new WebJarAssetLocator().getFullPath("underscore.js"))));
+
+		System.out.println(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(new WebJarAssetLocator().getFullPath("backbone.js"))));
+
+		
+		// putting it together
+		HandlerCollection handlerList = new HandlerCollection();
+		handlerList.setHandlers(new Handler[] {webjarsDir, htmlDir, rootDir, new DefaultHandler()});
+		server.setHandler(handlerList);
+		  
+		server.start();
 	}
 
 	@POST
