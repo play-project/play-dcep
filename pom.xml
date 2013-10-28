@@ -55,7 +55,7 @@
 
 	<properties>
 		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
-		<jetty.version>7.5.4.v20111024</jetty.version>
+		<jetty.version>7.6.13.v20130916</jetty.version>
 	</properties>
 
 	<dependencyManagement>

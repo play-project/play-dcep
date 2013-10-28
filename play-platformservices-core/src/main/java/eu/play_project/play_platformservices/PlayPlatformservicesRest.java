@@ -16,11 +16,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
@@ -34,7 +35,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.webjars.WebJarAssetLocator;
 
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_commons.constants.Pattern;
@@ -42,6 +42,7 @@ import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.jaxb.Query;
+import eu.play_project.play_platformservices.jetty.WebJarResourceHandler;
 
 /**
  * The PLAY REST Web Service to manage event patterns. See
@@ -91,25 +92,10 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 		htmlDir.setHandler(resourceHandler);
 		
 		// Web location /webjars serves static Javascript libraries:
-//		ResourceHandler webjarsHandler = new ResourceHandler();
-//		webjarsHandler.setDirectoriesListed(true);
-//		webjarsHandler.setBaseResource(Resource.newClassPathResource(WebJarAssetLocator.WEBJARS_PATH_PREFIX, false, true));
-//		ContextHandler webjarsDir = new ContextHandler();
-//		webjarsDir.setContextPath("/webjars");
-//		webjarsDir.setHandler(webjarsHandler);
-		
-		ServletContextHandler webjarsDir = new ServletContextHandler();
+		WebJarResourceHandler webjarsHandler = new WebJarResourceHandler();
+		ContextHandler webjarsDir = new ContextHandler();
 		webjarsDir.setContextPath("/webjars");
-		webjarsDir.setResourceBase(this.getClass().getClassLoader().getResource(WebJarAssetLocator.WEBJARS_PATH_PREFIX).toExternalForm());
-		
-//		WebAppContext webjarsDir = new WebAppContext();
-//		webjarsDir.setContextPath("/webjars");
-//		webjarsDir.setBaseResource(Resource.newClassPathResource(WebJarAssetLocator.WEBJARS_PATH_PREFIX, false, true));
-		
-		System.out.println(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(new WebJarAssetLocator().getFullPath("underscore.js"))));
-
-		System.out.println(IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(new WebJarAssetLocator().getFullPath("backbone.js"))));
-
+		webjarsDir.setHandler(webjarsHandler);
 		
 		// putting it together
 		HandlerCollection handlerList = new HandlerCollection();
@@ -138,7 +124,11 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	/**
 	 * A setter (only evailable in REST service not SOAP
 	 * {@linkplain PlayPlatformservices}) to add an anonymous query without ID.
-	 * A random {@linkplain UUID} will be assigned and the child-resource created.
+	 * Creates a new random {@linkplain UUID} for the child-resource (new query)
+	 * and creates the resource.
+	 * 
+	 * @return {@linkplain Status#CREATED} including the newly created
+	 *         {@linkplain HttpHeaders.LOCATION} header.
 	 */
 	@POST
 	public Response registerQuery(String queryString)
