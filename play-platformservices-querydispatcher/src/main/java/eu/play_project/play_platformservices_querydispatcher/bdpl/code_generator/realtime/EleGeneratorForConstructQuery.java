@@ -235,8 +235,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void AdditionalConditions(){
-		TriplestoreQuery();
-		FilterExpression();
+		TriplestoreQuery(FilterExpression());
 		ReferenceCounter();
 //		elePattern += ", ";
 //		PerformanceMeasurement();
@@ -257,13 +256,14 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	
-	private void TriplestoreQuery() {
+	private void TriplestoreQuery(String filter) {
 		String flatDbQueries;
 		eventCounter++; // New event in query.
 		
 		// Get flat queries
 		currentElement.visit(triplestoreQueryVisitor);
 		flatDbQueries = triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
+		flatDbQueries += ", " + filter.substring(3, filter.length()-2);
 		
 		// Generate representative.
 		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
@@ -275,7 +275,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		// Combine decl and impl.
 		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
-	
+
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
@@ -292,13 +292,14 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		}
 	}
 
-	private void FilterExpression() {
+	private String FilterExpression() {
 		filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
 		if(!elePattern.endsWith(",") && !filterExpressionVisitor.getEle().equals("")){ // This filter is optional. No value needed.
-			elePattern += "," + filterExpressionVisitor.getEle();
+			return "," + filterExpressionVisitor.getEle();
 		}else if(!filterExpressionVisitor.getEle().equals("")){
-			elePattern += filterExpressionVisitor.getEle();
+			return filterExpressionVisitor.getEle().toString();
 		}
+		return "";
 	}
 		
 	private void GenerateCEID(){
