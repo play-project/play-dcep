@@ -150,12 +150,12 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 
 	@Override
 	public void visit(NodeValueDecimal nv) {
-		stack.push(nv.toString());
+		stack.push(nv.toString().replace("\"", ""));
 	}
 
 	@Override
 	public void visit(NodeValue nv) {
-		stack.push(nv.toString());
+		stack.push(nv.toString().replace("\"", ""));
 	}
 	
 	@Override
