@@ -2,6 +2,7 @@ package eu.play_project.dcep.distributedetalis.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -22,7 +23,7 @@ public class PersistenceTests {
 	 */
 	@Test
 	public void testSqlite() throws PersistenceException, IOException {
-		File dbFile = File.createTempFile("play-dcep", "test.db");
+		File dbFile = new File(System.getProperty("java.io.tmpdir") + File.separator + "play-dcep-" + new Random().nextInt() + "-test");
 		dbFile.deleteOnExit();
 		Persistence db = new Sqlite(dbFile);
 		db.deleteAllSubscriptions();
