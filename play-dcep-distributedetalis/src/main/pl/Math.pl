@@ -22,8 +22,8 @@ notEqual(A, B) :-
 
 greater(A, B) :- 
 (
-	transformToNumber(A, A1),
-	transformToNumber(B, B1),
+	transformToNumber(A, A1), write(A1), nl,
+	transformToNumber(B, B1), write(B1), nl,
 	A1 > B1
 ).
 
