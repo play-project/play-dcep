@@ -150,7 +150,7 @@ public class BdplEleTest {
 	
 	@Test
 	public void startParser() throws InterruptedException {
-		String queryString = getQuery("EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
+		String queryString = getQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
 		//queryString = "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
 		System.out.println(queryString);
 		// Parse query
@@ -376,9 +376,9 @@ public class BdplEleTest {
 	/**
 	 * Returns the filenaes of the testfiles depending on the type of the
 	 * testfile. The filename of a file with contains a broken query (a query
-	 * which the parser do not acceapt) must start with "EP-SPARQL-BrokenQuery".
+	 * which the parser do not acceapt) must start with "BDPL-BrokenQuery".
 	 * The filename of a file with a regular query must start with
-	 * "EP-SPARQL-Query".
+	 * "BDPL-Query".
 	 * 
 	 * @param dir
 	 *            Directory of the files.

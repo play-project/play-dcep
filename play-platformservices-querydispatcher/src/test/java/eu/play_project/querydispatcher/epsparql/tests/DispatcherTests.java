@@ -111,7 +111,7 @@ public class DispatcherTests {
 	@Test
 	public void dispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
-		String queryString = getSparqlQuery("EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq");
+		String queryString = getSparqlQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
 
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);

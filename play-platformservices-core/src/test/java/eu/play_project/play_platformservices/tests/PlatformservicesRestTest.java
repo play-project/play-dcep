@@ -151,12 +151,12 @@ public class PlatformservicesRestTest {
    		private final Map<String, Query> registeredQueries = new HashMap<String, Query>();
    		
 		@Override
-		public String registerQuery(String queryId, String epSparqlQuery)
+		public String registerQuery(String queryId, String bdplQuery)
 				throws QueryDispatchException {
 			if (this.registeredQueries.containsKey(queryId)) {
 				throw new QueryDispatchException();
 			}
-			this.registeredQueries.put(queryId, new Query(queryId, epSparqlQuery));
+			this.registeredQueries.put(queryId, new Query(queryId, bdplQuery));
 			return queryId;
 		}
 

@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Represents informations extracted from a EP-SPARQL 2.0 query.
+ * Represents informations extracted from a BDPL query.
  * With this informations no additional parsing is required to deal with a query in this system.
  * 
  * @author Stefan Obermeier
