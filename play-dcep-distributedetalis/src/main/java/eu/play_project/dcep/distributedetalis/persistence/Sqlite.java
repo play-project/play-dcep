@@ -1,6 +1,7 @@
 package eu.play_project.dcep.distributedetalis.persistence;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,14 +20,17 @@ public class Sqlite implements Persistence {
 	
 	public Sqlite() throws PersistenceException {
 		this(
-				new File(System.getProperty("java.io.tmpdir") + File.pathSeparator + "play-dcep"
-						+ File.pathSeparator + "dcep.db"));
+				new File(System.getProperty("java.io.tmpdir") + File.separator + "play-dcep"));
 		// TODO stuehmer: this should be unique for more than one Detalis instance per machine
 	}
 	
-	public Sqlite(File dbFile) throws PersistenceException {
+	public Sqlite(File dbFolder) throws PersistenceException {
 
 		try {
+			dbFolder.mkdirs();
+			File dbFile = new File(dbFolder, "dcep.db");
+			dbFile.createNewFile();
+			
 			Class.forName(org.sqlite.JDBC.class.getName());
 			sqliteConn = DriverManager.getConnection("jdbc:sqlite:" + dbFile.getPath());
 			sqliteConn.setAutoCommit(true);
@@ -35,9 +39,11 @@ public class Sqlite implements Persistence {
 	        
 			
 		} catch (ClassNotFoundException e) {
-			throw new PersistenceException("Error retrieving old subscriptions from database.", e);
+			throw new PersistenceException("Error retrieving old subscriptions from database: " + e.getMessage(), e);
 		} catch (SQLException e) {
-			throw new PersistenceException("Error retrieving old subscriptions from database.", e);
+			throw new PersistenceException("Error retrieving old subscriptions from database: " + e.getMessage(), e);
+		} catch (IOException e) {
+			throw new PersistenceException("Error retrieving old subscriptions from database: " + e.getMessage(), e);
 		}
 	}
 	

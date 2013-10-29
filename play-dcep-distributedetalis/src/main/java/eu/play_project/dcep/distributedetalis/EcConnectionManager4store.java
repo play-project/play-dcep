@@ -38,6 +38,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 	public static final String SPARQL_PATH = "sparql/";
 	public static final String DATA_PATH = "data/";
 	public static final String UPDATE_PATH = "update/";
+	public static final String STATUS_PATH = "status/";
 
 	public EcConnectionManager4store(DistributedEtalis dEtalis) throws EcConnectionmanagerException {
 		this(constants.getProperty("dcep.4store.rest"), dEtalis);
@@ -60,6 +61,13 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		dataEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(DATA_PATH);
 		updateEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(UPDATE_PATH);
 		sparqlEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(SPARQL_PATH);
+		
+		// Run a quick sanity check on 4store but only issue a warning:
+		Response fourstoreCheck = fourStoreClient.target(FOURSTORE_REST_URI).path(STATUS_PATH).request().head();
+		if (fourstoreCheck.getStatusInfo().getFamily() != Status.Family.SUCCESSFUL) {
+			logger.warn("4store returned response '{}', possible misconfiguration.", fourstoreCheck.getStatusInfo());
+		}
+		fourstoreCheck.close();
 	}
 
 	@Override

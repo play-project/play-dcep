@@ -3,7 +3,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 /**
- * Represents a filter expression in EP-SPARQL 2.0
+ * Represents a filter expression in BDPL
  * @author sobermeier
  *
  */

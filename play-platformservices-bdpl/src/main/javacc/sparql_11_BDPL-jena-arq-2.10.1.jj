@@ -258,7 +258,7 @@ String SourceSelector() : { String iri ; }
 {
   iri = iri() { return iri ; }
 }
-// Modified whereClause for ep-sparql 
+// Modified whereClause for BDPL 
 void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testExp; Window win; }
 {
    (<WHERE>)?
@@ -1957,7 +1957,7 @@ void EventClause() :
 }
 
 
-// Binary operators for EP-SPARQL.
+// Binary operators for BDPL.
 void EPSparqlBinOperators() :
 {
    ElementEventBinOperator binOp = null;
@@ -1979,7 +1979,7 @@ void EPSparqlBinOperators() :
   } 
 }
 
-// EP-SPARQL operators in FILTER expression.
+// BDPL operators in FILTER expression.
 void EPSparqlFilterOperators() :
 {}
 {

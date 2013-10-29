@@ -20,9 +20,9 @@ public interface QueryDispatchApi {
 	 * @param queryId
 	 *            An HTTP URI as an identifier for the query.
 	 * @param query
-	 *            EP-SPARQL query.
+	 *            BDPL query.
 	 */
-	public String registerQuery(String queryId, String epSparqlQuery) throws QueryDispatchException;
+	public String registerQuery(String queryId, String bdplQuery) throws QueryDispatchException;
 
 	/**
 	 * To unregister a query from the PLAY platform.

@@ -1,4 +1,4 @@
-package eu.play_platform.platformservices.epsparql.tests;
+package eu.play_platform.platformservices.bdpl.tests;
 
 import static org.junit.Assert.fail;
 
@@ -18,11 +18,11 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 
 
-public class EpsparqlTest {
+public class BdplTest {
 	public final String NL = System.getProperty("line.separator");
 
 	public enum TestType {
-		EP_SPARQL_Query, EP_SPARQL_BROKEN_QUERY
+		BDPL_QUERY, BDPL_BROKEN_QUERY
 	}
 	
 	@Ignore
@@ -35,21 +35,21 @@ public class EpsparqlTest {
 	public void testPositiveTests() {
 				
 		for (String fileName : new String[] {
-				"EP-SPARQL-Query-HAVING.eprq",
-				"EP-SPARQL-Query-CONSTRUCT-Query.eprq",
-				"EP-SPARQL-Query-Event-and-GRAPH.eprq",
-				"EP-SPARQL-Query-FILTER-contains-possition.eprq",
-				"EP-SPARQL-Query-FILTER-contains.eprq",
-				"EP-SPARQL-Query-Historic-followed-by-Realtime.eprq",
-				"EP-SPARQL-Query-M12-Construct-Query.eprq",
-				"EP-SPARQL-Query-more-than-one-FILTER.eprq",
-				"EP-SPARQL-Query-New-Infix-Opators.eprq",
-				"EP-SPARQL-Query-Realtime-Historical-multiple-Clouds.eprq",
-				"EP-SPARQL-Query-Realtime-Historical-shared-Variables.eprq",
-				// "EP-SPARQL-Query-SEQ-Parenthesis.eprq", Currently not needed.
-				"EP-SPARQL-Query-Type.eprq",
-				"EP-SPARQL-Query-WINDOW-sliding.eprq",
-				"EP-SPARQL-Query-WINDOW-tumbling.eprq",
+				"BDPL-Query-HAVING.eprq",
+				"BDPL-Query-CONSTRUCT-Query.eprq",
+				"BDPL-Query-Event-and-GRAPH.eprq",
+				"BDPL-Query-FILTER-contains-possition.eprq",
+				"BDPL-Query-FILTER-contains.eprq",
+				"BDPL-Query-Historic-followed-by-Realtime.eprq",
+				"BDPL-Query-M12-Construct-Query.eprq",
+				"BDPL-Query-more-than-one-FILTER.eprq",
+				"BDPL-Query-New-Infix-Opators.eprq",
+				"BDPL-Query-Realtime-Historical-multiple-Clouds.eprq",
+				"BDPL-Query-Realtime-Historical-shared-Variables.eprq",
+				// "BDPL-Query-SEQ-Parenthesis.eprq", Currently not needed.
+				"BDPL-Query-Type.eprq",
+				"BDPL-Query-WINDOW-sliding.eprq",
+				"BDPL-Query-WINDOW-tumbling.eprq",
 				"play-bdpl-crisis-01a-radiation.eprq",
 				"play-bdpl-crisis-01b-radiationincrease.eprq",
 				"play-bdpl-crisis-02a-winddirection.eprq",
@@ -86,7 +86,7 @@ public class EpsparqlTest {
 
 		String[] query;
 		
-		for (String fileName : getFilenames(new File("src/test/resources/"), TestType.EP_SPARQL_BROKEN_QUERY)) {
+		for (String fileName : getFilenames(new File("src/test/resources/"), TestType.BDPL_BROKEN_QUERY)) {
 			System.out.println("Testing queryfile: " + fileName);
 			try {
 				query = getQuery(fileName);
@@ -151,8 +151,8 @@ public class EpsparqlTest {
 	
 	/**
 	 * Returns the filenaes of the testfiles depending on the type of the testfile.
-	 * The filename of a file with contains a broken query (a query which the parser do not acceapt) must start with "EP-SPARQL-BrokenQuery".
-	 * The filename of a file with a regular query must start with "EP-SPARQL-Query".
+	 * The filename of a file with contains a broken query (a query which the parser do not acceapt) must start with "BDPL-BrokenQuery".
+	 * The filename of a file with a regular query must start with "BDPL-Query".
 	 * @param dir Directory of the files.
 	 * @param type Type of the fiel.
 	 * @return All filenames with the specified type.
@@ -164,13 +164,13 @@ public class EpsparqlTest {
 		File[] files = dir.listFiles();
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
-				if(type == TestType.EP_SPARQL_BROKEN_QUERY){
-					if (files[i].getName().startsWith("EP-SPARQL-BrokenQuery")
+				if(type == TestType.BDPL_BROKEN_QUERY){
+					if (files[i].getName().startsWith("BDPL-BrokenQuery")
 							&& !files[i].isDirectory()) {
 						filenames.add(files[i].getName());
 					}
-				}else if (type == TestType.EP_SPARQL_Query){
-					if (files[i].getName().startsWith("EP-SPARQL-Query")
+				}else if (type == TestType.BDPL_QUERY){
+					if (files[i].getName().startsWith("BDPL-Query")
 							&& !files[i].isDirectory()) {
 						filenames.add(files[i].getName());
 				

@@ -114,7 +114,7 @@ public class MathExprFunctionXVisitor  extends GenericVisitor {
 	
 	@Override
 	public void visit(NodeValueDecimal nv) {
-		stack.push(nv.toString());
+		stack.push(nv.toString().replace("\"", ""));
 	}
 
 	@Override

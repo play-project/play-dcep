@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Represents a SPARQL 1.1 query to get data from a triplestore.
- * It is often extracted from a EP-SPARQL query.
+ * It is often extracted from a BDPL query.
  * @author sobermeier
  *
  */
