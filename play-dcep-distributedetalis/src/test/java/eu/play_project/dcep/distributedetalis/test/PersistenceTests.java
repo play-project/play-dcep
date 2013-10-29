@@ -22,7 +22,7 @@ public class PersistenceTests {
 	 */
 	@Test
 	public void testSqlite() throws PersistenceException, IOException {
-		File dbFile = new File(File.createTempFile("play-dcep", "test") + File.pathSeparator + "dcep.db");
+		File dbFile = File.createTempFile("play-dcep", "test.db");
 		dbFile.deleteOnExit();
 		Persistence db = new Sqlite(dbFile);
 		db.deleteAllSubscriptions();
