@@ -19,8 +19,8 @@ public class Sqlite implements Persistence {
 	
 	public Sqlite() throws PersistenceException {
 		this(
-				new File(System.getProperty("java.io.tmpdir") + File.pathSeparator + "play-dcep"
-						+ File.pathSeparator + "dcep.db"));
+				new File(System.getProperty("java.io.tmpdir") + File.separator + "play-dcep"
+						+ File.separator + "dcep.db"));
 		// TODO stuehmer: this should be unique for more than one Detalis instance per machine
 	}
 	
