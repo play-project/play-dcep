@@ -1,0 +1,4 @@
+eu.play_project.dcep.distribution
+eu.play_project.dcep.distribution.examples
+eu.play_project.dcep.distribution.tests.single_pattern
+eu.play_project.dcep.distribution.tests.srbench.performance
