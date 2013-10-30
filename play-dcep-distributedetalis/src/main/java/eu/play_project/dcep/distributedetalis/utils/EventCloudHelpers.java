@@ -75,8 +75,7 @@ public class EventCloudHelpers {
 	 * Print the member event IDs (if present in the complex event) as
 	 * a space-separated string. This method will be replaced when the
 	 * :members feature becomes a first-class feature of DCEP.
-	 * @param m
-	 * @return
+	 * 
 	 * @deprecated This will be removed when :members feature becomes a built-in
 	 * feature of DCEP.
 	 */
@@ -100,8 +99,7 @@ public class EventCloudHelpers {
 	 * Print the member event IDs (if present in the complex event) as
 	 * a space-separated string. This method will be replaced when the
 	 * :members feature becomes a first-class feature of DCEP.
-	 * @param m
-	 * @return
+	 * 
 	 * @deprecated This will be removed when :members feature becomes a built-in
 	 * feature of DCEP.
 	 */
@@ -125,7 +123,7 @@ public class EventCloudHelpers {
 	 * Returns the RDF event type as URI string. This method tries to find {@code rdf:type}
 	 * statements with the proper event ID as subject. If this fails it falls back to arbitrary
 	 * {@code rdf:type} statements in the event and finally defaults to the basic event type of
-	 * {@linkplain Event.RDFS_CLASS}
+	 * {@linkplain Event.RDFS_CLASS}.
 	 * 
 	 * @see EventTypeMetadata#getType(Model)
 	 */
