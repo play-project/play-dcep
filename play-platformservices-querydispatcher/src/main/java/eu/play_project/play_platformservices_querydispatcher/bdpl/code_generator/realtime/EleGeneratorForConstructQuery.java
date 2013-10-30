@@ -266,9 +266,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		if (filter.length() > 4) {
 			flatDbQueries += ", " + filter.substring(3, filter.length()-2);
 		}
-		System.out.println("\n\n\n\n\n");
+		
+		//FIXME Debug output.
+		System.out.println("\n\n\n");
 		System.out.println(flatDbQueries);
-		System.out.println("\n\n\n\n\n");
+		System.out.println("\n\n\n");
+
 		// Generate representative.
 		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
 		currentElement.visit(v);
