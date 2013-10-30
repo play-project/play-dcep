@@ -1,0 +1,10 @@
+eu.play_project.dcep.distributedetalis
+eu.play_project.dcep.distributedetalis.api
+eu.play_project.dcep.distributedetalis.configurations
+eu.play_project.dcep.distributedetalis.configurations.helpers
+eu.play_project.dcep.distributedetalis.join
+eu.play_project.dcep.distributedetalis.listeners
+eu.play_project.dcep.distributedetalis.measurement
+eu.play_project.dcep.distributedetalis.measurement.fsm
+eu.play_project.dcep.distributedetalis.persistence
+eu.play_project.dcep.distributedetalis.utils
