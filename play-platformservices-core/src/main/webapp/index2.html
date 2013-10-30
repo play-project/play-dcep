@@ -7,18 +7,15 @@
 
 <script type="text/javascript">
 
-var Patterns = {};
+var Entities = {};
 
-Window.Pattern = Backbone.Model.extend();
-
-Patterns.Collection = Backbone.Collection.extend({
-    model: Pattern,
+Entities.Collection = Backbone.Collection.extend({
     url: '/patterns'
 });
-
-Patterns.Views = {};
-
-Patterns.Views.Edit = Backbone.View.extend({
+ 
+Entities.Views = {};
+ 
+Entities.Views.Edit = Backbone.View.extend({
     change: function () {
         this.model.set({
             name: $(this.el).children('input').val()
@@ -41,15 +38,15 @@ Patterns.Views.Edit = Backbone.View.extend({
         _(this).bindAll('change', 'destroy', 'render');
     },
     render: function () {
-        $('#pattern-template').tmpl(this.model.toJSON()).appendTo(this.el);
+        $('#entity-template').tmpl(this.model.toJSON()).appendTo(this.el);
         this.delegateEvents();
     }
 });
  
-Patterns.Views.List = Backbone.View.extend({
+Entities.Views.List = Backbone.View.extend({
     append: function (model) {
-        var p = $('<p>').appendTo('#patterns'),
-            view = new Patterns.Views.Edit({
+        var p = $('<p>').appendTo('#entities'),
+            view = new Entities.Views.Edit({
                 model: model,
                 el: p[0]
             });
@@ -61,7 +58,7 @@ Patterns.Views.List = Backbone.View.extend({
         this.collection.bind('add', this.append);
     },
     render: function () {
-        $('#patterns').empty();
+        $('#entities').empty();
         this.collection.each(function (model) {
             this.append(model);
         }, this);
@@ -69,8 +66,8 @@ Patterns.Views.List = Backbone.View.extend({
 });
  
 $(function () {
-    var collection = new Patterns.Collection(),
-        view = new Patterns.Views.List({
+    var collection = new Entities.Collection(),
+        view = new Entities.Views.List({
             collection: collection
         });
  
@@ -91,12 +88,11 @@ $(function () {
 
     <body>
         <p><input id="new-name" type="text"><button id="add">Add</button></p>
-        <div id="patterns"></div>
+        <div id="entities"></div>
     </body>
-    <script id="pattern-template" type="x-jquery-tmpl">
-        <input type="text" value="${id}">
-		<textarea>${content}</textarea>
+    <script id="entity-template" type="x-jquery-tmpl">
+        <input type="text" value="${name}">
         <button>Delete</button>
     </script>
-
+    
 </html>

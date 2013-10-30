@@ -130,6 +130,11 @@
 			<artifactId>webjars-locator</artifactId>
 			<version>0.5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery-tmpl</artifactId>
+			<version>beta1.0.0-1</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
