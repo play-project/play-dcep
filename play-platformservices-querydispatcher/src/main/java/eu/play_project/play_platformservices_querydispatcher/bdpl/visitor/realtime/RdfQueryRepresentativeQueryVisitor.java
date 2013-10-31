@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -125,6 +127,8 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 				triple.getPredicate().visitWith(this);
 				code.append(",");
 				triple.getObject().visitWith(this);
+				code.append(",");
+				code.append(getVarNameManager().getTriplestoreVariable());
 				code.append(")");
 				
 				varRepresentative.put(name, code.toString());

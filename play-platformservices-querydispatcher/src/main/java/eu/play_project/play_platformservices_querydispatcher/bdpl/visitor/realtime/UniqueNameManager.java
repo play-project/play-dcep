@@ -107,7 +107,11 @@ public class UniqueNameManager {
 	}
 	
 	public String getTriplestoreVariable(){
-		return getTriplestoreVariableForEventNr(triplestoreVariable);
+		if (triplestoreVariable != 0) {
+			return getTriplestoreVariableForEventNr(triplestoreVariable);
+		} else {
+			throw new RuntimeException("Value of triplestoreVariable is 0. Please call getNextTriplestoreVariable() first.");
+		}
 	}
 	
 	public String getTriplestoreVariableForEventNr(long eventNumber){
