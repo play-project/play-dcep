@@ -374,13 +374,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 		// Schema "dbQuery" + patternId + idForEvent
 		dbQueryDecl.append("'dbQuery_" + patternId.replace("'", "") + "_e" + eventCounter + "'(");
-		dbQueryDecl.append(uniqueNameManager
-				.getTriplestoreVariable() + ", "); // Mapping
-																			// between
-																			// event
-																			// and
-																			// corresponding
-																			// data.
+		dbQueryDecl.append(getVarNameManager().getTriplestoreVariable() + ", "); // Mapping
+																			     // between
+																			     // event
+																			     // and
+																			     // corresponding
+																			     // data.
 		Iterator<String> iter = v.getVariables().iterator();
 		while (iter.hasNext()) {
 			dbQueryDecl.append(iter.next());

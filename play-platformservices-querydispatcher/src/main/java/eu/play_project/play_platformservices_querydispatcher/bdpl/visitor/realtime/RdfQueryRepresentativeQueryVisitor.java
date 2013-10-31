@@ -128,7 +128,7 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 				code.append(",");
 				triple.getObject().visitWith(this);
 				code.append(",");
-				code.append(getVarNameManager().getTriplestoreVariable());
+				code.append(getVarNameManager().getNextTriplestoreVariable());
 				code.append(")");
 				
 				varRepresentative.put(name, code.toString());
