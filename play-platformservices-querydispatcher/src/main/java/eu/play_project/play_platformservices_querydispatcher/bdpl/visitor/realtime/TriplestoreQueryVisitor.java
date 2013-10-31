@@ -122,8 +122,6 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		
 		// Generate db queries.
 		while (iter.hasNext()) {
-			// Debug out FIXME
-			triplestoreQuery += "nl, write('ID: ') , write(" + uniqueNameManager.getTriplestoreVariable() + "), nl, ";
 			
 			triplestoreQuery += "rdf(";
 			TriplePath tmpTriplePath = iter.next();

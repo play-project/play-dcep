@@ -89,7 +89,6 @@ public class UniqueNameManager {
 		}
 		
 		return vars;
-		
 	}
 	
 	public String getNextCeid(){
@@ -107,14 +106,10 @@ public class UniqueNameManager {
 	}
 	
 	public String getTriplestoreVariable(){
-		if (triplestoreVariable != 0) {
-			return getTriplestoreVariableForEventNr(triplestoreVariable);
-		} else {
-			throw new RuntimeException("Value of triplestoreVariable is 0. Please call getNextTriplestoreVariable() first.");
-		}
+		return getTriplestoreVariableForEventNr(triplestoreVariable);
 	}
 	
-	public String getTriplestoreVariableForEventNr(long eventNumber){
+	private String getTriplestoreVariableForEventNr(long eventNumber){
 		return "ViD" + eventNumber;
 	}
 	
