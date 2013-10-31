@@ -227,8 +227,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		currentElement.visit(eventTypeVisitor);
 		elePattern += eventTypeVisitor.getEventType();
 		elePattern += "(";
-		String triplestoreVariable = uniqueNameManager.getNextTriplestoreVariable();
-		elePattern += triplestoreVariable;
+		elePattern += uniqueNameManager.getNextTriplestoreVariable();
 		elePattern += ") 'WHERE' (";
 		AdditionalConditions();
 		elePattern += "))";
@@ -266,9 +265,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		if (filter.length() > 4) {
 			flatDbQueries += ", " + filter.substring(3, filter.length()-2);
 		}
-		System.out.println("\n\n\n\n\n");
-		System.out.println(flatDbQueries);
-		System.out.println("\n\n\n\n\n");
+		
 		// Generate representative.
 		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
 		currentElement.visit(v);
@@ -279,6 +276,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		// Combine decl and impl.
 		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
+		System.out.println("\n\n\n\n " + dbQueryDecl + "\n\n\n\n");
 
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
@@ -376,13 +374,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 		// Schema "dbQuery" + patternId + idForEvent
 		dbQueryDecl.append("'dbQuery_" + patternId.replace("'", "") + "_e" + eventCounter + "'(");
-		dbQueryDecl.append(uniqueNameManager
-				.getTriplestoreVariableForEventNr(eventCounter) + ", "); // Mapping
-																			// between
-																			// event
-																			// and
-																			// corresponding
-																			// data.
+		dbQueryDecl.append(getVarNameManager().getTriplestoreVariable() + ", "); // Mapping
+																			     // between
+																			     // event
+																			     // and
+																			     // corresponding
+																			     // data.
 		Iterator<String> iter = v.getVariables().iterator();
 		while (iter.hasNext()) {
 			dbQueryDecl.append(iter.next());

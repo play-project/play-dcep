@@ -122,6 +122,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		
 		// Generate db queries.
 		while (iter.hasNext()) {
+			
 			triplestoreQuery += "rdf(";
 			TriplePath tmpTriplePath = iter.next();
 			// Get data from one graph

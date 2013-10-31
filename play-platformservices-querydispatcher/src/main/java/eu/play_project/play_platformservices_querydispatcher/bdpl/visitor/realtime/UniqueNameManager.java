@@ -89,7 +89,6 @@ public class UniqueNameManager {
 		}
 		
 		return vars;
-		
 	}
 	
 	public String getNextCeid(){
@@ -110,7 +109,7 @@ public class UniqueNameManager {
 		return getTriplestoreVariableForEventNr(triplestoreVariable);
 	}
 	
-	public String getTriplestoreVariableForEventNr(long eventNumber){
+	private String getTriplestoreVariableForEventNr(long eventNumber){
 		return "ViD" + eventNumber;
 	}
 	
