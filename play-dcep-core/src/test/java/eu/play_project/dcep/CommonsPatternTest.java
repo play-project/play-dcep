@@ -50,7 +50,7 @@ public class CommonsPatternTest {
 	public static boolean test;
 	private final Logger logger = Logger.getAnonymousLogger();
 	
-	//@Test
+	@Test
 	public void Clic2callPatternTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
@@ -111,7 +111,7 @@ public class CommonsPatternTest {
 	/**
 	 * One events contains multiple topics a person is talking about.
 	 */
-	//@Test
+	@Test
 	public void setOperationTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException{
 	String queryString;
 		
@@ -171,7 +171,7 @@ public class CommonsPatternTest {
 		testApi.attach(subscriber);
 	
 		logger.info("Publish evetns");
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 11; i++) {
 			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 			Quadruple q1 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
@@ -209,8 +209,6 @@ public class CommonsPatternTest {
 					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
 					NodeFactory.createURI("110"));
 
-
-			
 			quads.add(q1);
 			quads.add(q2);
 			quads.add(q3);
@@ -225,8 +223,7 @@ public class CommonsPatternTest {
 		// Wait
 		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==3);
-		
+		assertTrue(subscriber.getComplexEvents().size()==11);
 
 		// Stop and terminate GCM Components
 		try {
@@ -247,7 +244,7 @@ public class CommonsPatternTest {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 

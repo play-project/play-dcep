@@ -3,9 +3,11 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generato
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
@@ -58,7 +60,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private VariableTypeManager nameManager;
 	
 	private List<String> rdfDbQueries; // Rdf db queries represents the semantic web part of a BDPL query. ETALIS calls this queries to check conditions for the current events.
-	private int eventCounter; // Count number of events in a query.
 	
 	private String patternId;
 	
@@ -92,13 +93,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		nameManager.collectVars();
 
 		rdfDbQueries = new LinkedList<String>();
-		eventCounter = 0;
+		
 		// Start code generation.
 		ElePattern();
 	}
 	
 	private void ElePattern(){
-		StringBuffer generateConstructCode;
 		
 		Complex();
 		elePattern += "<-";
@@ -220,14 +220,16 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private void PrintStatisticsData(){
 		elePattern += ", printRdfStat, printRefCountN";
 	}
+	
 	private void SimpleEventPattern() {
+		uniqueNameManager.processNextEvent();
 	
 		elePattern += "(";
 		currentElement = eventQueryIter.next();
 		currentElement.visit(eventTypeVisitor);
 		elePattern += eventTypeVisitor.getEventType();
 		elePattern += "(";
-		elePattern += uniqueNameManager.getNextTriplestoreVariable();
+		elePattern += uniqueNameManager.getTriplestoreVariable();
 		elePattern += ") 'WHERE' (";
 		AdditionalConditions();
 		elePattern += "))";
@@ -257,7 +259,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	private void TriplestoreQuery(String filter) {
 		String flatDbQueries;
-		eventCounter++; // New event in query.
 		
 		// Get flat queries
 		currentElement.visit(triplestoreQueryVisitor);
@@ -272,7 +273,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 		//Generate query method
 		StringBuffer dbQueryMethod = new StringBuffer();
-		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, eventCounter).toString();
+		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
 		// Combine decl and impl.
 		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
@@ -356,15 +357,15 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private List<String> AllRdfQueryDbMethodDecl(Query q, String patternId) {
 		List<String> dbDecl = new LinkedList<String>();
 		
-		int eventCounter = 0;
 		for (Element currentElement : q.getEventQuery()) {
-			eventCounter++;
-			dbDecl.add(RdfQueryDbMethodDecl(currentElement, eventCounter).toString());
+			getVarNameManager().processNextEvent();
+			dbDecl.add(RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString());
 		}
+		getVarNameManager().resetTriplestoreVariable();
 		return dbDecl;
 	}
 	
-	public StringBuffer RdfQueryDbMethodDecl(Element currentElement, int eventCounter) {
+	public StringBuffer RdfQueryDbMethodDecl(Element currentElement, long l) {
 		// Get variables
 		CollectVariablesInTriplesVisitor v = new CollectVariablesInTriplesVisitor();
 		currentElement.visit(v);
@@ -373,7 +374,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer dbQueryDecl = new StringBuffer();
 
 		// Schema "dbQuery" + patternId + idForEvent
-		dbQueryDecl.append("'dbQuery_" + patternId.replace("'", "") + "_e" + eventCounter + "'(");
+		dbQueryDecl.append("'dbQuery_" + patternId.replace("'", "") + "_e" + l + "'(");
 		dbQueryDecl.append(getVarNameManager().getTriplestoreVariable() + ", "); // Mapping
 																			     // between
 																			     // event
@@ -383,7 +384,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		Iterator<String> iter = v.getVariables().iterator();
 		while (iter.hasNext()) {
 			dbQueryDecl.append(iter.next());
-
+			
 			// Decide if it is the last variable or end of decl.
 			if (iter.hasNext()) {
 				dbQueryDecl.append(", ");

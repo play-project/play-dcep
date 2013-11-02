@@ -84,7 +84,7 @@ public class UniqueNameManager {
 	 */
 	public List<String> getAllTripleStoreVariablesOfThisQuery(){
 		LinkedList<String> vars = new LinkedList<String>();
-		for (int startTriplestoreVariableCurrentQuery = 0; startTriplestoreVariableCurrentQuery <= triplestoreVariable; startTriplestoreVariableCurrentQuery++) {
+		for (int i = 0 ; startTriplestoreVariableCurrentQuery <= triplestoreVariable; startTriplestoreVariableCurrentQuery++) {
 			vars.add("ViD" + triplestoreVariable);
 		}
 		
@@ -100,9 +100,16 @@ public class UniqueNameManager {
 		return "CEID" + ceid;
 	}
 	
-	public String getNextTriplestoreVariable(){
-		triplestoreVariable++;
-		return getTriplestoreVariableForEventNr(triplestoreVariable);
+	public long processNextEvent(){
+		return (++triplestoreVariable);
+	}
+	
+	public void resetTriplestoreVariable(){
+		triplestoreVariable = 0;
+	}
+	
+	public long getCurrentSimpleEventNumber() {
+		return triplestoreVariable;
 	}
 	
 	public String getTriplestoreVariable(){
@@ -182,6 +189,5 @@ public class UniqueNameManager {
 	public void setWindowTime(String windowTime) {
 		this.windowTime = windowTime;
 	}
-
 	
 }
