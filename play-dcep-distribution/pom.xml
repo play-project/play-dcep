@@ -24,20 +24,17 @@
 	</properties>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/config</directory>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/adl/</directory>
-			</resource>
-		</resources>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/main/config/proactive.java.policy]]></argLine>
+					<!-- Run unit tests in single JVM and do not reuse; otherwise Prolog JNI (JPL) causes problems :stuehmer -->
+					<forkCount>1</forkCount>
+					<reuseForks>false</reuseForks>
+				</configuration>
+			</plugin>
 			<!-- Do not deploy this artefact to maven repo, it is very big. :stuehmer -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -135,6 +132,19 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/config</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/adl/</directory>
+			</resource>
+		</resources>
 	</build>
 
 	<dependencies>

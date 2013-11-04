@@ -66,7 +66,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		try {
 			Response fourstoreCheck = fourStoreClient.target(FOURSTORE_REST_URI).path(STATUS_PATH).request().head();
 			if (fourstoreCheck.getStatusInfo().getFamily() != Status.Family.SUCCESSFUL) {
-				throw new EcConnectionmanagerException(String.format("4store returned response '%s', possible misconfiguration.", fourstoreCheck.getStatusInfo()));
+				throw new EcConnectionmanagerException(String.format("4store returned response '%s', possible misconfiguration.", fourstoreCheck.getStatusInfo().toString()));
 			}
 			fourstoreCheck.close();
 		} catch (Exception e) {
