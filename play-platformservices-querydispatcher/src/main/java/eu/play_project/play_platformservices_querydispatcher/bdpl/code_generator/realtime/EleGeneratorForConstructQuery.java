@@ -211,7 +211,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer tmp = new StringBuffer();
 		
 		for (String var : uniqueNameManager.getAllTripleStoreVariablesOfThisQuery()) {
-			tmp.append(", decrementReferenceCounter( "+ var + ")");
+			tmp.append(", decrementReferenceCounter("+ var + ")");
 		}
 		
 		elePattern += tmp.toString();
