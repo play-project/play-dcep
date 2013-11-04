@@ -77,6 +77,7 @@ public class UniqueNameManager {
 		triplestoreVariableStart = triplestoreVariableEnd;
 		triplestoreVariableStart++;
 		triplestoreVariable = triplestoreVariableEnd;
+		triplestoreVariable++;
 	}
 	
 	/**
