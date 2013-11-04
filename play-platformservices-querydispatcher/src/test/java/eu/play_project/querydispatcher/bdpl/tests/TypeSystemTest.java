@@ -1,4 +1,4 @@
-package eu.play_project.querydispatcher.epsparql.tests;
+package eu.play_project.querydispatcher.bdpl.tests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
