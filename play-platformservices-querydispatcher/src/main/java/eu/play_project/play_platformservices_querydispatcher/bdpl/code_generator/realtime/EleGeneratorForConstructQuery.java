@@ -263,9 +263,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		// Get flat queries
 		currentElement.visit(triplestoreQueryVisitor);
 		flatDbQueries = triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
-//		if (filter.length() > 4) {
-//			flatDbQueries += ", " + filter.substring(3, filter.length()-2);
-//		}
+		if (filter.length() > 4) {
+			flatDbQueries += ", " + filter.substring(3, filter.length()-2);
+		}
 		
 		// Generate representative.
 		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
