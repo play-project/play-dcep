@@ -329,7 +329,7 @@ public class BdplEleTest {
 	}
 	
 	@Test
-	public void RdfQueryRepresentativeQueryVisitorTest(){
+	public void testRdfQueryRepresentativeQueryVisitor(){
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
@@ -344,10 +344,10 @@ public class BdplEleTest {
 		query.getEventQuery().get(0).visit(v);
 		
 		// Queries for variable t1,e1,friend1,about1.
-		String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1)",
-								   "rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent')",
-								   "rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1)",
-								   "rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1)"
+		String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1,ViD0)",
+								   "rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent',ViD0)",
+								   "rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1,ViD0)",
+								   "rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1,ViD0)"
 								  };
 
 		int i = 0;
