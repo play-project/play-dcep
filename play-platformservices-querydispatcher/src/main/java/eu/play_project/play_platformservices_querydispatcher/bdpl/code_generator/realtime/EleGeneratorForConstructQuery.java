@@ -120,6 +120,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
+		getVarNameManager().resetTriplestoreVariable();
 		elePattern += ")";
 	}
 
@@ -361,7 +362,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			getVarNameManager().processNextEvent();
 			dbDecl.add(RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString());
 		}
-		getVarNameManager().resetTriplestoreVariable();
 		return dbDecl;
 	}
 	
