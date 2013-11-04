@@ -1,0 +1,1 @@
+:- dynamic(rule_sharing/1).
