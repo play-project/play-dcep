@@ -62,12 +62,16 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		updateEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(UPDATE_PATH);
 		sparqlEndpoint = fourStoreClient.target(FOURSTORE_REST_URI).path(SPARQL_PATH);
 		
-		// Run a quick sanity check on 4store but only issue a warning:
-		Response fourstoreCheck = fourStoreClient.target(FOURSTORE_REST_URI).path(STATUS_PATH).request().head();
-		if (fourstoreCheck.getStatusInfo().getFamily() != Status.Family.SUCCESSFUL) {
-			logger.warn("4store returned response '{}', possible misconfiguration.", fourstoreCheck.getStatusInfo());
+		// Run a quick sanity check on 4store:
+		try {
+			Response fourstoreCheck = fourStoreClient.target(FOURSTORE_REST_URI).path(STATUS_PATH).request().head();
+			if (fourstoreCheck.getStatusInfo().getFamily() != Status.Family.SUCCESSFUL) {
+				throw new EcConnectionmanagerException(String.format("4store returned response '%s', possible misconfiguration.", fourstoreCheck.getStatusInfo()));
+			}
+			fourstoreCheck.close();
+		} catch (Exception e) {
+			throw new EcConnectionmanagerException(String.format("4store returned exception '%s', possible misconfiguration: %s", e.getClass().getSimpleName(), e.getMessage()));
 		}
-		fourstoreCheck.close();
 	}
 
 	@Override
