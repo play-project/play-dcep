@@ -20,8 +20,9 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
 public class UniqueNameManager {
 	private static VariableTypeManager vtm;
 	private long ceid; //Complex event id variable.
-	private long triplestoreVariable; // Represents a triplestore with values of one event.
-	private long startTriplestoreVariableCurrentQuery; // Store first triplestore variable of the query.
+	private long triplestoreVariable; // Represents the current triplestore variable.
+	private long triplestoreVariableStart; // Store first triplestore variable of the query.
+	private long triplestoreVariableEnd; // Store the last triplestore variabe of the query.
 	private long absVariable;
 	private long filterVar;
 	private long aggrDbId;
@@ -73,8 +74,9 @@ public class UniqueNameManager {
 	 */
 
 	public void newQuery(){
-		startTriplestoreVariableCurrentQuery = triplestoreVariable;
-		startTriplestoreVariableCurrentQuery++; // newQuery is called before current triplestoreVariable is generated. Precalculated value.
+		triplestoreVariableStart = triplestoreVariableEnd;
+		triplestoreVariableStart++;
+		triplestoreVariable = triplestoreVariableEnd;
 	}
 	
 	/**
@@ -84,28 +86,24 @@ public class UniqueNameManager {
 	 */
 	public List<String> getAllTripleStoreVariablesOfThisQuery(){
 		LinkedList<String> vars = new LinkedList<String>();
-		for (int i = 0 ; startTriplestoreVariableCurrentQuery <= triplestoreVariable; startTriplestoreVariableCurrentQuery++) {
-			vars.add("ViD" + startTriplestoreVariableCurrentQuery);
+		for (long i = triplestoreVariableStart; i <= triplestoreVariableEnd; i++) {
+			vars.add("ViD" + i);
 		}
-		
+
 		return vars;
 	}
 	
-	public String getNextCeid(){
-		ceid++;
-		return "CEID" + ceid;
-	}
-	
-	public String getCeid(){
-		return "CEID" + ceid;
-	}
-	
+
 	public long processNextEvent(){
-		return (++triplestoreVariable);
+
+		if (++triplestoreVariable >  triplestoreVariableEnd) {
+			triplestoreVariableEnd = triplestoreVariable;
+		}
+		return triplestoreVariable;
 	}
 	
 	public void resetTriplestoreVariable(){
-		triplestoreVariable = startTriplestoreVariableCurrentQuery;
+		triplestoreVariable = triplestoreVariableStart;
 	}
 	
 	public long getCurrentSimpleEventNumber() {
@@ -188,6 +186,15 @@ public class UniqueNameManager {
 
 	public void setWindowTime(String windowTime) {
 		this.windowTime = windowTime;
+	}
+	
+	public String getNextCeid(){
+		ceid++;
+		return "CEID" + ceid;
+	}
+	
+	public String getCeid(){
+		return "CEID" + ceid;
 	}
 	
 }
