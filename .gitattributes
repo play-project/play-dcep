@@ -1,7 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Overwrite settings for some know file extensions
+# Overwrite settings for some known file extensions
 *.java	-text diff=java
 *.pl	-text
 *.html	text diff=html
@@ -9,6 +9,7 @@
 *.js	text
 *.sql	text
 *.md	text
+*.sh	-text
 
 # Custom for Visual Studio
 *.cs		text diff=csharp
