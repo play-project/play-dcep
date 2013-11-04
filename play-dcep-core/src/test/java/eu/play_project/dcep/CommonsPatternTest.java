@@ -203,14 +203,16 @@ public class CommonsPatternTest {
 	}
 	
 	@Test
-	public void testCrisis01() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException {
+	public void testCrisis01() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException, InterruptedException {
 		String queryString;
 
 		// Get query.
 		queryString = getSparqlQueries("play-bdpl-crisis-01a-radiation.eprq");
 
 		// Compile query
-		queryDispatchApi.registerQuery("abc0", queryString);
+		queryDispatchApi.registerQuery("queryId_0", queryString);
+		queryDispatchApi.registerQuery("queryId_1", queryString);
+		queryDispatchApi.registerQuery("queryId_3", queryString);
 		
 		
 		//Subscribe to get complex events.
@@ -219,7 +221,7 @@ public class CommonsPatternTest {
 		testApi.attach(subscriber);
 	
 		logger.info("Publish evetns");
-		for (int i = 0; i < 11; i++) {
+		for (int i = 0; i < 500; i++) {
 			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 			Quadruple q1 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
@@ -265,13 +267,17 @@ public class CommonsPatternTest {
 			quads.add(q6);
 			quads.add(q7);
 			testApi.publish(new CompoundEvent(quads));
-			NodeFactory.createURI("http://streams.event-processing.org/ids/FacebookStatusFeed#stream");
+			
+			Thread.sleep(100);
 		}
 
 		// Wait
 		delay();
+		delay();
+		delay();
+		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==11);
+		assertEquals(subscriber.getComplexEvents().size(), 1500);
 
 		// Stop and terminate GCM Components
 		try {
@@ -614,7 +620,7 @@ public class CommonsPatternTest {
 	
 	private void delay(){
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

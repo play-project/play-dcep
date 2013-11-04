@@ -278,8 +278,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		// Combine decl and impl.
 		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
-		System.out.println("\n\n\n\n " + dbQueryDecl + ":-(" + flatDbQueries +  "\n\n\n\n");
-
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
