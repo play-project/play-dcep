@@ -1,4 +1,4 @@
-package eu.play_project.querydispatcher.epsparql.tests;
+package eu.play_project.querydispatcher.bdpl.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -37,7 +37,7 @@ import eu.play_project.play_platformservices_querydispatcher.playEleParser.Parse
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
 
 
-//import eu.play_project.querydispatcher.epsparql.tests.helpers.FilterExpressionCodeGenerator;
+//import eu.play_project.querydispatcher.bdpl.tests.helpers.FilterExpressionCodeGenerator;
 
 public class BdplEleTest {
 
