@@ -87,7 +87,7 @@ public class UniqueNameManager {
 	 */
 	public List<String> getAllTripleStoreVariablesOfThisQuery(){
 		LinkedList<String> vars = new LinkedList<String>();
-		for (long i = triplestoreVariableStart; i <= triplestoreVariableEnd; i++) {
+		for (long i = triplestoreVariableStart; i < triplestoreVariableEnd; i++) {
 			vars.add("ViD" + i);
 		}
 
