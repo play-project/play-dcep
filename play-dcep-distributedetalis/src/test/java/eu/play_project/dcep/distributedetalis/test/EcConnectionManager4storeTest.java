@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Singleton;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
@@ -65,8 +66,8 @@ public class EcConnectionManager4storeTest {
 
 	@BeforeClass
 	public static void setupBeforeClass() throws Exception {
-		Application listener = new TestListenerRest(eventSink);
-		Application fourstore = new TestFourstore(rdfSink);
+		Application listener = new MockListenerRest(eventSink);
+		Application fourstore = new MockFourstore(rdfSink);
 
 		final ResourceConfig rc = new ResourceConfig()
 				.register(listener)
@@ -157,17 +158,17 @@ public class EcConnectionManager4storeTest {
 	}
 
 	@Singleton
-	public static class TestListenerRest extends Application implements PublishService {
+	public static class MockListenerRest extends Application implements PublishService {
 
 		private final List<Model> eventSink;
-		private final Logger logger = LoggerFactory.getLogger(TestListenerRest.class);
+		private final Logger logger = LoggerFactory.getLogger(MockListenerRest.class);
 		private final AbstractReceiverRest rdfReceiver = new AbstractReceiverRest() {};
 
-		public TestListenerRest() {  // For JAXB
+		public MockListenerRest() {  // For JAXB
 			this.eventSink = null;
 		}
 		
-		public TestListenerRest(List<Model> eventSink) {
+		public MockListenerRest(List<Model> eventSink) {
 			this.eventSink = eventSink;
 	        logger.info("Test listener started.");
 		}
@@ -187,13 +188,13 @@ public class EcConnectionManager4storeTest {
 	
 	@Path(FOURSTORE_PATH) // overwrite the Path from interface PublishService for this test
 	@Singleton
-	public static class TestFourstore extends Application {
+	public static class MockFourstore extends Application {
 
 		private List<String> rdfSink;
 
-		public TestFourstore() {}  // For JAXB
+		public MockFourstore() {}  // For JAXB
 
-		public TestFourstore(List<String> rdfSink) {
+		public MockFourstore(List<String> rdfSink) {
 			this.rdfSink = rdfSink;
 		}
 
@@ -211,8 +212,16 @@ public class EcConnectionManager4storeTest {
 		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 		public Response data(@FormParam("mime-type") String mimeType,
 				@FormParam("graph") String graph, @FormParam("data") String data) {
-			logger.info(String.format("graph: '%s' mime-type: '%s' data:\n%s", graph, mimeType, data));
+			logger.info(String.format("graph: '%s' mime-type: '%s' data:%n%s", graph, mimeType, data));
 			this.rdfSink.add(data);
+			return Response.ok().build();
+		}
+		
+		@GET
+		@Path(EcConnectionManager4store.STATUS_PATH)
+		@Consumes(MediaType.WILDCARD)
+		public Response status() {
+			logger.info(String.format("status: got a request"));
 			return Response.ok().build();
 		}
 	}
