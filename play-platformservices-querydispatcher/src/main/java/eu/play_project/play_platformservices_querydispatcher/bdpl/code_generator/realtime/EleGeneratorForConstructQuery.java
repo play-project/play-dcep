@@ -119,7 +119,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		SaveSharedVariabelValues();
 		Having();
 		//PrintStatisticsData();
-		//DecrementReferenceCounter();
+		DecrementReferenceCounter();
 		getVarNameManager().resetTriplestoreVariable();
 		elePattern += ")";
 	}
