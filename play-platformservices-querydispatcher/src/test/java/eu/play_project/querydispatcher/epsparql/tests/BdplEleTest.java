@@ -1,7 +1,6 @@
 package eu.play_project.querydispatcher.epsparql.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -307,10 +306,7 @@ public class BdplEleTest {
 	
 			int i = 0;
 			for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
-				
-				if(!expectedResult[i].equals(v.getRdfQueryRepresentativeQuery().get(key))){
-					fail();
-				}
+				assertEquals(expectedResult[i], v.getRdfQueryRepresentativeQuery().get(key));
 				i++;
 			}
 			System.out.println(v.getRdfQueryRepresentativeQuery());
