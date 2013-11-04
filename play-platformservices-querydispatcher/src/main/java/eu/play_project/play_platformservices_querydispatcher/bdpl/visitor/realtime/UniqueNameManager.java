@@ -105,7 +105,7 @@ public class UniqueNameManager {
 	}
 	
 	public void resetTriplestoreVariable(){
-		triplestoreVariable = 0;
+		triplestoreVariable = startTriplestoreVariableCurrentQuery;
 	}
 	
 	public long getCurrentSimpleEventNumber() {
