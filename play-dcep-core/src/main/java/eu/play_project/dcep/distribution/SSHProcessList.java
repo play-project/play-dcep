@@ -6,7 +6,9 @@ import org.objectweb.proactive.core.process.ssh.SSHProcess;
 
 public class SSHProcessList extends AbstractListProcessDecorator {
 
-    public SSHProcessList() {
+	private static final long serialVersionUID = 657567819810497094L;
+
+	public SSHProcessList() {
         super();
     }
 
