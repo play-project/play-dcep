@@ -42,7 +42,7 @@ import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayE
 public class BdplEleTest {
 
 	@Test
-	public void manualParserUsage(){
+	public void testManualParserUsage() {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
@@ -74,7 +74,7 @@ public class BdplEleTest {
 	 * 
 	 */
 	@Test
-	public void basicEleGeneratorTest(){
+	public void testBasicEleGeneration() {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
@@ -122,7 +122,7 @@ public class BdplEleTest {
 	 * Generate code for (AVG(t) >= 30).
 	 */
 	@Test
-	public void havingAvgTest(){
+	public void testHavingAvg() {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
@@ -149,7 +149,7 @@ public class BdplEleTest {
 	
 	
 	@Test
-	public void startParser() throws InterruptedException {
+	public void testStartParser() throws InterruptedException {
 		String queryString = getQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
 		//queryString = "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
 		System.out.println(queryString);
@@ -186,7 +186,7 @@ public class BdplEleTest {
 	}
 
 	@Test
-	public void showQdResult(){
+	public void testShowQdResult() {
 
 		String queryString;
 
@@ -206,7 +206,7 @@ public class BdplEleTest {
 	}
 	
 	@Test
-	public void showEleResult() {
+	public void testShowEleResult() {
 
 		String queryString;
 
@@ -226,7 +226,7 @@ public class BdplEleTest {
 	}
 
 	@Test
-	public void evaluateFilterExpression(){
+	public void testEvaluateFilterExpression() {
 		String queryString = "PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ ?x ?nice ?name. ?e rdf:type ?AlertEvent } WHERE {EVENT ?id{?e1 ?location \"abc\". ?e rdf:type ?AlertEvent} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
 		Query query = null;
 		try{
@@ -258,7 +258,7 @@ public class BdplEleTest {
 //	}
 	
 	@Test
-	public void agregatedEventTypeTest(){
+	public void testAgregatedEventType() {
 //		AgregatedVariableTypes aTypes = new AgregatedVariableTypes();
 //
 //		// Get query.
@@ -283,6 +283,51 @@ public class BdplEleTest {
 //		assertTrue(eventTypes.get("tweetContent").equals(AgregatedEventType.CH));
 	}
 	
+	@Test
+		public void testRdfQueryRepresentativeQueryVisitor() {
+	
+			String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
+			Query query = null;
+			
+			try {
+				query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			} catch(Exception e){
+				System.out.println("Exception was thrown: " + e);
+			}
+			
+			RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor();
+			query.getEventQuery().get(0).visit(v);
+			
+			// Queries for variable t1,e1,friend1,about1.
+			String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1,ViD0)",
+									   "rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent',ViD0)",
+									   "rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1,ViD0)",
+									   "rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1,ViD0)"
+									  };
+	
+			int i = 0;
+			for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
+				
+				if(!expectedResult[i].equals(v.getRdfQueryRepresentativeQuery().get(key))){
+					fail();
+				}
+				i++;
+			}
+			System.out.println(v.getRdfQueryRepresentativeQuery());
+			//System.out.println(v.getCode());
+	
+			// Use custom visitor
+	//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+	//
+	//		visitor1.setPatternId("'http://patternId.example.com/123456'");
+	//
+	//		visitor1.generateQuery(query);
+	//		String etalisPattern = visitor1.getEle();
+			
+	
+	//		System.out.println(etalisPattern);
+		}
+
 	/**
 	 * Return the query from given file. If given it returns the message of the
 	 * expected exception.
@@ -328,51 +373,6 @@ public class BdplEleTest {
 		return null;
 	}
 	
-	@Test
-	public void testRdfQueryRepresentativeQueryVisitor(){
-
-		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
-		Query query = null;
-		
-		try {
-			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		} catch(Exception e){
-			System.out.println("Exception was thrown: " + e);
-		}
-		
-		RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor();
-		query.getEventQuery().get(0).visit(v);
-		
-		// Queries for variable t1,e1,friend1,about1.
-		String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1,ViD0)",
-								   "rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent',ViD0)",
-								   "rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1,ViD0)",
-								   "rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1,ViD0)"
-								  };
-
-		int i = 0;
-		for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
-			
-			if(!expectedResult[i].equals(v.getRdfQueryRepresentativeQuery().get(key))){
-				fail();
-			}
-			i++;
-		}
-		System.out.println(v.getRdfQueryRepresentativeQuery());
-		//System.out.println(v.getCode());
-
-		// Use custom visitor
-//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-//
-//		visitor1.setPatternId("'http://patternId.example.com/123456'");
-//
-//		visitor1.generateQuery(query);
-//		String etalisPattern = visitor1.getEle();
-		
-
-//		System.out.println(etalisPattern);
-	}
-
 	/**
 	 * Returns the filenaes of the testfiles depending on the type of the
 	 * testfile. The filename of a file with contains a broken query (a query

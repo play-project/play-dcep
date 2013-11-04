@@ -31,12 +31,12 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
  * @author sobermeier
  *
  */
-public class DispatcherTests {
+public class DispatcherTest {
 	private static Logger logger;
 
 	@Test
-	public void getIoStreamIds() throws IOException{
-		logger = LoggerFactory.getLogger(DispatcherTests.class);
+	public void testGetIoStreamIds() throws IOException{
+		logger = LoggerFactory.getLogger(DispatcherTest.class);
 		String queryString;
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"}));
 		String expectedOutputStream = "http://streams.event-processing.org/ids/ContextualizedLatitudeFeed";
@@ -63,9 +63,9 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void getVariablesAndTypes() throws IOException{
+	public void testGetVariablesAndTypes() throws IOException{
 		if(logger == null){
-			logger= LoggerFactory.getLogger(DispatcherTests.class);
+			logger= LoggerFactory.getLogger(DispatcherTest.class);
 		}
 		
 		// Get query.
@@ -109,7 +109,7 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void dispatchQueryHistoricalMultipleClouds() throws IOException {
+	public void testDispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
 		String queryString = getSparqlQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
 
@@ -135,7 +135,7 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void dispatchMissedCallsPlusTwitterQuery() throws IOException{
+	public void testDispatchMissedCallsPlusTwitterQuery() throws IOException{
 		// Get query.
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		

@@ -5,15 +5,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
 import org.etsi.uri.gcm.util.GCM;
 import org.event_processing.events.types.UcTelcoCall;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
 import org.objectweb.fractal.adl.Factory;
@@ -25,9 +30,13 @@ import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.node.NodeException;
+import org.ontoware.rdf2go.impl.jena.ModelImplJena;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
+import com.hp.hpl.jena.rdf.model.Model;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
@@ -48,15 +57,58 @@ public class CommonsPatternTest {
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private final Logger logger = Logger.getAnonymousLogger();
+	private final Logger logger = LoggerFactory.getLogger(CommonsPatternTest.class);
+	
+	@Before
+	public void instantiatePlayPlatform()
+			throws IllegalLifeCycleException, NoSuchInterfaceException,
+			ADLException {
+
+		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
+				.setValue("proactive.java.policy");
+
+		CentralPAPropertyRepository.GCM_PROVIDER
+				.setValue("org.objectweb.proactive.core.component.Fractive");
+
+		
+		Factory factory = FactoryFactory.getFactory();
+		HashMap<String, Object> context = new HashMap<String, Object>();
+
+		root = (Component) factory.newComponent("PsDcepComponent", context);
+		GCM.getGCMLifeCycleController(root).startFc();
+
+		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface("QueryDispatchApi"));
+		testApi = (DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi");
+		
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@After
+	public void terminatPlayPlatform() {
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			 for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
+				GCM.getGCMLifeCycleController(subcomponent).terminateGCMComponent();
+			 }
+	
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	@Test
-	public void Clic2callPatternTest() throws IllegalLifeCycleException,
+	public void testClic2callPattern() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
 		String queryString;
-		
-		InstantiatePlayPlatform();
 
 		// Get query.
 		queryString = getSparqlQueries("play-epsparql-clic2call.eprq");
@@ -112,10 +164,8 @@ public class CommonsPatternTest {
 	 * One events contains multiple topics a person is talking about.
 	 */
 	@Test
-	public void setOperationTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException{
+	public void testSetOperation() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException{
 	String queryString;
-		
-		InstantiatePlayPlatform();
 
 		// Get query.
 		queryString = getSparqlQueries("play-bdpl-all-topics-he-talks-about-setoperation-example.eprq");
@@ -136,7 +186,7 @@ public class CommonsPatternTest {
 
 		testApi.attach(subscriber);
 	
-		logger.info("Publish evetns");
+		logger.info("Publish events");
 		for (int i = 0; i < 5; i++) {
 			CompoundEvent event = createFacebookTopicEvent("example1" + Math.random());
 			testApi.publish(event);
@@ -153,10 +203,8 @@ public class CommonsPatternTest {
 	}
 	
 	@Test
-	public void Crisis01Test() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException {
+	public void testCrisis01() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException {
 		String queryString;
-		
-		InstantiatePlayPlatform();
 
 		// Get query.
 		queryString = getSparqlQueries("play-bdpl-crisis-01a-radiation.eprq");
@@ -245,12 +293,10 @@ public class CommonsPatternTest {
 	}
 	
 	@Test
-	public void Clic2callPatternPlusTweetTest() throws IllegalLifeCycleException,
+	public void testClic2callPatternPlusTweet() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 
 		String queryString;
-		
-		InstantiatePlayPlatform();
 
 		// Get query.
 		queryString = getSparqlQueries("play-epsparql-clic2call-plus-tweet.eprq");
@@ -275,7 +321,7 @@ public class CommonsPatternTest {
 		logger.info("Publish evetns");
 		for (int i = 0; i < 10; i++) {
 			CompoundEvent event = createTaxiUCCallEvent("example" + Math.random());
-			logger.fine("Publish event" +  event);
+			logger.debug("Publish event" +  event);
 			testApi.publish(event);
 		}
 
@@ -302,16 +348,14 @@ public class CommonsPatternTest {
 }
 
 	/**
-	 * Aggregate values in time-window. 
-	 * A complex event is created if the average value is >=5 in a 5s window. 
-	 * Event e1,e2,e3 are in window w1 and the average is > 5. 
+	 * Aggregate values in time-window.
+	 * A complex event is created if the average value is >=5 in a 5s window.
+	 * Event e1,e2,e3 are in window w1 and the average is > 5.
 	 * For event e4 the average is < 5, because e1 is out of window.
 	 */
 	@Test
-	public void AggregateAverageWindSpeedTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, InterruptedException{
+	public void testAggregateAverageWindSpeed() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, InterruptedException{
 		String queryString;
-		
-		InstantiatePlayPlatform();
 
 		// Get query.
 		queryString = getSparqlQueries("patterns/wether_wind_speed.eprq");
@@ -362,15 +406,46 @@ public class CommonsPatternTest {
 		}
 	}
 
-
-	public void sendEvents(){
-		start = true;
-		System.out.println("Start Producer");
-		System.out.println("Send 2000 Events ");
+	@Test
+	public void testThreeMissedCalls() throws QueryDispatchException, IOException {
 		
+		String queryString;
+
+		// Get query.
+		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("patterns/play-bdpl-telco-orange-eval-v3-full.eprq"));
+
+		// Compile query
+		queryDispatchApi.registerQuery("example1", queryString);
+
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		try {
+			subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		} catch (ActiveObjectCreationException e) {
+			e.printStackTrace();
+		} catch (NodeException e) {
+			e.printStackTrace();
+		}
+
+		testApi.attach(subscriber);
+	
+		logger.info("Publish events");
+		for (int i = 0; i < 5; i++) {
+			Model call0 = RDFDataMgr.loadModel("events/call0.nq", RDFLanguages.NQ);
+			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call0.getGraph().toString()), call0)));
+			Model call1 = RDFDataMgr.loadModel("events/call1.nq", RDFLanguages.NQ);
+			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call1.getGraph().toString()), call1)));
+			Model call2 = RDFDataMgr.loadModel("events/call2.nq", RDFLanguages.NQ);
+			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call2.getGraph().toString()), call2)));
+		}
+
+		// Wait
+		delay();
+
+		assertTrue(subscriber.getComplexEvents().size()==1);
 	}
 	
-	public static CompoundEvent createTaxiUCCallEvent(String eventId){
+	private static CompoundEvent createTaxiUCCallEvent(String eventId){
 		
 		UcTelcoCall event = new UcTelcoCall(
 				// set the RDF context part
@@ -396,35 +471,8 @@ public class CommonsPatternTest {
 		//Push events.
 		return EventCloudHelpers.toCompoundEvent(event);
 	}
-
-	public static void InstantiatePlayPlatform()
-			throws IllegalLifeCycleException, NoSuchInterfaceException,
-			ADLException {
-
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-				.setValue("proactive.java.policy");
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
-
-		
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("PsDcepComponent", context);
-		GCM.getGCMLifeCycleController(root).startFc();
-
-		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface("QueryDispatchApi"));
-		testApi = (DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi");
-		
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 	
-	public static CompoundEvent createWeatherEvent(String eventId, double value) {
+	private static CompoundEvent createWeatherEvent(String eventId, double value) {
 
 		LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 
@@ -497,7 +545,7 @@ public class CommonsPatternTest {
 		return new CompoundEvent(quads);
 	}
 	
-	public static CompoundEvent createFacebookTopicEvent(String eventId) {
+	private static CompoundEvent createFacebookTopicEvent(String eventId) {
 
 		LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 

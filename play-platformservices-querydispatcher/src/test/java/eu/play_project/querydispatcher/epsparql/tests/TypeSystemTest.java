@@ -10,13 +10,13 @@ import org.junit.Test;
 import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
-public class TypeSystemTests {
+public class TypeSystemTest {
 	
 	/**
 	 * Set different types and retrieve them.
 	 */
 	@Test
-	public void findType(){
+	public void testFindType(){
 		VariableTypeManager vm = new VariableTypeManager(null);
 		
 		// Set types.
@@ -33,7 +33,7 @@ public class TypeSystemTests {
 	}
 	
 	@Test
-	public void getAllVariablesOfOneType(){
+	public void testGetAllVariablesOfOneType(){
 		VariableTypeManager vm = new VariableTypeManager(null);
 		
 		// Set types.
