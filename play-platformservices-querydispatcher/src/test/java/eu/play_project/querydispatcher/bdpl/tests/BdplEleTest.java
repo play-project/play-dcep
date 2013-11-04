@@ -1,7 +1,6 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -36,7 +35,6 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.ParseException;
 import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
 
-
 //import eu.play_project.querydispatcher.bdpl.tests.helpers.FilterExpressionCodeGenerator;
 
 public class BdplEleTest {
@@ -46,18 +44,18 @@ public class BdplEleTest {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
-		
+
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		} catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
-//		HavingVisitor v = new HavingVisitor();
-//
-//		for (Expr el : query.getHavingExprs()) {
-//			el.visit(v);
-//		}
 
+		HavingVisitor v = new HavingVisitor();
+
+		for (Expr el : query.getHavingExprs()) {
+			el.visit(v);
+		}
 
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
@@ -66,10 +64,10 @@ public class BdplEleTest {
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-		
+
 		System.out.println(etalisPattern);
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -78,35 +76,35 @@ public class BdplEleTest {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
-		
+
 		System.out.println(queryString);
-		
+
 		// Instantiate code generator
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		
+
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
 		visitor1.setPatternId(patternId);
-		
+
 		// Parse query
 		try {
-			query = QueryFactory.create(queryString,com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
-		
+
 		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-		
+
 		// Add query details.
 		QueryDetails details = new QueryDetails(patternId);
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);
 		details.setRdfDbQueries(visitor1.getRdfDbQueries());
-		
+
 		BdplQuery bdplQuery = BdplQuery.builder()
 				.ele(etalisPattern)
 				.details(details)
@@ -114,10 +112,10 @@ public class BdplEleTest {
 				.constructTemplate(new QueryTemplateImpl())
 				.historicalQueries(new LinkedList<HistoricalQuery>())
 				.build();
-	
+
 		System.out.println(etalisPattern);
 	}
-	
+
 	/**
 	 * Generate code for (AVG(t) >= 30).
 	 */
@@ -126,38 +124,37 @@ public class BdplEleTest {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
-		
+
 		System.out.println(queryString);
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		} catch(Exception e){
+		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
 		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
-		
+
 		// Generate code.
 		HavingVisitor v = new HavingVisitor();
-		
+
 		for (Expr el : query.getHavingExprs()) {
 			el.visit(v);
 		}
-		
-		assertEquals("calcAverage(dbId0, 1800, Result10), greaterOrEqual(Result10,30.0)", v.getCode().toString());
+
+		assertEquals("calcAverage(dbId0, 1800, Result10), greaterOrEqual(Result10,30.0)", v
+				.getCode().toString());
 	}
-	
-	
-	
+
 	@Test
 	public void testStartParser() throws InterruptedException {
 		String queryString = getQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
-		//queryString = "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
+		// queryString =
+		// "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
 		System.out.println(queryString);
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-
-		System.out.println("Querry \n" +query);
+		System.out.println("Querry \n" + query);
 
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
@@ -166,23 +163,19 @@ public class BdplEleTest {
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
-
-//		try {
-//			parsEtalisPatter(etalisPattern);
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//			fail("Pars error: " + e.getMessage());
-//		}
+		// try { // FIXME sobermeier: this does not work anymore since 'complex'
+		// events now have individual names
+		// parsEtalisPatter(etalisPattern);
+		// } catch (ParseException e) {
+		// e.printStackTrace();
+		// fail("Pars error: " + e.getMessage());
+		// }
 	}
 
-
-	
 	private void parsEtalisPatter(String elePattern) throws ParseException {
 		PlayEleParser parser = new PlayEleParser(new ByteArrayInputStream(elePattern.getBytes()));
-		
+
 		parser.Start();
-		
-		
 	}
 
 	@Test
@@ -196,7 +189,6 @@ public class BdplEleTest {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
@@ -204,7 +196,7 @@ public class BdplEleTest {
 
 		System.out.println(etalisPattern);
 	}
-	
+
 	@Test
 	public void testShowEleResult() {
 
@@ -215,7 +207,7 @@ public class BdplEleTest {
 		System.out.println(queryString);
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		
+
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
@@ -229,106 +221,109 @@ public class BdplEleTest {
 	public void testEvaluateFilterExpression() {
 		String queryString = "PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ ?x ?nice ?name. ?e rdf:type ?AlertEvent } WHERE {EVENT ?id{?e1 ?location \"abc\". ?e rdf:type ?AlertEvent} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
 		Query query = null;
-		try{
+		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		}catch(Exception e){
-			
+		} catch (Exception e) {
+
 		}
 		FilterExpressionCodeGenerator visitor = new FilterExpressionCodeGenerator();
-		
-		//Get first EventGraph
-		ElementEventGraph eventGraph = (ElementEventGraph)query.getEventQuery().get(0);
-		
+
+		// Get first EventGraph
+		ElementEventGraph eventGraph = (ElementEventGraph) query.getEventQuery().get(0);
+
 		Element filter = eventGraph.getFilterExp();
-		
+
 		visitor.startVisit(filter);
-		
+
 		System.out.println(visitor.getEle());
-		
+
 	}
-//	@Test
-//	public void dispatchQuery(){
-//		String queryString = "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
-//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-//
-//		VariableTypeVisitor visitor = new VariableTypeVisitor();
-//
-//		Map<String, List<Variable>> variables =  visitor.getVariables(query, VariableTypes.historicType);
-//		System.out.println(variables.values());
-//	}
-	
+
+	// @Test
+	// public void dispatchQuery(){
+	// String queryString =
+	// "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
+	// Query query = QueryFactory.create(queryString,
+	// com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+	//
+	// VariableTypeVisitor visitor = new VariableTypeVisitor();
+	//
+	// Map<String, List<Variable>> variables = visitor.getVariables(query,
+	// VariableTypes.historicType);
+	// System.out.println(variables.values());
+	// }
+
 	@Test
 	public void testAgregatedEventType() {
-//		AgregatedVariableTypes aTypes = new AgregatedVariableTypes();
-//
-//		// Get query.
-//		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
-//
-//		// Parse query
-//		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-//
-//		// Get types.
-//		Map<String, AgregatedEventType> eventTypes = aTypes.detectType(query);
-//
-//
-//		//Test results.
-//		assertTrue(eventTypes.get("e3").equals(AgregatedEventType.H));
-//		assertTrue(eventTypes.get("e1").equals(AgregatedEventType.CR));
-//		assertTrue(eventTypes.get("bob").equals(AgregatedEventType.CR));
-//		assertTrue(eventTypes.get("e2").equals(AgregatedEventType.CR));
-//		assertTrue(eventTypes.get("direction").equals(AgregatedEventType.R));
-//		assertTrue(eventTypes.get("firstEvent").equals(AgregatedEventType.R)); //FIXME Auch filter anschauen.
-//		assertTrue(eventTypes.get("alice").equals(AgregatedEventType.CR));
-//		assertTrue(eventTypes.get("tweetTime").equals(AgregatedEventType.H));
-//		assertTrue(eventTypes.get("tweetContent").equals(AgregatedEventType.CH));
+		// AgregatedVariableTypes aTypes = new AgregatedVariableTypes();
+		//
+		// // Get query.
+		// String queryString =
+		// getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		//
+		// // Parse query
+		// Query query = QueryFactory.create(queryString,
+		// com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		//
+		// // Get types.
+		// Map<String, AgregatedEventType> eventTypes =
+		// aTypes.detectType(query);
+		//
+		//
+		// //Test results.
+		// assertTrue(eventTypes.get("e3").equals(AgregatedEventType.H));
+		// assertTrue(eventTypes.get("e1").equals(AgregatedEventType.CR));
+		// assertTrue(eventTypes.get("bob").equals(AgregatedEventType.CR));
+		// assertTrue(eventTypes.get("e2").equals(AgregatedEventType.CR));
+		// assertTrue(eventTypes.get("direction").equals(AgregatedEventType.R));
+		// assertTrue(eventTypes.get("firstEvent").equals(AgregatedEventType.R));
+		// //FIXME Auch filter anschauen.
+		// assertTrue(eventTypes.get("alice").equals(AgregatedEventType.CR));
+		// assertTrue(eventTypes.get("tweetTime").equals(AgregatedEventType.H));
+		// assertTrue(eventTypes.get("tweetContent").equals(AgregatedEventType.CH));
 	}
-	
+
 	@Test
-		public void testRdfQueryRepresentativeQueryVisitor() {
-	
-			String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
-			Query query = null;
-			
-			try {
-				query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-			} catch(Exception e){
-				System.out.println("Exception was thrown: " + e);
-			}
-			
-			RdfQueryRepresentativeQueryVisitor v =  new  RdfQueryRepresentativeQueryVisitor();
-			query.getEventQuery().get(0).visit(v);
-			
-			// Queries for variable t1,e1,friend1,about1.
-			String[] expectedResult = {"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1,ViD",
-									   "rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent',ViD",
-									   "rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1,ViD",
-									   "rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1,ViD"
-									  };
-	
-			int i = 0;
-			for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
-				String result = v.getRdfQueryRepresentativeQuery().get(key);
-				String expected = expectedResult[i];
-				if (!result.startsWith(expected)) {
-					fail(String.format("Expected string starting with:<%s> but was:<%s> for query visitor key '%s'", expected, result, key));
-				}
-					
-				i++;
-			}
-			System.out.println(v.getRdfQueryRepresentativeQuery());
-			//System.out.println(v.getCode());
-	
-			// Use custom visitor
-	//		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-	//
-	//		visitor1.setPatternId("'http://patternId.example.com/123456'");
-	//
-	//		visitor1.generateQuery(query);
-	//		String etalisPattern = visitor1.getEle();
-			
-	
-	//		System.out.println(etalisPattern);
+	public void testRdfQueryRepresentativeQueryVisitor() {
+
+		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
+		Query query = null;
+
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception was thrown: " + e);
 		}
+
+		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
+		query.getEventQuery().get(0).visit(v);
+
+		// Queries for variable t1,e1,friend1,about1.
+		String[] expectedResult = {
+				"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1,ViD0)",
+				"rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent',ViD0)",
+				"rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1,ViD0)",
+				"rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1,ViD0)"
+		};
+
+		int i = 0;
+		for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
+			assertEquals(expectedResult[i], v.getRdfQueryRepresentativeQuery().get(key));
+			i++;
+		}
+
+		System.out.println(v.getRdfQueryRepresentativeQuery());
+
+		// Use custom visitor
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		visitor1.setPatternId("'http://patternId.example.com/123456'");
+
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+
+		System.out.println(etalisPattern);
+	}
 
 	/**
 	 * Return the query from given file. If given it returns the message of the
@@ -340,7 +335,8 @@ public class BdplEleTest {
 	 */
 	public String[] getQuery(String queryFile) {
 		try {
-			InputStream is = (InputStream) getClass().getClassLoader().getResource(queryFile).getContent();
+			InputStream is = (InputStream) getClass().getClassLoader().getResource(queryFile)
+					.getContent();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 			StringBuffer sb = new StringBuffer();
@@ -374,13 +370,12 @@ public class BdplEleTest {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the filenaes of the testfiles depending on the type of the
 	 * testfile. The filename of a file with contains a broken query (a query
-	 * which the parser do not acceapt) must start with "BDPL-BrokenQuery".
-	 * The filename of a file with a regular query must start with
-	 * "BDPL-Query".
+	 * which the parser do not acceapt) must start with "BDPL-BrokenQuery". The
+	 * filename of a file with a regular query must start with "BDPL-Query".
 	 * 
 	 * @param dir
 	 *            Directory of the files.
@@ -402,7 +397,7 @@ public class BdplEleTest {
 		}
 		return filenames;
 	}
-	
+
 	public static String getSparqlQuery(String queryFile) {
 		try {
 			InputStream is = BdplEleTest.class.getClassLoader().getResourceAsStream(queryFile);
