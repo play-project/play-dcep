@@ -225,7 +225,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 		try {
 			// Get variables and values
-			Hashtable<String, Object>[] result = engine.execute("variableValues(" + queryId + ", VarName, VarValue)");
+			Hashtable<String, Object>[] result = engine.execute("variableValues('" + queryId + "', VarName, VarValue)");
 
 			// Get all values of a variable
 			for (Hashtable<String, Object> resultTable : result) {
