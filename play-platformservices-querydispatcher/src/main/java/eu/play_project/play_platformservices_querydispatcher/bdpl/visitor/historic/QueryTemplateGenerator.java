@@ -10,7 +10,6 @@ import com.hp.hpl.jena.query.Query;
 import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResulTemplatetVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 import fr.inria.eventcloud.api.Quadruple;
 
