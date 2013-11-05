@@ -76,9 +76,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 		// Add GC counter.
 		gcDataAdded = ctx.getEngineWrapper().executeGoal(
 				"assert(referenceCounter('" + event.getGraph() + "', "
-						+ internalEventId + ", -1))");
-		
-		internalEventId++;
+						+ "2147483647" + ", -1))");
 
 		if (!gcDataAdded) {
 			throw new DistributedEtalisException(

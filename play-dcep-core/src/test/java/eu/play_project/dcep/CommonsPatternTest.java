@@ -210,9 +210,15 @@ public class CommonsPatternTest {
 		queryString = getSparqlQueries("play-bdpl-crisis-01a-radiation.eprq");
 
 		// Compile query
-		queryDispatchApi.registerQuery("queryId_0", queryString);
-		queryDispatchApi.registerQuery("queryId_1", queryString);
-		queryDispatchApi.registerQuery("queryId_3", queryString);
+		queryDispatchApi.registerQuery("queryIdf", queryString);
+
+		queryString = queryString.replace("?localisation", "?localisation2");
+		queryString = queryString.replace("?e1", "?e2");
+		queryString = queryString.replace("?id1", "?id2");
+		queryString = queryString.replace("?value", "?value2");
+		queryDispatchApi.registerQuery("queryIdd", queryString);
+
+
 		
 		
 		//Subscribe to get complex events.
@@ -221,7 +227,7 @@ public class CommonsPatternTest {
 		testApi.attach(subscriber);
 	
 		logger.info("Publish evetns");
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 30; i++) {
 			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 			Quadruple q1 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
@@ -273,11 +279,9 @@ public class CommonsPatternTest {
 
 		// Wait
 		delay();
-		delay();
-		delay();
-		delay();
 
-		assertEquals(subscriber.getComplexEvents().size(), 1500);
+
+		assertEquals(subscriber.getComplexEvents().size(), 100);
 
 		// Stop and terminate GCM Components
 		try {
