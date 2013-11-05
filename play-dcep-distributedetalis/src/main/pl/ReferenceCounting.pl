@@ -26,7 +26,7 @@ decrementReferenceCounter(ID):-
 	referenceCounter(ID, _Time, X), 
 	X2 is X - 1,
 	write('decrement GC counter: '), write(X2), write(' ID: '), write(ID), nl,
-	retractall(referenceCounter(ID, _Time, X)), 
+	retractall(referenceCounter(ID, _Time, _X)), 
 	get_time(Time), assert(referenceCounter(ID, Time, X2)),
 	collectGarbage
 ).
