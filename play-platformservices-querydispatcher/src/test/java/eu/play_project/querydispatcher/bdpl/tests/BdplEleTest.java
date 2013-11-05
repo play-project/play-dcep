@@ -68,9 +68,7 @@ public class BdplEleTest {
 		System.out.println(etalisPattern);
 	}
 
-	/**
-	 * 
-	 */
+
 	@Test
 	public void testBasicEleGeneration() {
 
