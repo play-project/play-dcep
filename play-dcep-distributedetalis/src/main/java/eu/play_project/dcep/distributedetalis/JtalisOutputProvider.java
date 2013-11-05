@@ -148,6 +148,10 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 		//TODO sobermeier: Add :members to the event (an RDF list of all simple events which were detected)
 		
+		if (logger.isDebugEnabled()) {
+			logger.debug("(1/3) static quads :\n{}", quadruples);
+		}
+		
 		/*
 		 * Add payload data to event:
 		 */
@@ -177,7 +181,11 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 					NodeFactory.createURI(predicate),
 	                objectNode));
 		}
-		
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);
+		}
+
 		/*
 		 * Add historic data to event:
 		 */
@@ -202,6 +210,9 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				}
 				logger.debug("SHARED VARIABLES: " + vars);
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
+				if (logger.isDebugEnabled()) {
+					logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
+				}
 			}
 		}
 
