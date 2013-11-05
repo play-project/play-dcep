@@ -281,7 +281,7 @@ public class CommonsPatternTest {
 		delay();
 
 
-		assertEquals(subscriber.getComplexEvents().size(), 100);
+		assertEquals(subscriber.getComplexEvents().size(), 60);
 
 		// Stop and terminate GCM Components
 		try {
