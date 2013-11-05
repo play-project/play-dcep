@@ -232,10 +232,6 @@
 				<directory>src/main/adl</directory>
 				<filtering>false</filtering>
 			</resource>
-			<resource>
-				<directory>src/test/resources/historical-data</directory>
-				<filtering>false</filtering>
-			</resource>
 		</resources>
 	</build>
 </project>
