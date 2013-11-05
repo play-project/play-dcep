@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.graph.Node;
 
 import eu.play_project.play_commons.eventtypes.EventHelpers;
@@ -17,6 +20,7 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class QueryTemplateImpl implements QueryTemplate, Serializable {
 
+	private final Logger logger = LoggerFactory.getLogger(QueryTemplateImpl.class);
 	private static final long serialVersionUID = 100L;
 	List<Quadruple> templateQuads = new LinkedList<Quadruple>();
 	
@@ -27,11 +31,15 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 
 	@Override
 	public void appendLine(Quadruple line) {
+		logger.debug("Adding template line: {}", line);
+		
 		templateQuads.add(line);
 	}
 
 	@Override
 	public List<Quadruple> fillTemplate(HistoricalData historicalData, Node graph, Node eventId) {
+		
+		logger.debug("Filling template with values: {}", historicalData);
 		
 		List<Quadruple> result = new LinkedList<Quadruple>();
 
@@ -41,7 +49,7 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 			Node [] templArray = templ.toArray();
 			templArray[0] = graph;
 			
-			// The subsject will also be replaced if it contains the placeholder ":e"
+			// The subject will also be replaced if it contains the placeholder ":e"
 			if (templArray[1].toString().equals(EVENT_ID_PLACEHOLDER)) {
 				templArray[1] = eventId;
 			}
