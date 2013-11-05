@@ -24,8 +24,8 @@ public class UniqueNameManagerTest {
 		unm.resetTriplestoreVariable();
 		assertEquals(unm.getCurrentSimpleEventNumber(), 1);
 
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD1");
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD2");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD2");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD3");
 
 		// Process new query.
 		unm.newQuery();
@@ -47,8 +47,8 @@ public class UniqueNameManagerTest {
 		unm.resetTriplestoreVariable();
 		assertEquals(unm.getCurrentSimpleEventNumber(), 4);
 
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD4");
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD5");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD5");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD6");
 
 	}
 
