@@ -2,14 +2,16 @@
 * text=auto
 
 # Overwrite settings for some known file extensions
-*.java	-text diff=java
-*.pl	-text
+*.java	text diff=java
+*.pl	text
 *.html	text diff=html
 *.css	text
 *.js	text
 *.sql	text
 *.md	text
-*.sh	-text
+*.sh	text
+*.eprq	text
+*.ttl	text
 
 # Custom for Visual Studio
 *.cs		text diff=csharp
