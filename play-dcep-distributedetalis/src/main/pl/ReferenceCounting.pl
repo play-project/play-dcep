@@ -16,8 +16,8 @@ incrementReferenceCounter(ID):-
 		)
 	), 
 	retractall(referenceCounter(ID, _Time, _X)),
-	get_time(Time), assert(referenceCounter(ID, Time, X2)),
-	write('increment GC counter: '), write(X2), write(' ID: '), write(ID), nl
+	get_time(Time), assert(referenceCounter(ID, Time, X2))
+	% write('increment GC counter: '), write(X2), write(' ID: '), write(ID), nl
 ).
 
 % Decrement counter for given event id.
@@ -25,7 +25,7 @@ decrementReferenceCounter(ID):-
 (
 	referenceCounter(ID, _Time, X), 
 	X2 is X - 1,
-	write('decrement GC counter: '), write(X2), write(' ID: '), write(ID), nl,
+	%write('decrement GC counter: '), write(X2), write(' ID: '), write(ID), nl,
 	retractall(referenceCounter(ID, _Time, _X)), 
 	get_time(Time), assert(referenceCounter(ID, Time, X2)),
 	collectGarbage
@@ -37,7 +37,7 @@ collectGarbage(ID) :-
 	 referenceCounter(ID,_Time ,X),
 	 X = 0, 
 	 rdf_retractall(_S,_P,_O,ID),
-	 write('GC delete ID:'), write() 
+	 write('GC delete ID:'), write(ID), 
 	 retractall(referenceCounter(ID, _Time, X))
 	 ; 
 	 true
@@ -53,7 +53,7 @@ collectGarbage :-
 			get_time(TimeNow),
 			(Time < (TimeNow - 5)), % Event has to be 10s old. 
 			referenceCounter(_ID, Time, X),
-			 (X = 0) % RecerecneCounter is 0
+			(X = 0) % RecerecneCounter is 0
 		)
 		-> 
 			retract(
