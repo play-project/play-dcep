@@ -1,6 +1,5 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
-import com.hp.hpl.jena.graph.NodeVisitor;
 import com.hp.hpl.jena.graph.Node_ANY;
 import com.hp.hpl.jena.graph.Node_Blank;
 import com.hp.hpl.jena.graph.Node_Literal;
@@ -11,7 +10,7 @@ import com.hp.hpl.jena.rdf.model.AnonId;
 
 import fr.inria.eventcloud.api.Quadruple;
 
-public class GenerateConstructResulTemplatetVisitor implements NodeVisitor {
+public class GenerateConstructResulTemplatetVisitor extends GenericVisitor {
 	Quadruple template = null;
 
 	
