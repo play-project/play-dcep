@@ -7,7 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -53,7 +53,7 @@ public class HistoricDataTest {
 				
 		variableBindings = new VariableBindings();
 		variableBindings.put("?tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
-		variableBindings.put("?id2", Arrays.asList(new Object[] {Node.createURI(TEST_URI)}));
+		variableBindings.put("?id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI)}));
 
 		//Get historical data to the given binding.
 		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
@@ -71,7 +71,7 @@ public class HistoricDataTest {
 		 */
 		variableBindings = new VariableBindings();
 		variableBindings.put("?tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
-		variableBindings.put("?id2", Arrays.asList(new Object[] {Node.createURI(TEST_URI + "error")}));
+		variableBindings.put("?id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI + "error")}));
 
 		//Get historical data to the given binding.
 		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));

@@ -19,22 +19,23 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
  */
 public class UniqueNameManager {
 	private static VariableTypeManager vtm;
-	long ceid; //Complex event id variable.
-	long triplestoreVariable;
-	long startTriplestoreVariableCurrentQuery; // Store first triplestore variable of the query.
-	long absVariable;
-	long filterVar;
-	long aggrDbId;
-	long resultVar1;
-	String resultVar1s;
-	long resultVar2;
-	String resultVar2s;
-	Map<String, Boolean> aggrVars;
-	String windowTime;
-	Stack<Long> filterVars;
+	private long ceid; //Complex event id variable.
+	private long triplestoreVariable; // Represents the current triplestore variable.
+	private long triplestoreVariableStart; // Store first triplestore variable of the query.
+	private long triplestoreVariableEnd; // Store the last triplestore variabe of the query.
+	private long absVariable;
+	private long filterVar;
+	private long aggrDbId;
+	private long resultVar1;
+	private String resultVar1s;
+	private long resultVar2;
+	private String resultVar2s;
+	private Map<String, Boolean> aggrVars;
+	private String windowTime;
+	private Stack<Long> filterVars;
 	
 
-	static UniqueNameManager counter;
+	static UniqueNameManager uniqueNameManger;
 	
 	private UniqueNameManager(){
 		ceid = 0;
@@ -48,13 +49,13 @@ public class UniqueNameManager {
 	}
 	
 	public static UniqueNameManager getVarNameManager(){
-		if(counter==null){
-			counter = new UniqueNameManager();
+		if(uniqueNameManger == null){
+			uniqueNameManger = new UniqueNameManager();
 		}
-		return counter;
+		return uniqueNameManger;
 	}
 	
-	public static void initVariableTypeManage(Query q){
+	public static void initVariableTypeManager(Query q){
 		vtm = new VariableTypeManager(q);
 	}
 	
@@ -73,8 +74,10 @@ public class UniqueNameManager {
 	 */
 
 	public void newQuery(){
-		startTriplestoreVariableCurrentQuery = triplestoreVariable;
-		startTriplestoreVariableCurrentQuery++; // newQuery is called before current triplestoreVariable is generated. Precalculate value.
+		triplestoreVariableStart = triplestoreVariableEnd;
+		triplestoreVariableStart++;
+		triplestoreVariable = triplestoreVariableEnd;
+		triplestoreVariable++;
 	}
 	
 	/**
@@ -84,25 +87,28 @@ public class UniqueNameManager {
 	 */
 	public List<String> getAllTripleStoreVariablesOfThisQuery(){
 		LinkedList<String> vars = new LinkedList<String>();
-		for (int startTriplestoreVariableCurrentQuery = 0; startTriplestoreVariableCurrentQuery <= triplestoreVariable; startTriplestoreVariableCurrentQuery++) {
-			vars.add("ViD" + triplestoreVariable);
+		for (long i = triplestoreVariableStart; i < triplestoreVariableEnd; i++) {
+			vars.add("ViD" + (i + 1));
 		}
-		
+
 		return vars;
 	}
 	
-	public String getNextCeid(){
-		ceid++;
-		return "CEID" + ceid;
+
+	public long processNextEvent(){
+
+		if (++triplestoreVariable >  triplestoreVariableEnd) {
+			triplestoreVariableEnd = triplestoreVariable;
+		}
+		return triplestoreVariable;
 	}
 	
-	public String getCeid(){
-		return "CEID" + ceid;
+	public void resetTriplestoreVariable(){
+		triplestoreVariable = triplestoreVariableStart;
 	}
 	
-	public String getNextTriplestoreVariable(){
-		triplestoreVariable++;
-		return getTriplestoreVariableForEventNr(triplestoreVariable);
+	public long getCurrentSimpleEventNumber() {
+		return triplestoreVariable;
 	}
 	
 	public String getTriplestoreVariable(){
@@ -182,6 +188,14 @@ public class UniqueNameManager {
 	public void setWindowTime(String windowTime) {
 		this.windowTime = windowTime;
 	}
-
+	
+	public String getNextCeid(){
+		ceid++;
+		return "CEID" + ceid;
+	}
+	
+	public String getCeid(){
+		return "CEID" + ceid;
+	}
 	
 }

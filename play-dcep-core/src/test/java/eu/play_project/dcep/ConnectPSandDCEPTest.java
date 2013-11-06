@@ -67,7 +67,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 
 
 		// Compile query
-		String paternID = queryDispatchApi.registerQuery("http://test.example.com", queryString);
+		String patternId = queryDispatchApi.registerQuery("http://test.example.com", queryString);
 
 		
 		//Subscribe to get complex events.
@@ -145,7 +145,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		queryString = getSparqlQueries("patterns/play-epsparql-m12-jeans-example-query-tumbling-window.eprq");
 
 		// Compile query
-		String paternID = queryDispatchApi.registerQuery("http://test.example.com", queryString);
+		String patternId = queryDispatchApi.registerQuery("http://test.example.com", queryString);
 
 		
 		//Subscribe to get complex events.

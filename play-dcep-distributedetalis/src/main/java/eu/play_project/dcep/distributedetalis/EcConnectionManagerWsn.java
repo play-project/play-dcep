@@ -68,8 +68,8 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 	private EcConnectionListenerWsn dsbListener;
 	private EcConnectionListenerRest dsbRestListener;
 	static final Properties constants = DcepConstants.getProperties();
-	public static final String SOAP_URI = constants.getProperty("dcep.notify.endpoint");
-    public static final String REST_URI = constants.getProperty("dcep.notify.rest.local");
+	private static final String SOAP_URI = constants.getProperty("dcep.notify.endpoint");
+    private static final String REST_URI = constants.getProperty("dcep.notify.rest");
 	private Service notifyReceiverSoap;
 	private Server notifyReceiverRest;
 	private Persistence persistence;
@@ -104,10 +104,10 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
             QName endpointName = new QName("http://docs.oasis-open.org/wsn/bw-2",
                     "NotificationConsumerPort");
  
-            final String notificationReceiverEndpointLocal = constants.getProperty("dcep.notify.endpoint.local");
-            logger.info("Exposing notification endpoint at: {} which should be reachable at {}.", notificationReceiverEndpointLocal, SOAP_URI);
+            final String SOAP_URI_LOCAL = constants.getProperty("dcep.notify.endpoint.local");
+            logger.info("Exposing SOAP notification endpoint at: {} which should be reachable at {}.", SOAP_URI_LOCAL, SOAP_URI);
             NotificationConsumerService service = new NotificationConsumerService(interfaceName,
-                    serviceName, endpointName, "NotificationConsumerService.wsdl", notificationReceiverEndpointLocal,
+                    serviceName, endpointName, "NotificationConsumerService.wsdl", SOAP_URI_LOCAL,
                     this.dsbListener);
             Exposer exposer = new CXFExposer();
             notifyReceiverSoap = exposer.expose(service);
@@ -127,7 +127,9 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
     				.register(MoxyJsonFeature.class)
     				.register(dsbRestListener);
 
-    		notifyReceiverRest = new Server(URI.create(REST_URI).getPort());
+    		final String REST_URI_LOCAL = constants.getProperty("dcep.notify.rest.local");
+            logger.info("Exposing REST notification endpoint at: {} which should be reachable at {}.", REST_URI_LOCAL, REST_URI);
+    		notifyReceiverRest = new Server(URI.create(REST_URI_LOCAL).getPort());
             ServletContextHandler context = new ServletContextHandler();
             context.setContextPath("/");
             ServletHolder h = new ServletHolder(new ServletContainer(rc));

@@ -16,7 +16,7 @@
 		<level value="debug" />
 	</logger>
 	
-	<logger name="eu.play_project.querydispatcher.epsparql.tests">
+	<logger name="eu.play_project.querydispatcher.bdpl.tests">
 		<level value="debug" />
 	</logger>
 

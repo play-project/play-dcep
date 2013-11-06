@@ -139,9 +139,9 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 	public Hashtable<String, Object>[] getVariableValues(String queryId){
 		StringBuffer comand = new StringBuffer();
 		
-		comand.append("variableValues(");
+		comand.append("variableValues('");
 		comand.append(queryId);
-		comand.append(", _, Value)");
+		comand.append("', _, Value)");
 		
 		try {
 			// Get Variables and values

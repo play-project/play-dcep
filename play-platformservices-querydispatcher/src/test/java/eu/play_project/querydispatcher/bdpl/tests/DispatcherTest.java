@@ -1,5 +1,6 @@
-package eu.play_project.querydispatcher.epsparql.tests;
+package eu.play_project.querydispatcher.bdpl.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -7,8 +8,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -31,12 +30,12 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
  * @author sobermeier
  *
  */
-public class DispatcherTests {
+public class DispatcherTest {
 	private static Logger logger;
 
 	@Test
-	public void getIoStreamIds() throws IOException{
-		logger = LoggerFactory.getLogger(DispatcherTests.class);
+	public void testGetIoStreamIds() throws IOException{
+		logger = LoggerFactory.getLogger(DispatcherTest.class);
 		String queryString;
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TwitterFeed", "http://streams.event-processing.org/ids/TaxiUCGeoLocation", "http://streams.event-processing.org/ids/TaxiUCGeoLocation"}));
 		String expectedOutputStream = "http://streams.event-processing.org/ids/ContextualizedLatitudeFeed";
@@ -52,20 +51,20 @@ public class DispatcherTests {
 		streamIdCollector.getStreamIds(query, qd);
 		
 		// Test toString() implementation
-		Assert.assertTrue(qd.toString().contains(expectedOutputStream));
+		assertTrue(qd.toString().contains(expectedOutputStream));
 
 		// Test output stream
-		assertTrue(qd.getOutputStream().equals(expectedOutputStream));
+		assertEquals(expectedOutputStream, qd.getOutputStream());
 		
 		// Test input streams
-		assertTrue(qd.getInputStreams().equals(expectedInputStreams));
+		assertEquals(expectedInputStreams, qd.getInputStreams());
 
 	}
 	
 	@Test
-	public void getVariablesAndTypes() throws IOException{
+	public void testGetVariablesAndTypes() throws IOException{
 		if(logger == null){
-			logger= LoggerFactory.getLogger(DispatcherTests.class);
+			logger= LoggerFactory.getLogger(DispatcherTest.class);
 		}
 		
 		// Get query.
@@ -109,7 +108,7 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void dispatchQueryHistoricalMultipleClouds() throws IOException {
+	public void testDispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
 		String queryString = getSparqlQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
 
@@ -120,12 +119,12 @@ public class DispatcherTests {
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
 
 		// Test results.
-		String temperatureAstream = "PREFIX  : <http://events.event-processing.org/types/> \nPREFIX xsd : <http://events.event-processing.org/types/> \nPREFIX rdf : <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e2 ?temperature ?pub_date ?id2 ?e4 ?id4 \n WHERE { \nGRAPH ?id2\n  { ?e2 rdf:type :Temperature .\n    ?e2 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e2 :current ?temperature .\n    ?e2 :date ?pub_date\n  }\nGRAPH ?id4\n  { ?e4 rdf:type :Temperature .\n    ?e4 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e4 :current ?temperature\n }} ";
-		String temperatureBstream = "PREFIX  : <http://events.event-processing.org/types/> \nPREFIX xsd : <http://events.event-processing.org/types/> \nPREFIX rdf : <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?pub_date ?e3 ?id3 \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :Temperature .\n    ?e3 :stream <http://streams.event-processing.org/ids/TemperatureB#stream> .\n    ?e3 :date ?pub_date\n  }} \n";
+		String temperatureAstream = "PREFIX : <http://events.event-processing.org/types/> \nPREFIX xsd: <http://events.event-processing.org/types/> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e2 ?temperature ?pub_date ?id2 ?e4 ?id4 \n WHERE { \nGRAPH ?id2\n  { ?e2 rdf:type :Temperature .\n    ?e2 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e2 :current ?temperature .\n    ?e2 :date ?pub_date\n  }\nGRAPH ?id4\n  { ?e4 rdf:type :Temperature .\n    ?e4 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e4 :current ?temperature\n  }} ";
+		String temperatureBstream = "PREFIX : <http://events.event-processing.org/types/> \nPREFIX xsd: <http://events.event-processing.org/types/> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?pub_date ?e3 ?id3 \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :Temperature .\n    ?e3 :stream <http://streams.event-processing.org/ids/TemperatureB#stream> .\n    ?e3 :date ?pub_date\n  }} ";
 		
 		//Test if generated select query is OK.
-		assertTrue(queries.get(0).getQuery().equals(temperatureAstream));
-		assertTrue(queries.get(1).getQuery().equals(temperatureBstream));
+		assertEquals(temperatureAstream, queries.get(0).getQuery());
+		assertEquals(temperatureBstream, queries.get(1).getQuery());
 		
 		
 		for (String varname : queries.get(0).getVariables()) {
@@ -135,7 +134,7 @@ public class DispatcherTests {
 	}
 	
 	@Test
-	public void dispatchMissedCallsPlusTwitterQuery() throws IOException{
+	public void testDispatchMissedCallsPlusTwitterQuery() throws IOException{
 		// Get query.
 		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
@@ -149,7 +148,7 @@ public class DispatcherTests {
 		QueryDetails qd = new QueryDetails();
 		streamIdCollector.getStreamIds(query, qd);
 
-		assertTrue(qd.getOutputStream().equals("http://streams.event-processing.org/ids/TaxiUCClic2Call"));
+		assertEquals("http://streams.event-processing.org/ids/TaxiUCClic2Call", qd.getOutputStream());
 		assertTrue(qd.getInputStreams().contains("http://streams.event-processing.org/ids/TaxiUCCall"));
 	}
 	

@@ -2,7 +2,7 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realt
 
 import java.util.Iterator;
 
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.NodeVisitor;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
@@ -23,13 +23,13 @@ public class EventTypeVisitor extends GenericVisitor implements ElementVisitor, 
 		while (iter.hasNext()) {
 			TriplePath tmpTriplePath = iter.next();
 			if(tmpTriplePath.getObject().isURI()){
-				if (tmpTriplePath.getPredicate().equals(Node.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))){
+				if (tmpTriplePath.getPredicate().equals(NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))){
 					if(tmpTriplePath.getObject().isURI()){
 						eventType =  "'" + tmpTriplePath.getObject().getURI() + "'";
 					}else{
 						throw new RuntimeException("Event type must be a URI");
 					}
-				}	 
+				}
 			}
 			}
 		if(eventType == null){
@@ -42,8 +42,8 @@ public class EventTypeVisitor extends GenericVisitor implements ElementVisitor, 
 	public void visit(ElementGroup el) {
 		// Visit all group elements
 		for(int i=0; i<el.getElements().size(); i++){
-			el.getElements().get(i).visit(this); 
-		}		
+			el.getElements().get(i).visit(this);
+		}
 	}
 
 	@Override

@@ -5,70 +5,66 @@
 incrementReferenceCounter(ID):- 
 (
 	(
-		referenceCounter(ID, ID2, X), (X = -1)
+		referenceCounter(ID, _Time, X), (X = -1)
 		 
 	-> 
 		(X2 is X + 2)
 	;
 		(
-			referenceCounter(ID, ID2, X), 
+			referenceCounter(ID, _Time, X), 
 			X2 is X + 1
 		)
 	), 
-	retractall(referenceCounter(ID, ID2, X)),
-	assert(referenceCounter(ID, ID2, X2))
-	%write('increment counter: '), write(X2), write(' ID: '), write(ID), nl
+	retractall(referenceCounter(ID, _Time, _X)),
+	get_time(Time), assert(referenceCounter(ID, Time, X2))
+	% write('increment GC counter: '), write(X2), write(' ID: '), write(ID), nl
 ).
 
 % Decrement counter for given event id.
 decrementReferenceCounter(ID):- 
 (
-	referenceCounter(ID, ID2, X), 
+	referenceCounter(ID, _Time, X), 
 	X2 is X - 1,
-	%write('decrement counter: '), write(X2), write(' ID: '), write(ID), nl,
-	retractall(referenceCounter(ID, ID2, X)), 
-	assert(referenceCounter(ID, ID2, X2)),
-	collectGarbage(ID)
-).
-
-% Set id of last Event. New id must be > than the old id.
-setLastInsertedEvent(Id):- 
-(
-	retractall(lastInsertedEvent(_)),
-	assert(lastInsertedEvent(Id))
+	%write('decrement GC counter: '), write(X2), write(' ID: '), write(ID), nl,
+	retractall(referenceCounter(ID, _Time, _X)), 
+	get_time(Time), assert(referenceCounter(ID, Time, X2)),
+	collectGarbage
 ).
 
 % Remove elements if counter == 0
 collectGarbage(ID) :- 
 (
-	 referenceCounter(ID,_ID2 ,X),
+	 referenceCounter(ID,_Time ,X),
 	 X = 0, 
-	 rdf_retractall(_S,_P,_O,ID), 
-	 retractall(referenceCounter(ID, _ID2, X))
+	 rdf_retractall(_S,_P,_O,ID),
+	 write('GC delete ID:'), write(ID), 
+	 retractall(referenceCounter(ID, _Time, X))
 	 ; 
 	 true
 ).
 
 %Delte unused triples.
-%Delete all events older than the last fired event and if they are not in use.
+%Delete all events older than 5s. If they are not in use.
 collectGarbage :- 
 (
 	forall(
-		referenceCounter(_ID, ID2, _X), 
+		referenceCounter(_ID, Time, _X), 
 		(
-			lastInsertedEvent(Id3), 
-			(ID2=<Id3), 
-			referenceCounter(_ID, ID2, X),
-			 (X < 1)
+			get_time(TimeNow),
+			(Time < (TimeNow - 5)), % Event has to be 10s old. 
+			referenceCounter(_ID, Time, X),
+			(X = 0) % RecerecneCounter is 0
 		)
 		-> 
 			retract(
-				referenceCounter(_D1, ID2, _I2)
+				referenceCounter(_D1, Time, X)
 			)
 		;
 			true
 	)
 ).
+
+
 
 transformToNumber(A, B):- 
 catch(

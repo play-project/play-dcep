@@ -41,6 +41,8 @@ import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
  */
 public class EcConnectionManagerLocalTest {
 
+	static final String inputFileName = "historical-data/example-historical-rdf-data.trig";
+
 	/**
 	 * Read Model from file and test basic graph query.
 	 */
@@ -49,7 +51,6 @@ public class EcConnectionManagerLocalTest {
 		// Create an empty model.
 		ModelSet rdf = EventHelpers.createEmptyModelSet();
 
-		String inputFileName = "Example-historical-RDF-model.trig";
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream(inputFileName);
 		if (in == null) {
 			throw new IllegalArgumentException("File: " + inputFileName+ " not found");
@@ -82,7 +83,7 @@ public class EcConnectionManagerLocalTest {
 	
 	@Test
 	public void queryEcConnectionManagerLocal() throws EcConnectionmanagerException, MalformedSparqlQueryException{
-		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("Example-historical-RDF-model.trig");
+		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal(inputFileName);
 		
 		String query = "SELECT ?O WHERE { GRAPH ?id {?S <http://events.event-processing.org/types/screenName> \"roland.stuehmer\"." +
 				"?S <http://events.event-processing.org/types/twitterName> ?O}}";
@@ -96,7 +97,7 @@ public class EcConnectionManagerLocalTest {
 	public void executeExamplePlayBdplClic2callPlusTweetHistoricalQuery() throws EcConnectionmanagerException, MalformedSparqlQueryException{
 		String query = "PREFIX sioc: <http://rdfs.org/sioc/ns#> \nPREFIX : <http://events.event-processing.org/types/> \nPREFIX uctelco: <http://events.event-processing.org/uc/telco/> \nPREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> \nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e3 ?tweetTime ?firstEvent ?tweetContent ?id3 ?firstEvent \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :TwitterEvent .\n    ?e3 :stream <http://streams.event-processing.org/ids/TwitterFeed#stream> .\n    ?e3 :endTime ?tweetTime .\n    ?e3 :test ?firstEvent .\n    ?e3 sioc:content ?tweetContent\n\t FILTER ( ?tweetTime > ?firstEvent )\n    }} \n VALUES (?firstEvent) {\n(\"2013-08-24T12:42:01.011Z\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) }\n ";
 		
-		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("play-epsparql-clic2call-historical-data.trig");
+		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("historical-data/clic2call-historical-data.trig");
 		
 		SelectResults sr = ecm.getDataFromCloud(query, "local");
 		System.out.println(sr.getResult().get(0));
@@ -123,7 +124,7 @@ public class EcConnectionManagerLocalTest {
 		variableBindings.put("?id3", new ArrayList<Object>());
 		variableBindings.put("?firstEvent", new ArrayList<Object>());
 			
-		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("play-epsparql-clic2call-historical-data.trig");
+		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("historical-data/clic2call-historical-data.trig");
 		
 		Engine historicData = new Engine(ecm);
 		HistoricalData values = historicData.get(list, variableBindings);
