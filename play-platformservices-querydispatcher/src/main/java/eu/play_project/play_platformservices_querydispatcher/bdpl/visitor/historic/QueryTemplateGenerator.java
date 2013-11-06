@@ -1,7 +1,5 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.Triple;
@@ -29,20 +27,24 @@ public class QueryTemplateGenerator {
 		VariableTypeManager variableTypeManager = new VariableTypeManager(inputQuery);
 		variableTypeManager.collectVars();
 		
-		boolean tripleContainsHistoricalAndContrtructVars =  false;
 		for (Triple triple : inputQuery.getConstructTemplate().getTriples()) {
+			boolean tripleContainsHistoricalAndConstructVars = false;
+
 			if (triple.getSubject().isVariable()) {
-				tripleContainsHistoricalAndContrtructVars = variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.CONSTRUCT_TYPE);
-			} else if (triple.getPredicate().isVariable()) {
-				tripleContainsHistoricalAndContrtructVars = variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.CONSTRUCT_TYPE);
-			} else if (triple.getObject().isVariable()) {
-				tripleContainsHistoricalAndContrtructVars = variableTypeManager.isType(triple.getObject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getObject().getName(), VariableTypes.CONSTRUCT_TYPE);
+				tripleContainsHistoricalAndConstructVars = tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.CONSTRUCT_TYPE));
+			}
+			if (triple.getPredicate().isVariable()) {
+				tripleContainsHistoricalAndConstructVars = tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.CONSTRUCT_TYPE));
+			}
+			if (triple.getObject().isVariable()) {
+				tripleContainsHistoricalAndConstructVars = tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getObject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getObject().getName(), VariableTypes.CONSTRUCT_TYPE));
 			}
 			
-			if(tripleContainsHistoricalAndContrtructVars){
+			if(tripleContainsHistoricalAndConstructVars){
 				queryTemplate.appendLine(new Quadruple(graph, triple.getSubject(), triple.getPredicate(), triple.getObject()));
 			}
 		}
+
 
 		return queryTemplate;
 	}
