@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.objectweb.proactive.api.PAFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,8 +131,13 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 		SparqlSelectResponse response = null;
 		try {
 			putGetCloud = getHistoricCloud(cloudId);
-			response = putGetCloud.executeSparqlSelect(query);
-			logger.debug("Get data from EventCloud '{}' had latency {} ms", cloudId, response.getLatency());
+			if (logger.isDebugEnabled()) {
+				long beginQuerying = System.currentTimeMillis();
+				response = PAFuture.getFutureValue(putGetCloud.executeSparqlSelect(query));
+				logger.debug("Get data from EventCloud '{}' had latency {} ms", cloudId, System.currentTimeMillis() - beginQuerying);
+			} else {
+				response = putGetCloud.executeSparqlSelect(query);
+			}
 		} catch (EcConnectionmanagerException e) {
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
