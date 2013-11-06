@@ -55,7 +55,7 @@ public class StreamIdCollectorTest {
 		String expectedOutputStream = "http://streams.event-processing.org/ids/Temperatures";
 		
 		// Get query.
-		String queryString = BdplEleTest.getSparqlQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
 		String queryId = "exampleQuery2";
 		
 		assertNotNull("Testing Query was not found on classpath", queryString);
