@@ -114,7 +114,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
-		SaveSharedVariabelValues();
+		SaveSharedVariableValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
@@ -165,7 +165,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 												}
 											}
 										}
-										constructResult += SaveSharedVariabelValues();
+										constructResult += SaveSharedVariableValues();
 				constructResult += ")";
 		constructResult += ")";
 		elePattern += constructResult.toString();
@@ -192,7 +192,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		return result;
 	}
 		
-	public String SaveSharedVariabelValues() {
+	public String SaveSharedVariableValues() {
 		String elePattern = "";
 		List<String> vars = nameManager.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
 		

@@ -14,10 +14,12 @@ import eu.play_project.play_platformservices.api.HistoricalQuery;
 
 public class PlaySerializer extends Serializer{
 	
-	  /**
-     * Generate historical querys dependent on the destination cloud Id.
-     * @return Key: CloudID, Value: String representation of historical select query.
-     */
+	/**
+	 * Generate historical queries dependent on the destination cloud Id.
+	 * 
+	 * @return Key: CloudID, Value: String representation of historical select
+	 *         query.
+	 */
     public static List<HistoricalQuery> serializeToMultipleSelectQueries(Query query){
         // For the query pattern
         SerializationContext cxt1 = new SerializationContext(query, new NodeToLabelMapBNode("b", false) ) ;
