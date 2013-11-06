@@ -3,6 +3,7 @@ package eu.play_project.play_platformservices.tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import javax.ws.rs.client.Client;
@@ -58,7 +59,7 @@ public class PlatformservicesRestProactiveTest {
 	
 	@Test
 	public void testAnalyseQuery() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
-		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), "UTF-8");
+		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), StandardCharsets.UTF_8);
 		Response response;
 	    String queryId = "0001";
 	    

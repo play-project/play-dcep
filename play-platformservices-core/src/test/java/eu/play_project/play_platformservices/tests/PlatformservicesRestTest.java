@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,7 @@ public class PlatformservicesRestTest {
 	 */
 	@Test
 	public void testVariousVerbs() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
-		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), "UTF-8");
+		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), StandardCharsets.UTF_8);
 		Response response;
 	    String queryId = "0001";
 		
@@ -85,7 +86,7 @@ public class PlatformservicesRestTest {
 	    assertEquals(200, response.getStatus());
 
 	    // Post a query
-		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01b-radiationincrease.eprq"), "UTF-8");
+		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01b-radiationincrease.eprq"), StandardCharsets.UTF_8);
 	    response = targetId.request(MediaType.APPLICATION_JSON).post(Entity.text(queryString));
 	    assertEquals(201, response.getStatus());
 
@@ -113,7 +114,7 @@ public class PlatformservicesRestTest {
 	 */
 	@Test
 	public void testVariousMediatypes() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
-		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), "UTF-8");
+		String queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("play-bdpl-crisis-01a-radiation.eprq"), StandardCharsets.UTF_8);
 		Response response;
 
 	    // Post a query via form (and get the new query location URI)
