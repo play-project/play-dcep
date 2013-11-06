@@ -124,13 +124,14 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 					+ " has not been initialized.");
 		}
 
-		logger.info("Get data from EventCloud '" + cloudId + "' with query : " + query);
+		logger.debug("Get data from EventCloud '{}' with query:\n{}" + cloudId, query);
 
 		PutGetApi putGetCloud;
 		SparqlSelectResponse response = null;
 		try {
 			putGetCloud = getHistoricCloud(cloudId);
 			response = putGetCloud.executeSparqlSelect(query);
+			logger.debug("Get data from EventCloud '{}' had latency {} ms", cloudId, response.getLatency());
 		} catch (EcConnectionmanagerException e) {
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
