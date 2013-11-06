@@ -124,7 +124,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 					+ " has not been initialized.");
 		}
 
-		logger.debug("Get data from EventCloud '{}' with query:\n{}" + cloudId, query);
+		logger.debug("Get data from EventCloud '{}' with query:\n{}", cloudId, query);
 
 		PutGetApi putGetCloud;
 		SparqlSelectResponse response = null;
