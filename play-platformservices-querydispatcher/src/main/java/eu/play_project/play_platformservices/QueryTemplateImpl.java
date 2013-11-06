@@ -102,7 +102,7 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 		 * Go into recursion...
 		 */
 		if (step < 3) {
-			// Recursion to next step (e.g. moving on to filling triple subjects)
+			// Recursion to next step (e.g. moving on to filling the next step)
 			return fillTemplateHelper(tNext, historicalData, step + 1);
 		}
 		/*
