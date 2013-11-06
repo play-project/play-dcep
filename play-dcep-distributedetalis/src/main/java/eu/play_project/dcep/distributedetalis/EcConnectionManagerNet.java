@@ -328,7 +328,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	public void destroy() {
 
 		logger.info("Terminating {}.", this.getClass().getSimpleName());
-		logger.info("Unsubscribe from Event Clouds");
+		logger.info("Unsubscribe from event clouds");
 
 		// Unsubscribe
 		for (SubscribeApi proxy : subscriptions.keySet()) {

@@ -104,7 +104,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	}
 	
 	/**
-	 * Get event data from Prolog and Event Cloud.
+	 * Get event data from Prolog and EventCloud.
 	 */
 	public List<Quadruple> getEventData(PlayJplEngineWrapper engine, EtalisEvent event) throws RetractEventException {
 		List<Quadruple> quadruples = new ArrayList<Quadruple>();
