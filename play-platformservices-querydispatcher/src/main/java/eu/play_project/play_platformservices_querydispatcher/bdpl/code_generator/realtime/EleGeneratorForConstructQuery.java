@@ -88,7 +88,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		queryTemplate = new QueryTemplateImpl();
 		
 		// Collect basic informations like variable types.
-		UniqueNameManager.initVariableTypeManage(inQuery);
+		UniqueNameManager.initVariableTypeManager(inQuery);
 		nameManager =  UniqueNameManager.getVariableTypeManage();
 		nameManager.collectVars();
 
@@ -202,7 +202,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			if (!elePattern.endsWith(",")) {
 				elePattern += ",";
 			}
-			tmpEle.append("variabeValuesAdd(" + patternId + ",'" + var + "'," + "V" + var + ")");
+			tmpEle.append("variabeValuesAdd('" + patternId + "','" + var + "'," + "V" + var + ")");
 		}
 		elePattern += tmpEle.toString();
 	}

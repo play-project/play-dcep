@@ -145,7 +145,7 @@ public class BdplEleTest {
 
 	@Test
 	public void testStartParser() throws InterruptedException {
-		String queryString = getQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
+		String queryString = getQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
 		// queryString =
 		// "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
 		System.out.println(queryString);
@@ -160,6 +160,8 @@ public class BdplEleTest {
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
+		
+		System.out.println(etalisPattern);
 
 		// try { // FIXME sobermeier: this does not work anymore since 'complex'
 		// events now have individual names
@@ -212,8 +214,9 @@ public class BdplEleTest {
 		String etalisPattern = visitor1.getEle();
 
 		System.out.println(etalisPattern);
-		System.out.println(query);
 	}
+	
+	
 
 	@Test
 	public void testEvaluateFilterExpression() {
@@ -250,36 +253,6 @@ public class BdplEleTest {
 	// VariableTypes.historicType);
 	// System.out.println(variables.values());
 	// }
-
-	@Test
-	public void testAgregatedEventType() {
-		// AgregatedVariableTypes aTypes = new AgregatedVariableTypes();
-		//
-		// // Get query.
-		// String queryString =
-		// getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
-		//
-		// // Parse query
-		// Query query = QueryFactory.create(queryString,
-		// com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		//
-		// // Get types.
-		// Map<String, AgregatedEventType> eventTypes =
-		// aTypes.detectType(query);
-		//
-		//
-		// //Test results.
-		// assertTrue(eventTypes.get("e3").equals(AgregatedEventType.H));
-		// assertTrue(eventTypes.get("e1").equals(AgregatedEventType.CR));
-		// assertTrue(eventTypes.get("bob").equals(AgregatedEventType.CR));
-		// assertTrue(eventTypes.get("e2").equals(AgregatedEventType.CR));
-		// assertTrue(eventTypes.get("direction").equals(AgregatedEventType.R));
-		// assertTrue(eventTypes.get("firstEvent").equals(AgregatedEventType.R));
-		// //FIXME Auch filter anschauen.
-		// assertTrue(eventTypes.get("alice").equals(AgregatedEventType.CR));
-		// assertTrue(eventTypes.get("tweetTime").equals(AgregatedEventType.H));
-		// assertTrue(eventTypes.get("tweetContent").equals(AgregatedEventType.CH));
-	}
 
 	@Test
 	public void testRdfQueryRepresentativeQueryVisitor() {

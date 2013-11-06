@@ -55,7 +55,7 @@ public class UniqueNameManager {
 		return uniqueNameManger;
 	}
 	
-	public static void initVariableTypeManage(Query q){
+	public static void initVariableTypeManager(Query q){
 		vtm = new VariableTypeManager(q);
 	}
 	
