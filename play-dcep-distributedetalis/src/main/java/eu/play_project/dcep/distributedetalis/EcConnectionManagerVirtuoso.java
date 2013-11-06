@@ -87,7 +87,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 	 * enhancements like the VALUES clause are allowed.
 	 */
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
+	public SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");

@@ -83,6 +83,25 @@
 	</dependencyManagement>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.8</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>javacc-maven-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -122,28 +141,26 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
 				<configuration>
 					<!-- Only deploy the Github site, skip the standard maven site :stuehmer -->
 					<skipDeploy>true</skipDeploy>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/test/resources/proactive.java.policy]]></argLine>
+					<!-- Run unit tests in single JVM and do not reuse; otherwise Prolog JNI (JPL) causes problems :stuehmer -->
+					<forkCount>1</forkCount>
+					<reuseForks>false</reuseForks>
+				</configuration>
+			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.16</version>
-					<configuration>
-						<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/test/resources/proactive.java.policy]]></argLine>
-						<!-- Run unit tests in single JVM and do not reuse; otherwise Prolog JNI (JPL) causes problems :stuehmer -->
-						<forkCount>1</forkCount>
-						<reuseForks>false</reuseForks>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<distributionManagement>
@@ -159,10 +176,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
 				<configuration>
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled> <!-- save a lot of time on site generation :stuehmer -->
 				</configuration>
@@ -185,6 +204,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>

@@ -3,11 +3,9 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generato
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
@@ -116,6 +114,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
+		SaveSharedVariabelValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
@@ -168,7 +167,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 										}
 										constructResult += SaveSharedVariabelValues();
 				constructResult += ")";
-		constructResult += ")"; 
+		constructResult += ")";
 		elePattern += constructResult.toString();
 	}
 
@@ -199,6 +198,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		Iterator<String> iter = vars.iterator();
 		String var;
+		
 		while (iter.hasNext()) {
 			if (!elePattern.endsWith(",")) {
 				elePattern += ",";
@@ -211,7 +211,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 				elePattern += ",";
 			}
 		}
-		
+
 		return elePattern;
 	}
 	

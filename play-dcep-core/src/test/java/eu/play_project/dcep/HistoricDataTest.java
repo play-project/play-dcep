@@ -1,6 +1,7 @@
 package eu.play_project.dcep;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
@@ -34,7 +35,7 @@ public class HistoricDataTest {
 		HistoricalData values;
 		
 		String queryFile = "patterns/play-bdpl-personalmonitoring.eprq";
-		String query = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), "UTF-8");
+		String query = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), StandardCharsets.UTF_8);
 		String queryId = queryFile;
 		
 		Query q;
