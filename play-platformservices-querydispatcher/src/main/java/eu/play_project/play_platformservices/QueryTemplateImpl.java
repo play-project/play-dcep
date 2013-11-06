@@ -26,7 +26,11 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 	
 	@Override
 	public void appendLine(Node graph, Node subject, Node predicate, Node object) {
-		appendLine(new Quadruple(graph, subject, predicate, object));
+		Quadruple line = new Quadruple(graph, subject, predicate, object);
+		
+		logger.debug("Adding template line: {}", line);
+
+		appendLine(line);
 	}
 
 	@Override
@@ -46,7 +50,7 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 		for (Quadruple templ : templateQuads) {
 			Set<Node[]> t = new HashSet<Node[]>();
 			// PLAY requires the graph name of each event to be unique, i.e. it cannot be taken from the template:
-			Node [] templArray = templ.toArray();
+			Node[] templArray = templ.toArray();
 			templArray[0] = graph;
 			
 			// The subject will also be replaced if it contains the placeholder ":e"
