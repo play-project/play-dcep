@@ -117,7 +117,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	}
 
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
+	public SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
