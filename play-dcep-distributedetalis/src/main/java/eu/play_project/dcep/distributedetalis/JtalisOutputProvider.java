@@ -207,7 +207,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				for (String varName : values.keySet()) {
 					vars += " " + varName;
 				}
-				logger.debug("SHARED VARIABLES: " + vars);
+				logger.debug("SHARED VARIABLES: {}", vars);
+				logger.debug("SHARED VALUES: {}", values);
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
 				if (logger.isDebugEnabled()) {
 					logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
