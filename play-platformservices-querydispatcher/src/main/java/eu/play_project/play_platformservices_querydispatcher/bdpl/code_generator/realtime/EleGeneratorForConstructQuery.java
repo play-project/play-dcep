@@ -198,11 +198,20 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer tmpEle = new StringBuffer();
 
 		List<String> vars = nameManager.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
-		for (String var : vars) {
+		
+		Iterator<String> iter = vars.iterator();
+		String var;
+		while (iter.hasNext()) {
 			if (!elePattern.endsWith(",")) {
 				elePattern += ",";
 			}
-			tmpEle.append("variabeValuesAdd('" + patternId + "','" + var + "'," + "V" + var + ")");
+			
+			var= iter.next();
+			tmpEle.append("variabeValuesAdd(" + patternId + ",'" + var + "'," + "V" + var + ")");
+			
+			if(iter.hasNext()){
+				tmpEle.append(", ");
+			}
 		}
 		elePattern += tmpEle.toString();
 	}
