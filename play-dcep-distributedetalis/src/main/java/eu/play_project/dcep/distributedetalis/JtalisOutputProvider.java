@@ -9,6 +9,7 @@ import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,7 +82,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	public void outputEvent(EtalisEvent event) {
 
 		try {
-			System.out.println(event);
 			List<Quadruple> quadruples = this.getEventData(engine, event);
 					 
 			// Publish complex event
@@ -108,7 +108,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	 */
 	public List<Quadruple> getEventData(PlayJplEngineWrapper engine, EtalisEvent event) throws RetractEventException {
 		List<Quadruple> quadruples = new ArrayList<Quadruple>();
-		
 		String eventId = EVENTS.getUri() + event.getProperty(0).toString();
 	
 		final Node GRAPHNAME = NodeFactory.createURI(eventId);
@@ -225,20 +224,20 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 		try {
 			// Get variables and values
-			Hashtable<String, Object>[] result = engine.execute("variableValues('" + queryId + "', VarName, VarValue)");
+			Hashtable<String, Object>[] result = engine.execute("variableValues(" + queryId + ", VarName, VarValue)");
 
 			// Get all values of a variable
 			for (Hashtable<String, Object> resultTable : result) {
 				String varName = resultTable.get("VarName").toString();
 				String varValue = resultTable.get("VarValue").toString();
-				
+
 				// Prepare list
 				if (!variableValues.containsKey(varName)) {
-					variableValues.put(varName, new ArrayList<Object>());
+					variableValues.put(varName, new LinkedList<Object>());
 				}
 
 				// Add new value to list
-				if (varValue != null && varValue.isEmpty()) {
+				if (varValue != null && !varValue.isEmpty()) {
 					variableValues.get(varName).add(varValue);
 				}
 			}

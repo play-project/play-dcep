@@ -203,7 +203,7 @@ public class BdplEleTest {
 		String queryString;
 
 		// Get query.
-		queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		queryString = getSparqlQuery("queries/HistoricRealtimeQuery.eprq");
 		System.out.println(queryString);
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);

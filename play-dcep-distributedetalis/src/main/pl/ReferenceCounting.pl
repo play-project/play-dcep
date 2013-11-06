@@ -76,7 +76,8 @@ catch(
 %Save variable values.
 variabeValuesAdd(PatternId, VariableName, Value):- 
 (
-	assert(variableValues(PatternId, VariableName,Value))
+	assert(variableValues(PatternId, VariableName, Value))
+	% , nl, write('variabeValuesAdd: PatternId, VariableName, Value'), nl, write(PatternId), nl, write(VariableName),nl, write('value')
 ;
 	true
 ).
