@@ -114,7 +114,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
-		SaveSharedVariabelValues();
+		//SaveSharedVariabelValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
