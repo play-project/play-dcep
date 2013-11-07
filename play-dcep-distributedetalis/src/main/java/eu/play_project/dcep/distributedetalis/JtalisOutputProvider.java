@@ -191,7 +191,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			
 			//Get variable bindings.
 			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
-
+			
+			logger.debug("VariableBindings: {}", variableBindings);
 			//Get historical data to the given binding.
 			HistoricalData values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
 
