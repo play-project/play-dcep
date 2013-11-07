@@ -190,7 +190,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		} else if (query.getHistoricalQueries() != null && !query.getHistoricalQueries().isEmpty()) {
 			
 			//Get variable bindings.
-			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
+			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[0].toString());
 			
 			logger.debug("VariableBindings: {}", variableBindings);
 			//Get historical data to the given binding.

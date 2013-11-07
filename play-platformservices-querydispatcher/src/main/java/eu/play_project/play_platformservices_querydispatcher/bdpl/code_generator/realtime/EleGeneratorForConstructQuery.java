@@ -205,7 +205,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			}
 			
 			var= iter.next();
-			elePattern += "variabeValuesAdd(" + patternId + ",'" + var + "'," + "V" + var + ")";
+			elePattern += "variabeValuesAdd(" + uniqueNameManager.getCeid() + ",'" + var + "'," + "V" + var + ")";
 			
 			if(iter.hasNext()){
 				elePattern += ",";
