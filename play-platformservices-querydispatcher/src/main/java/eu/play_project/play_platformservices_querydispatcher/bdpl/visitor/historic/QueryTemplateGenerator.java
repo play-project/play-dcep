@@ -31,18 +31,24 @@ public class QueryTemplateGenerator {
 			boolean tripleContainsHistoricalAndConstructVars = false;
 
 			if (triple.getSubject().isVariable()) {
-				tripleContainsHistoricalAndConstructVars = tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.CONSTRUCT_TYPE));
+				if (tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getSubject().getName(), VariableTypes.CONSTRUCT_TYPE))) {
+					tripleContainsHistoricalAndConstructVars = true;
+				}
 			}
 			if (triple.getPredicate().isVariable()) {
-				tripleContainsHistoricalAndConstructVars = tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.CONSTRUCT_TYPE));
+				if (tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getPredicate().getName(), VariableTypes.CONSTRUCT_TYPE))) {
+					tripleContainsHistoricalAndConstructVars = true;
+				}
 			}
 			if (triple.getObject().isVariable()) {
-				tripleContainsHistoricalAndConstructVars = tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getObject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getObject().getName(), VariableTypes.CONSTRUCT_TYPE));
+				if (tripleContainsHistoricalAndConstructVars || (variableTypeManager.isType(triple.getObject().getName(), VariableTypes.HISTORIC_TYPE) && variableTypeManager.isType(triple.getObject().getName(), VariableTypes.CONSTRUCT_TYPE))) {
+					tripleContainsHistoricalAndConstructVars = true;
+				}
 			}
-			
 			if(tripleContainsHistoricalAndConstructVars){
 				queryTemplate.appendLine(new Quadruple(graph, triple.getSubject(), triple.getPredicate(), triple.getObject()));
 			}
+			
 		}
 
 
