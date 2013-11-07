@@ -335,7 +335,7 @@ public class CommonsPatternTest {
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
 					NodeFactory.createURI("http://events.event-processing.org/types/screenName"),
-					NodeFactory.createURI("screen1"));
+					NodeFactory.createURI("screen1./..-+"));
 			Quadruple q4 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
@@ -364,7 +364,7 @@ public class CommonsPatternTest {
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " b#event"),
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i + "b"),
 					NodeFactory.createURI("http://events.event-processing.org/types/screenName"),
-					NodeFactory.createURI("screen2"));
+					NodeFactory.createURI("screen2./..-+"));
 			q4 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " b#event"),
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i + "b"),
