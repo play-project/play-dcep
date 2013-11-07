@@ -310,7 +310,7 @@ public class CommonsPatternTest {
 		queryString = getSparqlQueries("patterns/historic-realtime-query2.eprq");
 
 		// Compile query
-		queryDispatchApi.registerQuery("playbdploverallscenario03eprq", queryString);
+		queryDispatchApi.registerQuery("play-bdpl-overall-scenario-03.eprq", queryString);
 		
 		
 		//Subscribe to get complex events.
