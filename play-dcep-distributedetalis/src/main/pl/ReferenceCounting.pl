@@ -1,3 +1,7 @@
+% Data will be handled by garbage collector if last access is older than gcDelay/1.
+:- dynamic gcDelay/1.
+:- assert(gcDelay(10)).
+
 % Increment counter for given event id.
 % X == -1 has a special meaning. If X== -1, ID was never used before.
 % X == 0: ID is no longer referenced.
@@ -44,14 +48,15 @@ collectGarbage(ID) :-
 ).
 
 %Delte unused triples.
-%Delete all events older than 5s. If they are not in use.
+%Delete all events older than value of $Delay. If they are not in use.
 collectGarbage :- 
 (
 	forall(
 		referenceCounter(_ID, Time, _X), 
 		(
 			get_time(TimeNow),
-			(Time < (TimeNow - 5)), % Event has to be 10s old. 
+			gcDelay(Delay),
+			(Time < (TimeNow - Delay)), % Event has to be $Delay seconds old. 
 			referenceCounter(_ID, Time, X),
 			(X = 0) % RecerecneCounter is 0
 		)
