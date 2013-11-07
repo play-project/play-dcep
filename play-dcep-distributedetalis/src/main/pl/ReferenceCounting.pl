@@ -38,9 +38,9 @@ decrementReferenceCounter(ID):-
 % Remove elements if counter == 0
 collectGarbage(ID) :- 
 (
-	 referenceCounter(ID,_Time ,X),
+	 referenceCounter(ID, _Time ,X),
 	 X = 0, 
-	 rdf_retractall(_S,_P,_O,ID),
+	 rdf_retractall(_S,_P,_O, ID),
 	 write('GC delete ID:'), write(ID), 
 	 retractall(referenceCounter(ID, _Time, X))
 	 ; 
@@ -57,13 +57,11 @@ collectGarbage :-
 			get_time(TimeNow),
 			gcDelay(Delay),
 			(Time < (TimeNow - Delay)), % Event has to be $Delay seconds old. 
-			referenceCounter(_ID, Time, X),
+			referenceCounter(IDr, Time, X),
 			(X = 0) % RecerecneCounter is 0
 		)
 		-> 
-			retract(
-				referenceCounter(_D1, Time, X)
-			)
+			collectGarbage(IDr)
 		;
 			true
 	)
