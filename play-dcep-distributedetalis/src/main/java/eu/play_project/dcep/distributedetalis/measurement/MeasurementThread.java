@@ -30,7 +30,7 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 	@Override
 	public NodeMeasurementResult call() throws Exception {
 
-		logger.debug("Start new measurement peride with " + measuringPeriod + "ms");
+		logger.debug("Start new measurement peride with {}ms", measuringPeriod);
 
 		ctx.executeGoal("setMeasurementMode(on)");
 		
@@ -85,14 +85,14 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		try {
 			resultFromProlog = ctx.execute(comand.toString());
 		} catch (DistributedEtalisException e) {
-			logger.warn("Problem occurred while getting eventCounter: " + e.getMessage());
+			logger.warn("Problem occurred while getting eventCounter: {}", e.getMessage());
 		}
 
 		// Create result object
 		if (resultFromProlog != null) {
 			results = new LinkedList<PatternMeasuringResult>();
 			for (Hashtable<String, Object> hashtable : resultFromProlog) {
-				logger.info("Pattern " + hashtable.get("PatternID").toString()  + " consumed " + ((jpl.Integer) hashtable.get("Value")).intValue() + " events.");
+				logger.info("Pattern '{}' consumed {} events.", hashtable.get("PatternID").toString(), ((jpl.Integer) hashtable.get("Value")).intValue());
 				// Put data in ResultSet.
 				results.add(new PatternMeasuringResult(hashtable.get("PatternID").toString(), ((jpl.Integer) hashtable.get("Value")).intValue()));
 			}

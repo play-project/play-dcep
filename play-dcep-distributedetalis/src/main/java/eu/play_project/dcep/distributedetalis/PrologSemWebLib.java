@@ -21,7 +21,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 
 	@Override
 	public void init(JtalisContextImpl ctx) throws DistributedEtalisException {
-		logger.debug("Initializing " + PrologSemWebLib.class.getSimpleName());
+		logger.debug("Initializing {}", PrologSemWebLib.class.getSimpleName());
 		
 		PrologSemWebLib.ctx = ctx;
 

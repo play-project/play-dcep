@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
+import eu.play_project.dcep.api.measurement.MeasurementConstants;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.PrologSemWebLib;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
-import eu.play_project.dcep.api.measurement.*;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -36,7 +36,7 @@ public class MeasureProcessingTime implements MeasurementState{
 	@Override
 	public void sendMeasuringEvent() {
 		int mEvents = MeasurementUnit.mEvents; // Send 10 measuring events.
-		logger.info("Send measurement events: " + mEvents );
+		logger.info("Send measurement events: {}", mEvents );
 		
 		// Generate m events with current time.
 		long currentTime = System.nanoTime();
@@ -80,7 +80,7 @@ public class MeasureProcessingTime implements MeasurementState{
 	@Override
 	public void measuringPeriodIsUp() {
 		logger.debug("Switch state");
-		logger.info(measurementEventCounter + "Measurements received. " + MeasurementUnit.mEvents * eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit.eventsPeriod + "Events expected.");
+		logger.info("{} Measurements received. {} Events expected.", measurementEventCounter, MeasurementUnit.mEvents * MeasurementUnit.eventsPeriod);
 		if(measurementEventCounter>=((eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit.eventsPeriod)-1)){
 			MeasurementState s =  new WaitForMeasuredData(context);
 			context.setState(s);
@@ -172,7 +172,7 @@ public class MeasureProcessingTime implements MeasurementState{
 			if (quadruple.getPredicate().toString().equals("http://play-project.eu/timeOneEvent")) {
 				singleEventTime = currentTime - Long.valueOf(quadruple.getObject().toString());
 				singleEventTime = (singleEventTime/ MeasurementUnit.mEvents);
-				logger.info("Time for" + MeasurementUnit.mEvents + " events ------------------------" + singleEventTime);
+				logger.info("Time for {} events ------------------------ {}", MeasurementUnit.mEvents, singleEventTime);
 			}
 		}
 		return singleEventTime;

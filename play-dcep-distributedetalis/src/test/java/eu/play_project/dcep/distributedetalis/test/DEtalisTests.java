@@ -89,7 +89,7 @@ public class DEtalisTests implements Serializable {
 		ArrayList<Quadruple> list = new ArrayList<Quadruple>();
 		list.add(event);
 		CompoundEvent ce = new CompoundEvent(list);
-		logger.info("SENT: ====================================\n" + ce);
+		logger.info("SENT: ====================================\n{}", ce);
 
 		distributedEtalisTestApi.publish(ce);
 
@@ -105,8 +105,8 @@ public class DEtalisTests implements Serializable {
 				NodeFactory.createURI("http://play-project.eu/42"));
 
 		CompoundEvent result = subscriber.getComplexEvents().get(0);
-		logger.debug("ACTUAL: " + result.get(4).toString());
-		logger.debug("TARGET: " + expectedResult.toString());
+		logger.debug("ACTUAL: {}", result.get(4).toString());
+		logger.debug("TARGET: {}", expectedResult.toString());
 		assertEquals(expectedResult, subscriber.getComplexEvents().get(0).get(4));
 		
 		dcepManagmentApi.unregisterEventPattern(bdpl.getDetails().getQueryId());

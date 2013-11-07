@@ -80,7 +80,7 @@ public class ResultRegistry implements SelectResults {
 		//TODO size = 0??
 		// result has duplicated entries ???
 		//size = rw.getRowNumber();
-			//logger.info("size: "+size);
+			//logger.info("size: {}", size);
 		
 		int colNum = result.variables.size();
 		result.size = 0;

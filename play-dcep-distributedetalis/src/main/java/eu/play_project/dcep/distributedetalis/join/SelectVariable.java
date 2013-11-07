@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is a data structure that is used to represent a selected variable in queries. It's attribute
- * relIndex indicates how many queries have selected this variable and in relRes all these relevant 
+ * relIndex indicates how many queries have selected this variable and in relRes all these relevant
  * queries are stored in decreased oder on size of query result.
  * 
  * 
@@ -25,14 +25,14 @@ public class SelectVariable <T>{
 	private List<T> values;
 	
 	// queries that select this variable
-	private TreeSet<SelectResults> relRes = new TreeSet<SelectResults>(new Comparator<SelectResults>(){
+	private final TreeSet<SelectResults> relRes = new TreeSet<SelectResults>(new Comparator<SelectResults>(){
 		@Override
 		public int compare(SelectResults o1, SelectResults o2) {
 			return o1.getSize() - o2.getSize();
 		}
 	});
 	
-	private Logger logger = LoggerFactory.getLogger(SelectVariable.class);
+	private final Logger logger = LoggerFactory.getLogger(SelectVariable.class);
 	
 	public int getRelevantIndex(){
 		return relIndex;
@@ -46,7 +46,6 @@ public class SelectVariable <T>{
 		boolean done = relRes.add(r);
 		if(done){
 			relIndex++;
-			//logger.debug("addResult(): add "+r.getNum()+" relIndex"+relIndex);
 		}
 		return done;
 	}
@@ -55,7 +54,6 @@ public class SelectVariable <T>{
 		boolean done = relRes.remove(r);
 		if(done){
 			relIndex--;
-			//logger.debug("removeResult(): remove "+r.getNum()+" relIndex"+relIndex);
 		}
 		return done;
 	}
@@ -65,7 +63,7 @@ public class SelectVariable <T>{
 	}
 	
 	/**
-	 * Add new values to this variable, the result is a union of original values and new 
+	 * Add new values to this variable, the result is a union of original values and new
 	 * values. If list v is null, it means new values are any allowed data.
 	 * @param v
 	 * @param n
@@ -85,7 +83,7 @@ public class SelectVariable <T>{
 					for(int j = 0; j < v.size(); j++){
 						if(t.equals(v.get(j))){
 							union.add(t);
-								logger.debug("addValues(): union "+t);
+								logger.debug("addValues(): union {}", t);
 							break;
 						}
 					}

@@ -119,7 +119,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		s.append("}}\n");
 		String query = s.toString();
 
-		logger.debug("Putting event in cloud '" + cloudId + "':\n" + query);
+		logger.debug("Putting event in cloud '{}':\n{}", cloudId, query);
 
 		Form form = new Form();
 		form.param("update", query);
@@ -128,9 +128,9 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 				Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
 		if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
-			logger.debug("Putting event in cloud '" + cloudId + "': successful: " + response);
+			logger.debug("Putting event in cloud '{}': successful: {}", cloudId, response);
 		} else {
-			logger.error("Putting event in cloud '" + cloudId + "': UNsuccessful: " + response);
+			logger.error("Putting event in cloud '{}': UNsuccessful: {}", cloudId, response);
 		}
 		response.close();
 	}
@@ -147,7 +147,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 
 		String query = EventCloudHelpers.toRdf2go(event).serialize(Syntax.Turtle);
 
-		logger.debug("Putting event in cloud '" + cloudId + "':\n" + query);
+		logger.debug("Putting event in cloud '{}':\n{}", cloudId, query);
 
 		Form form = new Form();
 		form.param("mime-type", Syntax.Turtle.getMimeType());
@@ -158,9 +158,9 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 				Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 
 		if (response.getStatusInfo().getFamily() == Status.Family.SUCCESSFUL) {
-			logger.debug("Putting event in cloud '" + cloudId + "': successful: " + response);
+			logger.debug("Putting event in cloud '{}': successful: {}", cloudId, response);
 		} else {
-			logger.error("Putting event in cloud '" + cloudId + "': UNsuccessful: " + response);
+			logger.error("Putting event in cloud '{}': UNsuccessful: {}", cloudId, response);
 		}
 		response.close();
 	}
@@ -177,7 +177,7 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 					+ " has not been initialized.");
 		}
 
-		logger.debug("Sending historical query to 4store: \n" + query);
+		logger.debug("Sending historical query to 4store: \n{}", query);
 
 		QueryResultTable sparqlResults = RDF2Go.getModelFactory().sparqlSelect(sparqlEndpoint.getUri().toString(), query);
 

@@ -75,16 +75,16 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 
 		// Read data from file.
 		try {
-			logger.debug("Read historical data from file: " + inputRdfModelFileName + ".");
+			logger.debug("Read historical data from file: {}", inputRdfModelFileName);
 			rdf.readFrom(in, Syntax.Trig);
 		} catch (SyntaxNotSupportedException e) {
-			logger.error("Syntax " + Syntax.Trig + " is not supported.");
+			logger.error("Syntax {} is not supported.", Syntax.Trig);
 			e.printStackTrace();
 		} catch (ModelRuntimeException e) {
-			logger.error("ModelRuntimeException: " + e.getMessage());
+			logger.error("ModelRuntimeException: {}", e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			logger.error("IO-Exception: " + e.getMessage());
+			logger.error("IO-Exception: {}", e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -95,11 +95,11 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 			jenaQuery = QueryFactory.create(query);
 			jena = (Dataset) rdf.getUnderlyingModelSetImplementation();
 		} catch (QueryParseException e) {
-			logger.error("Query with pars error: " + query);
+			logger.error("Query with pars error: {}", query);
 			throw e;
 		}
 
-		logger.debug("Execute historical query: " + query);
+		logger.debug("Execute historical query: {}", query);
 		QueryExecution qexec = QueryExecutionFactory.create(jenaQuery, jena);
 
 		ResultRegistry results = null;
