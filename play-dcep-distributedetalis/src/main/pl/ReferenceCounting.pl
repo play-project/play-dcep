@@ -1,6 +1,6 @@
 % Data will be handled by garbage collector if last access is older than gcDelay/1.
 :- dynamic gcDelay/1.
-:- assert(gcDelay(10)).
+:- assert(gcDelay(1)).
 
 % Increment counter for given event id.
 % X == -1 has a special meaning. If X== -1, ID was never used before.
@@ -41,7 +41,7 @@ collectGarbage(ID) :-
 	 referenceCounter(ID, _Time ,X),
 	 X = 0, 
 	 rdf_retractall(_S,_P,_O, ID),
-	 write('GC delete ID:'), write(ID), 
+	 write(' GC delete ID:'), write(ID), 
 	 retractall(referenceCounter(ID, _Time, X))
 	 ; 
 	 true
