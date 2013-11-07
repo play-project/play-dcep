@@ -59,7 +59,7 @@ public class MeasurementUnit implements MeasurementState{
 
 	@Override
 	public void startMeasurement(int period) {
-		logger.debug("Measurement request: " + period + "ms.");
+		logger.debug("Measurement request: {}ms.", period);
 		
 		//Clear counters
 		numberOfInputEvents =0;
@@ -120,16 +120,16 @@ public class MeasurementUnit implements MeasurementState{
 	}
 
 	public void setState(MeasurementState state) {
-		logger.info("setState. State is " + this.state.getName() );
+		logger.info("setState. State is {}", this.state.getName());
 		this.state = state;
-		logger.info("setState: " + this.state.getName() );
+		logger.info("setState: {}", this.state.getName());
 	}
 
 	
 	@Override
 	public NodeMeasurementResult getMeasuringResults() {
 		logger.debug("Request measured data.");
-		logger.debug("State: " + state.getName());
+		logger.debug("State: {}", state.getName());
 		NodeMeasurementResult n = state.getMeasuringResults();
 		return n;
 	}

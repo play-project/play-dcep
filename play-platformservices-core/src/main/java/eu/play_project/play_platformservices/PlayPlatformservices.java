@@ -202,7 +202,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 					+ this.getClass().getSimpleName());
 		}
 		
-		logger.info("Unregistering query " + queryId);
+		logger.info("Unregistering query {}", queryId);
 
 		this.dcepManagmentApi.unregisterEventPattern(queryId);
 	}
@@ -230,7 +230,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 			throw new IllegalStateException("Component not initialized: " + this.getClass().getSimpleName());
 		}
 		
-		logger.info("Analysing query with ID " + queryId);
+		logger.info("Analysing query with ID '{}'", queryId);
 		
 		QueryDetails qd = new QueryDetails(queryId);
 

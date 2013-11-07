@@ -34,7 +34,7 @@ public class TumblingWindow extends Window{
 
 			this.value = durationInMillis / 1000 + "";
 		} catch (InvalidDatatypeValueException e) {
-			logger.error("It is not possible to pars window values. This is a bung in the parser implementation. " + e.getMessage());
+			logger.error("It is not possible to pars window values. This is a bug in the parser implementation. {}", e.getMessage());
 			e.printStackTrace();
 		}
 	}

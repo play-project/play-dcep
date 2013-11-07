@@ -39,7 +39,7 @@ public class DetalisConfigLocal implements Configuration, Serializable{
 		this.inputRdfModelFile = inputRdfModelFile;
 		
 		logger = LoggerFactory.getLogger(this.getClass());
-		logger.info("Configuring DistributedEtalis using " + this.getClass().getSimpleName());
+		logger.info("Configuring DistributedEtalis using {}", this.getClass().getSimpleName());
 		
 		cl = new LoadPrologCode();
 	}

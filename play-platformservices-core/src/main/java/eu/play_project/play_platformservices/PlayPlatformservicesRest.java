@@ -178,7 +178,7 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
     		try {
 				this.server.stop();
 			} catch (Exception e) {
-				logger.error("Exception while stoppping REST server. Nothing we can do now. " + e.getMessage());
+				logger.error("Exception while stoppping REST server. Nothing we can do now. {}", e.getMessage());
 			}
     		this.server.destroy();
     	}

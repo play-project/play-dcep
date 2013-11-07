@@ -72,7 +72,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 		s.append("}\n");
 		String query = s.toString();
 		
-		logger.debug("Putting event in cloud " + cloudId + ":\n" + query);
+		logger.debug("Putting event in cloud {}:\n{}", cloudId, query);
 		try {
 			Statement st = virtuosoConnection.createStatement();
 			st.executeUpdate(query);
@@ -93,7 +93,7 @@ public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
 		}
 
-		logger.debug("Sending historical query to Virtuoso: \n" + query);
+		logger.debug("Sending historical query to Virtuoso: \n{}", query);
 
 		List<String> variables = new ArrayList<String>();
 		List<List> result = new ArrayList<List>();

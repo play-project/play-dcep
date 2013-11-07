@@ -87,7 +87,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 				logger.warn("No cloudIds were found in EventCloud, possible misconfiguration.");
 			} else {
 				for (EventCloudId cloudId : cloudIds) {
-					logger.info("CloudId in EventCloud: " + cloudId);
+					logger.info("CloudId in EventCloud: {}", cloudId);
 				}
 			}
 		} catch (IOException e) {
@@ -142,7 +142,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
 		} catch (MalformedSparqlQueryException e) {
-			logger.error("Malformed sparql query. " + e.getMessage());
+			logger.error("Malformed sparql query. {}", e.getMessage());
 			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		ResultSetWrapper rw = response.getResult();
