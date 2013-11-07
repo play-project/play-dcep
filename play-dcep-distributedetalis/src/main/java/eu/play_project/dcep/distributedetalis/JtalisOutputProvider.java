@@ -147,9 +147,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 		//TODO sobermeier: Add :members to the event (an RDF list of all simple events which were detected)
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("(1/3) static quads :\n{}", quadruples);
-		}
+		logger.debug("(1/3) static quads :\n{}", quadruples);
 		
 		/*
 		 * Add payload data to event:
@@ -181,9 +179,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	                objectNode));
 		}
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);
-		}
+		logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);
 
 		/*
 		 * Add historic data to event:
@@ -203,16 +199,10 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				// there is no matching historic data so the event pattern is not fulfilled:
 				throw new RetractEventException();
 			} else {
-				String vars = "";
-				for (String varName : values.keySet()) {
-					vars += " " + varName;
-				}
-				logger.debug("SHARED VARIABLES: {}", vars);
-				logger.debug("SHARED VALUES: {}", values);
+				logger.debug("REAL-TIME VALUES: {}", variableBindings);
+				logger.debug("HISTORIC VALUES: {}", values);
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
-				if (logger.isDebugEnabled()) {
-					logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
-				}
+				logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
 			}
 		}
 
