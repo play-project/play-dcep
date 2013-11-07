@@ -28,7 +28,7 @@ public class HistoricalQueryContainer {
 	
 	public HistoricalQueryContainer(String query, VariableBindings variableBindings){
 		if(query == null)
-			throw new IllegalArgumentException("Original query should not be null");
+			throw new IllegalArgumentException("Original query must not be null");
 		map = new VariableBindings();
 		for (String varName : variableBindings.keySet()) {
 			// Transfer only variables with nonempty bindings:
@@ -36,7 +36,7 @@ public class HistoricalQueryContainer {
 				map.put(varName, variableBindings.get(varName));
 			}
 		}
-		if(map != null)
+		if(!map.isEmpty())
 			this.query = addVALUES(query);
 		else
 			this.query = query;
