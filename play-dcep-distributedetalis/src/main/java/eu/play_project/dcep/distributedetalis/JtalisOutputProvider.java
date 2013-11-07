@@ -190,7 +190,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			//Get variable bindings.
 			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[0].toString());
 			
-			logger.debug("VariableBindings: {}", variableBindings);
 			//Get historical data to the given binding.
 			HistoricalData values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
 
@@ -198,7 +197,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				// there is no matching historic data so the event pattern is not fulfilled:
 				throw new RetractEventException();
 			} else {
-				logger.debug("REAL-TIME VALUES: {}", variableBindings);
+				logger.debug("PROLOG VALUES: {}", variableBindings);
 				logger.debug("HISTORIC VALUES: {}", values);
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
 				logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
