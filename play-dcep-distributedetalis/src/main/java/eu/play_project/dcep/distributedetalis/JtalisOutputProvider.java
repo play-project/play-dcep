@@ -144,8 +144,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				EVENTID,
 				SOURCE,
 				NodeFactory.createURI(Source.Dcep.toString())));
-
-		//TODO sobermeier: Add :members to the event (an RDF list of all simple events which were detected)
 		
 		logger.debug("(1/3) static quads :\n{}", quadruples);
 		
