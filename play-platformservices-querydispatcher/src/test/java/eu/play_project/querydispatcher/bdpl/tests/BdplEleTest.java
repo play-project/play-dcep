@@ -1,6 +1,6 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -216,6 +216,24 @@ public class BdplEleTest {
 		System.out.println(etalisPattern);
 	}
 	
+	@Test
+	public void testHistoricRealtimeShardValues() {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/HistoricRealtimeQuery2.eprq");
+		System.out.println(queryString);
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		
+		assertTrue(etalisPattern.contains("variabeValuesAdd('http://patterns.event-processing.org/patterns/42','screenName02',VscreenName02)))"));
+	}
 	
 
 	@Test
