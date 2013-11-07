@@ -9,6 +9,7 @@ import static eu.play_project.play_commons.constants.Namespace.EVENTS;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,7 +82,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	public void outputEvent(EtalisEvent event) {
 
 		try {
-			System.out.println(event);
 			List<Quadruple> quadruples = this.getEventData(engine, event);
 					 
 			// Publish complex event
@@ -108,7 +108,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	 */
 	public List<Quadruple> getEventData(PlayJplEngineWrapper engine, EtalisEvent event) throws RetractEventException {
 		List<Quadruple> quadruples = new ArrayList<Quadruple>();
-		
 		String eventId = EVENTS.getUri() + event.getProperty(0).toString();
 	
 		final Node GRAPHNAME = NodeFactory.createURI(eventId);
@@ -145,12 +144,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				EVENTID,
 				SOURCE,
 				NodeFactory.createURI(Source.Dcep.toString())));
-
-		//TODO sobermeier: Add :members to the event (an RDF list of all simple events which were detected)
 		
-		if (logger.isDebugEnabled()) {
-			logger.debug("(1/3) static quads :\n{}", quadruples);
-		}
+		logger.debug("(1/3) static quads :\n{}", quadruples);
 		
 		/*
 		 * Add payload data to event:
@@ -182,9 +177,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	                objectNode));
 		}
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);
-		}
+		logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);
 
 		/*
 		 * Add historic data to event:
@@ -195,8 +188,8 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		} else if (query.getHistoricalQueries() != null && !query.getHistoricalQueries().isEmpty()) {
 			
 			//Get variable bindings.
-			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[1].toString());
-
+			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[0].toString());
+			
 			//Get historical data to the given binding.
 			HistoricalData values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
 
@@ -204,41 +197,39 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				// there is no matching historic data so the event pattern is not fulfilled:
 				throw new RetractEventException();
 			} else {
-				String vars = "";
-				for (String varName : values.keySet()) {
-					vars += " " + varName;
-				}
-				logger.debug("SHARED VARIABLES: " + vars);
+				logger.debug("PROLOG VALUES: {}", variableBindings);
+				logger.debug("HISTORIC VALUES: {}", values);
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
-				if (logger.isDebugEnabled()) {
-					logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
-				}
+				logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
 			}
 		}
 
 		return quadruples;
 	}
 	
-	public static VariableBindings getSharedVariablesValues(PlayJplEngineWrapper engine, String queryId) {
+	public static VariableBindings getSharedVariablesValues(PlayJplEngineWrapper engine, String complexEventId) {
 		// HashMap with values of variables.
 		VariableBindings variableValues = new VariableBindings();
 
 		try {
 			// Get variables and values
-			Hashtable<String, Object>[] result = engine.execute("variableValues('" + queryId + "', VarName, VarValue)");
+			Hashtable<String, Object>[] result = engine.execute("variableValues(" + complexEventId + ", VarName, VarValue)");
+			
+			// Delete data in prolog engine.
+			engine.execute("variabeValuesDel(" + complexEventId + ")");
 
 			// Get all values of a variable
 			for (Hashtable<String, Object> resultTable : result) {
 				String varName = resultTable.get("VarName").toString();
 				String varValue = resultTable.get("VarValue").toString();
-				
+
 				// Prepare list
 				if (!variableValues.containsKey(varName)) {
-					variableValues.put(varName, new ArrayList<Object>());
+					variableValues.put(varName, new LinkedList<Object>());
 				}
 
 				// Add new value to list
-				if (varValue != null && varValue.isEmpty()) {
+				if (varValue != null && !varValue.isEmpty()) {
 					variableValues.get(varName).add(varValue);
 				}
 			}

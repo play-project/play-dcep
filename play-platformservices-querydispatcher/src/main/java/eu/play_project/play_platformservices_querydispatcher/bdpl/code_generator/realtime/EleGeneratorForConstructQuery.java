@@ -114,7 +114,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
-		//SaveSharedVariabelValues();
+		SaveSharedVariableValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
@@ -123,7 +123,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 
 	private void GenerateConstructResult() {
-		StringBuffer constructResult = new StringBuffer();
+		String constructResult = "";
 		
 		GenerateConstructResultVisitor generateConstructResultVisitor = new GenerateConstructResultVisitor();
 		Iterator<Triple> constructTemplIter = inputQuery.getConstructTemplate().getTriples().iterator();
@@ -141,13 +141,13 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		}
 
 
-		constructResult.append("" +
+		constructResult += "" +
 				"forall((" + queriesConcatenated.toString() + "), " +
-									"(");
+									"(";
 										while (constructTemplIter.hasNext()) {
 											triple = constructTemplIter.next();
 											if (!containsSharedVariablesTest(triple)) {
-												constructResult.append( "" +
+												constructResult += "" +
 												"generateConstructResult("
 														+ triple.getSubject().visitWith(
 																generateConstructResultVisitor)
@@ -158,16 +158,16 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 														+ triple.getObject().visitWith(
 																generateConstructResultVisitor) + ","
 														+ uniqueNameManager.getCeid() +
-													") ");
+													") ";
 												
 												if (constructTemplIter.hasNext()) {
-													constructResult.append(", ");
+													constructResult += ", ";
 												}
 											}
 										}
-				constructResult.append(")");
-		constructResult.append(")");
-		
+										constructResult += SaveSharedVariableValues();
+				constructResult += ")";
+		constructResult += ")";
 		elePattern += constructResult.toString();
 	}
 
@@ -192,17 +192,27 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		return result;
 	}
 		
-	public void SaveSharedVariabelValues() {
-		StringBuffer tmpEle = new StringBuffer();
-
+	public String SaveSharedVariableValues() {
+		String elePattern = "";
 		List<String> vars = nameManager.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
-		for (String var : vars) {
+		
+		Iterator<String> iter = vars.iterator();
+		String var;
+		
+		while (iter.hasNext()) {
 			if (!elePattern.endsWith(",")) {
 				elePattern += ",";
 			}
-			tmpEle.append("variabeValuesAdd(" + patternId + ",'" + var + "'," + "V" + var + ")");
+			
+			var= iter.next();
+			elePattern += "variabeValuesAdd(" + uniqueNameManager.getCeid() + ",'" + var + "'," + "V" + var + ")";
+			
+			if(iter.hasNext()){
+				elePattern += ",";
+			}
 		}
-		elePattern += tmpEle.toString();
+
+		return elePattern;
 	}
 	
 	private void DecrementReferenceCounter(){
