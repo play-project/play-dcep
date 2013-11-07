@@ -210,13 +210,16 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		return quadruples;
 	}
 	
-	public static VariableBindings getSharedVariablesValues(PlayJplEngineWrapper engine, String queryId) {
+	public static VariableBindings getSharedVariablesValues(PlayJplEngineWrapper engine, String complexEventId) {
 		// HashMap with values of variables.
 		VariableBindings variableValues = new VariableBindings();
 
 		try {
 			// Get variables and values
-			Hashtable<String, Object>[] result = engine.execute("variableValues(" + queryId + ", VarName, VarValue)");
+			Hashtable<String, Object>[] result = engine.execute("variableValues(" + complexEventId + ", VarName, VarValue)");
+			
+			// Delete data in prolog engine.
+			engine.execute("variabeValuesDel(" + complexEventId + ")");
 
 			// Get all values of a variable
 			for (Hashtable<String, Object> resultTable : result) {

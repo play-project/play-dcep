@@ -83,6 +83,6 @@ variabeValuesAdd(PatternId, VariableName, Value):-
 ).
 
 %Remove Variable value
-variabeValuesDel(PatternId, VariableName, Value):- 
-	retract(variableValues(PatternId, VariableName, Value)).
+variabeValuesDel(Id):- 
+	retractall(variableValues(Id, _, _)).
 
