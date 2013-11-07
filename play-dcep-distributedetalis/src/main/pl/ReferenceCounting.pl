@@ -41,7 +41,7 @@ collectGarbage(ID) :-
 	 referenceCounter(ID, _Time ,X),
 	 X = 0, 
 	 rdf_retractall(_S,_P,_O, ID),
-	 write(' GC delete ID:'), write(ID), 
+	 % write(' GC delete ID:'), write(ID), 
 	 retractall(referenceCounter(ID, _Time, X))
 	 ; 
 	 true
