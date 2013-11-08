@@ -42,8 +42,11 @@ maxShutdownTime=15                                    # maximum number of second
 pidFile="/var/run/$serviceNameLo.pid"                 # name of PID file (PID = process ID number)
 javaCommand="java"                                    # name of the Java launcher without the path
 javaExe="$javaCommand"                                # file name of the Java application launcher executable
+javaDebugArgs="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+                                                      # optional arguments for Java remote debugging
 javaArgs="${java.arguments} -cp ${applDir}/conf/:${applDir}/lib/${serviceNameLo}-jar-with-dependencies.jar ${java.main.class}"
                                                       # arguments for Java launcher
+#javaCommandLine="$javaExe $javaDebugArgs $javaArgs"  # command line to start the Java service application with remote debugging enabled
 javaCommandLine="$javaExe $javaArgs"                  # command line to start the Java service application
 javaCommandLineKeyword="${applDir}/lib/${serviceNameLo}-jar-with-dependencies.jar"
                                                       # a keyword that occurs on the commandline, used to detect an already running service process and to distinguish it from others
