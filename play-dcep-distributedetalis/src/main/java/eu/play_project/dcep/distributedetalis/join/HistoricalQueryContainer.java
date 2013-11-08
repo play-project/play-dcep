@@ -54,7 +54,7 @@ public class HistoricalQueryContainer {
 		StringBuilder sparqlb = new StringBuilder(oquery);
 		index = oquery.indexOf(VALUES);
 		if(index != -1){
-			throw new IllegalArgumentException("Original query already has VALUES clause");
+			throw new IllegalArgumentException("Original query already has " + VALUES + " clause");
 		}
 		else {
 			index = oquery.indexOf(WHERE);
@@ -62,7 +62,7 @@ public class HistoricalQueryContainer {
 		
 			// add VALUES block in WHERE block
 			if (index == -1){
-				throw new IllegalArgumentException("Original query has no WHERE clause");
+				throw new IllegalArgumentException("Original query has no " + WHERE + " clause");
 			}
 			else{
 				while(index < oquery.length()){
@@ -91,7 +91,7 @@ public class HistoricalQueryContainer {
 		
 		StringBuilder ret = new StringBuilder();
 		if(makeVariableList()){
-			ret.append("\n VALUES ( ");
+			ret.append("\n " + VALUES + " ( ");
 			for(int i = 0; i < vvariables.size(); i++){
 				ret.append(vvariables.get(i));
 				ret.append(" ");
