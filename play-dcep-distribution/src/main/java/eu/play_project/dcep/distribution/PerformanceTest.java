@@ -143,7 +143,7 @@ public class PerformanceTest {
 	}
 	private static String getSparqlQuery(String queryFile) {
 		try {
-			InputStream is = Main.class.getClassLoader().getResourceAsStream(queryFile);
+			InputStream is = PerformanceTest.class.getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			StringBuffer sb = new StringBuffer();
 			String line;
