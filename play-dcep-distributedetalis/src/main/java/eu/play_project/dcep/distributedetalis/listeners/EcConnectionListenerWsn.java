@@ -56,9 +56,9 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Serializa
 		    this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
 		    
 	    } catch (NoRdfEventException e) {
-			logger.error("Received a non-RDF event from the DSB: " + e.getMessage());
+			logger.error("Received a non-RDF event from the DSB: {}", e.getMessage());
 		} catch (EcConnectionmanagerException e) {
-			logger.error("Could not store event for historic storage: " + e.getMessage());
+			logger.error("Could not store event for historic storage: {}", e.getMessage());
 		}
 	}
 

@@ -51,7 +51,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			Query q = new Query(command);
 			return q.allSolutions();
 		} catch (PrologException e) {
-			logger.error("Error shutting down Etalis. " + e.getMessage());
+			logger.error("Error shutting down Etalis. {}", e.getMessage());
 			return new Hashtable[0];
 		}
 	}
@@ -61,7 +61,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 		try {
 			return engine.execute(term);
 		} catch(PrologException e){
-			logger.error("Error executing Prolog goal. " + e.getMessage());
+			logger.error("Error executing Prolog goal. {}", e.getMessage());
 			return false;
 		}
 	}
@@ -72,7 +72,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			Query q = new Query(goal);
 			return q.hasSolution();
 		} catch (PrologException e) {
-			logger.error("Error executing Prolog goal. " + e.getMessage());
+			logger.error("Error executing Prolog goal. {}", e.getMessage());
 			return false;
 		}
 	}
@@ -97,7 +97,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			this.executeGoal("rdf_retractall(_S,_P,_O,_DB)");
 			this.executeGoal("reset_etalis");
 		} catch (PrologException e) {
-			logger.error("Error shutting down Etalis. " + e.getMessage());
+			logger.error("Error shutting down Etalis. {}", e.getMessage());
 		}
 	}
 
@@ -120,10 +120,10 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			//Get data from triplestore
 			result = this.execute("rdfTest(S,P,O, " + triplestoreID + ")");
 		} catch (PrologException e) {
-			logger.error("Error getting data from Prolog. " + e.getMessage());
+			logger.error("Error getting data from Prolog. {}", e.getMessage());
 			result = new Hashtable[0];
 		} catch (DistributedEtalisException e) {
-			logger.error("Error getting data from Prolog. " + e.getMessage());
+			logger.error("Error getting data from Prolog. {}", e.getMessage());
 			result = new Hashtable[0];
 		} finally {
 			try {
@@ -147,10 +147,10 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			// Get Variables and values
 			return this.execute((comand.toString()));
 		} catch (DistributedEtalisException e) {
-			logger.error("Error getting values from Prolog. " + e.getMessage());
+			logger.error("Error getting values from Prolog. {}", e.getMessage());
 			return new Hashtable[0];
 		} catch (PrologException e) {
-			logger.error("Error getting values from Prolog. " + e.getMessage());
+			logger.error("Error getting values from Prolog. {}", e.getMessage());
 			return new Hashtable[0];
 		}
 	}
@@ -162,7 +162,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 					new Term[] { new Atom(file) });
 			return consult_query.hasSolution();
 		} catch (PrologException e) {
-			logger.error("Error consulting Prolog file. " + e.getMessage());
+			logger.error("Error consulting Prolog file. {}", e.getMessage());
 			return false;
 		}
 	}

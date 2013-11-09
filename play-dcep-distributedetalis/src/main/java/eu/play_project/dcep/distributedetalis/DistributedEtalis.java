@@ -115,7 +115,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.info("New event pattern is being registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), bdplQuery
 				.getDetails().getQueryId());
-		logger.debug("ELE: " + bdplQuery.getEleQuery());
+		logger.debug("ELE: {}", bdplQuery.getEleQuery());
 
 		if(this.registeredQueries.containsKey(bdplQuery.getDetails().getQueryId())) {
 			String error = "Pattern ID already exists: " + bdplQuery.getDetails().getQueryId();
@@ -126,7 +126,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		try {
 			this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
 		
-			logger.debug("Register query: " + bdplQuery.getEleQuery());
+			logger.debug("Register query: {}", bdplQuery.getEleQuery());
 			
 			etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
 			// Start tumbling window. (If a tumbling window was defined.)

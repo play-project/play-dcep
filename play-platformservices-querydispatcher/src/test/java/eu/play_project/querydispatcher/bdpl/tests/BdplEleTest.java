@@ -152,7 +152,7 @@ public class BdplEleTest {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		System.out.println("Querry \n" + query);
+		System.out.println("Query \n" + query);
 
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
@@ -165,14 +165,14 @@ public class BdplEleTest {
 
 		// try { // FIXME sobermeier: this does not work anymore since 'complex'
 		// events now have individual names
-		// parsEtalisPatter(etalisPattern);
+		// parseEtalisPattern(etalisPattern);
 		// } catch (ParseException e) {
 		// e.printStackTrace();
 		// fail("Pars error: " + e.getMessage());
 		// }
 	}
 
-	private void parsEtalisPatter(String elePattern) throws ParseException {
+	private void parseEtalisPattern(String elePattern) throws ParseException {
 		PlayEleParser parser = new PlayEleParser(new ByteArrayInputStream(elePattern.getBytes()));
 
 		parser.Start();

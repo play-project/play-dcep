@@ -99,12 +99,12 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 		} catch (RetractEventException e) {
 			logger.info(LOG_DCEP_FAILED_EXIT + "Retract ... an event was not created because its historic part was not fulfilled.");
 		} catch (Exception e) {
-			logger.error(LOG_DCEP_FAILED_EXIT + "Exception appeared: " + e.getMessage(), e);
+			logger.error(LOG_DCEP_FAILED_EXIT + "Exception appeared: {}" + e.getMessage(), e);
 		}
 	}
 	
 	/**
-	 * Get event data from Prolog and Event Cloud.
+	 * Get event data from Prolog and EventCloud.
 	 */
 	public List<Quadruple> getEventData(PlayJplEngineWrapper engine, EtalisEvent event) throws RetractEventException {
 		List<Quadruple> quadruples = new ArrayList<Quadruple>();

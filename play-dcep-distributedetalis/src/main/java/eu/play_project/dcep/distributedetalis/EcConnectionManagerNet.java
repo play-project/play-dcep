@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.objectweb.proactive.api.PAFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +87,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 				logger.warn("No cloudIds were found in EventCloud, possible misconfiguration.");
 			} else {
 				for (EventCloudId cloudId : cloudIds) {
-					logger.info("CloudId in EventCloud: " + cloudId);
+					logger.info("CloudId in EventCloud: {}", cloudId);
 				}
 			}
 		} catch (IOException e) {
@@ -117,25 +118,31 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	}
 
 	@Override
-	public synchronized SelectResults getDataFromCloud(String query, String cloudId)
+	public SelectResults getDataFromCloud(String query, String cloudId)
 			throws EcConnectionmanagerException {
 		if (!init) {
 			throw new IllegalStateException(this.getClass().getSimpleName()
 					+ " has not been initialized.");
 		}
 
-		logger.info("Get data from EventCloud '" + cloudId + "' with query : " + query);
+		logger.debug("Get data from EventCloud '{}' with query:\n{}", cloudId, query);
 
 		PutGetApi putGetCloud;
 		SparqlSelectResponse response = null;
 		try {
 			putGetCloud = getHistoricCloud(cloudId);
-			response = putGetCloud.executeSparqlSelect(query);
+			if (logger.isDebugEnabled()) {
+				long beginQuerying = System.currentTimeMillis();
+				response = PAFuture.getFutureValue(putGetCloud.executeSparqlSelect(query));
+				logger.debug("Get data from EventCloud '{}' had latency {} ms", cloudId, System.currentTimeMillis() - beginQuerying);
+			} else {
+				response = putGetCloud.executeSparqlSelect(query);
+			}
 		} catch (EcConnectionmanagerException e) {
 			logger.error("Error while connecting to event cloud {}.", cloudId);
 			throw e;
 		} catch (MalformedSparqlQueryException e) {
-			logger.error("Malformed sparql query. " + e.getMessage());
+			logger.error("Malformed sparql query. {}", e.getMessage());
 			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}
 		ResultSetWrapper rw = response.getResult();
@@ -327,7 +334,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	public void destroy() {
 
 		logger.info("Terminating {}.", this.getClass().getSimpleName());
-		logger.info("Unsubscribe from Event Clouds");
+		logger.info("Unsubscribe from event clouds");
 
 		// Unsubscribe
 		for (SubscribeApi proxy : subscriptions.keySet()) {

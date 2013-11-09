@@ -33,7 +33,7 @@ public class DetalisConfig4store extends DetalisConfigNet implements Configurati
 	public void configure(DEtalisConfigApi dEtalisConfigApi) throws DistributedEtalisException {
 		
 		logger = LoggerFactory.getLogger(this.getClass());
-		logger.info("Configuring DistributedEtalis using " + this.getClass().getSimpleName());
+		logger.info("Configuring DistributedEtalis using {}", this.getClass().getSimpleName());
 		
 		cl = new LoadPrologCode();
 		

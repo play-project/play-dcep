@@ -12,6 +12,7 @@ import org.ontoware.rdf2go.model.Statement;
 import org.ontoware.rdf2go.model.node.Node;
 import org.ontoware.rdf2go.model.node.Resource;
 import org.ontoware.rdf2go.model.node.URI;
+import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -194,4 +195,45 @@ public class EventCloudHelpers {
 			return cloudId;
 		}
 	}
+	
+	/**
+	 * Returns the event cloud ID which is contained for a given event.
+	 */
+	public static String getCloudId(Model event) {
+		Node primaryType = null;
+		Node secondaryType = null;
+
+		String streamId = "";
+		String cloudId = "";
+
+		if (event.getContextURI() != null) {
+			Node eventId = new URIImpl(event.getContextURI() + EVENT_ID_SUFFIX);
+			for (Statement quad : event) {
+				if (quad.getPredicate().toString().equals(Event.STREAM.toString())) {
+					secondaryType = quad.getObject();
+					if (quad.getSubject().equals(eventId)) {
+						primaryType = quad.getObject();
+						break;
+					}
+				}
+			}
+		}
+
+		if (primaryType != null) {
+			streamId = primaryType.toString();
+			cloudId = streamId.substring(0,
+					streamId.lastIndexOf(Stream.STREAM_ID_SUFFIX));
+			return cloudId;
+		}
+		else if (secondaryType != null) {
+			streamId = secondaryType.toString();
+			cloudId = streamId.substring(0,
+					streamId.lastIndexOf(Stream.STREAM_ID_SUFFIX));
+			return cloudId;
+		}
+		else {
+			return cloudId;
+		}
+	}
+
 }

@@ -41,7 +41,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		ele.append(" (");
 		if(el != null){
 			el.visit(this);
-		}	
+		}
 	}
 	@Override
 	public void visit(ElementFilter el) {
@@ -50,8 +50,8 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 
 	@Override
 	public void visit(ExprFunction2 func) {
-		logger.debug("Visit1: " + func.getClass().getName());
-		// Transform infix operators to prefix operators. E.g. (1 + 2) -3 -> plus(1, 2, R), minus(R, 3, R2) 
+		logger.debug("Visit1: {}", func.getClass().getName());
+		// Transform infix operators to prefix operators. E.g. (1 + 2) -3 -> plus(1, 2, R), minus(R, 3, R2)
 		// Use post-order traversal except if node is a infix operator in prolog. In this case use In-order traversal.
 
 		// Get left values
@@ -75,7 +75,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalAnd) {
 			// Do nothing AND is infix operator
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LessThan) {
-			if(ele.length()>2) ele.append(","); // At the beginning of a string no ",". 
+			if(ele.length()>2) ele.append(","); // At the beginning of a string no ",".
 			ele.append("less(" + stack.pop() + ", " + rightElem + ")");
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Subtract) {
 			ele.append("minus(" + stack.pop() + "," + rightElem + ", " + cC.getNextFilterVar() + ")");
@@ -103,7 +103,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_StrContains) {
 			ele.append( " (xpath(element(sparqlFilter, [keyWord="
-					+ stack.pop()   
+					+ stack.pop()
 					+ "], []), //sparqlFilter(contains(@keyWord,'"
 					//Cutting away opening and closing quotes.
 					+ rightElem.substring(1, (rightElem.length()-1)) + "')), _))");
@@ -119,7 +119,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		func.getArg().visit(this);
 
 		if (func instanceof com.hp.hpl.jena.sparql.expr.E_NumAbs) {
-			logger.debug(" Visit1: " + func.getClass().getName());
+			logger.debug(" Visit1: {}", func.getClass().getName());
 			ele.append(", abs(");
 			ele.append(stack.pop() + ", " + stack.push(cC.getNextFilterVar()) + ")");
 
@@ -136,7 +136,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 
 	public StringBuffer getEle() {
 		
-		//Close bracket 
+		//Close bracket
 		if(getStringFirstTime){
 			ele.append("),");
 			getStringFirstTime = false;
@@ -166,7 +166,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			// get_time(F).
 			System.out.println(func.getOpName());
 		}else{
-			logger.info(func.getClass().getName() + "will be ignored. No ELE code will be generated for this token." + this.getClass().getSimpleName());
+			logger.info("ExprFunction '{}' will be ignored. No ELE code will be generated for this token. {}", func.getClass().getName(), this.getClass().getSimpleName());
 		}
 	}
 

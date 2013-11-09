@@ -58,7 +58,7 @@ public class HistoricalQueryContainer {
 		}
 		else {
 			index = oquery.indexOf(WHERE);
-			logger.debug("where index: "+index);
+			logger.debug("where index: {}", index);
 		
 			// add VALUES block in WHERE block
 			if (index == -1){
@@ -108,7 +108,7 @@ public class HistoricalQueryContainer {
 	private boolean makeVariableList(){
 		boolean ret = false;
 		for(String variable : map.keySet()){
-			logger.debug("Add variable to list: " + variable);
+			logger.debug("Add variable to list: {}", variable);
 			vvariables.add(variable);
 			ret = true;
 		}

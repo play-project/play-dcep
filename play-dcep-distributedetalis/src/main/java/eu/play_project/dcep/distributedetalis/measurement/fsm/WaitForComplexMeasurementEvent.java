@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Triple;
 
-import eu.play_project.dcep.api.measurement.MeasurementConstants;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -13,9 +12,9 @@ import fr.inria.eventcloud.api.CompoundEvent;
 public class WaitForComplexMeasurementEvent implements MeasurementState{
 	private int measurementEventCounter = 0;
 	private int complexEventCounter = 0; // All complex events except measurement events.
-	private MeasurementUnit context;
+	private final MeasurementUnit context;
 	private int numberOfConsumedEvents;
-	private Logger logger;
+	private final Logger logger;
 
 	public WaitForComplexMeasurementEvent(MeasurementUnit context, int measuementEventCounter) {
 		this.context = context;
@@ -80,7 +79,7 @@ public class WaitForComplexMeasurementEvent implements MeasurementState{
 			if (quadruple.getPredicate().toString().equals("http://play-project.eu/timeOneEvent")) {
 				singleEventTime = currentTime - Long.valueOf(quadruple.getObject().toString());
 				singleEventTime = singleEventTime / MeasurementUnit.mEvents;
-				logger.info("Time for" + MeasurementUnit.mEvents + " events ------------------------" + singleEventTime);
+				logger.info("Time for {} events ------------------------ {}", MeasurementUnit.mEvents, singleEventTime);
 			}
 		}
 

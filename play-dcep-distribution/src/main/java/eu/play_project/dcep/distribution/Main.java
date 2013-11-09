@@ -87,13 +87,13 @@ public class Main {
 		CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL
 				.setValue(PROACTIVE_COMMUNICATION_PROTOCOL);
 
-		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
+		logger.debug("Setting system property 'proactive.pnp.port' to: {}", PROACTIVE_PNP_PORT);
 		PNPConfig.PA_PNP_PORT.setValue(Integer.parseInt(PROACTIVE_PNP_PORT));
 
-		logger.debug("Setting system property 'proactive.http.port' to: " + PROACTIVE_HTTP_PORT);
+		logger.debug("Setting system property 'proactive.http.port' to: {}", PROACTIVE_HTTP_PORT);
 		CentralPAPropertyRepository.PA_XMLHTTP_PORT.setValue(Integer.parseInt(PROACTIVE_HTTP_PORT));
 
-		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
+		logger.debug("Setting system property 'proactive.rmi.port' to: {}", PROACTIVE_RMI_PORT);
 		CentralPAPropertyRepository.PA_RMI_PORT.setValue(Integer.parseInt(PROACTIVE_RMI_PORT));
 
 		logger.debug("Setting system property 'proactive.runtime.ping' to: false");

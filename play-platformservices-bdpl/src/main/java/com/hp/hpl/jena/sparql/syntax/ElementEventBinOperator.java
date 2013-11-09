@@ -8,11 +8,11 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class ElementEventBinOperator extends Element {
 
 	String type;
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public ElementEventBinOperator(String type){
 		this.type = type;
-		logger.debug("New BinOperator " + type);
+		logger.debug("New BinOperator {}", type);
 	}
 	
 	public String getTyp() {
@@ -20,7 +20,7 @@ public class ElementEventBinOperator extends Element {
 	}
 
 	public void setTyp(String typ) {
-		this.type = typ; 
+		this.type = typ;
 	}
 
 	@Override

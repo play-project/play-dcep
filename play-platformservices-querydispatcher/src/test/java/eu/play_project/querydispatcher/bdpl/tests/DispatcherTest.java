@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -110,7 +111,7 @@ public class DispatcherTest {
 	@Test
 	public void testDispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
-		String queryString = getSparqlQuery("BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
+		String queryString = getSparqlQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
 
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -166,5 +167,5 @@ public class DispatcherTest {
 	}
 	
 	private String getSparqlQuery(String queryFile) throws IOException {
-		return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), "UTF-8");	}
+		return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), StandardCharsets.UTF_8);	}
 	}

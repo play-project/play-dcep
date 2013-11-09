@@ -145,7 +145,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 			logger.warn("No topics were found in DSB, possible misconfiguration of event adapters.");
 		} else {
 			for (String topic : topics) {
-				logger.info("Topic on the DSB: " + topic);
+				logger.info("Topic on the DSB: {}", topic);
 			}
 		}
 		
@@ -187,7 +187,7 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
     		try {
 				this.notifyReceiverRest.stop();
 			} catch (Exception e) {
-				logger.error("Exception while stoppping REST server. Nothing we can do now. " + e.getMessage());
+				logger.error("Exception while stoppping REST server. Nothing we can do now. {}", e.getMessage());
 			}
     		this.notifyReceiverRest.destroy();
     	}
