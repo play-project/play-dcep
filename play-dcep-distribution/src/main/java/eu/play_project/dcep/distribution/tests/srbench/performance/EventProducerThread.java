@@ -58,13 +58,13 @@ public class EventProducerThread implements Runnable {
 				// Some statistics
 				meausrementUnit.nexEvent();
 
-				// Decrease delay
-				count++;
-				if (count % 2500 == 0) {
-					if ((delay - 2) > 0) {
-						delay -= 2;
-					}
-				}
+//				// Decrease delay
+//				count++;
+//				if (count % 2500 == 0) {
+//					if ((delay - 2) > 0) {
+//						delay -= 2;
+//					}
+//				}
 				
 				// Wait
 				delay();

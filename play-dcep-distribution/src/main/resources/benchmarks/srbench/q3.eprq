@@ -22,4 +22,4 @@ WHERE {
 			?e1 :endTime ?time
 			}
 	} ("PT6000M"^^xsd:duration, sliding)
-}HAVING ( AVG(?value) >= "5"^^xsd:float )
+}

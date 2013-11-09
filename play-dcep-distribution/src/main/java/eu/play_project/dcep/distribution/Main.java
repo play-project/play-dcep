@@ -37,9 +37,9 @@ public class Main {
 		if (running) {
 			throw new IllegalStateException("Already running...");
 		}
-
+		
 		running = true;
-
+		 
 		try {
 
 			Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -50,18 +50,16 @@ public class Main {
 				}
 			});
 
-			Main.start();
-			System.out
-					.println("DCEP is running. Use '${DCEP_HOME}/bin/dcep stop', 'kill' or 'kill -15' to stop it.");
+			Main.start("PlayPlatform");
+			System.out.println("DCEP is running. Use '${DCEP_HOME}/bin/dcep stop', 'kill' or 'kill -15' to stop it.");
 
-			// Keep the main thread alive because otherwise Proactive will
-			// terminate
+			// Keep the main thread alive because otherwise Proactive will terminate
 			synchronized (Main.class) {
 				while (running) {
 					try {
 						Main.class.wait();
-					} catch (InterruptedException e) {
 					}
+					catch (InterruptedException e) {}
 				}
 			}
 
@@ -73,32 +71,27 @@ public class Main {
 
 	}
 
-	public static void start() throws Exception {
-		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty(
-				"dcep.proactive.pnp.port");
-		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty(
-				"dcep.proactive.http.port");
-		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty(
-				"dcep.proactive.rmi.port");
+	public static void start(String componentName) throws Exception {
+		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
+		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
+		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
 		final String PROACTIVE_COMMUNICATION_PROTOCOL = "pnp";
+		
+		logger.debug("Setting system property 'proactive.communication.protocol' to: " + PROACTIVE_COMMUNICATION_PROTOCOL);
+		CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL.setValue(PROACTIVE_COMMUNICATION_PROTOCOL);
 
-		logger.debug("Setting system property 'proactive.communication.protocol' to: "
-				+ PROACTIVE_COMMUNICATION_PROTOCOL);
-		CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL
-				.setValue(PROACTIVE_COMMUNICATION_PROTOCOL);
-
-		logger.debug("Setting system property 'proactive.pnp.port' to: {}", PROACTIVE_PNP_PORT);
+		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
 		PNPConfig.PA_PNP_PORT.setValue(Integer.parseInt(PROACTIVE_PNP_PORT));
-
-		logger.debug("Setting system property 'proactive.http.port' to: {}", PROACTIVE_HTTP_PORT);
+		
+		logger.debug("Setting system property 'proactive.http.port' to: " + PROACTIVE_HTTP_PORT);
 		CentralPAPropertyRepository.PA_XMLHTTP_PORT.setValue(Integer.parseInt(PROACTIVE_HTTP_PORT));
-
-		logger.debug("Setting system property 'proactive.rmi.port' to: {}", PROACTIVE_RMI_PORT);
+		
+		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
 		CentralPAPropertyRepository.PA_RMI_PORT.setValue(Integer.parseInt(PROACTIVE_RMI_PORT));
-
+		
 		logger.debug("Setting system property 'proactive.runtime.ping' to: false");
 		CentralPAPropertyRepository.PA_RUNTIME_PING.setValue(false);
-
+		
 		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
 				.setValue("proactive.java.policy");
 
@@ -110,8 +103,8 @@ public class Main {
 		 */
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("PlayPlatform", context);
+		
+		root = (Component) factory.newComponent(componentName, context); 
 
 		GCM.getGCMLifeCycleController(root).startFc();
 
@@ -179,7 +172,7 @@ public class Main {
 				} catch (BodyTerminatedRequestException e) {
 					logger.error(e.getMessage());
 				}
-
+				
 				// Terminate is not recursive:
 				for (Component subcomponent : GCM.getContentController(root)
 						.getFcSubComponents()) {
