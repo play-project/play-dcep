@@ -80,7 +80,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		
 		
 		// Start publishing events.
-		new EventProducerThread(1000000, 30, testApiI1);
+		new EventProducerThread(15002, 6, testApiI1);
 		//new EventProducerThread(1000000, 40, testApiI2);
 		//new EventProducerThread(1000, 1000, testApiI1);
 		//new EventProducerThread(1000, 200, testApiI1);
