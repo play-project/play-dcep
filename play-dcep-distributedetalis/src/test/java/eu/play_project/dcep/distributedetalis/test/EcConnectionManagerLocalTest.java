@@ -30,6 +30,7 @@ import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import fr.inria.eventcloud.api.exceptions.MalformedSparqlQueryException;
+import fr.inria.eventcloud.api.responses.SparqlQueryStatistics;
 import fr.inria.eventcloud.api.responses.SparqlSelectResponse;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
@@ -72,7 +73,7 @@ public class EcConnectionManagerLocalTest {
 
 			// Put result in PLAY result wrapper.
 			ResultSetWrapper dataIn = new ResultSetWrapper(results);
-			result = new SparqlSelectResponse(1, 1, 1, 1, dataIn);
+			result = new SparqlSelectResponse(new SparqlQueryStatistics(1, 1, 1, 1, 1, 1, 1), dataIn);
 		} finally {
 			qexec.close();
 		}
