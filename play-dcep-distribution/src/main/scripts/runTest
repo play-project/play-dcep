@@ -1,0 +1,64 @@
+#!/bin/bash
+toolpath=/opt/dcep/bin/
+hosts=(141.52.218.16 141.52.218.17 141.52.218.19 141.52.218.20 ) 
+ssh_usr=root
+dcepHttpSource=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play/dcep.zip
+dcepJarHttpSource=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play/dcep-jar-with-dependencies.jar
+
+installDcep() {
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[3]} "cd /opt/ && 
+			  wget -nv $dcepHttpSource &&
+			  unzip -o dcep.zip &&
+			  chmod u+x ./dcep/bin/*" &
+}
+
+updateJarFile() {
+	for i in "${hosts[@]}"
+	do
+		ssh -oStrictHostKeyChecking=no $ssh_usr@$i "cd $toolpath && 
+			   rm ../lib/dcep-jar-with-dependencies.jar ;
+			   wget -nv $dcepJarHttpSource -P ../lib/" &
+	done
+}
+
+runTest() {
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]} "cd $toolpath && ./dcep restart" &
+	sleep 20 
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]} "cd $toolpath && ./subscriber restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]} "cd $toolpath && ./publisher  restart" &
+}
+
+prepareNewHost() {
+	echo $1
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${1} "
+		wget -nv https://raw.github.com/play-project/play-dcep/master/play-dcep-distribution/src/main/scripts/software.sh &&
+		chmod u+x software.sh &&
+		./software.sh cep-engine" &
+}
+
+case "$1" in
+	runTest)
+		# Update time.
+		ssh $ssh_usr@${hosts[0]} "ntpdate 0.de.pool.ntp.org 1.de.pool.ntp.org 2.de.pool.ntp.org" &
+		runTest
+	;;
+
+	installDcep)
+		installDcep
+	;;
+
+	updateJarFile)
+		updateJarFile
+	;;
+
+	prepareNewHost)
+		prepareNewHost "$2"
+	;; 
+
+ 	*)
+		echo "Configure DCEP-Node: {installDcep|updateJarFile|runTest}"
+		exit 1
+  	;;
+esac
+
+exit 0
