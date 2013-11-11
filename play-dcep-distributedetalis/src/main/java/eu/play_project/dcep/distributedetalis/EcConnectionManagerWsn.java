@@ -53,8 +53,9 @@ import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
 
 /**
- * An abstract connection manager implementing common methods needed to receive
- * events via WS-Notification.
+ * An abstract connection manager to get real-time events from the PLAY
+ * Platform. Access to historic data, however, must be implemented by extending
+ * classes.
  * 
  * @author Roland Stühmer
  */

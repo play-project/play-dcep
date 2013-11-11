@@ -19,6 +19,13 @@ import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
+/**
+ * The connection manager to get real-time events from the PLAY Platform and get
+ * historical data from the RDF store <a
+ * href="http://virtuoso.openlinksw.com/">Virtuoso</a>.
+ * 
+ * @author Roland Stühmer
+ */
 public class EcConnectionManagerVirtuoso extends EcConnectionManagerWsn {
 	private Connection virtuosoConnection;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerVirtuoso.class);
