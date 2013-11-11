@@ -60,7 +60,7 @@
 	<properties>
 		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
 		<jetty.version>7.5.4.v20111024</jetty.version>
-		<eclipse.codeStyleBaseUrl>https://github.com/play-project/play-dcep/blob/develop/src/site</eclipse.codeStyleBaseUrl>
+		<eclipse.codeStyleBaseUrl>https://raw.github.com/play-project/play-dcep/develop/src/site/resources</eclipse.codeStyleBaseUrl>
 	</properties>
 
 	<dependencyManagement>
@@ -186,12 +186,16 @@
 				<configuration>
 					<additionalConfig>
 						<file>
-							<name>${eclipse.codeStyleBaseUrl}/org.eclipse.jdt.core.prefs</name>
-							<url>/checkstyle-config.xml</url>
+							<name>.settings/org.eclipse.jdt.core.prefs</name>
+							<url>${eclipse.codeStyleBaseUrl}/org.eclipse.jdt.core.prefs</url>
 						</file>
 						<file>
-							<name>${eclipse.codeStyleBaseUrl}/org.eclipse.jdt.ui.prefs</name>
-							<url>/checkstyle-config.xml</url>
+							<name>.settings/org.eclipse.jdt.ui.prefs</name>
+							<url>${eclipse.codeStyleBaseUrl}/org.eclipse.jdt.ui.prefs</url>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.core.resources.prefs</name>
+							<url>${eclipse.codeStyleBaseUrl}/org.eclipse.core.resources.prefs</url>
 						</file>
 					</additionalConfig>
 					<downloadSources>true</downloadSources>
