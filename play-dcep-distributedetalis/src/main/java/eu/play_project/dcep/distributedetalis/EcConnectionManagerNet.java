@@ -7,10 +7,11 @@ import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_EXIT;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
@@ -81,9 +82,9 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	private GenericKeyedObjectPool<String, PutGetApi> historicCloudsPool;
 	
 	private final Map<SubscribeApi, SubscriptionUsage> subscriptions = new HashMap<SubscribeApi, SubscriptionUsage>();
-	public static LinkedList<CompoundEvent> eventInputQueue;
+	private final Queue<CompoundEvent> eventInputQueue = new LinkedBlockingQueue<CompoundEvent>();
 	private EcConnectionListenerNet eventCloudListener;
-	static GetEventThread getEventThread;
+	private GetEventThread getEventThread;
 	private boolean init = false;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerNet.class);;
 	private Persistence persistence;
@@ -107,9 +108,8 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 		config.setMaxTotalPerKey(Integer.parseInt(constants.getProperty("dcep.eventcloud.putgetproxies.per.cloud")));
 		historicCloudsPool = new GenericKeyedObjectPool<String, PutGetApi>(new PutGetProxyPoolFactory(), config);
 		eventCloudRegistryUrl = eventCloudRegistry;
-		eventCloudListener = new EcConnectionListenerNet();
+		eventCloudListener = new EcConnectionListenerNet(eventInputQueue);
 		
-		eventInputQueue = new LinkedList<CompoundEvent>();
 		getEventThread = new GetEventThread(dEtalis); // Publish events from queue to dEtalis.
 		new Thread(getEventThread).start();
 
