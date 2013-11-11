@@ -14,12 +14,9 @@ import org.objectweb.proactive.core.component.representative.PAComponentRepresen
 import org.objectweb.proactive.core.util.URIBuilder;
 
 import eu.play_project.dcep.api.DcepManagementException;
-import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distribution.tests.srbench.performance.ComplexEventSubscriber;
 
 public class SingleDistributedEtalisInstanceSubscriber {
