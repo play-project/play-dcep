@@ -12,6 +12,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
+import org.apache.commons.pool2.PooledObject;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
 import org.objectweb.proactive.api.PAFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +33,7 @@ import eu.play_project.dcep.distributedetalis.persistence.Sqlite;
 import eu.play_project.dcep.distributedetalis.persistence.Sqlite.SubscriptionPerCloud;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.constants.Event;
+import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.EventCloudId;
@@ -44,15 +50,36 @@ import fr.inria.eventcloud.exceptions.EventCloudIdNotManaged;
 import fr.inria.eventcloud.factories.EventCloudsRegistryFactory;
 import fr.inria.eventcloud.factories.ProxyFactory;
 
+/**
+ * The connection manager to get data from and send data to <a
+ * href="http://eventcloud.inria.fr/">EventCloud</a> (<a
+ * href="https://bitbucket.org/eventcloud/eventcloud">Project Page</a>).
+ * 
+ * EventCloud is a storage and publish/subscribe component to handle (e.g.
+ * store) events in streams. A stream is called <i>cloud</i> so EventCloud
+ * manages many <i>clouds</i> identified by their {@code cloudId}.
+ * 
+ * A <i>cloud</i> (e.g. the one to store {@link Stream#TwitterFeed}) can have
+ * three kinds of proxies depending on how the EventCloud must be used, i.e. to
+ * publish complex events or to subscribe to simple events or to get historic
+ * data.
+ * 
+ * @author Stefan Obermeier
+ * @author Roland Stühmer
+ */
 public class EcConnectionManagerNet implements Serializable, EcConnectionManager {
 
 	private static final long serialVersionUID = 100L;
 
 	private String eventCloudRegistryUrl;
 
-	private Map<String, PublishApi> outputClouds;
-	private Map<String, SubscribeApi> inputClouds;
-	private Map<String, PutGetApi> putGetClouds;
+	/** For each cloudId store a resuable publish proxy to EventCloud, i.e., 1:1 mapping */
+	private final Map<String, PublishApi> outputClouds = new HashMap<String, PublishApi>();
+	/** For each cloudId store a resuable subscribe proxy to EventCloud, i.e., 1:1 mapping */
+	private final Map<String, SubscribeApi> inputClouds = new HashMap<String, SubscribeApi>();
+	/** For each cloudId store a pool of resuable publish proxies to EventCloud, i.e., 1:n mapping */
+	private GenericKeyedObjectPool<String, PutGetApi> historicCloudsPool;
+	
 	private final Map<SubscribeApi, SubscriptionUsage> subscriptions = new HashMap<SubscribeApi, SubscriptionUsage>();
 	public static LinkedList<CompoundEvent> eventInputQueue;
 	private EcConnectionListenerNet eventCloudListener;
@@ -70,13 +97,19 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 			throws EcConnectionmanagerException {
 
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
-
-		putGetClouds = new HashMap<String, PutGetApi>();
-		outputClouds = new HashMap<String, PublishApi>();
-		inputClouds = new HashMap<String, SubscribeApi>();
+		
+		/*
+		 * Management of EventCloud and its proxies
+		 */
+		GenericKeyedObjectPoolConfig config = new GenericKeyedObjectPoolConfig();
+		config.setJmxEnabled(false);
+		// Number of proxies per cloudId
+		config.setMaxTotalPerKey(Integer.parseInt(constants.getProperty("dcep.eventcloud.putgetproxies.per.cloud")));
+		historicCloudsPool = new GenericKeyedObjectPool<String, PutGetApi>(new PutGetProxyPoolFactory(), config);
 		eventCloudRegistryUrl = eventCloudRegistry;
-		eventInputQueue = new LinkedList<CompoundEvent>();
 		eventCloudListener = new EcConnectionListenerNet();
+		
+		eventInputQueue = new LinkedList<CompoundEvent>();
 		getEventThread = new GetEventThread(dEtalis); // Publish events from queue to dEtalis.
 		new Thread(getEventThread).start();
 
@@ -127,10 +160,10 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 
 		logger.debug("Get data from EventCloud '{}' with query:\n{}", cloudId, query);
 
-		PutGetApi putGetCloud;
+		PutGetApi putGetCloud = null;
 		SparqlSelectResponse response = null;
 		try {
-			putGetCloud = getHistoricCloud(cloudId);
+			putGetCloud = historicCloudsPool.borrowObject(cloudId);
 			if (logger.isDebugEnabled()) {
 				long beginQuerying = System.currentTimeMillis();
 				response = PAFuture.getFutureValue(putGetCloud.executeSparqlSelect(query));
@@ -144,6 +177,13 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 		} catch (MalformedSparqlQueryException e) {
 			logger.error("Malformed sparql query. {}", e.getMessage());
 			throw new EcConnectionmanagerException(e.getMessage(), e);
+		} catch (Exception e) {
+			logger.error("{}: {}", e.getClass().getSimpleName(), e.getMessage());
+			throw new EcConnectionmanagerException(e.getMessage(), e);
+		} finally {
+			if (putGetCloud != null) {
+				historicCloudsPool.returnObject(cloudId, putGetCloud);
+			}
 		}
 		ResultSetWrapper rw = response.getResult();
 		return ResultRegistry.makeResult(rw);
@@ -160,33 +200,23 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	@Override
 	public void putDataInCloud(CompoundEvent event, String cloudId)
 			throws EcConnectionmanagerException {
-		PutGetApi putGetApi = getHistoricCloud(cloudId);
-		for (Quadruple quad : event) {
-			putGetApi.add(quad);
-		}
-	}
-
-	private synchronized PutGetApi getHistoricCloud(String cloudId)
-			throws EcConnectionmanagerException {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-
+		PutGetApi putGetApi = null;
 		try {
-			if (!putGetClouds.containsKey(cloudId)) {
-				PutGetApi proxy = ProxyFactory.newPutGetProxy(
-						eventCloudRegistryUrl,
-						new EventCloudId(eu.play_project.play_commons.constants.Stream
-								.toTopicUri(cloudId)));
-				putGetClouds.put(cloudId, proxy);
+			putGetApi = historicCloudsPool.borrowObject(cloudId);
+			for (Quadruple quad : event) {
+				putGetApi.add(quad);
 			}
-		} catch (EventCloudIdNotManaged e) {
+		} catch (EcConnectionmanagerException e) {
+			logger.error("Error while connecting to event cloud {}.", cloudId);
+			throw e;
+		} catch (Exception e) {
+			logger.error("{}: {}", e.getClass().getSimpleName(), e.getMessage());
 			throw new EcConnectionmanagerException(e.getMessage(), e);
-		} catch (Exception e) { // we get various runtime exceptions here
-			throw new EcConnectionmanagerException(e.getMessage(), e);
+		} finally {
+			if (putGetApi != null) {
+				historicCloudsPool.returnObject(cloudId, putGetApi);
+			}
 		}
-		return putGetClouds.get(cloudId);
 	}
 
 	private synchronized SubscribeApi getInputCloud(String cloudId)
@@ -416,5 +446,28 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 			getEventThread = null;
 			stopMe.interrupt();
 		}
+	}
+	
+	private class PutGetProxyPoolFactory extends BaseKeyedPooledObjectFactory<String, PutGetApi> {
+
+		@Override
+		public PutGetApi create(String cloudId) throws EcConnectionmanagerException {
+			try {
+				return ProxyFactory.newPutGetProxy(
+						eventCloudRegistryUrl,
+						new EventCloudId(eu.play_project.play_commons.constants.Stream
+								.toTopicUri(cloudId)));
+			} catch (EventCloudIdNotManaged e) {
+				throw new EcConnectionmanagerException(e.getMessage(), e);
+			} catch (Exception e) { // we get various runtime exceptions here
+				throw new EcConnectionmanagerException(e.getMessage(), e);
+			}
+		}
+
+		@Override
+		public PooledObject<PutGetApi> wrap(PutGetApi proxy) {
+			return new DefaultPooledObject<PutGetApi>(proxy);
+		}
+		
 	}
 }
