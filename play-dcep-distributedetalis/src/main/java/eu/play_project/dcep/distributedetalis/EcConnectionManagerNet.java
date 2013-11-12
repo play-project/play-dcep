@@ -9,8 +9,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
@@ -82,7 +82,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 	private GenericKeyedObjectPool<String, PutGetApi> historicCloudsPool;
 	
 	private final Map<SubscribeApi, SubscriptionUsage> subscriptions = new HashMap<SubscribeApi, SubscriptionUsage>();
-	private final Queue<CompoundEvent> eventInputQueue = new LinkedBlockingQueue<CompoundEvent>();
+	private final BlockingQueue<CompoundEvent> eventInputQueue = new LinkedBlockingQueue<CompoundEvent>();
 	private EcConnectionListenerNet eventCloudListener;
 	private GetEventThread getEventThread;
 	private boolean init = false;
@@ -421,18 +421,9 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 			this.getEventThread = Thread.currentThread();
 
 			while (this.getEventThread == Thread.currentThread()) {
-				synchronized (eventInputQueue) {
-					while (this.getEventThread == Thread.currentThread()) {
-						if (!eventInputQueue.isEmpty()) {
-							dEtalis.publish(eventInputQueue.poll());
-						} else {
-							try {
-								eventInputQueue.wait();
-							} catch (InterruptedException e) {
-								Thread.currentThread().interrupt();
-							}
-						}
-					}
+				try {
+					dEtalis.publish(eventInputQueue.take());
+				} catch (InterruptedException e) {
 				}
 			}
 		}
