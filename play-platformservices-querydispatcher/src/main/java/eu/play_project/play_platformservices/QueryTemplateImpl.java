@@ -27,8 +27,6 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 	@Override
 	public void appendLine(Node graph, Node subject, Node predicate, Node object) {
 		Quadruple line = new Quadruple(graph, subject, predicate, object);
-		
-		logger.debug("Adding template line: {}", line);
 
 		appendLine(line);
 	}

@@ -168,6 +168,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 				long beginQuerying = System.currentTimeMillis();
 				response = PAFuture.getFutureValue(putGetCloud.executeSparqlSelect(query));
 				logger.debug("Get data from EventCloud '{}' had latency {} ms", cloudId, System.currentTimeMillis() - beginQuerying);
+				logger.debug("Get data from EventCloud '{}' had statistics {}", cloudId, response.getStats());
 			} else {
 				response = putGetCloud.executeSparqlSelect(query);
 			}
