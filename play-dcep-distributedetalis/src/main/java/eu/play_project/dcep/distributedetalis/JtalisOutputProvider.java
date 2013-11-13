@@ -1,6 +1,7 @@
 package eu.play_project.dcep.distributedetalis;
 
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_EXIT;
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.unquoteFromProlog;
 import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
@@ -162,10 +163,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			subject = subject.substring(1, subject.length() - 1);
 			String predicate = item.get("P").toString();
 			predicate = predicate.substring(1, predicate.length() - 1);
-			String object = item.get("O").toString();
-			if (object.startsWith("'") && object.endsWith("'")) {
-				object = object.substring(1, object.length() - 1);
-			}
+			String object = unquoteFromProlog(item.get("O").toString());
 
 			Node objectNode = EventHelpers.toJenaNode(object);
 			
@@ -230,7 +228,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 				// Add new value to list
 				if (varValue != null && !varValue.isEmpty()) {
-					variableValues.get(varName).add(varValue);
+					variableValues.get(varName).add(unquoteFromProlog(varValue));
 				}
 			}
 		} catch (Exception e) {

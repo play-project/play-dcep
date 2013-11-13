@@ -36,7 +36,7 @@ public class PlaySerializer extends Serializer{
 		// TODO make it more efficient.
 
         List<HistoricalQuery> result = new LinkedList<HistoricalQuery>();
-        HistoricalQuery hq = new HistoricalQuery();
+        HistoricalQuery hq;
         
 		Map<String, String> queries = e.getHistoricalCloudQueries();
 		List<String> vars = query.getResultVars(); // FIXME different values for historical query.
@@ -54,7 +54,7 @@ public class PlaySerializer extends Serializer{
 				if (queries.get(key).contains("?" + var)) {
 					selectString += " ?" + var;
 					//Set variables.
-					hq.getVariables().add("?" + var);
+					hq.getVariables().add(var);
 				}
 			}
 			// Set values.

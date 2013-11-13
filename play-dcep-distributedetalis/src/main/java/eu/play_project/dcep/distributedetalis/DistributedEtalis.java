@@ -1,5 +1,7 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -128,13 +130,13 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		
 			logger.debug("Register query: {}", bdplQuery.getEleQuery());
 			
-			etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
+			etalis.addDynamicRuleWithId(quoteForProlog(bdplQuery.getDetails().getQueryId()) + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
 			// Start tumbling window. (If a tumbling window was defined.)
 			etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
 			
 			//Register db queries.
-			for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
-				etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
+			for (String dbQuery : bdplQuery.getDetails().getRdfDbQueries()) {
+				etalis.getEngineWrapper().executeGoal("assert(" + dbQuery + ")");
 			}
 			
 			// Configure ETALIS to inform output listener if complex event of new type appeared.

@@ -1,5 +1,7 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.escapeForProlog;
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
 import jpl.PrologException;
 
 import org.slf4j.Logger;
@@ -56,27 +58,25 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 			Node o = quadruple.getObject();
 			String rdfObject;
 			if (o.isLiteral()) {
-				rdfObject = "'"
-						+ escapeForProlog(quadruple.getObject()
-								.getLiteralLexicalForm()) + "'";
+				rdfObject = quoteForProlog(escapeForProlog(quadruple.getObject().getLiteralLexicalForm()));
 			} else {
 				// 5.) Resource URI
-				rdfObject = "'" + o.getURI() + "'";
+				rdfObject = quoteForProlog(o.getURI());
 			}
 			if (i > 1) {
 				prologString.append(", ");
 			}
 			// Add data to triplestore
-			prologString.append("rdf_assert(" + "'" + quadruple.getSubject()
-					+ "', " + "'" + quadruple.getPredicate() + "', "
-					+ rdfObject + ", " + "'" + event.getGraph() + "')");
+			prologString.append("rdf_assert(" + quoteForProlog(quadruple.getSubject().toString())
+					+ ", " + quoteForProlog(quadruple.getPredicate().toString()) + ", "
+					+ rdfObject + ", " + quoteForProlog(event.getGraph().toString()) + ")");
 		}
 
 		dataAddedToTriplestore = addPayloadToPlTriplestore(prologString.toString());
 
 		// Add GC counter.
 		gcDataAdded = ctx.getEngineWrapper().executeGoal(
-				"assert(referenceCounter('" + event.getGraph() + "', "
+				"assert(referenceCounter(" + quoteForProlog(event.getGraph().toString()) + ", "
 						+ "2147483647" + ", -1))");
 
 		if (!gcDataAdded) {
@@ -121,19 +121,5 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	@Override
 	public CompoundEvent getRdfData(String complexEventID) {
 		throw new RuntimeException("Not implemented in this class.");
-	}
-	
-	/**
-	 * Escape all characters which are illegal in Prolog's quoted strings:
-	 * {@code It's me, Mario.} becomes {@code It\'s me, Mario.}. The resulting
-	 * strings are meanto to be used as <i>quoted atoms</i> in Prolog, between
-	 * single quotes.
-	 * 
-	 * @see <a
-	 *      href="http://www.swi-prolog.org/pldoc/doc_for?object=section%284,%272.15.1.2%27,swi%28%27/doc/Manual/syntax.html%27%29%29">SWI
-	 *      Prolog Character Escape Syntax</a>
-	 */
-	public static String escapeForProlog(String s) {
-		return s.replaceAll("'", "\'");
 	}
 }

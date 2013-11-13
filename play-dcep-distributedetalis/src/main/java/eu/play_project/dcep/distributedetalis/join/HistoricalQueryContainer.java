@@ -14,6 +14,7 @@ import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 
 /**
  * @author Ningyuan Pan
+ * @author Roland Stühmer
  */
 public class HistoricalQueryContainer {
 	final static String SELECT = "SELECT";
@@ -93,6 +94,7 @@ public class HistoricalQueryContainer {
 		if(makeVariableList()){
 			ret.append("\n " + VALUES + " ( ");
 			for(int i = 0; i < vvariables.size(); i++){
+				ret.append("?");
 				ret.append(vvariables.get(i));
 				ret.append(" ");
 			}

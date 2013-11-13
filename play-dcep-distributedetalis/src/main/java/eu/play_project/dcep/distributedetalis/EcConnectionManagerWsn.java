@@ -150,19 +150,21 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 			}
 		}
 		
+		/*
+		 * Clean up left-over subscription from possible previous crash
+		 */
 		try {
 			persistence = new Sqlite();
 			for (SubscriptionPerCloud sub : persistence.getSubscriptions()) {
 				logger.info("Cleaning stale subscription from cloud {}: {}", sub.cloudId,
 						sub.subscriptionId);
-
 				try {
 					rdfReceiver.unsubscribe(sub.subscriptionId);
 				} catch (Exception e) {
 					logger.debug(e.getMessage());
 				}
 			}
-
+			persistence.deleteAllSubscriptions();
 		} catch (PersistenceException e) {
 			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}

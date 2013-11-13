@@ -53,8 +53,8 @@ public class HistoricDataTest {
 				.build();
 				
 		variableBindings = new VariableBindings();
-		variableBindings.put("?tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
-		variableBindings.put("?id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI)}));
+		variableBindings.put("tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
+		variableBindings.put("id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI)}));
 
 		//Get historical data to the given binding.
 		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
@@ -71,8 +71,8 @@ public class HistoricDataTest {
 		 * Do a second run, this time with an unmatchable binding (expecting empty results):
 		 */
 		variableBindings = new VariableBindings();
-		variableBindings.put("?tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
-		variableBindings.put("?id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI + "error")}));
+		variableBindings.put("tweetContent", Arrays.asList(new Object[] {"Tweettext 2", "bogus"}));
+		variableBindings.put("id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI + "error")}));
 
 		//Get historical data to the given binding.
 		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));

@@ -1,8 +1,6 @@
 package eu.play_project.play_platformservices.api;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Represents a SPARQL 1.1 query to get data from a triplestore.
@@ -15,10 +13,9 @@ public class HistoricalQuery implements Serializable{
 	private static final long serialVersionUID = 100L;
 	private String cloudId;
 	private String query;
-	private List<String> variables;
+	private VariableNames variables = new VariableNames();
 	
 	public HistoricalQuery() {
-		variables = new LinkedList<String>();
 	}
 
 	/**
@@ -45,11 +42,11 @@ public class HistoricalQuery implements Serializable{
 		this.query = query;
 	}
 
-	public List<String> getVariables() {
+	public VariableNames getVariables() {
 		return variables;
 	}
 
-	public void setVariables(List<String> variables) {
+	public void setVariables(VariableNames variables) {
 		this.variables = variables;
 	}
 

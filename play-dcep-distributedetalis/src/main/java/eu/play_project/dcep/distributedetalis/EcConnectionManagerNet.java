@@ -128,13 +128,15 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 					"Error probing EventCloud registry at: '%s': %s", eventCloudRegistryUrl,
 					e.getMessage()));
 		}
-
+		
+		/*
+		 * Clean up left-over subscription from possible previous crash
+		 */
 		try {
 			persistence = new Sqlite();
 			for (SubscriptionPerCloud sub : persistence.getSubscriptions()) {
 				logger.info("Cleaning stale subscription from cloud {}: {}", sub.cloudId,
 						sub.subscriptionId);
-
 				try {
 					ProxyFactory.newSubscribeProxy(eventCloudRegistryUrl,
 							new EventCloudId(sub.cloudId)).unsubscribe(SubscriptionId.parseSubscriptionId(sub.subscriptionId));
@@ -142,7 +144,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 					logger.debug(e.getMessage());
 				}
 			}
-
+			persistence.deleteAllSubscriptions();
 		} catch (PersistenceException e) {
 			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}

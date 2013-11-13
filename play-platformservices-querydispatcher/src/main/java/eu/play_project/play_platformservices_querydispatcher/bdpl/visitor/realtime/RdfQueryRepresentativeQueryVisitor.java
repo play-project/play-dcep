@@ -21,7 +21,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 /**
- * Generate code for variable representative. 
+ * Generate code for variable representative.
  * For each variable one query is needed which provides all possible values of this variable.
  * @author sobermeier
  *
@@ -94,7 +94,7 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 			code.append(resultNode.toString());
 			return resultNode.toString();
 		} else {
-			// It is a ordinary vraible.
+			// It is a ordinary variable.
 			code.append("V" + name);
 			return "V" + name;
 		}
@@ -122,7 +122,7 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 			if (!varRepresentative.containsKey(name)) {
 				code.append("rdf(");
 				// Use existing visitors.
-				triple.getSubject().visitWith(this); 
+				triple.getSubject().visitWith(this);
 				code.append(",");
 				triple.getPredicate().visitWith(this);
 				code.append(",");
