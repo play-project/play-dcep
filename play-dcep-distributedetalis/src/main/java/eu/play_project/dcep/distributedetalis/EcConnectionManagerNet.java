@@ -130,7 +130,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 		}
 		
 		/*
-		 * Clean up left-over subscription from possible previous crash
+		 * Clean up left-over subscriptions from possible previous crash
 		 */
 		try {
 			persistence = new Sqlite();
