@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.List;
+
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
@@ -37,53 +39,32 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
  */
 public class SingleDistributedEtalisInstancePublisher {
 
-	private static DistributedEtalisTestApi testApiI1;
-	private static DcepManagmentApi managementApiI1;
-	private static DistributedEtalisTestApi testApiI2;
-	private static DcepManagmentApi managementApiI2;
-	private static DistributedEtalisTestApi testApiI3;
-	private static DcepManagmentApi managementApiI3;
-	private static ConfigApi configApi1 = null;
-	private static ConfigApi configApi2 = null;
+	private static List<DistributedEtalisTestApi> testApis;
+	private static List<DcepManagmentApi> managementApis;
+	private static List<ConfigApi> configApis = null;
+	
 	
 	public static void main(String[] args) throws RemoteException,
 			NotBoundException, Exception {
 		
-
-		// Connect to DistributedEtalis instance 1.
-		PAComponentRepresentative root1 = Fractive.lookup((URIBuilder.buildURI("141.52.218.16", "dEtalis", "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
-		configApi1 = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName()));
-		configApi1.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
-		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
-		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName()));
-		
-		// Connect to DistributedEtalis instance 2.
-		PAComponentRepresentative root2 = Fractive.lookup((URIBuilder.buildURI("141.52.219.179", "dEtalis", "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
-		configApi2 = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root2.getFcInterface(ConfigApi.class.getSimpleName()));
-		configApi2.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
-		testApiI2 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root2.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
-		managementApiI2 = ((eu.play_project.dcep.api.DcepManagmentApi) root2.getFcInterface(DcepManagmentApi.class.getSimpleName()));
-//		
-//		// Connect to DistributedEtalis instance 3.
-//		PAComponentRepresentative root3 = Fractive.lookup(URIBuilder.buildURI(args[4], args[5], "rmi", 1099).toString());
-//		testApiI3 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root3.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
-//		managementApiI3 = ((eu.play_project.dcep.api.DcepManagmentApi) root3.getFcInterface(DcepManagmentApi.class.getSimpleName()));
+		for (int i = 0; i < args.length; i++) {
+			// Connect to DistributedEtalis instance 1.
+			PAComponentRepresentative root1 = Fractive.lookup((URIBuilder.buildURI(args[i], "dEtalis", "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
+			configApis.add(i, ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName())));
+			configApis.get(i).setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
+			testApis.add(i, ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName())));
+			managementApis.add(i, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
+		}
 
 		BdplQuery q = createCepQuery("p1", getSparqlQueries("benchmarks/srbench/q3.eprq"));
-		// Register queries.  mw
-		managementApiI1.registerEventPattern(q);
-		managementApiI2.registerEventPattern(q);
-//		managementApiI3.registerEventPattern(q);
 		
-		
+		// Register queries.
+		for (DcepManagmentApi managementApi : managementApis) {
+			managementApi.registerEventPattern(q);
+		}
+
 		// Start publishing events.
-		new EventProducerThread(15002, 6, testApiI1, testApiI2);
-		//new EventProducerThread(1000000, 40, testApiI2);
-		//new EventProducerThread(1000, 1000, testApiI1);
-		//new EventProducerThread(1000, 200, testApiI1);
-		//new EventProducerThread(1000, 8, testApiI1);
-	
-		
+		new EventProducerThread(15002, 6, testApis);
 	}
 
 	private static BdplQuery createCepQuery(String queryId, String query)
