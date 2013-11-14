@@ -130,11 +130,15 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			
 			etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
 			// Start tumbling window. (If a tumbling window was defined.)
-			etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
+			if (!etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow())) {
+				throw new DcepManagementException("Error registering tumbling window for queryId " + bdplQuery.getDetails().getQueryId());
+			}
 			
 			//Register db queries.
 			for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
-				etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
+				if (!etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")")) {
+					throw new DcepManagementException("Error registering RdfDbQueries for queryId " + bdplQuery.getDetails().getQueryId());
+				}
 			}
 			
 			// Configure ETALIS to inform output listener if complex event of new type appeared.
