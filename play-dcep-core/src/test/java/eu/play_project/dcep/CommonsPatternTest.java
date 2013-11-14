@@ -479,20 +479,11 @@ public class CommonsPatternTest {
 
 		testApi.attach(subscriber);
 	
-		logger.info("Publish events");
-		for (int i = 0; i < 5; i++) {
-			Model call0 = RDFDataMgr.loadModel("events/call0.nq", RDFLanguages.NQ);
-			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call0.getGraph().toString()), call0)));
-			Model call1 = RDFDataMgr.loadModel("events/call1.nq", RDFLanguages.NQ);
-			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call1.getGraph().toString()), call1)));
-			Model call2 = RDFDataMgr.loadModel("events/call2.nq", RDFLanguages.NQ);
-			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call2.getGraph().toString()), call2)));
-		}
 
 		// Wait
 		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==1);
+		assertTrue(subscriber.getComplexEvents().size()==0);
 	}
 
 	
