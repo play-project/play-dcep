@@ -129,7 +129,7 @@ public class CommonsPatternTest {
 
 		testApi.attach(subscriber);
 	
-		logger.info("Publish evetns");
+		logger.info("Publish events");
 		for (int i = 0; i < 5; i++) {
 			CompoundEvent event = createTaxiUCCallEvent("example1" + Math.random());
 			testApi.publish(event);
@@ -226,7 +226,7 @@ public class CommonsPatternTest {
 		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
 		testApi.attach(subscriber);
 	
-		logger.info("Publish evetns");
+		logger.info("Publish events");
 		for (int i = 0; i < 30; i++) {
 			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 			Quadruple q1 = new Quadruple(
@@ -328,7 +328,7 @@ public class CommonsPatternTest {
 		testApi.attach(subscriber);
 		
 		
-		logger.info("Publish evetns");
+		logger.info("Publish events");
 		for (int i = 0; i < 10; i++) {
 			CompoundEvent event = createTaxiUCCallEvent("example" + Math.random());
 			logger.debug("Publish event" +  event);
@@ -387,7 +387,7 @@ public class CommonsPatternTest {
 		testApi.attach(subscriber);
 		
 		
-		logger.info("Publish evetns");
+		logger.info("Publish events");
 
 		testApi.publish(createWeatherEvent("example1" + Math.random(), 20)); // e1 start window w1.
 		testApi.publish(createWeatherEvent("example1" + Math.random(), 1));  // e2
@@ -454,6 +454,48 @@ public class CommonsPatternTest {
 
 		assertTrue(subscriber.getComplexEvents().size()==1);
 	}
+	
+	
+	@Test
+	public void testRecommendLocation() throws QueryDispatchException, IOException {
+		
+		String queryString;
+
+		// Get query.
+		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("patterns/play-bdpl-telco-recommend-location.eprq"));
+
+		// Compile query
+		queryDispatchApi.registerQuery("example1", queryString);
+
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		try {
+			subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		} catch (ActiveObjectCreationException e) {
+			e.printStackTrace();
+		} catch (NodeException e) {
+			e.printStackTrace();
+		}
+
+		testApi.attach(subscriber);
+	
+		logger.info("Publish events");
+		for (int i = 0; i < 5; i++) {
+			Model call0 = RDFDataMgr.loadModel("events/call0.nq", RDFLanguages.NQ);
+			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call0.getGraph().toString()), call0)));
+			Model call1 = RDFDataMgr.loadModel("events/call1.nq", RDFLanguages.NQ);
+			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call1.getGraph().toString()), call1)));
+			Model call2 = RDFDataMgr.loadModel("events/call2.nq", RDFLanguages.NQ);
+			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call2.getGraph().toString()), call2)));
+		}
+
+		// Wait
+		delay();
+
+		assertTrue(subscriber.getComplexEvents().size()==1);
+	}
+
+	
 	
 	private static CompoundEvent createTaxiUCCallEvent(String eventId){
 		
