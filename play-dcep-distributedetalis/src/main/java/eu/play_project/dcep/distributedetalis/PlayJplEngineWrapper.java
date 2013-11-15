@@ -51,7 +51,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			Query q = new Query(command);
 			return q.allSolutions();
 		} catch (PrologException e) {
-			logger.error("Error shutting down Etalis. {}", e.getMessage());
+			logger.error("Error executing Prolog goal. {}", e.getMessage());
 			return new Hashtable[0];
 		}
 	}
