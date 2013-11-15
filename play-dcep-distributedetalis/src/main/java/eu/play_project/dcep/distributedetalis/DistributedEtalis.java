@@ -134,6 +134,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			
 			//Register db queries.
 			for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
+				logger.debug("Add dbQuerie {}.", dbQuerie);
 				etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
 			}
 			
