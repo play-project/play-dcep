@@ -46,7 +46,7 @@
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/play-project/play/issues?labels=dcep&amp;page=1&amp;state=open</url>
+		<url>https://github.com/play-project/play-dcep/issues</url>
 	</issueManagement>
 
 	<licenses>
