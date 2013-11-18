@@ -1,9 +1,11 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -12,20 +14,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.sparql.expr.Expr;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
-import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryTemplate;
-import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -76,13 +72,13 @@ public class TypeSystemTest {
 		
 		vars = vm.getVariables(VariableTypes.MAX_TYPE);
 		assertTrue(vars.size()==1);
-		assertTrue(vars.contains("c"));	
+		assertTrue(vars.contains("c"));
 	}
 	
 	@Test
-	public void testQueryTemplateGeneration() {
+	public void testQueryTemplateGeneration() throws IOException {
 
-		String queryString = getSparqlQuery("queries/HistoricRealtimeQuery.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("queries/HistoricRealtimeQuery.eprq");
 		Query query = null;
 
 		try {
@@ -183,30 +179,5 @@ public class TypeSystemTest {
 		}
 		return filenames;
 	}
-
-	public static String getSparqlQuery(String queryFile) {
-		try {
-			InputStream is = BdplEleTest.class.getClassLoader().getResourceAsStream(queryFile);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			StringBuffer sb = new StringBuffer();
-			String line;
-
-			while (null != (line = br.readLine())) {
-				sb.append(line);
-				sb.append("\n");
-			}
-
-			br.close();
-			is.close();
-
-			return sb.toString();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-
-	}
-
 
 }

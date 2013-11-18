@@ -2,9 +2,7 @@ package eu.play_project.dcep.distribution;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,6 +30,7 @@ import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
+import eu.play_project.querydispatcher.bdpl.tests.BdplEleTest;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishApi;
 
@@ -45,17 +44,17 @@ public class PerformanceTest {
 	private static Logger logger = LoggerFactory.getLogger(PerformanceTest.class);
 
 	public static void main(String[] args) throws ADLException, IllegalLifeCycleException,
-			NoSuchInterfaceException, InterruptedException, QueryDispatchException {
+			NoSuchInterfaceException, InterruptedException, QueryDispatchException, IOException {
 
 		String queryString;
 
 		instantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQuery("play-epsparql-m12-jeans-example-query.eprq");
+		queryString = BdplEleTest.getSparqlQuery("play-epsparql-m12-jeans-example-query.eprq");
 		// queryString =
-		// getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
-		// queryString = getSparqlQuery("play-epsparql-clic2call.eprq");
+		// BdplEleTest.getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
+		// queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call.eprq");
 
 		// System.out.println("SPARQL query:\n" + queryString);
 
@@ -131,29 +130,6 @@ public class PerformanceTest {
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private static String getSparqlQuery(String queryFile) {
-		try {
-			InputStream is = Main.class.getClassLoader().getResourceAsStream(queryFile);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			StringBuffer sb = new StringBuffer();
-			String line;
-
-			while (null != (line = br.readLine())) {
-				sb.append(line);
-				sb.append("\n");
-			}
-			br.close();
-			is.close();
-
-			return sb.toString();
-
-		} catch (Exception e) {
-			logger.error("Error reading query from a file.", e);
-		}
-		return null;
-
 	}
 
 	private static void instantiatePlayPlatform()
