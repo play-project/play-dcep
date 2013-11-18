@@ -4,13 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,7 @@ public class DispatcherTest {
 		String expectedOutputStream = "http://streams.event-processing.org/ids/ContextualizedLatitudeFeed";
 		
 		// Get query.
-		queryString = getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
+		queryString = BdplEleTest.getSparqlQuery("play-epsparql-contextualized-latitude-01-query.eprq");
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -69,7 +67,7 @@ public class DispatcherTest {
 		}
 		
 		// Get query.
-		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -111,7 +109,7 @@ public class DispatcherTest {
 	@Test
 	public void testDispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
-		String queryString = getSparqlQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
 
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -137,7 +135,7 @@ public class DispatcherTest {
 	@Test
 	public void testDispatchMissedCallsPlusTwitterQuery() throws IOException{
 		// Get query.
-		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -158,14 +156,12 @@ public class DispatcherTest {
 		 QueryTemplateGenerator ab  =  new  QueryTemplateGenerator();
 		 
 		// Get query.
-		String queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
 			
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 		QueryTemplate qt = ab.createQueryTemplate(query);
 	}
-	
-	private String getSparqlQuery(String queryFile) throws IOException {
-		return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(queryFile), StandardCharsets.UTF_8);	}
-	}
+
+}
