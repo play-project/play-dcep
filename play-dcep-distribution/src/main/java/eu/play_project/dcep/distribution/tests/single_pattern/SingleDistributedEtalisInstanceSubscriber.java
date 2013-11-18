@@ -29,7 +29,7 @@ public class SingleDistributedEtalisInstanceSubscriber {
 			ProActiveException, DistributedEtalisException, IOException, NamingException, DcepManagementException {
 
 		// Connect to DistributedEtalis instance.
-		connectToCepEngine(args[0], args[1]);
+		connectToCepEngine("dEtalis", args[0]);
 	
 		//Subscribe
 		subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});

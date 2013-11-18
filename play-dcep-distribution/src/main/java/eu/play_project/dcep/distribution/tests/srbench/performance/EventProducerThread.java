@@ -52,7 +52,7 @@ public class EventProducerThread implements Runnable {
 
 			// Distribute events in Round-robin fashion to all CEP-Engines.
 			for (DistributedEtalisTestApi api : testApi) {
-				api.publish(createEvent("http://example.com/eventId/" + i));
+				api.publish(createEvent("http://example.com/eventId/" + i + System.currentTimeMillis()));
 			
 				// Some statistics
 				meausrementUnit.nexEvent();

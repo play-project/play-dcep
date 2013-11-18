@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.objectweb.proactive.core.component.Fractive;
@@ -39,10 +40,10 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
  */
 public class SingleDistributedEtalisInstancePublisher {
 
-	private static List<DistributedEtalisTestApi> testApis;
-	private static List<DcepManagmentApi> managementApis;
-	private static List<ConfigApi> configApis = null;
-	
+	private static List<DistributedEtalisTestApi> testApis =  new LinkedList<DistributedEtalisTestApi>();
+	private static List<DcepManagmentApi> managementApis =  new LinkedList<DcepManagmentApi>();
+	private static List<ConfigApi> configApis =   new LinkedList<ConfigApi>();
+	static int patternIdCounter = 0;
 	
 	public static void main(String[] args) throws RemoteException,
 			NotBoundException, Exception {
@@ -56,7 +57,7 @@ public class SingleDistributedEtalisInstancePublisher {
 			managementApis.add(i, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
 		}
 
-		BdplQuery q = createCepQuery("p1", getSparqlQueries("benchmarks/srbench/q3.eprq"));
+		BdplQuery q = createCepQuery("p1" + (++patternIdCounter + Math.random()) , getSparqlQueries("benchmarks/srbench/q3.eprq"));
 		
 		// Register queries.
 		for (DcepManagmentApi managementApi : managementApis) {
@@ -64,7 +65,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		}
 
 		// Start publishing events.
-		new EventProducerThread(15002, 6, testApis);
+		new EventProducerThread(20002, 6, testApis);
 	}
 
 	private static BdplQuery createCepQuery(String queryId, String query)

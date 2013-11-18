@@ -22,10 +22,10 @@ updateJarFile() {
 }
 
 runTest() {
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]} "cd $toolpath && ./dcep restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]} "cd $toolpath && ./dcep restart" &
 	sleep 20 
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]} "cd $toolpath && ./subscriber restart" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]} "cd $toolpath && ./publisher  restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]} "cd $toolpath && ./subscriber restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]} "cd $toolpath && ./publisher  restart" &
 }
 
 prepareNewHost() {
