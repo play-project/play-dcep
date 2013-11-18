@@ -1,6 +1,7 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -212,7 +213,7 @@ public class BdplEleTest {
 	}
 	
 	@Test
-	public void testHistoricRealtimeShardValues() {
+	public void testHistoricRealtimeSharedValues() throws IOException {
 
 		String queryString;
 
