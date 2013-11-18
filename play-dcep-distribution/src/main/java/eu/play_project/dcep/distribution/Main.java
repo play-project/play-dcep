@@ -50,9 +50,8 @@ public class Main {
 				}
 			});
 
-			Main.start();
-			System.out
-					.println("DCEP is running. Use '${DCEP_HOME}/bin/dcep stop', 'kill' or 'kill -15' to stop it.");
+			Main.start("PlayPlatform");
+			System.out.println("DCEP is running. Use '${DCEP_HOME}/bin/dcep stop', 'kill' or 'kill -15' to stop it.");
 
 			// Keep the main thread alive because otherwise Proactive will
 			// terminate
@@ -73,13 +72,10 @@ public class Main {
 
 	}
 
-	public static void start() throws Exception {
-		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty(
-				"dcep.proactive.pnp.port");
-		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty(
-				"dcep.proactive.http.port");
-		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty(
-				"dcep.proactive.rmi.port");
+	public static void start(String componentName) throws Exception {
+		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
+		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
+		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
 		final String PROACTIVE_COMMUNICATION_PROTOCOL = "pnp";
 
 		logger.debug("Setting system property 'proactive.communication.protocol' to: "
@@ -110,8 +106,8 @@ public class Main {
 		 */
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("PlayPlatform", context);
+		
+		root = (Component) factory.newComponent(componentName, context);
 
 		GCM.getGCMLifeCycleController(root).startFc();
 

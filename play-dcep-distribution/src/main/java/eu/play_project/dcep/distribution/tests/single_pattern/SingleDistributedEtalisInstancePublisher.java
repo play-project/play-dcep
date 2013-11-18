@@ -75,7 +75,7 @@ public class SingleDistributedEtalisInstancePublisher {
 	}
 
 
-	private static BdplQuery generateEle(String queryString) {
+	public static BdplQuery generateEle(String queryString) {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		// Use custom visitor
@@ -140,7 +140,7 @@ public class SingleDistributedEtalisInstancePublisher {
 			e.printStackTrace();
 		}
 	}
-	private static String getSparqlQueries(String queryFile){
+	public static String getSparqlQueries(String queryFile){
 		try {
 			InputStream is = SingleDistributedEtalisInstancePublisher.class.getClassLoader().getResourceAsStream(queryFile);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
