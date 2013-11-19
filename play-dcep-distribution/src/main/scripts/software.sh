@@ -12,8 +12,12 @@ installBasicSoftware(){
 	wget $TOOL_URL/non-free-sources.list
 	apt-get -y update
 	
+	#Accept SUN Java licence agreements
+	echo "sun-java6-jdk shared/accepted-sun-dlj-v1-1 select true" | debconf-set-selections
+	echo "sun-java6-jre shared/accepted-sun-dlj-v1-1 select true" | debconf-set-selections
+	
 	#Install tools.
-	apt-get -y install screen vim maven2 subversion sun-java6-jdk ntpdate unzip
+	apt-get -f -y install screen vim maven2 subversion sun-java6-jdk ntpdate unzip
 	update-alternatives --set java /usr/lib/jvm/java-6-sun/jre/bin/java
 	export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/
 }
