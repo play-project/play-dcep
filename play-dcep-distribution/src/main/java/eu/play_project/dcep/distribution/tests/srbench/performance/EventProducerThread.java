@@ -1,5 +1,7 @@
 package eu.play_project.dcep.distribution.tests.srbench.performance;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class EventProducerThread implements Runnable {
 	private final MeasurementUnit meausrementUnit;
 	private final int numberOfEvents;
 	private int delay;
+	double id;
 
 	/**
 	 * Generate an instance in his own thread and publish events to destinations.
@@ -36,6 +39,7 @@ public class EventProducerThread implements Runnable {
 		this.testApi = testApi;
 		this.numberOfEvents = numberOfEvents;
 		this.delay =  delay;
+		id = Math.random();
 		
 		meausrementUnit = MeasurementUnit.getMeasurementUnit();
 		meausrementUnit.calcRateForNEvents(500);
@@ -52,7 +56,7 @@ public class EventProducerThread implements Runnable {
 
 			// Distribute events in Round-robin fashion to all CEP-Engines.
 			for (DistributedEtalisTestApi api : testApi) {
-				api.publish(createEvent("http://example.com/eventId/" + i + System.currentTimeMillis()));
+				api.publish(createEvent("http://example.com/eventId/" + i + id));
 			
 				// Some statistics
 				meausrementUnit.nexEvent();

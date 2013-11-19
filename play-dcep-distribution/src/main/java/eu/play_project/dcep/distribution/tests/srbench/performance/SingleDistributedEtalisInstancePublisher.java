@@ -11,11 +11,13 @@ import java.util.List;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
+import org.slf4j.Logger;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
+import org.slf4j.LoggerFactory;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 import eu.play_project.dcep.api.DcepManagmentApi;
@@ -44,9 +46,12 @@ public class SingleDistributedEtalisInstancePublisher {
 	private static List<DcepManagmentApi> managementApis =  new LinkedList<DcepManagmentApi>();
 	private static List<ConfigApi> configApis =   new LinkedList<ConfigApi>();
 	static int patternIdCounter = 0;
+	private static Logger logger;
 	
 	public static void main(String[] args) throws RemoteException,
 			NotBoundException, Exception {
+		
+		logger = LoggerFactory.getLogger(SingleDistributedEtalisInstancePublisher.class);
 		
 		for (int i = 0; i < args.length; i++) {
 			// Connect to DistributedEtalis instance 1.
@@ -57,12 +62,19 @@ public class SingleDistributedEtalisInstancePublisher {
 			managementApis.add(i, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
 		}
 
-		BdplQuery q = createCepQuery("p1" + (++patternIdCounter + Math.random()) , getSparqlQueries("benchmarks/srbench/q3.eprq"));
+		BdplQuery q = createCepQuery(("p1" + (++patternIdCounter + Math.random())) , getSparqlQueries("benchmarks/srbench/q3.eprq"));
 		
 		// Register queries.
-		for (DcepManagmentApi managementApi : managementApis) {
-			managementApi.registerEventPattern(q);
-		}
+		managementApis.get(0).registerEventPattern(q);
+//		try {
+//			for (DcepManagmentApi managementApi : managementApis) {
+//				managementApi.registerEventPattern(q);
+//			}
+//		} catch (Exception e) {
+//			logger.error("Error while registering pattern. Message: {} ", e.getMessage());
+//		} catch (Throwable e) {
+//			logger.error("Error while registering pattern. Message: {} ", e.getMessage());
+//		}
 
 		// Start publishing events.
 		new EventProducerThread(20002, 6, testApis);
