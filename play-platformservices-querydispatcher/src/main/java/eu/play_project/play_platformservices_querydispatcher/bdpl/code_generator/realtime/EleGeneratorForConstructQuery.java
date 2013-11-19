@@ -19,7 +19,7 @@ import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.BinOperatorVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
@@ -285,7 +285,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
 		// Combine decl and impl.
-		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
+		dbQueryMethod.append(dbQueryDecl + ":-( nl, write(ViD1),nl, " + flatDbQueries + ")"); // FIXME remove
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
@@ -373,7 +373,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	public StringBuffer RdfQueryDbMethodDecl(Element currentElement, long l) {
 		// Get variables
-		CollectVariablesInTriplesVisitor v = new CollectVariablesInTriplesVisitor();
+		CollectVariablesInTriplesAndFilterVisitor v = new CollectVariablesInTriplesAndFilterVisitor();
 		currentElement.visit(v);
 
 		// Generate query method
@@ -388,9 +388,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 																			     // corresponding
 																			     // data.
 		Iterator<String> iter = v.getVariables().iterator();
+		dbQueryDecl.append("ViD1, "); // FIXME remove
 		while (iter.hasNext()) {
 			dbQueryDecl.append(iter.next());
-			
 			// Decide if it is the last variable or end of decl.
 			if (iter.hasNext()) {
 				dbQueryDecl.append(", ");
