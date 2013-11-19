@@ -285,7 +285,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
 		// Combine decl and impl.
-		dbQueryMethod.append(dbQueryDecl + ":-( nl, write(ViD1),nl, " + flatDbQueries + ")"); // FIXME remove
+		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
@@ -388,7 +388,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 																			     // corresponding
 																			     // data.
 		Iterator<String> iter = v.getVariables().iterator();
-		dbQueryDecl.append("ViD1, "); // FIXME remove
 		while (iter.hasNext()) {
 			dbQueryDecl.append(iter.next());
 			// Decide if it is the last variable or end of decl.

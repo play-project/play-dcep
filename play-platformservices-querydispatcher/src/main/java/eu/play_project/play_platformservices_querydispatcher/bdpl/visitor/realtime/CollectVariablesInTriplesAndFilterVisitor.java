@@ -28,10 +28,6 @@ public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 		vars = new HashSet<String>();	
 		// Visit triples
 		el.getElement().visit(this);
-		
-		if(el.getFilterExp() !=  null) {
-			el.getFilterExp().visit(this);
-		}
 	}
 
 	@Override

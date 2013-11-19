@@ -95,10 +95,6 @@ Serializable {
 	@Override
 	public void registerEventPattern(BdplQuery bdplQuery) throws DcepManagementException {
 
-
-for (String iterable_element : bdplQuery.getDetails().getRdfDbQueries()) {
-	System.out.println(iterable_element);
-}
 		logger.debug("Pattern reached DCEP facade: "
 				+ bdplQuery.getEleQuery());
 

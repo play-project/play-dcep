@@ -143,11 +143,6 @@ public class BdplEleTest {
 
 		visitor1.generateQuery(query);
 
-		Pattern pattern = Pattern.compile("'dbQuery_.*:-.*");
-		Matcher matcher = pattern.matcher(visitor1.getRdfDbQueries().get(4));
-		matcher.find();
-
-		assertTrue(matcher.group(0).contains("Vvalue1"));
 	}
 
 	/**
