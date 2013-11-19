@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
@@ -140,9 +142,12 @@ public class BdplEleTest {
 		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 
 		visitor1.generateQuery(query);
-		String ele = visitor1.getEle();
-		
-		System.out.println(ele);
+
+		Pattern pattern = Pattern.compile("'dbQuery_.*:-.*");
+		Matcher matcher = pattern.matcher(visitor1.getRdfDbQueries().get(4));
+		matcher.find();
+
+		assertTrue(matcher.group(0).contains("Vvalue1"));
 	}
 
 	/**
