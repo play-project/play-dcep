@@ -42,11 +42,12 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Serializa
 			throw new IllegalStateException(msg);
 		}
 		
-	    try {
+    	String topic = DsbHelpers.topicToUri(notify.getNotificationMessage().get(0).getTopic());
+
+    	try {
 	    	Model rdf = this.rdfReceiver.parseRdf(notify);
 	    	ModelUtils.deanonymize(rdf);
 	    	CompoundEvent event = EventCloudHelpers.toCompoundEvent(rdf);
-	    	String topic = DsbHelpers.topicToUri(notify.getNotificationMessage().get(0).getTopic());
 	    	logger.debug("Received event {} on topic {} from the DSB.", event.getGraph(), topic);
 	    	
 		    // Forward the event to Detalis:
@@ -56,9 +57,9 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Serializa
 		    this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
 		    
 	    } catch (NoRdfEventException e) {
-			logger.error("Received a non-RDF event from the DSB: {}", e.getMessage());
+			logger.error("Received a non-RDF event on topic {} from the DSB: {}", topic, e.getMessage());
 		} catch (EcConnectionmanagerException e) {
-			logger.error("Could not store event for historic storage: {}", e.getMessage());
+			logger.error("Could not store event on topic {} for historic storage: {}", topic, e.getMessage());
 		}
 	}
 
