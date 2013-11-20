@@ -167,9 +167,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 										}
 										constructResult += SaveSharedVariableValues();
 										//Filter
-										System.out.println("\n\n\n\n ABC" +constructResult);
 										constructResult += FilterExpression(inputQuery);
-										System.out.println("\n\n\n\n CDE" +constructResult);
 				constructResult += ")";
 		constructResult += ")";
 		elePattern += constructResult.toString();
