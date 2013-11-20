@@ -53,7 +53,8 @@ public class Main {
 			Main.start("PlayPlatform");
 			System.out.println("DCEP is running. Use '${DCEP_HOME}/bin/dcep stop', 'kill' or 'kill -15' to stop it.");
 
-			// Keep the main thread alive because otherwise Proactive will terminate
+			// Keep the main thread alive because otherwise Proactive will
+			// terminate
 			synchronized (Main.class) {
 				while (running) {
 					try {
@@ -64,7 +65,7 @@ public class Main {
 			}
 
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			logger.error(e.getMessage());
 		} finally {
 			Main.stop();
 		}
@@ -104,7 +105,7 @@ public class Main {
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 		
-		root = (Component) factory.newComponent(componentName, context); 
+		root = (Component) factory.newComponent(componentName, context);
 
 		GCM.getGCMLifeCycleController(root).startFc();
 

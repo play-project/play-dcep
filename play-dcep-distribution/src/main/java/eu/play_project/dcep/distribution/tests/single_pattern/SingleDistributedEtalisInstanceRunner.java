@@ -110,7 +110,7 @@ public class SingleDistributedEtalisInstanceRunner {
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 		
-		root = (Component) factory.newComponent(componentName, context); 
+		root = (Component) factory.newComponent(componentName, context);
 		GCM.getGCMLifeCycleController(root).startFc();
 		
 		// Register component.

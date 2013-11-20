@@ -3,6 +3,7 @@ package eu.play_project.querydispatcher.bdpl.tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 public class StreamIdCollectorTest {
 
 	@Test
-	public void testStreamIdCollector() {
+	public void testStreamIdCollector() throws IOException {
 		
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {Stream.TwitterFeed.getTopicUri(), Stream.TaxiUCGeoLocation.getTopicUri(), Stream.TaxiUCGeoLocation.getTopicUri()}));
 		String expectedOutputStream = Stream.ContextualizedLatitudeFeed.getTopicUri();
@@ -48,7 +49,7 @@ public class StreamIdCollectorTest {
 	}
 	
 	@Test
-	public void testStreamIdCollectorHistoric() {
+	public void testStreamIdCollectorHistoric() throws IOException {
 		
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/Temperature"}));
 		Set<String> expectedHistoricalStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TemperatureA", "http://streams.event-processing.org/ids/TemperatureB"}));

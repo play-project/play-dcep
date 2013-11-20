@@ -525,7 +525,7 @@ public class CommonsPatternTest {
 		
 		logger.info("Publish evetns");
 		for (int i = 0; i < 10; i++) {
-			CompoundEvent event = createTaxiUCCallEvent("example.ddd.'" + Math.random());
+			CompoundEvent event = createTaxiUCCallEvent("example" + Math.random());
 			logger.debug("Publish event" +  event);
 			testApi.publish(event);
 		}
