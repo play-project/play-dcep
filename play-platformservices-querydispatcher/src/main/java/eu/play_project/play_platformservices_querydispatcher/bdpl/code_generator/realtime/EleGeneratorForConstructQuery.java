@@ -158,7 +158,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 														+ triple.getObject().visitWith(
 																generateConstructResultVisitor) + ","
 														+ uniqueNameManager.getCeid() +
-													") ";
+													")";
 												
 												if (constructTemplIter.hasNext()) {
 													constructResult += ", ";
@@ -166,6 +166,8 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 											}
 										}
 										constructResult += SaveSharedVariableValues();
+										//Filter
+										constructResult += ", " + FilterExpression(inputQuery);
 				constructResult += ")";
 		constructResult += ")";
 		elePattern += constructResult.toString();
@@ -245,7 +247,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void AdditionalConditions(){
-		TriplestoreQuery(FilterExpression());
+		TriplestoreQuery("");
 		ReferenceCounter();
 //		elePattern += ", ";
 //		PerformanceMeasurement();
@@ -302,14 +304,18 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		}
 	}
 
-	private String FilterExpression() {
-		filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
-		if(!elePattern.endsWith(",") && !filterExpressionVisitor.getEle().equals("")){ // This filter is optional. No value needed.
-			return "," + filterExpressionVisitor.getEle();
-		}else if(!filterExpressionVisitor.getEle().equals("")){
-			return filterExpressionVisitor.getEle().toString();
+	private String FilterExpression(Query q) {
+		String filterExp = "";
+		
+		for (Element currentElement : q.getEventQuery()) {
+			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
+			if(filterExp.length() > 1) {
+				filterExp += "," + filterExpressionVisitor.getEle();
+			} else {
+				filterExp += filterExpressionVisitor.getEle();
+			}
 		}
-		return "";
+		return filterExp;
 	}
 		
 	private void GenerateCEID(){

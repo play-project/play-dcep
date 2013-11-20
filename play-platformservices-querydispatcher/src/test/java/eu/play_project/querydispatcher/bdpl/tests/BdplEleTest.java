@@ -140,9 +140,10 @@ public class BdplEleTest {
 		}
 
 		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
-
+		
 		visitor1.generateQuery(query);
-
+		
+		System.out.println(visitor1.getEle());
 	}
 
 	/**
