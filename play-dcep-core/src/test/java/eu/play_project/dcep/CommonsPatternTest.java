@@ -308,7 +308,8 @@ public class CommonsPatternTest {
 
 		// Get query.
 		queryString = getSparqlQueries("play-bdpl-crisis-02b-windintensity.eprq");
-
+		System.out.println(queryString);
+		
 		// Compile query
 		queryDispatchApi.registerQuery("queryId", queryString);
 		
@@ -319,7 +320,7 @@ public class CommonsPatternTest {
 		testApi.attach(subscriber);
 	
 		logger.info("Publish evetns");
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 16; i++) {
 			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 			Quadruple q1 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
@@ -331,11 +332,6 @@ public class CommonsPatternTest {
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
 					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
 					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
-			Quadruple q3 = new Quadruple(
-					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
-					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
-					NodeFactory.createURI("http://events.event-processing.org/types/source"),
-					NodeFactory.createURI("http://sources.event-processing.org/ids/WebApp#source"));
 			Quadruple q4 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
@@ -356,10 +352,10 @@ public class CommonsPatternTest {
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
 					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
 					NodeFactory.createURI("" + (100 * i) + ""));
+					//NodeFactory.createURI("" + (100) + ""));
 
 			quads.add(q1);
 			quads.add(q2);
-			quads.add(q3);
 			quads.add(q4);
 			quads.add(q5);
 			quads.add(q6);
@@ -373,7 +369,7 @@ public class CommonsPatternTest {
 		delay();
 
 
-		assertEquals(subscriber.getComplexEvents().size(), 26);
+		assertEquals(1, subscriber.getComplexEvents().size());
 
 		// Stop and terminate GCM Components
 		try {
