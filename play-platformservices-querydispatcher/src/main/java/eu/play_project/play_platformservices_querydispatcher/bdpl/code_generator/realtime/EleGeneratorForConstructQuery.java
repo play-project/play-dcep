@@ -167,7 +167,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 										}
 										constructResult += SaveSharedVariableValues();
 										//Filter
-										constructResult += ", " + FilterExpression(inputQuery);
+										System.out.println("\n\n\n\n ABC" +constructResult);
+										constructResult += FilterExpression(inputQuery);
+										System.out.println("\n\n\n\n CDE" +constructResult);
 				constructResult += ")";
 		constructResult += ")";
 		elePattern += constructResult.toString();
@@ -247,7 +249,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void AdditionalConditions(){
-		TriplestoreQuery("");
+		TriplestoreQuery();
 		ReferenceCounter();
 //		elePattern += ", ";
 //		PerformanceMeasurement();
@@ -268,15 +270,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	
-	private void TriplestoreQuery(String filter) {
+	private void TriplestoreQuery() {
 		String flatDbQueries;
 		
 		// Get flat queries
 		currentElement.visit(triplestoreQueryVisitor);
 		flatDbQueries = triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
-		if (filter.length() > 4) {
-			flatDbQueries += ", " + filter.substring(3, filter.length()-2);
-		}
 		
 		// Generate representative.
 		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
@@ -309,10 +308,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		for (Element currentElement : q.getEventQuery()) {
 			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
-			if(filterExp.length() > 1) {
+			if(filterExpressionVisitor.getEle().length() > 1) {
 				filterExp += "," + filterExpressionVisitor.getEle();
-			} else {
-				filterExp += filterExpressionVisitor.getEle();
+				System.out.println(filterExp);
 			}
 		}
 		return filterExp;
