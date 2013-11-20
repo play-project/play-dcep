@@ -1,42 +1,43 @@
 package eu.play_project.dcep.distribution.tests.single_pattern;
 
-import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
-
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.event_processing.events.types.UcTelcoCall;
+import javax.naming.NamingException;
+
+import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
-import org.ow2.play.srbench.SrBenchExtendedSimulator;
-
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.constants.DcepConstants;
+import eu.play_project.dcep.distributedetalis.api.ConfigApi;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.constants.Namespace;
-import eu.play_project.play_commons.constants.Stream;
-import eu.play_project.play_commons.eventtypes.EventHelpers;
+import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -49,88 +50,119 @@ public class SingleDistributedEtalisInstancePublisher {
 
 	private static DistributedEtalisTestApi testApiI1;
 	private static DcepManagmentApi managementApiI1;
+	private static ConfigApi configApi = null;
 
 	public SingleDistributedEtalisInstancePublisher(){}
 	
 	
-	public static void main(String[] args) throws RemoteException,
-			NotBoundException, Exception {
+	public static void main(String[] args) throws IOException, NamingException, DcepManagementException, DistributedEtalisException, QueryDispatchException {
 
 		// Connect to DistributedEtalis instance 1.
-		PAComponentRepresentative root1 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
-		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
-		managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName()));
+		connectToCepEngine("dEtalis", "141.52.218.16");
 
 		// Register queries.
-		managementApiI1.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q5.eprq")));
-		//managementApiI1.registerEventPattern(generateEle(getSparqlQueries("play-epsparql-clic2call.eprq")));
-		System.out.println(getSparqlQueries("benchmarks/srbench/q5.eprq"));
+		try {
+			//Configure dEtalis instance.
+			configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
+			
+			managementApiI1.registerEventPattern(createCepQuery("p1", getSparqlQueries("benchmarks/srbench/q3.eprq")));
+			
+
+		} catch (DcepManagementException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		System.out.println(getSparqlQueries("benchmarks/srbench/q1.eprq"));
+		System.out.println("t_1: \t" + System.currentTimeMillis());
 
 		// Publish some events to instance 1.
-		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
-			//testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
-			testApiI1.publish(createEvent(Math.random() + ""));
-			delay(20);
+//		for (org.ontoware.rdf2go.model.Model m : new SrBenchExtendedSimulator()) {
+//			//testApiI1.publish(EventCloudHelpers.toCompoundEvent(m));
+//			testApiI1.publish(createEvent(Math.random() + ""));
+//			delay(20);
+//		}
+		
+		for (int i = 0; i < 20000; i++) {
+			System.out.println(i);
+			testApiI1.publish(createEvent(i + ""));
+			delay(10);
+		}
+	}
+	
+	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DistributedEtalisException{
+
+		/* COMPONENT_ALIAS = "Dispatcher" */
+		PAComponentRepresentative root = null;
+
+		try {
+			root = Fractive.lookup((URIBuilder.buildURI(host, name, "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+
+
+		try {
+			 testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
+					.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+			
+			managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root
+					.getFcInterface(DcepManagmentApi.class.getSimpleName()));
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
 		}
 	}
 
 
-	public static BdplQuery generateEle(String queryString) {
-		// Parse query
-		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		// Use custom visitor
-		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		//String patternId = "'p1'";
-		visitor1.setPatternId(patternId);
-
-		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
-
+	private static BdplQuery createCepQuery(String queryId, String query)
+			throws QueryDispatchException {
 		// Parse query
 		Query q;
 		try {
-			q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
+			q = QueryFactory.create(query, Syntax.syntaxBDPL);
 		} catch (com.hp.hpl.jena.query.QueryException e) {
-			throw new IllegalArgumentException("Error compiling BDPL to ELE.", e);
+			throw new QueryDispatchException(e.getMessage());
 		}
-
-		BdplQuery bdplQuery = BdplQuery.builder()
-				.ele(etalisPattern)
-				.details(new QueryDetails(patternId))
-				.bdpl(queryString)
-				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
-				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
-				.build();
+		EleGenerator eleGenerator = new EleGeneratorForConstructQuery();
 		
-		return bdplQuery;
+		// Generate CEP-language
+		eleGenerator.setPatternId(queryId);
+		eleGenerator.generateQuery(q);
+
+		// Add queryDetails
+		QueryDetails qd = createQueryDetails(queryId, q);
+		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
+		
+		BdplQuery bdpl = BdplQuery.builder()
+				.details(qd)
+				.ele(eleGenerator.getEle())
+				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
+				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
+				.bdpl(query)
+				.build();
+
+		return bdpl;
 	}
 	
-	public static CompoundEvent createTaxiUCCallEvent(String eventId){
+	
+	private static QueryDetails createQueryDetails(String queryId, Query query) throws QueryDispatchException {
 		
-		UcTelcoCall event = new UcTelcoCall(
-				// set the RDF context part
-				EventHelpers.createEmptyModel(eventId),
-				// set the RDF subject
-				eventId + EVENT_ID_SUFFIX,
-				// automatically write the rdf:type statement
-				true);
+		
+		QueryDetails qd = new QueryDetails(queryId);
 
-		// Run some setters of the event
-		event.setUcTelcoCalleePhoneNumber("49123456789");
-		event.setUcTelcoCallerPhoneNumber("49123498765");
-		event.setUcTelcoDirection("incoming");
+		// Set properties for windows in QueryDetails
+		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);
+		query.getWindow().accept(windowVisitor);
 		
-		double longitude = 123;
-		double latitude = 345;
-		EventHelpers.setLocationToEvent(event, longitude, latitude);
+		// Set stream ids in QueryDetails.
+		StreamIdCollector streamIdCollector = new StreamIdCollector();
+		streamIdCollector.getStreamIds(query, qd);
 		
-		// Create a Calendar for the current date and time
-		event.setEndTime(Calendar.getInstance());
-		event.setStream(new URIImpl(Stream.TaxiUCCall.getUri()));
+		// Set complex event type.
+		qd.setComplexType((new ComplexTypeFinder()).visit(query.getConstructTemplate()));
 
-		//Push events.
-		return EventCloudHelpers.toCompoundEvent(event);
+		return qd;
 	}
 
 	public static void delay(int delay) {

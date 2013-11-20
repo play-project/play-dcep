@@ -3,7 +3,7 @@
 
 TOOL_URL=https://raw.github.com/play-project/play-dcep/master/play-dcep-distribution/src/main/scripts
 PROLOG_SRC_URL=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play/
-INSTALL_DIR=/opt/play/
+INSTALL_DIR=/opt/dcep
 IPv6_PREFIX=2001:6f8:100d:b::
 
 installBasicSoftware(){
@@ -12,8 +12,12 @@ installBasicSoftware(){
 	wget $TOOL_URL/non-free-sources.list
 	apt-get -y update
 	
+	#Accept SUN Java licence agreements
+	echo "sun-java6-jdk shared/accepted-sun-dlj-v1-1 select true" | debconf-set-selections
+	echo "sun-java6-jre shared/accepted-sun-dlj-v1-1 select true" | debconf-set-selections
+	
 	#Install tools.
-	apt-get -y install screen vim maven2 subversion sun-java6-jdk ntpdate unzip
+	apt-get -f -y install screen vim maven2 subversion sun-java6-jdk ntpdate unzip
 	update-alternatives --set java /usr/lib/jvm/java-6-sun/jre/bin/java
 	export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/
 }
@@ -31,17 +35,8 @@ installCEP_Engine(){
 	cd pl-5.10.2
 	./build.templ
 
-	# Get and start CEP-Engine
-	mkdir $INSTALL_DIR
-	cd    $INSTALL_DIR
-	wget  $TOOL_URL/dEtalis.jar
-	chmod u+x cep-engine.jar
-	wget $TOOL_URL/proactive.java.policy
-	wget $TOOL_URL/prologMethods.tar
-	tar -xf prologMethods.tar
-	wget $TOOL_URL/cep-engine.sh
-	chmod u+x cep-engine.sh
-	screen ./cep-engine.sh etalis$2.dcep.s-node.de
+	# Get CEP-Engine
+	
 }
 
 installProActive(){
@@ -59,10 +54,7 @@ installProActive(){
 }
 
 setEnvironemenVariables(){
-	echo TODO setEnvironemenVariables
-	# TODO Update Bash environment variables
-	# .bashrc
-	# For ssh login.
+	cat exportPrologPath >> ~/.bashrc
 }
 
 getTool(){

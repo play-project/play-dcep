@@ -34,7 +34,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 			ctx.getEngineWrapper().executeGoal("[library(xpath)]");
 			ctx.getEngineWrapper().executeGoal("use_module(library(xpath))");
 			ctx.getEngineWrapper().executeGoal("use_module(library(random))");
-			ctx.getEngineWrapper().executeGoal("assert(gcDelay(5))");
+			ctx.getEngineWrapper().executeGoal("assert(gcDelay(2))");
 			ctx.setEtalisFlags("garbage_clt", "on");
 			ctx.setEtalisFlags("garbage_control","general");
 			ctx.setEtalisFlags("save_ruleId", "on");

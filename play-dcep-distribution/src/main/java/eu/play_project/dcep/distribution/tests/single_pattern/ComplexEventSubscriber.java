@@ -34,14 +34,13 @@ public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
 						eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601);
 				Date date = null;
 				try {
-					date = sdf
-							.parse(quadruple.getObject().toString().replace("\"", "").replace("^^http://www.w3.org/2001/XMLSchema#dateTime",""));
+					date = sdf.parse(quadruple.getObject().toString().replace("\"", "").replace("^^http://www.w3.org/2001/XMLSchema#dateTime",""));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 
 				// Print time pent in system.
-				System.out.println((System.currentTimeMillis()- 3600000) - date.getTime());
+				System.out.println((System.currentTimeMillis()) - date.getTime());
 			}
 		}
 	}
