@@ -126,6 +126,7 @@ public class DcepTest implements Serializable {
 		//	subscriber.getComplexEvents().size()==2);
 	}
 
+	
 	public static void InstantiateDcepComponent()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {

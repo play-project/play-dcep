@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -14,7 +13,6 @@ import javax.naming.NamingException;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.util.URIBuilder;
 
 import com.hp.hpl.jena.graph.NodeFactory;
@@ -51,6 +49,8 @@ public class ConnectToExistingInstance {
 
 	public static void main(String[] args) throws DcepManagementException, IOException, NamingException, DistributedEtalisException {
 		//CentralPAPropertyRepository.PA_NET_INTERFACE.setValue("");
+		//CentralPAPropertyRepository.PA_NET_USE_IP_ADDRESS.internalSetValue("141.3.196.15");
+	
 		// Get connection
 		connectToCepEngine("dEtalis", "141.52.218.16");
 	}
@@ -81,7 +81,7 @@ public class ConnectToExistingInstance {
 		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
 		
 		// Register query
-		dcepManagmentApi.registerEventPattern(generateEle(getSparqlQueries("benchmarks/srbench/q5.eprq")));
+		dcepManagmentApi.registerEventPattern(generateEle(getSparqlQueries("play-bdpl-crisis-01a-radiation.eprq")));
 		
 
 		System.out.println("t_1: \t" + System.currentTimeMillis());

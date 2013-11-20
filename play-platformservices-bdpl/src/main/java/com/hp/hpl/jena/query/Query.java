@@ -100,7 +100,6 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 	}
 
 	public void addEventBinOperator(ElementEventBinOperator eventBinOperator) {
-		logger.debug("Binoperator found");
 		this.eventBinOperator.add(eventBinOperator);
 	}
 

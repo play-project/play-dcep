@@ -5,12 +5,20 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.expr.E_Now;
+import com.hp.hpl.jena.sparql.expr.ExprFunction0;
+import com.hp.hpl.jena.sparql.expr.ExprFunction1;
+import com.hp.hpl.jena.sparql.expr.ExprFunction2;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
-public class CollectVariablesInTriplesVisitor extends GenericVisitor{
+public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 	
 	private Set<String> vars; 
 
@@ -47,6 +55,33 @@ public class CollectVariablesInTriplesVisitor extends GenericVisitor{
 			tp.getPredicate().visitWith(this);
 			tp.getObject().visitWith(this);
 		}
+	}
+	
+	@Override
+	public void visit(ElementFilter el) {
+		el.getExpr().visit(this);
+	}
+	
+	
+	@Override
+	public void visit(ExprFunction2 func) {
+		logger.debug("Visit1: {}", func.getClass().getName());
+		
+		// Get left values
+		func.getArg1().visit(this);
+		
+		// Right values
+		func.getArg2().visit(this);
+	}
+
+	@Override
+	public void visit(ExprFunction1 func) {
+		func.getArg().visit(this);
+	}
+
+	@Override
+	public void visit(ExprVar nv) {
+		vars.add("V" + nv.getVarName());
 	}
 
 	/**

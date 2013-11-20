@@ -201,7 +201,7 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 	}
 	@Override
 	public Object visitURI(Node_URI it, String uri) {
-		logger.debug("Visit " + it.getClass().getName());
+		// logger.debug("Visit " + it.getClass().getName());
 		return null;
 	}
 	@Override

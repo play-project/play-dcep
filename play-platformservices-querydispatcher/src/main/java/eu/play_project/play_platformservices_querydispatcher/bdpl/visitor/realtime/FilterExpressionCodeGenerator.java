@@ -138,11 +138,11 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		
 		//Close bracket
 		if(getStringFirstTime){
-			ele.append("),");
+			ele.append(")");
 			getStringFirstTime = false;
 		}
 
-		if(ele.toString().endsWith("(),")){
+		if(ele.toString().endsWith("()")){
 			ele = emptyStringBuffer;
 		}
 		return ele;
