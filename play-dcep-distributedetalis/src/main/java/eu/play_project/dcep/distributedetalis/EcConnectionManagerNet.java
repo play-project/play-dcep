@@ -414,6 +414,7 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 
 		private final DistributedEtalis dEtalis;
 		private volatile Thread getEventThread;
+		private final Logger logger = LoggerFactory.getLogger(GetEventThread.class);
 
 		public GetEventThread(DistributedEtalis dEtalis) {
 			this.dEtalis = dEtalis;
@@ -421,14 +422,19 @@ public class EcConnectionManagerNet implements Serializable, EcConnectionManager
 
 		@Override
 		public void run() {
+			logger.debug("Entering thread '{}'", Thread.currentThread());
 			this.getEventThread = Thread.currentThread();
 
 			while (this.getEventThread == Thread.currentThread()) {
 				try {
 					dEtalis.publish(eventInputQueue.take());
 				} catch (InterruptedException e) {
+					logger.debug("Thread '{}' got interrupted while waiting to take an event from the queue.", Thread.currentThread());
+					// try again taking the same event in the loop
 				}
 			}
+
+			logger.debug("Leaving thread '{}'", Thread.currentThread());
 		}
 
 		/*

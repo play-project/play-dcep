@@ -51,7 +51,8 @@ public class EcConnectionListenerNet extends CompoundEventNotificationListener i
 					eventInputQueue.put(event);
 					break;
 				} catch (InterruptedException e) {
-					// try again in a loop
+					logger.debug("Thread '{}' got interrupted while waiting to put an event in the queue.", Thread.currentThread());
+					// try again storing the same event in the loop
 				}
 			}
 		}
