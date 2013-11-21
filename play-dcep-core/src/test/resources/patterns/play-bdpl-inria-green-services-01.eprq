@@ -28,7 +28,7 @@ PREFIX :        <http://events.event-processing.org/types/>
 
 CONSTRUCT {
 	:e rdf:type :UcTelcoEsrRecom .
-	:e :stream <http://streams.event-processing.org/ids/TaxiUCESRRecomDcep#stream> .
+	:e :stream <http://streams.event-processing.org/ids/PollutionAlert#stream> .
 	:e :message "Micro-particles pollution exists near your position" .
 	:e :members ?e1, ?e2 .
 	:e mgs:polluant ?polluant .
