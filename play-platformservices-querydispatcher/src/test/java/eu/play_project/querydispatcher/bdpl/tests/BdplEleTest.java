@@ -156,7 +156,7 @@ public class BdplEleTest {
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
 		// Set id.
-		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		String patternId = quoteForProlog(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.setPatternId(patternId);
 
 		// Parse query
@@ -185,7 +185,7 @@ public class BdplEleTest {
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
 		// Set id.
-		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		String patternId = quoteForProlog(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.setPatternId(patternId);
 
 		// Parse query
