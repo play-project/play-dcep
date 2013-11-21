@@ -30,7 +30,7 @@ public class PrologHelpers {
 	/**
 	 * Escape all characters which are illegal in Prolog's quoted strings:
 	 * {@code It's me, Mario.} becomes {@code It\'s me, Mario.}. The resulting
-	 * strings are meanto to be used as <i>quoted atoms</i> in Prolog, between
+	 * strings are meant to to be used as <i>quoted atoms</i> in Prolog, between
 	 * single quotes.
 	 * 
 	 * @see <a
