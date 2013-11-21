@@ -171,6 +171,35 @@ public class BdplEleTest {
 		
 		System.out.println(visitor1.getEle());
 	}
+	
+	@Test
+	public void orFilterTest() throws IOException {
+		
+		String queryString = getSparqlQuery("queries/play-bdpl-inria-green-services-01.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		visitor1.generateQuery(query);
+		
+		System.out.println(visitor1.getEle());
+	}
 
 	/**
 	 * Generate code for (AVG(t) >= 30).

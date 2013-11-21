@@ -1,0 +1,63 @@
+#
+# Title: Green Services Scenario: Alert micro-particles  pollution
+#
+# Scenario: Pascal is a user of MyGreenServices (our system connected to play
+# for pollution alert), wishes to know if he is in a polluted zone.
+# He is connected to MyGreenServices with his smart phone. While he is walking
+# with his samrt phone in the district, he will receive an Alert sms (or other
+# push event) telling him that a pollution to micro-particles exist in a 500
+# meter zone from his position. "
+#
+# TODO:
+# - The user is geo-localized with good precision (100 m)
+# - must be in the day hour [7 am to 9 pm ]
+# X Polluant is of type : O3No, PM10, or No2
+# X The rate of pollution is >=6
+# - is in the 500m circle zone
+# - when receiving a pollution alert, the user should not receive another alert until he make 1 km after the first one.
+
+PREFIX mgs:     <http://events.event-processing.org/MyGreenServicesSensors/>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uctelco: <http://events.event-processing.org/uc/telco/>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX esr:     <http://imu.ntua.gr/play/esr/mcm/2#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX user:    <http://graph.facebook.com/schema/user#>
+PREFIX sioc:    <http://rdfs.org/sioc/ns#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :UcTelcoEsrRecom .
+	:e :stream <http://streams.event-processing.org/ids/TaxiUCESRRecomDcep#stream> .
+	:e :message "Micro-particles pollution exists near your position" .
+	:e :members ?e1, ?e2 .
+	:e mgs:polluant ?polluant .
+	:e geo:lat ?latitude2 .
+	:e geo:lng ?longitude2 .
+	:e mgs:value ?pollutionRate .
+	:e mgs:dateTime ?date .
+	:e mgs:idUser ?userId .
+} WHERE {
+	WINDOW {
+		EVENT ?id1 {
+			?e1 rdf:type :MyGreenServicesSensors .
+			?e1 :stream <http://streams.event-processing.org/ids/MyGreenServicesSensors#stream> .
+			?e1 geo:lat ?latitude1 .
+			?e1 geo:lng ?longitude1 .
+			?e1 mgs:polluant ?polluant .
+			?e1 mgs:value ?pollutionRate .
+			?e1 mgs:dateTime ?date .
+			}
+			FILTER((?polluant = "o3no" || ?polluant = "pm10" || ?polluant = "no2")
+					&& ?pollutionRate >= 6)
+		SEQ
+		EVENT ?id2 {
+			?e2 rdf:type :MyGreenServicesSensors .
+			?e2 :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> .
+			?e2 geo:lat ?latitude2 .
+			?e2 geo:lng ?longitude2 .
+			?e2 mgs:idUser ?userId .
+			}
+			FILTER (abs(?latitude1 - ?latitude2) < 0.1 && abs(?longitude1 - ?longitude2) < 0.5) # nearby
+	} ("PT3M"^^xsd:duration, sliding)
+}
