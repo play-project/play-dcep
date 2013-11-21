@@ -310,7 +310,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
 			if(filterExpressionVisitor.getEle().length() > 1) {
 				filterExp += "," + filterExpressionVisitor.getEle();
-				System.out.println(filterExp);
 			}
 		}
 		return filterExp;

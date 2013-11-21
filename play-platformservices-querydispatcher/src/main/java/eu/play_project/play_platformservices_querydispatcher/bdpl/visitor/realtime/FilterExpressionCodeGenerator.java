@@ -74,7 +74,9 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		// Operator
 		if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalAnd) {
 			// Do nothing AND is infix operator
-		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LessThan) {
+		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalOr) {
+			// Do nothing OR is infix operator
+		}else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LessThan) {
 			if(ele.length()>2) ele.append(","); // At the beginning of a string no ",".
 			ele.append("less(" + stack.pop() + ", " + rightElem + ")");
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Subtract) {
