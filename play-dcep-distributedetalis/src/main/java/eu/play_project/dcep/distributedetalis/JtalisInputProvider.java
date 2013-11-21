@@ -77,14 +77,15 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	public EtalisEvent getEvent() {
 		
 		// Return the oldest event (FIFO) blocking if there is none:
-		try {
+		while (true) {
+			try {
 				EtalisEvent e = events.take();
 				incrementEventCounter();
 				return e;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			} catch (InterruptedException e) {
+				logger.debug("Thread '{}' got interrupted while taking an event from the queue.", Thread.currentThread());
+			}
 		}
-		return null;
 	}
 	
 	@Override
