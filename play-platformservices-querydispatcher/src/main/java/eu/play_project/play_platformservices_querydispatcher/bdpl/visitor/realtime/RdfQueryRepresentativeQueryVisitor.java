@@ -1,5 +1,6 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
 import java.util.HashMap;
@@ -69,13 +70,13 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 
 	@Override
 	public Object visitLiteral(Node_Literal it, LiteralLabel lit) {
-		code.append("'" + lit.getLexicalForm() + "'");
+		code.append(quoteForProlog(lit.getLexicalForm()));
 		return lit;
 	}
 
 	@Override
 	public Object visitURI(Node_URI it, String uri) {
-		code.append("'" + uri + "'");
+		code.append(quoteForProlog(uri));
 		return uri;
 	}
 

@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.unquoteFromProlog;
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
 import java.util.ArrayList;
@@ -207,7 +209,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			}
 			
 			var= iter.next();
-			elePattern += "variabeValuesAdd(" + uniqueNameManager.getCeid() + ",'" + var + "'," + "V" + var + ")";
+			elePattern += "variabeValuesAdd(" + uniqueNameManager.getCeid() + "," + quoteForProlog(var) + "," + "V" + var + ")";
 			
 			if(iter.hasNext()){
 				elePattern += ",";
@@ -330,7 +332,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	@Override
 	public void setPatternId(String patternId) {
-		this.patternId = "'" + patternId + "'";
+		this.patternId = quoteForProlog(patternId);
 	}
 
 	@Override
@@ -382,7 +384,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer dbQueryDecl = new StringBuffer();
 
 		// Schema "dbQuery" + patternId + idForEvent
-		dbQueryDecl.append("'dbQuery_" + patternId.replace("'", "") + "_e" + l + "'(");
+		dbQueryDecl.append("'dbQuery_" + unquoteFromProlog(patternId) + "_e" + l + "'(");
 		dbQueryDecl.append(getVarNameManager().getTriplestoreVariable() + ", "); // Mapping
 																			     // between
 																			     // event

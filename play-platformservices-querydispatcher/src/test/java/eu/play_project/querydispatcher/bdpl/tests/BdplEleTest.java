@@ -1,5 +1,6 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -58,7 +59,7 @@ public class BdplEleTest {
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
-		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
+		visitor1.setPatternId(quoteForProlog(Namespace.PATTERN.getUri() + "123456"));
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
@@ -79,7 +80,7 @@ public class BdplEleTest {
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
 		// Set id.
-		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		String patternId = quoteForProlog(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.setPatternId(patternId);
 
 		// Parse query
@@ -125,7 +126,7 @@ public class BdplEleTest {
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
 		// Set id.
-		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		String patternId = quoteForProlog(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.setPatternId(patternId);
 
 		// Parse query
@@ -184,7 +185,7 @@ public class BdplEleTest {
 
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
+		visitor1.setPatternId(quoteForProlog(Namespace.PATTERN.getUri() + "123456"));
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
