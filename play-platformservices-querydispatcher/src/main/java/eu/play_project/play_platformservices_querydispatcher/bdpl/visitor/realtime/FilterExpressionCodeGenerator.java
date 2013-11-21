@@ -92,7 +92,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			ele.append("greaterOrEqual(" + stack.pop() + "," + rightElem + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThan) {
-			if(ele.length()>2 && !ele.toString().endsWith(",")) ele.append(","); // TODO look if this is needed for other operators
+			if(ele.length()>2 && (!ele.toString().endsWith(", ") && !ele.toString().endsWith(" ("))) ele.append(","); // TODO look if this is needed for other operators
 			ele.append("greater(" + stack.pop() + "," + rightElem + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Equals) {
