@@ -17,6 +17,7 @@ PREFIX esr:     <http://imu.ntua.gr/play/esr/mcm/2#>
 PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
 PREFIX user:    <http://graph.facebook.com/schema/user#>
 PREFIX sioc:    <http://rdfs.org/sioc/ns#>
+PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
 PREFIX :        <http://events.event-processing.org/types/>
 
 CONSTRUCT {
@@ -38,12 +39,18 @@ CONSTRUCT {
 		?e1 uctelco:callerPhoneNumber "33638611117" . # Philippe
 		?e1 uctelco:calleePhoneNumber ?callee1 .
 		?e1 uctelco:direction ?direction .
+		?e1 :endTime ?eventDate1 .
 		?e1 :location [ geo:lat 48.849249770484356 ; geo:long 2.3039040065044345 ] .
 	}
 	GRAPH ?id2 {
 		?e2 rdf:type :UcTelcoCall .
 		?e2 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
+		?e2 :endTime ?eventDate2 .
 		?e2 :location [ geo:lat ?latitude2 ; geo:long ?longitude2 ] .
-		FILTER (abs(48.84755056311516 - ?latitude2) < 0.1 && abs(2.311692827815153 - ?longitude2) < 0.5) # near Esplanade Jacques Chaban Delmas
+		FILTER (
+				abs(48.84755056311516 - ?latitude2) < 0.1
+				&& abs(2.311692827815153 - ?longitude2) < 0.5 # near Esplanade Jacques Chaban Delmas
+				&& fn:days-from-duration(?eventDate1 - ?eventDate2) <= 1 # Yesterday and Today
+		)
 	}
 }
