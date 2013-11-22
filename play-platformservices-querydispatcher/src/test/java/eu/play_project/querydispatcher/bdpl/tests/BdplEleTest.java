@@ -1,6 +1,7 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,8 +34,6 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
-
-//import eu.play_project.querydispatcher.bdpl.tests.helpers.FilterExpressionCodeGenerator;
 
 public class BdplEleTest {
 
@@ -111,6 +110,95 @@ public class BdplEleTest {
 				.build();
 
 		System.out.println(etalisPattern);
+	}
+	
+	@Test
+	public void globalFilterVariables() throws IOException {
+		
+		
+		String queryString = getSparqlQuery("play-bdpl-crisis-02b-windintensity.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		visitor1.generateQuery(query);
+		
+		System.out.println(visitor1.getEle());
+	}
+	
+	@Test
+	public void complexFilterTest() throws IOException {
+		
+		
+		String queryString = getSparqlQuery("play-bdpl-crisis-01b-radiationincrease.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		visitor1.generateQuery(query);
+		
+		System.out.println(visitor1.getEle());
+	}
+	
+	@Test
+	public void orFilterTest() throws IOException {
+		
+		String queryString = getSparqlQuery("queries/play-bdpl-inria-green-services-01.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		visitor1.generateQuery(query);
+		
+		System.out.println(visitor1.getEle());
 	}
 
 	/**
@@ -198,7 +286,7 @@ public class BdplEleTest {
 		String queryString;
 
 		// Get query.
-		queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		queryString = getSparqlQuery("queries/HistoricRealtimeQuery.eprq");
 		System.out.println(queryString);
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -211,6 +299,24 @@ public class BdplEleTest {
 		System.out.println(etalisPattern);
 	}
 	
+	@Test
+	public void testHistoricRealtimeShardValues() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/HistoricRealtimeQuery2.eprq");
+		System.out.println(queryString);
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		
+		assertTrue(etalisPattern.contains("variabeValuesAdd('http://patterns.event-processing.org/patterns/42','screenName02',VscreenName02)))"));
+	}
 	
 
 	@Test

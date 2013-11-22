@@ -1,7 +1,14 @@
 package eu.play_project.dcep.distributedetalis.listeners;
 
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_ENTRY;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_ENTRY;
+
 import java.io.Serializable;
 
+import org.apache.commons.collections.Buffer;
+import org.apache.commons.collections.BufferUtils;
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.util.ModelUtils;
 import org.slf4j.Logger;
@@ -19,12 +26,14 @@ import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.NoRdfEventException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
-public class EcConnectionListenerWsn implements INotificationConsumer, Serializable {
+public class EcConnectionListenerWsn implements INotificationConsumer, DuplicateCheckingListener, Serializable {
 
 	private static final long serialVersionUID = 100L;
 	private DistributedEtalis dEtalis;
 	private final AbstractReceiverRest rdfReceiver;
 	private final Logger logger;
+	/** Maintain a circular buffer of recent event IDs which have been seen to detect duplicate events arriving. */
+	private final Buffer duplicatesCache =  BufferUtils.synchronizedBuffer(new CircularFifoBuffer(32));
 	
 	public EcConnectionListenerWsn(AbstractReceiverRest rdfReceiver) {
 		this.rdfReceiver = rdfReceiver;
@@ -48,13 +57,28 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Serializa
 	    	Model rdf = this.rdfReceiver.parseRdf(notify);
 	    	ModelUtils.deanonymize(rdf);
 	    	CompoundEvent event = EventCloudHelpers.toCompoundEvent(rdf);
-	    	logger.debug("Received event {} on topic {} from the DSB.", event.getGraph(), topic);
-	    	
-		    // Forward the event to Detalis:
-		    this.dEtalis.publish(event);
-		    
-		    // Store the event in Virtuoso:
-		    this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
+	    	String eventId = event.getGraph().toString();
+	    	logger.debug("Received event {} on topic {} from the DSB.", eventId, topic);
+	
+			/*
+			 * Do some checking for duplicates (memorizing a few recently seen
+			 * events)
+			 */
+			if (!isDuplicate(eventId)) {
+				// Do not remove this line, needed for logs. :stuehmer
+				logger.info(LOG_DCEP_ENTRY + eventId);
+				logger.debug(LOG_DCEP + "Simple Event:\n{}", event);
+				
+			    // Forward the event to Detalis:
+			    this.dEtalis.publish(event);
+			    
+			    // Store the event in Virtuoso:
+			    this.dEtalis.getEcConnectionManager().putDataInCloud(event, topic);
+			}
+			else {
+				logger.info(LOG_DCEP_FAILED_ENTRY + "Duplicate Event suppressed: " + eventId);
+			}
+
 		    
 	    } catch (NoRdfEventException e) {
 			logger.error("Received a non-RDF event on topic {} from the DSB: {}", topic, e.getMessage());
@@ -67,4 +91,15 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Serializa
 		this.dEtalis = dEtalis;
 	}
 
+	@SuppressWarnings("unchecked") // TODO stuehmer: will be fixed with https://github.com/play-project/play-dcep/issues/15
+	@Override
+	public boolean isDuplicate(String eventId) {
+		if (duplicatesCache.contains(eventId)) {
+			return true;
+		}
+		else {
+			duplicatesCache.add(eventId);
+			return false;
+		}
+	}
 }

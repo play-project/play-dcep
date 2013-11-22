@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.distribution.tests.srbench.performance.ComplexEventSubscriber;
 
 
 /**

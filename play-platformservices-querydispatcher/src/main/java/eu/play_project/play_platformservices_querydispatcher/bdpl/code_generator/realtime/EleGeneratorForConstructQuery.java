@@ -19,7 +19,7 @@ import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.BinOperatorVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
@@ -114,7 +114,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
-		//SaveSharedVariabelValues();
+		SaveSharedVariableValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
@@ -123,7 +123,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 
 	private void GenerateConstructResult() {
-		StringBuffer constructResult = new StringBuffer();
+		String constructResult = "";
 		
 		GenerateConstructResultVisitor generateConstructResultVisitor = new GenerateConstructResultVisitor();
 		Iterator<Triple> constructTemplIter = inputQuery.getConstructTemplate().getTriples().iterator();
@@ -141,13 +141,13 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		}
 
 
-		constructResult.append("" +
+		constructResult += "" +
 				"forall((" + queriesConcatenated.toString() + "), " +
-									"(");
+									"(";
 										while (constructTemplIter.hasNext()) {
 											triple = constructTemplIter.next();
 											if (!containsSharedVariablesTest(triple)) {
-												constructResult.append( "" +
+												constructResult += "" +
 												"generateConstructResult("
 														+ triple.getSubject().visitWith(
 																generateConstructResultVisitor)
@@ -158,16 +158,18 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 														+ triple.getObject().visitWith(
 																generateConstructResultVisitor) + ","
 														+ uniqueNameManager.getCeid() +
-													") ");
+													")";
 												
 												if (constructTemplIter.hasNext()) {
-													constructResult.append(", ");
+													constructResult += ", ";
 												}
 											}
 										}
-				constructResult.append(")");
-		constructResult.append(")");
-		
+										constructResult += SaveSharedVariableValues();
+										//Filter
+										constructResult += FilterExpression(inputQuery);
+				constructResult += ")";
+		constructResult += ")";
 		elePattern += constructResult.toString();
 	}
 
@@ -192,17 +194,27 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		return result;
 	}
 		
-	public void SaveSharedVariabelValues() {
-		StringBuffer tmpEle = new StringBuffer();
-
+	public String SaveSharedVariableValues() {
+		String elePattern = "";
 		List<String> vars = nameManager.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
-		for (String var : vars) {
+		
+		Iterator<String> iter = vars.iterator();
+		String var;
+		
+		while (iter.hasNext()) {
 			if (!elePattern.endsWith(",")) {
 				elePattern += ",";
 			}
-			tmpEle.append("variabeValuesAdd(" + patternId + ",'" + var + "'," + "V" + var + ")");
+			
+			var= iter.next();
+			elePattern += "variabeValuesAdd(" + uniqueNameManager.getCeid() + ",'" + var + "'," + "V" + var + ")";
+			
+			if(iter.hasNext()){
+				elePattern += ",";
+			}
 		}
-		elePattern += tmpEle.toString();
+
+		return elePattern;
 	}
 	
 	private void DecrementReferenceCounter(){
@@ -235,7 +247,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	private void AdditionalConditions(){
-		TriplestoreQuery(FilterExpression());
+		TriplestoreQuery();
 		ReferenceCounter();
 //		elePattern += ", ";
 //		PerformanceMeasurement();
@@ -256,15 +268,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	
-	private void TriplestoreQuery(String filter) {
+	private void TriplestoreQuery() {
 		String flatDbQueries;
 		
 		// Get flat queries
 		currentElement.visit(triplestoreQueryVisitor);
 		flatDbQueries = triplestoreQueryVisitor.getTriplestoreQueryGraphTerms();
-		if (filter.length() > 4) {
-			flatDbQueries += ", " + filter.substring(3, filter.length()-2);
-		}
 		
 		// Generate representative.
 		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
@@ -292,14 +301,16 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		}
 	}
 
-	private String FilterExpression() {
-		filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
-		if(!elePattern.endsWith(",") && !filterExpressionVisitor.getEle().equals("")){ // This filter is optional. No value needed.
-			return "," + filterExpressionVisitor.getEle();
-		}else if(!filterExpressionVisitor.getEle().equals("")){
-			return filterExpressionVisitor.getEle().toString();
+	private String FilterExpression(Query q) {
+		String filterExp = "";
+		
+		for (Element currentElement : q.getEventQuery()) {
+			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
+			if(filterExpressionVisitor.getEle().length() > 1) {
+				filterExp += "," + filterExpressionVisitor.getEle();
+			}
 		}
-		return "";
+		return filterExp;
 	}
 		
 	private void GenerateCEID(){
@@ -363,7 +374,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	public StringBuffer RdfQueryDbMethodDecl(Element currentElement, long l) {
 		// Get variables
-		CollectVariablesInTriplesVisitor v = new CollectVariablesInTriplesVisitor();
+		CollectVariablesInTriplesAndFilterVisitor v = new CollectVariablesInTriplesAndFilterVisitor();
 		currentElement.visit(v);
 
 		// Generate query method
@@ -380,7 +391,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		Iterator<String> iter = v.getVariables().iterator();
 		while (iter.hasNext()) {
 			dbQueryDecl.append(iter.next());
-			
 			// Decide if it is the last variable or end of decl.
 			if (iter.hasNext()) {
 				dbQueryDecl.append(", ");

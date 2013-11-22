@@ -1,14 +1,11 @@
 package eu.play_project.dcep.distributedetalis;
 
-import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP;
-import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_ENTRY;
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_ENTRY;
 
 import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +33,6 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	private final PrologSemWebLib semWebLib;
 	public static int eventConsumed = 0;
 	private static Logger logger = LoggerFactory.getLogger(JtalisInputProvider.class);
-	private final CircularFifoBuffer duplicatesCache =  new CircularFifoBuffer(32);
 
 	public JtalisInputProvider(PrologSemWebLib semWebLib) {
 		super();
@@ -51,25 +47,6 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 		String eventType = EventCloudHelpers.getEventType(event);
 		String eventId = event.getGraph().toString();
 
-		/*
-		 * Do some checking for duplicates (memorizing a few recently seen
-		 * events)
-		 */
-		synchronized (duplicatesCache) {
-			if (!duplicatesCache.contains(eventId)) {
-				// Do not remove this line, needed for logs. :stuehmer
-				logger.info(LOG_DCEP_ENTRY + eventId);
-				if (logger.isDebugEnabled()) {
-					logger.debug(LOG_DCEP + "Simple Event:\n{}", event.toString());
-				}
-				duplicatesCache.add(eventId);
-			}
-			else {
-				logger.info(LOG_DCEP_FAILED_ENTRY + "Duplicate Event suppressed: " + eventId);
-				return;
-			}
-		}
-		
 		try {
 			//Thread.sleep(100);
 			// Add RDF payload to Prolog:

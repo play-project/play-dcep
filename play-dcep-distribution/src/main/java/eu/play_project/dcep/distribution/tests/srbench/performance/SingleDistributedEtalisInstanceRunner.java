@@ -45,11 +45,11 @@ public class SingleDistributedEtalisInstanceRunner {
 
 		// Register component.
 		Registry registry = LocateRegistry.getRegistry();
-		Fractive.registerByName(root, "dEtalis1");
+		Fractive.registerByName(root, "dEtalis");
 		
 		//Configure component.
 		ConfigApi configApi = ((ConfigApi)root.getFcInterface(ConfigApi.class.getSimpleName()));
-		configApi.setConfig(new DetalisConfigLocal("historical-data/clic2call-historical-data.trig"));
+		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
 		
 		
 		//Subscribe to print complex events to local console.
