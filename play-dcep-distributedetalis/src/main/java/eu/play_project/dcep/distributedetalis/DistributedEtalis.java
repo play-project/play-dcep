@@ -220,8 +220,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	@Override
 	public void setConfig(Configuration configuration) throws DistributedEtalisException {
-		configuration.configure(this);
-		init = true;
+		if(init != true) {
+			configuration.configure(this);
+			init = true;
+		} else {
+			logger.warn("DistributedEtalis  is already configured");
+		}
 	}
 
 	public String getName() {
@@ -242,11 +246,6 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	@Override
 	public JtalisInputProvider getEventInputProvider() {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-		
 		return eventInputProvider;
 	}
 
@@ -322,22 +321,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public JtalisContextImpl getEtalis() {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-		
+	public JtalisContextImpl getEtalis() {	
 		return etalis;
 	}
 
 	@Override
-	public JtalisOutputProvider getEventOutputProvider() {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-		
+	public JtalisOutputProvider getEventOutputProvider() {	
 		return eventOutputProvider;
 	}
 

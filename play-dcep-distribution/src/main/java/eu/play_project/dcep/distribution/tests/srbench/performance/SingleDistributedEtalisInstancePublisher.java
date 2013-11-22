@@ -53,31 +53,38 @@ public class SingleDistributedEtalisInstancePublisher {
 		
 		logger = LoggerFactory.getLogger(SingleDistributedEtalisInstancePublisher.class);
 		
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 1; i < args.length; i++) {
 			// Connect to DistributedEtalis instance 1.
 			PAComponentRepresentative root1 = Fractive.lookup((URIBuilder.buildURI(args[i], "dEtalis", "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
-			configApis.add(i, ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName())));
-			configApis.get(i).setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
-			testApis.add(i, ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName())));
-			managementApis.add(i, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
+			configApis.add(i-1, ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName())));
+			configApis.get(i-1).setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
+			testApis.add(i-1, ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName())));
+			managementApis.add(i-1, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
 		}
 
 		BdplQuery q = createCepQuery(("p1" + (++patternIdCounter + Math.random())) , getSparqlQueries("benchmarks/srbench/q3.eprq"));
-		
+		try{
 		// Register queries.
-		managementApis.get(0).registerEventPattern(q);
-//		try {
-//			for (DcepManagmentApi managementApi : managementApis) {
-//				managementApi.registerEventPattern(q);
-//			}
-//		} catch (Exception e) {
-//			logger.error("Error while registering pattern. Message: {} ", e.getMessage());
-//		} catch (Throwable e) {
-//			logger.error("Error while registering pattern. Message: {} ", e.getMessage());
-//		}
+		if (args[0].equals("registerPatterns")) {
+			try {
+				for (DcepManagmentApi managementApi : managementApis) {
+					managementApi.registerEventPattern(q);
+				}
+			} catch (Exception e) {
+				logger.error("Error while registering pattern. Message: {} ", e.getMessage());
+			} catch (Throwable e) {
+				logger.error("Error while registering pattern. Message: {} ", e.getMessage());
+			}
+		}
+		} catch (Exception e) {
+			System.out.println("Exception: "+ e.getMessage());
+		}
 
 		// Start publishing events.
+		Thread.sleep(9000);
 		new EventProducerThread(20002, 6, testApis);
+		
+		while(true){}
 	}
 
 	private static BdplQuery createCepQuery(String queryId, String query)
