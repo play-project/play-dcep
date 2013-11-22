@@ -242,11 +242,6 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	@Override
 	public JtalisInputProvider getEventInputProvider() {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-		
 		return eventInputProvider;
 	}
 
@@ -327,12 +322,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public JtalisOutputProvider getEventOutputProvider() {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-		
+	public JtalisOutputProvider getEventOutputProvider() {	
 		return eventOutputProvider;
 	}
 
