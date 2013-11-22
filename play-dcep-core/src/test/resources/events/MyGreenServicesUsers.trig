@@ -1,0 +1,24 @@
+@prefix : <http://events.event-processing.org/types/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix e: <http://events.event-processing.org/ids/> .
+@prefix s: <http://streams.event-processing.org/ids/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+e:MyGreenServicesUsers-MGSU-1281385133991638 {
+
+e:MyGreenServicesUsers-MGSU-1281385133991638
+        a         :MyGreenServicesSensors ;
+<http://events.event-processing.org/MyGreenServicesUsers/dateTime>
+                "2013-11-22 16:26:31" ;
+<http://events.event-processing.org/MyGreenServicesUsers/idUser>
+                "128" ;
+<http://events.event-processing.org/MyGreenServicesUsers/uniqueId>
+                "MyGreenServicesUsers-MGSU-1281385133991638" ;
+        :endTime "2013-11-22T16:26:31.638"^^xsd:dateTime ;
+        :source <http://sources.event-processing.org/ids/myGreenServices#source> ;
+        :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> ;
+        geo:lat "43.580417999999995" ;
+        geo:lng "7.125102" . 
+		
+}

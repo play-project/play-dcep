@@ -48,11 +48,11 @@ CONSTRUCT {
 			?e1 mgs:value ?pollutionRate .
 			?e1 mgs:dateTime ?date .
 			}
-			FILTER((?polluant = "o3no" || ?polluant = "pm10" || ?polluant = "no2")
+			FILTER((?polluant = "O3NO2" || ?polluant = "PM10" || ?polluant = "NO2")
 					&& ?pollutionRate >= 6)
 		SEQ
 		EVENT ?id2 {
-			?e2 rdf:type :MyGreenServicesUsers .
+			?e2 rdf:type :MyGreenServicesSensors .
 			?e2 :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> .
 			?e2 geo:lat ?latitude2 .
 			?e2 geo:lng ?longitude2 .

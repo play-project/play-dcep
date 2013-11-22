@@ -1,0 +1,29 @@
+@prefix : <http://events.event-processing.org/types/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix e: <http://events.event-processing.org/ids/> .
+@prefix s: <http://streams.event-processing.org/ids/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+e:MyGreenServicesSensors-MGSS-341385134033140 {
+
+e:MyGreenServicesSensors-MGSS-341385134033140
+        a         :MyGreenServicesSensors ;
+<http://events.event-processing.org/MyGreenServicesSensors/accuracy>
+                "1.2" ;
+<http://events.event-processing.org/MyGreenServicesSensors/dateTime>
+                "2013-11-22 16:19:00" ;
+<http://events.event-processing.org/MyGreenServicesSensors/idPlatPol>
+                "34" ;
+<http://events.event-processing.org/MyGreenServicesSensors/polluant>
+                "O3NO2" ;
+<http://events.event-processing.org/MyGreenServicesSensors/uniqueId>
+                "MyGreenServicesSensors-MGSS-341385134033140" ;
+<http://events.event-processing.org/MyGreenServicesSensors/value>
+                "12.0" ;
+        :endTime "2013-11-22T16:27:13.14"^^xsd:dateTime ;
+        :source <http://sources.event-processing.org/ids/myGreenServices#source> ;
+        :stream <http://streams.event-processing.org/ids/MyGreenServicesSensors#stream> ;
+        geo:lat "43.614975" ;
+        geo:lng "7.067669" .
+}

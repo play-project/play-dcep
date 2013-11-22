@@ -10,11 +10,14 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.node.NodeException;
+import org.ontoware.rdf2go.model.ModelSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
@@ -51,9 +54,16 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 
 		testApi.attach(subscriber);
 	
-		String xmlEvent = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("events/MyGreenServicesSensors.nativeMessage.xml"));
-		// TODO stuehmer fininsh test
+		ModelSet event1 = EventHelpers.createEmptyModelSet();
+		event1.readFrom(this.getClass().getClassLoader().getResourceAsStream("events/MyGreenServicesSensors.trig"));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(event1.getModels().next()));
 		
+		ModelSet event2 = EventHelpers.createEmptyModelSet();
+		event2.readFrom(this.getClass().getClassLoader().getResourceAsStream("events/MyGreenServicesUsers.trig"));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(event2.getModels().next()));
+		
+		// TODO stuehmer finish test
+				
 		// Wait
 		delay();
 
