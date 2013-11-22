@@ -31,11 +31,14 @@ updateJarFile() {
 runTest() {
       	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]} "cd $toolpath && ./bin/dEtalis restart" &
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[3]} "cd $toolpath && ./bin/dEtalis restart" & 
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[6]} "cd $toolpath && ./bin/dEtalis restart" &
       	sleep 5 
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]} "cd $toolpath && ./bin/subscriber restart ${hosts[0]}" &
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[4]} "cd $toolpath && ./bin/subscriber restart ${hosts[3]}" &	
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]} "cd $toolpath && ./bin/publisher  restart registerPatterns    ${hosts[3]} ${hosts[0]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[5]} "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[7]} "cd $toolpath && ./bin/subscriber restart ${hosts[6]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]} "cd $toolpath && ./bin/publisher  restart registerPatterns    ${hosts[3]} ${hosts[0]} ${hosts[6]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[5]} "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[8]} "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]}" &
 }
 
 getLogs() {
@@ -78,6 +81,20 @@ updateTime() {
         done
 }
 
+updateHostConfig() {
+
+	for i in "${hosts[@]}"
+        do
+            ssh -oStrictHostKeyChecking=no $ssh_usr@$i "echo  $i.dcep.play-project.eu > /etc/hostname"& 
+            ssh -oStrictHostKeyChecking=no $ssh_usr@$i "/etc/init.d/hostname.sh"&
+	    for j in "${hosts[@]}"
+            do
+		ssh -oStrictHostKeyChecking=no $ssh_usr@$j "echo $i $i.dcep.play-project.eu >>  /etc/hosts" &
+            done
+
+        done
+
+}
 
 case "$1" in
 	runTest)
@@ -106,6 +123,10 @@ case "$1" in
 	clearLogs)
                 clearLogs 
         ;;
+
+	updateHostConfig)
+		updateHostConfig
+	;;
  
 
  	*)
