@@ -62,7 +62,7 @@ public class SingleDistributedEtalisInstancePublisher {
 			managementApis.add(i-1, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
 		}
 
-		BdplQuery q = createCepQuery(("p1" + (++patternIdCounter + Math.random())) , getSparqlQueries("benchmarks/srbench/q3.eprq"));
+		BdplQuery q = createCepQuery(("p1") , getSparqlQueries("benchmarks/srbench/q3.eprq"));
 		try{
 		// Register queries.
 		if (args[0].equals("registerPatterns")) {

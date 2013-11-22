@@ -5,6 +5,8 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bouncycastle.crypto.RuntimeCryptoException;
+
 import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
@@ -39,7 +41,6 @@ public class EventProducerThread implements Runnable {
 		this.testApi = testApi;
 		this.numberOfEvents = numberOfEvents;
 		this.delay =  delay;
-		id = Math.random();
 		
 		meausrementUnit = MeasurementUnit.getMeasurementUnit();
 		meausrementUnit.calcRateForNEvents(500);
@@ -50,13 +51,19 @@ public class EventProducerThread implements Runnable {
 
 	@Override
 	public void run() {
+		String hostname = "";
+		try {
+			hostname = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+		} catch (UnknownHostException e) {
+			throw new RuntimeException("It is not possible to read hostname. No event will be produced. Message: " + e.getMessage());
+		}
 
 		// Publis event
 		for (int i = 0; i < (numberOfEvents / testApi.size()); i++) {
 
 			// Distribute events in Round-robin fashion to all CEP-Engines.
 			for (DistributedEtalisTestApi api : testApi) {
-				api.publish(createEvent("http://example.com/eventId/" + i + id));
+				api.publish(createEvent("http://example.com/eventId/" + hostname + "_" + i ));
 			
 				// Some statistics
 				meausrementUnit.nexEvent();
