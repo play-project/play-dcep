@@ -57,9 +57,7 @@ public class SingleDistributedEtalisInstancePublisher {
 			// Connect to DistributedEtalis instance 1.
 			PAComponentRepresentative root1 = Fractive.lookup((URIBuilder.buildURI(args[i], "dEtalis", "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
 			configApis.add(i-1, ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName())));
-			logger.error("set Config 1");
 			configApis.get(i-1).setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
-			logger.error("set Config 2");
 			testApis.add(i-1, ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName())));
 			managementApis.add(i-1, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
 		}
@@ -83,12 +81,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		}
 
 		// Start publishing events.
-		for (int i = 1; i == 0; i++) {
-			
-		}
-		for (int i = 1; i == 0; i++) {
-			
-		}
+		Thread.sleep(9000);
 		new EventProducerThread(20002, 6, testApis);
 		
 		while(true){}
