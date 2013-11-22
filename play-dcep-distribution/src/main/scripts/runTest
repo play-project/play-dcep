@@ -1,6 +1,6 @@
 #!/bin/bash
 toolpath=/opt/dcep
-hosts=(141.52.218.16 141.52.218.17 141.52.218.19 141.52.218.20 141.52.219.180 141.52.219.181 141.52.219.183 141.52.219.185 141.52.219.186 141.52.219.188 141.52.219.190 141.52.219.191 141.52.219.192 141.52.219.193 141.52.219.195 141.52.219.196) 
+hosts=(141.52.218.16 141.52.218.17 141.52.218.19 141.52.218.20 141.52.219.180 141.52.219.181 141.52.219.183 141.52.219.185 141.52.219.186 141.52.219.188 141.52.219.190 141.52.219.191 141.52.219.192 141.52.219.193 141.52.219.195 141.52.219.196 141.52.219.197 141.52.219.198 141.52.219.200) 
 ssh_usr=root
 dcepHttpSource=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play/dcep.zip
 dcepJarHttpSource=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play/dcep-jar-with-dependencies.jar
@@ -32,13 +32,17 @@ runTest() {
       	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]} "cd $toolpath && ./bin/dEtalis restart" &
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[3]} "cd $toolpath && ./bin/dEtalis restart" & 
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[6]} "cd $toolpath && ./bin/dEtalis restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[9]} "cd $toolpath && ./bin/dEtalis restart" &
       	sleep 5 
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]} "cd $toolpath && ./bin/subscriber restart ${hosts[0]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[4]} "cd $toolpath && ./bin/subscriber restart ${hosts[3]}" &	
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[7]} "cd $toolpath && ./bin/subscriber restart ${hosts[6]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]} "cd $toolpath && ./bin/publisher  restart registerPatterns    ${hosts[3]} ${hosts[0]} ${hosts[6]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[5]} "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[8]} "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]}  "cd $toolpath && ./bin/subscriber restart ${hosts[0]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[4]}  "cd $toolpath && ./bin/subscriber restart ${hosts[3]}" &	
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[7]}  "cd $toolpath && ./bin/subscriber restart ${hosts[6]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[10]} "cd $toolpath && ./bin/subscriber restart ${hosts[9]}" &
+
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[11]} "cd $toolpath && ./bin/publisher  restart registerPatterns   ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[5]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[8]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
 }
 
 getLogs() {
