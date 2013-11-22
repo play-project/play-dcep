@@ -322,12 +322,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public JtalisContextImpl getEtalis() {
-		if (!init) {
-			throw new IllegalStateException(this.getClass().getSimpleName()
-					+ " has not been initialized.");
-		}
-		
+	public JtalisContextImpl getEtalis() {	
 		return etalis;
 	}
 
