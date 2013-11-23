@@ -82,7 +82,7 @@ public class SingleDistributedEtalisInstancePublisher {
 
 		// Start publishing events.
 		Thread.sleep(9000);
-		new EventProducerThread(20002, 6, testApis);
+		new EventProducerThread(20002, 10, testApis);
 		
 		while(true){}
 	}
