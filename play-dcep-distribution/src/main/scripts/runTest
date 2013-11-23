@@ -30,10 +30,13 @@ updateJarFile() {
 
 runTest() {
       	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]} "cd $toolpath && ./bin/dEtalis restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[3]} "cd $toolpath && ./bin/dEtalis restart" & 
       	sleep 5 
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]}  "cd $toolpath && ./bin/subscriber restart ${hosts[0]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[4]}  "cd $toolpath && ./bin/subscriber restart ${hosts[3]}" &	
 
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[11]} "cd $toolpath && ./bin/publisher  restart registerPatterns   ${hosts[0]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[11]} "cd $toolpath && ./bin/publisher  restart registerPatterns    ${hosts[3]} ${hosts[0]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]}" &
 }
 
 getLogs() {
