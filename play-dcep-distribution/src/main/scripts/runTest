@@ -29,20 +29,23 @@ updateJarFile() {
 }
 
 runTest() {
-      	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]} "cd $toolpath && ./bin/dEtalis restart" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[3]} "cd $toolpath && ./bin/dEtalis restart" & 
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[6]} "cd $toolpath && ./bin/dEtalis restart" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[9]} "cd $toolpath && ./bin/dEtalis restart" &
+      	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[0]}  "cd $toolpath && ./bin/dEtalis restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[3]}  "cd $toolpath && ./bin/dEtalis restart" & 
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[6]}  "cd $toolpath && ./bin/dEtalis restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[9]}  "cd $toolpath && ./bin/dEtalis restart" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[12]} "cd $toolpath && ./bin/dEtalis restart" &
       	sleep 5 
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[1]}  "cd $toolpath && ./bin/subscriber restart ${hosts[0]}" &
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[4]}  "cd $toolpath && ./bin/subscriber restart ${hosts[3]}" &	
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[7]}  "cd $toolpath && ./bin/subscriber restart ${hosts[6]}" &
 	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[10]} "cd $toolpath && ./bin/subscriber restart ${hosts[9]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[13]} "cd $toolpath && ./bin/subscriber restart ${hosts[12]}" &
 
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[11]} "cd $toolpath && ./bin/publisher  restart registerPatterns    ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[5]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
-	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[8]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[11]} "cd $toolpath && ./bin/publisher  restart registerPatterns     ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]} ${hosts[12]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[2]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot  ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]} ${hosts[12]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[5]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot  ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]} ${hosts[12]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[8]}  "cd $toolpath && ./bin/publisher  restart registerPatternsNot  ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]} ${hosts[12]}" &
+	ssh -oStrictHostKeyChecking=no $ssh_usr@${hosts[14]} "cd $toolpath && ./bin/publisher  restart registerPatternsNot  ${hosts[3]} ${hosts[0]} ${hosts[6]} ${hosts[9]} ${hosts[12]}" &
 }
 
 getLogs() {
