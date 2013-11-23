@@ -69,7 +69,7 @@ public class EventProducerThread implements Runnable {
 				meausrementUnit.nexEvent();
 				
 				// Wait
-				if((i % 2) == 0) delay();
+				delay();
 			}
 		}
 	}
