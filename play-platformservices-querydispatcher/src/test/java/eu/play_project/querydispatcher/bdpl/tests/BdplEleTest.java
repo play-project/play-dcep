@@ -1,16 +1,19 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import com.hp.hpl.jena.query.Query;
@@ -29,18 +32,13 @@ import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
-import eu.play_project.play_platformservices_querydispatcher.playEleParser.ParseException;
-import eu.play_project.play_platformservices_querydispatcher.playEleParser.PlayEleParser;
-
-//import eu.play_project.querydispatcher.bdpl.tests.helpers.FilterExpressionCodeGenerator;
 
 public class BdplEleTest {
 
 	@Test
-	public void testManualParserUsage() {
+	public void testManualParserUsage() throws IOException {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
@@ -70,7 +68,7 @@ public class BdplEleTest {
 
 
 	@Test
-	public void testBasicEleGeneration() {
+	public void testBasicEleGeneration() throws IOException {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
@@ -113,12 +111,101 @@ public class BdplEleTest {
 
 		System.out.println(etalisPattern);
 	}
+	
+	@Test
+	public void globalFilterVariables() throws IOException {
+		
+		
+		String queryString = getSparqlQuery("play-bdpl-crisis-02b-windintensity.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		visitor1.generateQuery(query);
+		
+		System.out.println(visitor1.getEle());
+	}
+	
+	@Test
+	public void complexFilterTest() throws IOException {
+		
+		
+		String queryString = getSparqlQuery("play-bdpl-crisis-01b-radiationincrease.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		visitor1.generateQuery(query);
+		
+		System.out.println(visitor1.getEle());
+	}
+	
+	@Test
+	public void orFilterTest() throws IOException {
+		
+		String queryString = getSparqlQuery("queries/play-bdpl-inria-green-services-01.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+		
+		visitor1.generateQuery(query);
+		
+		System.out.println(visitor1.getEle());
+	}
 
 	/**
 	 * Generate code for (AVG(t) >= 30).
 	 */
 	@Test
-	public void testHavingAvg() {
+	public void testHavingAvg() throws IOException {
 
 		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
 		Query query = null;
@@ -165,6 +252,8 @@ public class BdplEleTest {
 
 		// try { // FIXME sobermeier: this does not work anymore since 'complex'
 		// events now have individual names
+		// PlayEleParser parser = new PlayEleParser(new ByteArrayInputStream(etalisPattern.getBytes()));
+		// parser.Start();
 		// parseEtalisPattern(etalisPattern);
 		// } catch (ParseException e) {
 		// e.printStackTrace();
@@ -172,14 +261,8 @@ public class BdplEleTest {
 		// }
 	}
 
-	private void parseEtalisPattern(String elePattern) throws ParseException {
-		PlayEleParser parser = new PlayEleParser(new ByteArrayInputStream(elePattern.getBytes()));
-
-		parser.Start();
-	}
-
 	@Test
-	public void testShowQdResult() {
+	public void testShowQdResult() throws IOException {
 
 		String queryString;
 
@@ -198,12 +281,12 @@ public class BdplEleTest {
 	}
 
 	@Test
-	public void testShowEleResult() {
+	public void testShowEleResult() throws IOException {
 
 		String queryString;
 
 		// Get query.
-		queryString = getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		queryString = getSparqlQuery("queries/HistoricRealtimeQuery.eprq");
 		System.out.println(queryString);
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -216,6 +299,24 @@ public class BdplEleTest {
 		System.out.println(etalisPattern);
 	}
 	
+	@Test
+	public void testHistoricRealtimeShardValues() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/HistoricRealtimeQuery2.eprq");
+		System.out.println(queryString);
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		
+		assertTrue(etalisPattern.contains("variabeValuesAdd('http://patterns.event-processing.org/patterns/42','screenName02',VscreenName02)))"));
+	}
 	
 
 	@Test
@@ -253,48 +354,6 @@ public class BdplEleTest {
 	// VariableTypes.historicType);
 	// System.out.println(variables.values());
 	// }
-
-	@Test
-	public void testRdfQueryRepresentativeQueryVisitor() {
-
-		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
-		Query query = null;
-
-		try {
-			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		} catch (Exception e) {
-			System.out.println("Exception was thrown: " + e);
-		}
-
-		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
-		query.getEventQuery().get(0).visit(v);
-
-		// Queries for variable t1,e1,friend1,about1.
-		String[] expectedResult = {
-				"rdf(Ve1,'http://events.event-processing.org/types/temperature',Vt1,ViD0)",
-				"rdf(Ve1,'http://www.w3.org/1999/02/22-rdf-syntax-ns#type','http://events.event-processing.org/types/FacebookStatusFeedEvent',ViD0)",
-				"rdf(Ve1,'http://events.event-processing.org/types/name',Vfriend1,ViD0)",
-				"rdf(Ve1,'http://events.event-processing.org/types/status',Vabout1,ViD0)"
-		};
-
-		int i = 0;
-		for (String key : v.getRdfQueryRepresentativeQuery().keySet()) {
-			assertEquals(expectedResult[i], v.getRdfQueryRepresentativeQuery().get(key));
-			i++;
-		}
-
-		System.out.println(v.getRdfQueryRepresentativeQuery());
-
-		// Use custom visitor
-		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
-
-		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
-
-		System.out.println(etalisPattern);
-	}
 
 	/**
 	 * Return the query from given file. If given it returns the message of the
@@ -369,28 +428,8 @@ public class BdplEleTest {
 		return filenames;
 	}
 
-	public static String getSparqlQuery(String queryFile) {
-		try {
-			InputStream is = BdplEleTest.class.getClassLoader().getResourceAsStream(queryFile);
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			StringBuffer sb = new StringBuffer();
-			String line;
-
-			while (null != (line = br.readLine())) {
-				sb.append(line);
-				sb.append("\n");
-			}
-
-			br.close();
-			is.close();
-
-			return sb.toString();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-
+	public static String getSparqlQuery(String queryFile) throws IOException {
+		return IOUtils.toString(BdplEleTest.class.getClassLoader().getResourceAsStream(queryFile), StandardCharsets.UTF_8);
 	}
 
 }

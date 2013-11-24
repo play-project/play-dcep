@@ -1,6 +1,11 @@
 package eu.play_project.dcep.distribution.tests.srbench.performance;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
+import java.util.List;
+
+import org.bouncycastle.crypto.RuntimeCryptoException;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
@@ -18,10 +23,11 @@ import fr.inria.eventcloud.api.Quadruple;
  */
 public class EventProducerThread implements Runnable {
 	private final Thread thisThread;
-	private final DistributedEtalisTestApi[] testApi;
+	private final List<DistributedEtalisTestApi> testApi;
 	private final MeasurementUnit meausrementUnit;
 	private final int numberOfEvents;
 	private int delay;
+	double id;
 
 	/**
 	 * Generate an instance in his own thread and publish events to destinations.
@@ -31,7 +37,7 @@ public class EventProducerThread implements Runnable {
 	 * @param delay
 	 *            Delay between two events. Given in ms.
 	 */
-	public EventProducerThread(int numberOfEvents, int delay, DistributedEtalisTestApi... testApi) {
+	public EventProducerThread(int numberOfEvents, int delay, List<DistributedEtalisTestApi> testApi) {
 		this.testApi = testApi;
 		this.numberOfEvents = numberOfEvents;
 		this.delay =  delay;
@@ -45,31 +51,26 @@ public class EventProducerThread implements Runnable {
 
 	@Override
 	public void run() {
-		int destination = 0; //Destinations are stored in testApi.
-		int count =0;
+		String hostname = "";
+		try {
+			hostname = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+		} catch (UnknownHostException e) {
+			throw new RuntimeException("It is not possible to read hostname. No event will be produced. Message: " + e.getMessage());
+		}
 
 		// Publis event
-		for (int i = 0; i < (numberOfEvents / testApi.length); i++) {
+		for (int i = 0; i < (numberOfEvents / testApi.size()); i++) {
 
-			// Distibute events in Round-robin fashon to all CEP-Engines.
-			for (int j = 0; j < testApi.length; j++) {
-				testApi[j].publish(createEvent("http://example.com/eventId/" + i));
-				
+			// Distribute events in Round-robin fashion to all CEP-Engines.
+			for (DistributedEtalisTestApi api : testApi) {
+				api.publish(createEvent("http://example.com/eventId/" + hostname + "_" + i ));
+			
 				// Some statistics
 				meausrementUnit.nexEvent();
-
-				// Decrease delay
-				count++;
-				if (count % 2500 == 0) {
-					if ((delay - 2) > 0) {
-						delay -= 2;
-					}
-				}
 				
 				// Wait
 				delay();
 			}
-
 		}
 	}
 

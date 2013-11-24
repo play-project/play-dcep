@@ -29,7 +29,7 @@ Installation
 
 Issues
 ------
-For issues and bug reporting, please go to https://github.com/play-project/play/issues?labels=dcep&amp;page=1&amp;state=open
+[Issues and bug reporting](https://github.com/play-project/play-dcep/issues)
 
 Other
 -----

@@ -55,7 +55,7 @@ public class Distibutor {
 				.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
 		ConfigApi configApi = ((ConfigApi) root.getFcInterface(ConfigApi.class.getSimpleName()));
-		configApi.setConfig(new DetalisConfigLocal("historical-data/clic2call-historical-data.trig"));
+		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
 
 		// Register apis
 		java.rmi.registry.Registry registry = LocateRegistry.getRegistry();

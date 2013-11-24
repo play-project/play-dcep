@@ -74,7 +74,9 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		// Operator
 		if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalAnd) {
 			// Do nothing AND is infix operator
-		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LessThan) {
+		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalOr) {
+			// Do nothing OR is infix operator
+		}else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LessThan) {
 			if(ele.length()>2) ele.append(","); // At the beginning of a string no ",".
 			ele.append("less(" + stack.pop() + ", " + rightElem + ")");
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Subtract) {
@@ -92,7 +94,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			ele.append("greaterOrEqual(" + stack.pop() + "," + rightElem + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThan) {
-			if(ele.length()>2 && !ele.toString().endsWith(",")) ele.append(","); // TODO look if this is needed for other operators
+			if(ele.length()>2 && (!ele.toString().endsWith(", ") && !ele.toString().endsWith(" ("))) ele.append(","); // TODO look if this is needed for other operators
 			ele.append("greater(" + stack.pop() + "," + rightElem + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Equals) {
@@ -138,11 +140,11 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		
 		//Close bracket
 		if(getStringFirstTime){
-			ele.append("),");
+			ele.append(")");
 			getStringFirstTime = false;
 		}
 
-		if(ele.toString().endsWith("(),")){
+		if(ele.toString().endsWith("()")){
 			ele = emptyStringBuffer;
 		}
 		return ele;

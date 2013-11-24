@@ -13,8 +13,11 @@ import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
 
+import eu.play_project.dcep.api.DcepManagementException;
+import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.distribution.tests.srbench.performance.ComplexEventSubscriber;
 
 public class SingleDistributedEtalisInstanceSubscriber {
 
@@ -23,15 +26,11 @@ public class SingleDistributedEtalisInstanceSubscriber {
 
 	public static void main(String[] args) throws ADLException,
 			IllegalLifeCycleException, NoSuchInterfaceException,
-			ProActiveException, DistributedEtalisException, IOException, NamingException {
+			ProActiveException, DistributedEtalisException, IOException, NamingException, DcepManagementException {
 
 		// Connect to DistributedEtalis instance.
-		PAComponentRepresentative root1 = Fractive.lookup(URIBuilder.buildURI(args[0], args[1], "rmi", 1099).toString());
-
-		//Get interfaces.
-		testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1
-				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
-
+		connectToCepEngine("dEtalis", args[0]);
+	
 		//Subscribe
 		subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
 		testApiI1.attach(subscriber);
@@ -40,5 +39,27 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		System.in.read();
 		System.in.read();
 		System.in.read();
+	}
+	
+	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DistributedEtalisException{
+
+		/* COMPONENT_ALIAS = "Dispatcher" */
+		PAComponentRepresentative root = null;
+
+		try {
+			root = Fractive.lookup((URIBuilder.buildURI(host, name, "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			 testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
+					.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
 	}
 }

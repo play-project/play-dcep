@@ -74,6 +74,8 @@ Serializable {
 
 		CentralPAPropertyRepository.GCM_PROVIDER
 		.setValue("org.objectweb.proactive.core.component.Fractive");
+		
+		init();
 	}
 
 	@Override
@@ -165,16 +167,20 @@ Serializable {
 				configApi = ((ConfigApi)dEtalis.getFcInterface(ConfigApi.class.getSimpleName()));
 				configDEtalisInstance(configApi);
 			} catch (NoSuchInterfaceException e) {
-				logger.error("Error initialising DCEP: ", e);
+				logger.error("Error initialising DCEP: {}", e.getMessage());
+				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
 			} catch (ADLException e) {
-				logger.error("Error initialising DCEP: ", e);
+				logger.error("Error initialising DCEP: {}", e.getMessage());
+				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
 			} catch (IllegalLifeCycleException e) {
-				logger.error("Error initialising DCEP: ", e);
+				logger.error("Error initialising DCEP: {}", e.getMessage());
+				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
 			} catch (DistributedEtalisException e) {
-				logger.error("Error initialising DCEP: ", e);
+				logger.error("Error initialising DCEP: {}", e.getMessage());
+				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
 			}
 			

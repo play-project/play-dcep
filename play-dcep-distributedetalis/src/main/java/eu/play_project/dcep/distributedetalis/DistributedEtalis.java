@@ -130,11 +130,15 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			
 			etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
 			// Start tumbling window. (If a tumbling window was defined.)
-			etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow());
+			if (!etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow())) {
+				throw new DistributedEtalisException("Error registering tumbling window for queryId " + bdplQuery.getDetails().getQueryId());
+			}
 			
 			//Register db queries.
 			for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
-				etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")");
+				if (!etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")")) {
+					throw new DistributedEtalisException("Error registering RdfDbQueries for queryId " + bdplQuery.getDetails().getQueryId());
+				}
 			}
 			
 			// Configure ETALIS to inform output listener if complex event of new type appeared.
@@ -216,8 +220,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	@Override
 	public void setConfig(Configuration configuration) throws DistributedEtalisException {
-		configuration.configure(this);
-		init = true;
+		if(init != true) {
+			configuration.configure(this);
+			init = true;
+		} else {
+			logger.warn("DistributedEtalis  is already configured");
+		}
 	}
 
 	public String getName() {
@@ -243,6 +251,11 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 
 	@Override
 	public void publish(CompoundEvent event) {
+		if (!init) {
+			throw new IllegalStateException(this.getClass().getSimpleName()
+					+ " has not been initialized.");
+		}
+		
 		eventInputProvider.notify(event);
 	}
 
@@ -308,12 +321,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public JtalisContextImpl getEtalis() {
+	public JtalisContextImpl getEtalis() {	
 		return etalis;
 	}
 
 	@Override
-	public JtalisOutputProvider getEventOutputProvider() {
+	public JtalisOutputProvider getEventOutputProvider() {	
 		return eventOutputProvider;
 	}
 

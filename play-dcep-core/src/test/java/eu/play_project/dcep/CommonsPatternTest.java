@@ -303,6 +303,285 @@ public class CommonsPatternTest {
 	}
 	
 	@Test
+	public void testCrisis02b() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException, InterruptedException {
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQueries("play-bdpl-crisis-02b-windintensity.eprq");
+		System.out.println(queryString);
+		
+		// Compile query
+		queryDispatchApi.registerQuery("queryId", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		testApi.attach(subscriber);
+	
+		logger.info("Publish evetns");
+		for (int i = 0; i < 16; i++) {
+			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
+			Quadruple q1 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"));
+			Quadruple q2 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
+			Quadruple q4 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+					NodeFactory.createURI("http://streams.event-processing.org/ids/situationalEvent#stream"));
+			Quadruple q5 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/localisation"),
+					NodeFactory.createURI("Karlsruhe"));
+			Quadruple q6 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/unit"),
+					NodeFactory.createURI("km/h"));
+			Quadruple q7 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
+					NodeFactory.createURI("" + (100 * i) + ""));
+					//NodeFactory.createURI("" + (100) + ""));
+
+			quads.add(q1);
+			quads.add(q2);
+			quads.add(q4);
+			quads.add(q5);
+			quads.add(q6);
+			quads.add(q7);
+			testApi.publish(new CompoundEvent(quads));
+			
+			Thread.sleep(100);
+		}
+
+		// Wait
+		delay();
+
+
+		assertEquals(1, subscriber.getComplexEvents().size());
+
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			for (Component subcomponent : GCM.getContentController(root)
+					.getFcSubComponents()) {
+				logger.info("Terminating component: "
+						+ subcomponent.getFcType());
+				GCM.getGCMLifeCycleController(subcomponent)
+						.terminateGCMComponent();
+			}
+			
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testCrisis01b() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException, InterruptedException {
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQueries("play-bdpl-crisis-01b-radiationincrease.eprq");
+		System.out.println(queryString);
+		
+		// Compile query
+		queryDispatchApi.registerQuery("queryId", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		testApi.attach(subscriber);
+	
+		logger.info("Publish evetns");
+		for (int i = 0; i < 16; i++) {
+			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
+			Quadruple q1 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"));
+			Quadruple q2 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
+			Quadruple q4 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+					NodeFactory.createURI("http://streams.event-processing.org/ids/situationalEvent#stream"));
+			Quadruple q5 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/localisation"),
+					NodeFactory.createURI("Karlsruhe"));
+			Quadruple q6 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/unit"),
+					NodeFactory.createURI("km/h"));
+			Quadruple q7 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
+					NodeFactory.createURI("" + (100 * i) + ""));
+					//NodeFactory.createURI("" + (100) + ""));
+
+			quads.add(q1);
+			quads.add(q2);
+			quads.add(q4);
+			quads.add(q5);
+			quads.add(q6);
+			quads.add(q7);
+			testApi.publish(new CompoundEvent(quads));
+			
+			Thread.sleep(100);
+		}
+
+		// Wait
+		delay();
+
+
+		assertEquals(1, subscriber.getComplexEvents().size());
+
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			for (Component subcomponent : GCM.getContentController(root)
+					.getFcSubComponents()) {
+				logger.info("Terminating component: "
+						+ subcomponent.getFcType());
+				GCM.getGCMLifeCycleController(subcomponent)
+						.terminateGCMComponent();
+			}
+			
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void realtimeHistoricEvents() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException, InterruptedException {
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQueries("patterns/historic-realtime-query2.eprq");
+
+		// Compile query
+		queryDispatchApi.registerQuery("play-bdpl-overall-scenario-03.eprq", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		testApi.attach(subscriber);
+	
+		logger.info("Publish evetns");
+		for (int i = 0; i < 30; i++) {
+			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
+			Quadruple q1 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+					NodeFactory.createURI("http://events.event-processing.org/types/google"));
+			Quadruple q2 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
+			Quadruple q3 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/screenName"),
+					NodeFactory.createURI("screen1./..-+"));
+			Quadruple q4 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+					NodeFactory.createURI("http://streams.event-processing.org/ids/TwitterFeed#stream"));
+
+			quads.add(q1);
+			quads.add(q2);
+			quads.add(q3);
+			quads.add(q4);
+			testApi.publish(new CompoundEvent(quads));
+			Thread.sleep(100);
+			
+			quads = new LinkedList<Quadruple>();
+			q1 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " b#event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i + "b"),
+					NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+					NodeFactory.createURI("http://events.event-processing.org/types/apple"));
+			q2 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " b#event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i + "b"),
+					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
+			q3 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " b#event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i + "b"),
+					NodeFactory.createURI("http://events.event-processing.org/types/screenName"),
+					NodeFactory.createURI("screen2./..-+"));
+			q4 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " b#event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i + "b"),
+					NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+					NodeFactory.createURI("http://streams.event-processing.org/ids/TwitterFeed#stream"));
+
+			quads.add(q1);
+			quads.add(q2);
+			quads.add(q3);
+			quads.add(q4);
+			testApi.publish(new CompoundEvent(quads));
+			
+			Thread.sleep(100);
+		}
+
+		// Wait
+		delay();
+
+
+		assertEquals(subscriber.getComplexEvents().size(), 0);
+
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			for (Component subcomponent : GCM.getContentController(root)
+					.getFcSubComponents()) {
+				logger.info("Terminating component: "
+						+ subcomponent.getFcType());
+				GCM.getGCMLifeCycleController(subcomponent)
+						.terminateGCMComponent();
+			}
+			
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
 	public void testClic2callPatternPlusTweet() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
 

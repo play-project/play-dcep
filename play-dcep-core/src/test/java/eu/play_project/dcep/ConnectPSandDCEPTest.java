@@ -49,7 +49,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		System.out.println(getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq"));
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void instantiatePlayPlatformTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
@@ -59,7 +59,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		InstantiatePlayPlatform();
 
 		// Get query.
-		queryString = getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq");
+		queryString = getSparqlQueries("patterns/play-epsparql-m12-jeans-example-query-tumbling-window.eprq");
 		//queryString = getSparqlQueries("play-epsparql-contextualized-latitude-01-query.eprq");
 		//queryString = getSparqlQueries("play-epsparql-clic2call.eprq");
 		

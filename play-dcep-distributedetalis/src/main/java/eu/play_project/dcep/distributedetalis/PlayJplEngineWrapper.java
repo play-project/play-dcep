@@ -51,7 +51,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			Query q = new Query(command);
 			return q.allSolutions();
 		} catch (PrologException e) {
-			logger.error("Error shutting down Etalis. {}", e.getMessage());
+			logger.error("Error executing Prolog goal. {}", e.getMessage());
 			return new Hashtable[0];
 		}
 	}
@@ -130,31 +130,13 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 				// Free space
 				this.executeGoal("retractall(rdfTest(_S,_P,_O, " + triplestoreID + "))");
 				
-			} catch (PrologException e) {}
+			} catch (PrologException e) {
+				logger.error("Error deleting data from Prolog. {}", e.getMessage());
+			}
 		}
 		return result;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public Hashtable<String, Object>[] getVariableValues(String queryId){
-		StringBuffer comand = new StringBuffer();
 		
-		comand.append("variableValues('");
-		comand.append(queryId);
-		comand.append("', _, Value)");
-		
-		try {
-			// Get Variables and values
-			return this.execute((comand.toString()));
-		} catch (DistributedEtalisException e) {
-			logger.error("Error getting values from Prolog. {}", e.getMessage());
-			return new Hashtable[0];
-		} catch (PrologException e) {
-			logger.error("Error getting values from Prolog. {}", e.getMessage());
-			return new Hashtable[0];
-		}
-	}
-	
 	@Override
 	public synchronized boolean consult(String file) {
 		try {
