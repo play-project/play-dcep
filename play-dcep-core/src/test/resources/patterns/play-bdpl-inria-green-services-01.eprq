@@ -30,27 +30,26 @@ CONSTRUCT {
 	:e rdf:type :UcTelcoEsrRecom .
 	:e :stream <http://streams.event-processing.org/ids/PollutionAlert#stream> .
 	:e :message "Micro-particles pollution exists near your position" .
-	:e :members ?e1, ?e2 .
-	:e mgs:polluant ?polluant .
-	:e geo:lat ?latitude2 .
-	:e geo:lng ?longitude2 .
-	:e mgs:value ?pollutionRate .
-	:e mgs:dateTime ?date .
+#	:e :members ?e1, ?e2 .
+#	:e mgs:polluant "O3NO2" .
+#	:e geo:lat ?latitude2 .
+#	:e geo:lng ?longitude2 .
+#	:e mgs:value ?pollutionRate .
+#	:e mgs:dateTime ?date .
 	:e mgs:idUser ?userId .
 } WHERE {
 	WINDOW {
-		EVENT ?id1 {
-			?e1 rdf:type :MyGreenServicesSensors .
-			?e1 :stream <http://streams.event-processing.org/ids/MyGreenServicesSensors#stream> .
-			?e1 geo:lat ?latitude1 .
-			?e1 geo:lng ?longitude1 .
-			?e1 mgs:polluant ?polluant .
-			?e1 mgs:value ?pollutionRate .
-			?e1 mgs:dateTime ?date .
-			}
-			FILTER((?polluant = "O3NO2" || ?polluant = "PM10" || ?polluant = "NO2")
-					&& ?pollutionRate >= 6)
-		SEQ
+#		EVENT ?id1 {
+#			?e1 rdf:type :MyGreenServicesSensors .
+#			?e1 :stream <http://streams.event-processing.org/ids/MyGreenServicesSensors#stream> .
+#			?e1 geo:lat ?latitude1 .
+#			?e1 geo:lng ?longitude1 .
+#			?e1 mgs:polluant "O3NO2" .
+#			?e1 mgs:value ?pollutionRate .
+#			?e1 mgs:dateTime ?date .
+#			}
+#			FILTER(?pollutionRate >= 6)
+#		SEQ
 		EVENT ?id2 {
 			?e2 rdf:type :MyGreenServicesSensors .
 			?e2 :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> .

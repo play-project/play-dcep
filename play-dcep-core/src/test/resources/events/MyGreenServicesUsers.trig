@@ -5,20 +5,19 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-e:MyGreenServicesUsers-MGSU-1281385133991638 {
+e:MyGreenServicesUsers-MGSU-51385414904562 {
 
-e:MyGreenServicesUsers-MGSU-1281385133991638
+e:MyGreenServicesUsers-MGSU-51385414904562
         a         :MyGreenServicesSensors ;
-<http://events.event-processing.org/MyGreenServicesUsers/dateTime>
-                "2013-11-22 16:26:31" ;
-<http://events.event-processing.org/MyGreenServicesUsers/idUser>
-                "128" ;
-<http://events.event-processing.org/MyGreenServicesUsers/uniqueId>
-                "MyGreenServicesUsers-MGSU-1281385133991638" ;
-        :endTime "2013-11-22T16:26:31.638"^^xsd:dateTime ;
+        <http://events.event-processing.org/MyGreenServicesUsers/dateTime>
+                "2013-11-25 22:28:13" ;
+        <http://events.event-processing.org/MyGreenServicesUsers/idUser>
+                "5" ;
+        <http://events.event-processing.org/MyGreenServicesUsers/uniqueId>
+                "MyGreenServicesUsers-MGSU-51385414904562" ;
+        :endTime "2013-11-25T22:28:24.562"^^xsd:dateTime ;
         :source <http://sources.event-processing.org/ids/myGreenServices#source> ;
         :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> ;
-        geo:lat "43.580417999999995" ;
-        geo:lng "7.125102" . 
-		
+        geo:lat "43.6350425" ;
+        geo:lng "7.0911899" .		
 }
