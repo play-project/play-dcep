@@ -37,6 +37,7 @@ import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalData;
+import eu.play_project.play_platformservices.api.HistoricalQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -187,8 +188,22 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			logger.error("Query with ID {} was not found in registeredQueries.", event.getProperties()[1].toString());
 		} else if (query.getHistoricalQueries() != null && !query.getHistoricalQueries().isEmpty()) {
 			
+			
+			// Check if shared variables exists.
+			boolean sharedVariablesExists =  false;
+			for (HistoricalQuery hQuery : query.getHistoricalQueries()) {
+				if(!hQuery.getVariables().isEmpty()){
+					sharedVariablesExists = true;
+				}
+			}
+			
 			//Get variable bindings.
-			VariableBindings variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[0].toString());
+			VariableBindings variableBindings;
+			if(sharedVariablesExists) {
+				variableBindings = JtalisOutputProvider.getSharedVariablesValues(engine, event.getProperties()[0].toString());
+			} else {
+				variableBindings = new VariableBindings();
+			}
 			
 			//Get historical data to the given binding.
 			HistoricalData values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
