@@ -479,6 +479,55 @@ public class CommonsPatternTest {
 	}
 	
 	@Test
+	public void historicalQueryNoSharedVariables() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException, InterruptedException {
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQueries("historical-query-no-shard-variables.eprq");
+		System.out.println(queryString);
+		
+		// Compile query
+		queryDispatchApi.registerQuery("queryId", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		testApi.attach(subscriber);
+	
+		logger.info("Publish evetns");
+		for (int i = 0; i < 5; i++) {
+			CompoundEvent event = createTaxiUCCallEvent("historical-query-no-shard-variables_e" + i);
+			testApi.publish(event);
+		}
+		
+
+		// Wait
+		delay();
+
+
+		assertEquals(1, subscriber.getComplexEvents().size());
+
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			for (Component subcomponent : GCM.getContentController(root)
+					.getFcSubComponents()) {
+				logger.info("Terminating component: "
+						+ subcomponent.getFcType());
+				GCM.getGCMLifeCycleController(subcomponent)
+						.terminateGCMComponent();
+			}
+			
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
 	public void realtimeHistoricEvents() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, ActiveObjectCreationException, NodeException, InterruptedException {
 		String queryString;
 
