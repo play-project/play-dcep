@@ -31,8 +31,8 @@ CONSTRUCT {
 	:e rdf:type :UcTelcoEsrRecom .
 	:e :stream <http://streams.event-processing.org/ids/PollutionAlert#stream> .
 	:e :message "Micro-particles pollution exists near your position" .
-#	:e :members ?e1, ?e2 .
-	:e mgs:polluant "O3NO2" .
+	:e :members ?e1, ?e2 .
+	:e mgs:polluant ?polluant .
 	:e geo:lat ?latitude2 .
 	:e geo:lng ?longitude2 .
 	:e mgs:value ?pollutionRate .
@@ -45,11 +45,16 @@ CONSTRUCT {
 			?e1 :stream <http://streams.event-processing.org/ids/MyGreenServicesSensors#stream> .
 			?e1 geo:lat ?latitude1 .
 			?e1 geo:lng ?longitude1 .
-			?e1 mgs:polluant "O3NO2" .
+			?e1 mgs:polluant ?polluant .
 			?e1 mgs:value ?pollutionRate .
 			?e1 mgs:dateTime ?date .
 			}
-			FILTER(?pollutionRate >= 6)
+			FILTER(
+					(contains(?polluant, "O3NO2") ||
+					contains(?polluant, "PM10") ||
+					contains(?polluant, "NO2"))
+					&& ?pollutionRate >= 6
+			)
 		SEQ
 		EVENT ?id2 {
 			?e2 rdf:type :MyGreenServicesSensors .
@@ -58,6 +63,6 @@ CONSTRUCT {
 			?e2 geo:lng ?longitude2 .
 			?e2 mgu:idUser ?userId .
 			}
-#			FILTER (abs(?latitude1 - ?latitude2) < 0.1 && abs(?longitude1 - ?longitude2) < 0.5) # nearby
+			FILTER (abs(?latitude1 - ?latitude2) < 10 && abs(?longitude1 - ?longitude2) < 2000) # nearby
 	} ("PT3M"^^xsd:duration, sliding)
 }
