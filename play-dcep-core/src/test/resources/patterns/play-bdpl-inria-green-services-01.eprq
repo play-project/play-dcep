@@ -17,6 +17,7 @@
 # - when receiving a pollution alert, the user should not receive another alert until he make 1 km after the first one.
 
 PREFIX mgs:     <http://events.event-processing.org/MyGreenServicesSensors/>
+PREFIX mgu:     <http://events.event-processing.org/MyGreenServicesUsers/>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX uctelco: <http://events.event-processing.org/uc/telco/>
 PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
@@ -36,7 +37,7 @@ CONSTRUCT {
 #	:e geo:lng ?longitude2 .
 #	:e mgs:value ?pollutionRate .
 #	:e mgs:dateTime ?date .
-	:e mgs:idUser ?userId .
+	:e mgu:idUser ?userId .
 } WHERE {
 	WINDOW {
 #		EVENT ?id1 {
@@ -55,7 +56,7 @@ CONSTRUCT {
 			?e2 :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> .
 			?e2 geo:lat ?latitude2 .
 			?e2 geo:lng ?longitude2 .
-			?e2 mgs:idUser ?userId .
+			?e2 mgu:idUser ?userId .
 			}
 			FILTER (abs(?latitude1 - ?latitude2) < 0.1 && abs(?longitude1 - ?longitude2) < 0.5) # nearby
 	} ("PT3M"^^xsd:duration, sliding)

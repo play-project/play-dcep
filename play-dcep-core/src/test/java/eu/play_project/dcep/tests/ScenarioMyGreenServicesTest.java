@@ -19,10 +19,7 @@ import org.slf4j.LoggerFactory;
 import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_eventadapter.AbstractSenderRest;
-import eu.play_project.play_eventadapter.api.RdfSender;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
@@ -83,27 +80,6 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 		ModelSet event = EventHelpers.createEmptyModelSet();
 		event.readFrom(ScenarioMyGreenServicesTest.class.getClassLoader().getResourceAsStream(rdfFile));
 		return event.getModels().next();
-	}
-
-	public static void main(String[] args) throws ModelRuntimeException, IOException {
-		
-		RdfSender sender = new AbstractSenderRest(
-				Stream.TaxiUCCall.getTopicQName(),
-				"http://play.inria.fr:8080/play/api/v1/platform/publish");
-		
-		sender.setApiToken("b31f84a7dac5b1fc856784ff593611");
-
-		Model m;
-		
-		m = loadEvent("events/MyGreenServicesSensors.trig");
-		m.dump();
-		sender.notify(m);
-		
-		m = loadEvent("events/MyGreenServicesUsers.trig");
-		m.dump();
-		sender.notify(m);
-
-
 	}
 	
 }
