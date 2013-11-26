@@ -74,8 +74,6 @@ Serializable {
 
 		CentralPAPropertyRepository.GCM_PROVIDER
 		.setValue("org.objectweb.proactive.core.component.Fractive");
-		
-		init();
 	}
 
 	@Override
