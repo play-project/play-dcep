@@ -1,8 +1,10 @@
 package eu.play_project.dcep.tests;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
+import org.apache.commons.io.IOUtils;
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -18,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
-import eu.play_project.querydispatcher.bdpl.tests.BdplEleTest;
 
 
 /**
@@ -79,8 +80,8 @@ public class ScenarioAbstractTest {
 		}
 	}
 	
-	public String getSparqlQueries(String queryFile) throws IOException{
-		return BdplEleTest.getSparqlQuery(queryFile);
+	public static String getSparqlQueries(String queryFile) throws IOException{
+		return IOUtils.toString(ScenarioAbstractTest.class.getClassLoader().getResourceAsStream(queryFile), StandardCharsets.UTF_8);
 	}
 
 }

@@ -14,15 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.SimplePublishApiSubscriber;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 
 public class ScenarioTelcoLocationTest extends ScenarioAbstractTest {
 
-	public static QueryDispatchApi queryDispatchApi;
-	public static DistributedEtalisTestApi testApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;

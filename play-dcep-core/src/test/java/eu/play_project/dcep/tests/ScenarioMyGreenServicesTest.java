@@ -17,17 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.SimplePublishApiSubscriber;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
-import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 
 public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 
-	public static QueryDispatchApi queryDispatchApi;
-	public static DistributedEtalisTestApi testApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;
@@ -59,13 +55,11 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesSensors.trig")));
 		
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesUsers.trig")));
-		
-		// TODO stuehmer finish test
-				
+
 		// Wait
 		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==0);
+		assertTrue(subscriber.getComplexEvents().size()==1);
 	}
 	
 	private void delay(){
