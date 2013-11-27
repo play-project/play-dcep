@@ -63,7 +63,7 @@ public class ScenarioAbstractTest {
 	}
 	
 	@AfterClass
-	public static void terminatPlayPlatform() {
+	public static void terminatePlayPlatform() {
 		// Stop and terminate GCM Components
 		try {
 			GCM.getGCMLifeCycleController(root).stopFc();

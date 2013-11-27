@@ -300,7 +300,7 @@ public class BdplEleTest {
 	}
 	
 	@Test
-	public void testHistoricRealtimeShardValues() throws IOException {
+	public void testHistoricRealtimeSharedValues() throws IOException {
 
 		String queryString;
 

@@ -690,7 +690,7 @@ public class CommonsPatternTest {
 		String queryString;
 
 		// Get query.
-		queryString = getSparqlQueries("patterns/wether_wind_speed.eprq");
+		queryString = getSparqlQueries("patterns/weather_wind_speed.eprq");
 
 		// Compile query
 		queryDispatchApi.registerQuery("example", queryString);
