@@ -1,8 +1,7 @@
 package eu.play_project.dcep;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -203,8 +202,113 @@ public class FullRealtimeCepTests {
 	}
 	
 	@Test
-	public void testFilterWithMultipleValues() {
+	public void testFilterWithMultipleValues() throws QueryDispatchException, ActiveObjectCreationException, NodeException, InterruptedException {
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQueries("patterns/filter-test-use-some-values-only.eprq");
 		
+		// Compile query
+		queryDispatchApi.registerQuery("queryId", queryString);
+		
+		
+		//Subscribe to get complex events.
+		SimplePublishApiSubscriber subscriber = null;
+		subscriber = PAActiveObject.newActive(SimplePublishApiSubscriber.class, new Object[] {});
+		testApi.attach(subscriber);
+	
+		logger.info("Publish events");
+		for (int i = 0; i < 1; i++) {
+			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
+			Quadruple q1 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/MeasureEvent"));
+			Quadruple q2 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/endTime"),
+					NodeFactory.createURI("\"2013-10-21T16:41:46.671Z\"^^xsd:dateTime"));
+			Quadruple q4 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://events.event-processing.org/types/stream"),
+					NodeFactory.createURI("http://streams.event-processing.org/ids/situationalEvent#stream"));
+			Quadruple q5 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/localisation"),
+					NodeFactory.createURI("Karlsruhe"));
+			Quadruple q6 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/unit"),
+					NodeFactory.createURI("km/h"));
+			Quadruple q7 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
+					NodeFactory.createURI("" + 1 + ""));
+			Quadruple q8 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
+					NodeFactory.createURI("" + 2 + ""));
+			Quadruple q9 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
+					NodeFactory.createURI("" + 33 + ""));
+			Quadruple q10 = new Quadruple(
+					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
+					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
+					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/value"),
+					NodeFactory.createURI("" + 44 + ""));
+
+			quads.add(q1);
+			quads.add(q2);
+			quads.add(q4);
+			quads.add(q5);
+			quads.add(q6);
+			quads.add(q7);
+			quads.add(q8);
+			quads.add(q9);
+			quads.add(q10);
+			testApi.publish(new CompoundEvent(quads));
+			
+			Thread.sleep(100);
+		}
+
+		// Wait
+		delay();
+
+		System.out.println(subscriber.getComplexEvents().get(0));
+		assertEquals(1, subscriber.getComplexEvents().size());
+		
+		assertTrue(subscriber.getComplexEvents().toString().contains("33"));
+		assertTrue(subscriber.getComplexEvents().toString().contains("44"));
+		
+		assertFalse(subscriber.getComplexEvents().toString().contains("1"));
+		assertFalse(subscriber.getComplexEvents().toString().contains("2"));
+
+		// Stop and terminate GCM Components
+		try {
+			GCM.getGCMLifeCycleController(root).stopFc();
+			// Terminate all subcomponents.
+			for (Component subcomponent : GCM.getContentController(root)
+					.getFcSubComponents()) {
+				logger.info("Terminating component: "
+						+ subcomponent.getFcType());
+				GCM.getGCMLifeCycleController(subcomponent)
+						.terminateGCMComponent();
+			}
+			
+		} catch (IllegalLifeCycleException e) {
+			e.printStackTrace();
+		} catch (NoSuchInterfaceException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Test
