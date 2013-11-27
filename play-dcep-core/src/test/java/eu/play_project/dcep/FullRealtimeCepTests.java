@@ -50,14 +50,14 @@ import fr.inria.eventcloud.api.Quadruple;
 
 
 
-public class CommonsPatternTest {
+public class FullRealtimeCepTests {
 
 	public static QueryDispatchApi queryDispatchApi;
 	public static DistributedEtalisTestApi testApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;
-	private final Logger logger = LoggerFactory.getLogger(CommonsPatternTest.class);
+	private final Logger logger = LoggerFactory.getLogger(FullRealtimeCepTests.class);
 	
 	@Before
 	public void instantiatePlayPlatform()
@@ -200,6 +200,11 @@ public class CommonsPatternTest {
 		assertTrue(subscriber.getComplexEvents().size()==5);
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getMatchObject().toString(), "\"Tea\"");
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(8).getMatchObject().toString(), "\"Coffee\"");
+	}
+	
+	@Test
+	public void testFilterWithMultipleValues() {
+		
 	}
 	
 	@Test

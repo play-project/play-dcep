@@ -49,7 +49,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		System.out.println(getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq"));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void instantiatePlayPlatformTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
@@ -221,8 +221,6 @@ public class ConnectPSandDCEPTest implements Serializable {
 	public void sendEvents(){
 		start = true;
 		System.out.println("Start Producer");
-		System.out.println("Send 2000 Events \n\n\n\n\n\n\n");
-		
 	}
 	
 	public static CompoundEvent createEvent(String eventId){
