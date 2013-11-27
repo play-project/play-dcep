@@ -118,6 +118,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
+		elePattern += "constructResultIsNotEmpty(" + getVarNameManager().getCeid() + "),";
 		getVarNameManager().resetTriplestoreVariable();
 		elePattern += ")";
 	}
