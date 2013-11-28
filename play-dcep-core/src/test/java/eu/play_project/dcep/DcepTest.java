@@ -73,7 +73,8 @@ public class DcepTest implements Serializable {
 
 
 
-	//	@Test
+	
+	@Test
 	public void pushEvents() throws DcepManagementException {
 
 		PublishApiSubscriber subscriber =null;
