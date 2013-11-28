@@ -212,7 +212,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/test/resources/proactive.java.policy]]></argLine>
+					<argLine><![CDATA[-Djava.security.manager -Djava.security.policy=src/test/resources/proactive.java.policy -Dproactive.configuration=src/test/resources/ProActiveConfiguration.xml]]></argLine>
 					<!-- Run unit tests in single JVM and do not reuse; otherwise Prolog JNI (JPL) causes problems :stuehmer -->
 					<forkCount>1</forkCount>
 					<reuseForks>false</reuseForks>
