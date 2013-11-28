@@ -15,10 +15,15 @@ import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.ontoware.rdf2go.exception.ModelRuntimeException;
+import org.ontoware.rdf2go.model.Model;
+import org.ontoware.rdf2go.model.ModelSet;
+import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 
 
@@ -80,8 +85,15 @@ public class ScenarioAbstractTest {
 		}
 	}
 	
-	public static String getSparqlQueries(String queryFile) throws IOException{
+	public static String loadSparqlQuery(String queryFile) throws IOException{
 		return IOUtils.toString(ScenarioAbstractTest.class.getClassLoader().getResourceAsStream(queryFile), StandardCharsets.UTF_8);
+	}
+	
+	
+	public static Model loadEvent(String rdfFile, Syntax rdfSyntax) throws ModelRuntimeException, IOException{
+		ModelSet event = EventHelpers.createEmptyModelSet();
+		event.readFrom(ScenarioMyGreenServicesTest.class.getClassLoader().getResourceAsStream(rdfFile), rdfSyntax);
+		return event.getModels().next();
 	}
 
 }

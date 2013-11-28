@@ -10,15 +10,12 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.node.NodeException;
-import org.ontoware.rdf2go.exception.ModelRuntimeException;
-import org.ontoware.rdf2go.model.Model;
-import org.ontoware.rdf2go.model.ModelSet;
+import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
-import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 
@@ -51,10 +48,8 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 		}
 
 		testApi.attach(subscriber);
-
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesSensors.trig")));
-		
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesUsers.trig")));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesSensors.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesUsers.trig", Syntax.Trig)));
 
 		// Wait
 		delay();
@@ -68,12 +63,6 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	private static Model loadEvent(String rdfFile) throws ModelRuntimeException, IOException{
-		ModelSet event = EventHelpers.createEmptyModelSet();
-		event.readFrom(ScenarioMyGreenServicesTest.class.getClassLoader().getResourceAsStream(rdfFile));
-		return event.getModels().next();
 	}
 	
 }

@@ -5,19 +5,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.RDFLanguages;
 import org.junit.Test;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.node.NodeException;
-import org.ontoware.rdf2go.impl.jena.ModelImplJena;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
+import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
 
 import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
@@ -53,16 +48,10 @@ public class ScenarioTelcoThreeMissedCallsTest extends ScenarioAbstractTest {
 		}
 
 		testApi.attach(subscriber);
-	
 		logger.info("Publish events");
-		for (int i = 0; i < 5; i++) {
-			Model call0 = RDFDataMgr.loadModel("events/call0.nq", RDFLanguages.NQ);
-			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call0.getGraph().toString()), call0)));
-			Model call1 = RDFDataMgr.loadModel("events/call1.nq", RDFLanguages.NQ);
-			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call1.getGraph().toString()), call1)));
-			Model call2 = RDFDataMgr.loadModel("events/call2.nq", RDFLanguages.NQ);
-			testApi.publish(EventCloudHelpers.toCompoundEvent(new ModelImplJena(new URIImpl(call2.getGraph().toString()), call2)));
-		}
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/call0.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/call1.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/call2.nq", Syntax.Nquads)));
 
 		// Wait
 		delay();
