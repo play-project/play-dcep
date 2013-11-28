@@ -16,10 +16,12 @@
 
 Developing DCEP with Eclipse
 ================================================
-We are mostly using Eclipse for developing DCEP. We are heavily relying on the
+We are mostly using Eclipse for developing DCEP. We heavily rely on the
 [M2E Eclipse Plugin](http://www.eclipse.org/m2e/) for Maven integration so that
-Eclipse projects are generated from what's in our POM files. You should import 
+Eclipse projects are generated from what is in our POM files. You should import 
 the DCEP source into Eclipse using `File -> Import... -> Existing Maven Projects`.
+Some needed M2E Connector plugins can be installed from the Eclipse Marketplace
+by following the Eclipse Quick Fixes after finishing the import.
 
 To manage code styling in Eclipse and M2E we use the
 [maven-m2e-codestyle plugin](https://github.com/germanklf/maven-m2e-codestyle)
@@ -37,5 +39,16 @@ must set `Preferences -> Team -> Git -> Configuration` to:
 settings. You can track these problems here: [EGit bug](https://bugs.eclipse.org/bugs/show_bug.cgi?id=342372) and
 [EGit bug](https://bugs.eclipse.org/bugs/show_bug.cgi?id=421364).
 
-Optionally you may want to use the [GitHub Mylyn Connector](http://eclipse.github.com/) to display DCEP issues from 
-Github.com within Eclipse.
+Optionally you may want to use the [GitHub Mylyn Connector](http://eclipse.github.com/)
+to display DCEP issues from Github.com within Eclipse.
+
+Needed Eclipse Plugins
+----------------------
+* [M2E Eclipse Plugin](http://www.eclipse.org/m2e/)
+* [javacc-maven-plugin connector](https://github.com/objectledge/maven-extensions)
+from their `dev` update site
+
+Optional Eclipse Plugins
+------------------------
+* [EGit](http://www.eclipse.org/egit/)
+* [GitHub Mylyn Connector](http://eclipse.github.com/)
