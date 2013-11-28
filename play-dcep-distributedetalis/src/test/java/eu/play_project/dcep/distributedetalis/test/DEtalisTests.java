@@ -19,7 +19,6 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.node.NodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,14 +135,6 @@ public class DEtalisTests implements Serializable {
 	public void instantiateDcepComponent()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException, DistributedEtalisException {
-
-		// CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue("proactive.java.policy");
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue(System
-				.getProperty("user.dir")
-				+ "\\src\\main\\resources\\proactive.java.policy");
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
-		// setProAktiveHome();
 
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();

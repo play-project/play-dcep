@@ -9,7 +9,6 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.adl.Registry;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.xml.VariableContractImpl;
 import org.objectweb.proactive.extensions.gcmdeployment.PAGCMDeployment;
 import org.objectweb.proactive.gcmdeployment.GCMApplication;
@@ -32,9 +31,6 @@ public class Distibutor {
 		// variableContract.setVariableFromProgram("HOSTS",
 		// "detalis1.s-node.de", VariableContractType.DescriptorVariable);
 
-
-		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
-		
 		// Start node
 		GCMApplication gcma = PAGCMDeployment.loadApplicationDescriptor(Distibutor.class
 						.getResource("/dEtalisApplicationDescriptor-1.xml"));

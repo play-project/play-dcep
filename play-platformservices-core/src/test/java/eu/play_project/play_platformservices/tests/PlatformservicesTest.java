@@ -15,7 +15,6 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
 import eu.play_project.play_commons.constants.Constants;
 import eu.play_project.play_platformservices.PlayPlatformservices;
@@ -39,12 +38,6 @@ public class PlatformservicesTest {
 		/*
 		 * Start Platformservices server
 		 */
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-		.setValue("proactive.java.policy");
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-		.setValue("org.objectweb.proactive.core.component.Fractive");
-		
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 		
