@@ -2,12 +2,11 @@ package eu.play_project.dcep.distribution.examples;
 
 import java.rmi.registry.LocateRegistry;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.etsi.uri.gcm.util.GCM;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.core.component.Fractive;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.adl.Registry;
 import org.objectweb.proactive.core.xml.VariableContractImpl;
 import org.objectweb.proactive.extensions.gcmdeployment.PAGCMDeployment;
@@ -17,6 +16,7 @@ import org.objectweb.proactive.gcmdeployment.GCMVirtualNode;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import fr.inria.eventcloud.api.PublishApi;
 
 public class Distibutor {
@@ -40,11 +40,10 @@ public class Distibutor {
 		vn.waitReady();
 
 		// Start component.
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, GCMApplication> context = new HashMap<String, GCMApplication>(1);
+		Map<String, Object> context = new HashMap<String, Object>(1);
 		context.put("deployment-descriptor", gcma);
 
-		Component root = (Component) factory.newComponent("DistributedEtalis", context);
+		Component root = ProActiveHelpers.newComponent("DistributedEtalis", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root

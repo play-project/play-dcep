@@ -76,6 +76,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
+			<artifactId>play-dcep-utils</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.ow2.play</groupId>
 			<artifactId>play-commons-constants</artifactId>
 		</dependency>
 		<dependency>

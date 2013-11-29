@@ -3,17 +3,14 @@ package eu.play_project.dcep;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
@@ -22,6 +19,7 @@ import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -91,10 +89,7 @@ public class MeasurementTest {
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("PsDcepComponent", context);
+		root = ProActiveHelpers.newComponent("PsDcepComponent");
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root

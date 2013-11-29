@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.etsi.uri.gcm.util.GCM;
@@ -18,13 +17,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.node.NodeException;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 import org.slf4j.Logger;
@@ -34,6 +31,7 @@ import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
@@ -58,10 +56,7 @@ public class FullRealtimeCepTests {
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("PsDcepComponent", context);
+		root = ProActiveHelpers.newComponent("PsDcepComponent");
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = (QueryDispatchApi) root.getFcInterface(QueryDispatchApi.class.getSimpleName());

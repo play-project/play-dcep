@@ -1,24 +1,19 @@
 package eu.play_project.dcep.distribution;
 
-import java.util.HashMap;
-
 import javax.jms.IllegalStateException;
 
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri.gcm.util.GCM;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.fractal.api.control.LifeCycleController;
 import org.objectweb.proactive.core.body.exceptions.BodyTerminatedRequestException;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
-import org.objectweb.proactive.extensions.pnp.PNPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.constants.DcepConstants;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
@@ -81,26 +76,11 @@ public class Main {
 	 * {@code ProActiveConfiguration.xml}.
 	 */
 	public static void start(String componentName) throws Exception {
-		final int PROACTIVE_PNP_PORT = Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"));
-		final int PROACTIVE_HTTP_PORT = Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.http.port"));
-		final int PROACTIVE_RMI_PORT = Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port"));
-
-		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
-		PNPConfig.PA_PNP_PORT.setValue(PROACTIVE_PNP_PORT);
-		
-		logger.debug("Setting system property 'proactive.http.port' to: " + PROACTIVE_HTTP_PORT);
-		CentralPAPropertyRepository.PA_XMLHTTP_PORT.setValue(PROACTIVE_HTTP_PORT);
-		
-		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
-		CentralPAPropertyRepository.PA_RMI_PORT.setValue(PROACTIVE_RMI_PORT);
 
 		/*
 		 * Set up Components
 		 */
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-		
-		root = (Component) factory.newComponent(componentName, context);
+		root = ProActiveHelpers.newComponent(componentName);
 
 		GCM.getGCMLifeCycleController(root).startFc();
 

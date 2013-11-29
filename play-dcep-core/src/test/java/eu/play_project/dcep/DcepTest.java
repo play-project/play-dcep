@@ -6,20 +6,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.config.ProActiveConfiguration;
 import org.objectweb.proactive.core.node.NodeException;
 
@@ -29,6 +26,7 @@ import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
@@ -131,9 +129,6 @@ public class DcepTest implements Serializable {
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
 		// GCMApplication gcma = PAGCMDeployment.loadApplicationDescriptor(
 		// new
 		// URL("file:/"+System.getProperty("user.dir")+"/src/main/resources/applicationDescriptor.xml"));
@@ -142,7 +137,7 @@ public class DcepTest implements Serializable {
 		//
 		// context.put("deployment-descriptor", gcma);
 
-		Component root = (Component) factory.newComponent("StandAloneDCEP", context);
+		Component root =ProActiveHelpers.newComponent("StandAloneDCEP");
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		dcepPublishApi = ((SimplePublishApi) root

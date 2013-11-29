@@ -33,6 +33,7 @@
 		<module>play-dcep-distributedetalis</module>
 		<module>play-dcep-dcepmanager</module>
 		<module>play-dcep-distribution</module>
+		<module>play-dcep-utils</module>
 	</modules>
 
 	<scm>

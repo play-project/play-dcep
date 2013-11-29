@@ -1,19 +1,16 @@
 package eu.play_project.dcep.distributedetalis.test;
 
-import java.util.HashMap;
-
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Before;
 import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
 
 import eu.play_project.dcep.api.DcepMonitoringApi;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.api.measurement.PatternMeasuringResult;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 
 public class MeasurementTests {
 	static Component root;
@@ -22,10 +19,7 @@ public class MeasurementTests {
 	@Before
 	public void instantiateDcepComponent() throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, InterruptedException {
 
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("DistributedEtalis", context);
+		root = ProActiveHelpers.newComponent("DistributedEtalis");
 		GCM.getGCMLifeCycleController(root).startFc();
 		
 		 dEtalis = ((eu.play_project.dcep.api.DcepMonitoringApi) root.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
