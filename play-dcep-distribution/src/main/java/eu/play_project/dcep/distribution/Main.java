@@ -73,7 +73,7 @@ public class Main {
 	 * A few configuration parameters for ProActive are in the DCEP Constants
 	 * file {@code play-dcep-distribution.properties} (e.g. the ones which
 	 * differ for Unit Tests). For the rest see the file
-	 * {@code ProActiveConfiguration.xml}.
+	 * {@link ProActiveHelpers}.
 	 */
 	public static void start(String componentName) throws Exception {
 
