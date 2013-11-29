@@ -37,9 +37,9 @@ public class ProActiveHelpers {
 	 */
 	public static Component newComponent(String componentName, Map<String, Object> context) throws ADLException {
 		
-		final Integer PROACTIVE_PNP_PORT = Integer.getInteger(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"));
-		final Integer PROACTIVE_HTTP_PORT = Integer.getInteger(DcepConstants.getProperties().getProperty("dcep.proactive.http.port"));
-		final Integer PROACTIVE_RMI_PORT = Integer.getInteger(DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port"));
+		final Integer PROACTIVE_PNP_PORT = Integer.valueOf(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"));
+		final Integer PROACTIVE_HTTP_PORT = Integer.valueOf(DcepConstants.getProperties().getProperty("dcep.proactive.http.port"));
+		final Integer PROACTIVE_RMI_PORT = Integer.valueOf(DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port"));
 
 		// Define ProActive Properties in a local Map:
 		@SuppressWarnings("serial")
@@ -55,7 +55,7 @@ public class ProActiveHelpers {
 		
 		// Set all properties in a loop:
 		for (Entry<PAProperty, Object> proActiveProperty : proActiveProperties.entrySet()) {
-			logger.debug("Setting ProActive property '{}' to: ", proActiveProperty.getKey(), proActiveProperty.getValue());
+			logger.debug("Setting ProActive property '{}' to new value: ", proActiveProperty.getKey(), proActiveProperty.getValue());
 			setProperty(proActiveProperty.getKey(), proActiveProperty.getValue());
 		}
 		
