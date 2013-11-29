@@ -14,6 +14,8 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
+import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
+import org.objectweb.proactive.extensions.pnp.PNPConfig;
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.ModelSet;
@@ -21,6 +23,7 @@ import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
@@ -37,13 +40,27 @@ public class ScenarioAbstractTest {
 	boolean start = false;
 	public static Component root;
 	public static boolean test;
-	public final Logger logger = LoggerFactory.getLogger(ScenarioAbstractTest.class);
+	public static final Logger logger = LoggerFactory.getLogger(ScenarioAbstractTest.class);
 	
 	@BeforeClass
 	public static void instantiatePlayPlatform()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
+		final int PROACTIVE_PNP_PORT = Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"));
+		final int PROACTIVE_HTTP_PORT = Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.http.port"));
+		final int PROACTIVE_RMI_PORT = Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port"));
+
+		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
+		PNPConfig.PA_PNP_PORT.setValue(PROACTIVE_PNP_PORT);
+		
+		logger.debug("Setting system property 'proactive.http.port' to: " + PROACTIVE_HTTP_PORT);
+		CentralPAPropertyRepository.PA_XMLHTTP_PORT.setValue(PROACTIVE_HTTP_PORT);
+		
+		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
+		CentralPAPropertyRepository.PA_RMI_PORT.setValue(PROACTIVE_RMI_PORT);
+
+		
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 
