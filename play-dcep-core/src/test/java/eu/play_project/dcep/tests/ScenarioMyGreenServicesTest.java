@@ -1,10 +1,9 @@
 package eu.play_project.dcep.tests;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
@@ -32,7 +31,7 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 		String queryString;
 
 		// Get query.
-		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("patterns/play-bdpl-inria-green-services-01.eprq"));
+		queryString = loadSparqlQuery("patterns/play-bdpl-inria-green-services-01.eprq");
 
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
@@ -48,13 +47,14 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 		}
 
 		testApi.attach(subscriber);
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesSensors.trig", Syntax.Trig)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/MyGreenServicesUsers.trig", Syntax.Trig)));
+		logger.info("Publish events");
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioMyGreenServicesTest_Sensors.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioMyGreenServicesTest_Users.trig", Syntax.Trig)));
 
 		// Wait
 		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==1);
+		assertEquals("We expect exactly one complex event as a result", 1, subscriber.getComplexEvents().size());
 	}
 	
 	private void delay(){

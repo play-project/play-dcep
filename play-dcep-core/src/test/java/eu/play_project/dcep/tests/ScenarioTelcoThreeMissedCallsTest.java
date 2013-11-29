@@ -1,10 +1,9 @@
 package eu.play_project.dcep.tests;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
@@ -32,7 +31,7 @@ public class ScenarioTelcoThreeMissedCallsTest extends ScenarioAbstractTest {
 		String queryString;
 
 		// Get query.
-		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("patterns/play-bdpl-telco-orange-eval-v3-full.eprq"));
+		queryString = loadSparqlQuery("patterns/play-bdpl-telco-orange-eval-v3-full.eprq");
 
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
@@ -49,14 +48,14 @@ public class ScenarioTelcoThreeMissedCallsTest extends ScenarioAbstractTest {
 
 		testApi.attach(subscriber);
 		logger.info("Publish events");
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/call0.nq", Syntax.Nquads)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/call1.nq", Syntax.Nquads)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/call2.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTestCall0.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTestCall1.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTestCll2.nq", Syntax.Nquads)));
 
 		// Wait
 		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==1);
+		assertEquals("We expect exactly one complex event as a result", 1, subscriber.getComplexEvents().size());
 	}
 
 	private void delay(){

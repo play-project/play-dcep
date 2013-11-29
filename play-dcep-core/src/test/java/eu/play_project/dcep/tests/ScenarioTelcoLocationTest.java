@@ -1,19 +1,20 @@
 package eu.play_project.dcep.tests;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.node.NodeException;
+import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.SimplePublishApiSubscriber;
+import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 
@@ -30,7 +31,7 @@ public class ScenarioTelcoLocationTest extends ScenarioAbstractTest {
 		String queryString;
 
 		// Get query.
-		queryString = IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("patterns/play-bdpl-telco-recommend-location.eprq"));
+		queryString = loadSparqlQuery("patterns/play-bdpl-telco-recommend-location.eprq");
 
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
@@ -46,13 +47,15 @@ public class ScenarioTelcoLocationTest extends ScenarioAbstractTest {
 		}
 
 		testApi.attach(subscriber);
-		// TODO stuehmer fininsh test
+		logger.info("Publish events");
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoLocationTest_Call.trig", Syntax.Trig)));
+		// TODO stuehmer finish test
 	
 
 		// Wait
 		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==0);
+		assertEquals("We expect exactly one complex event as a result", 1, subscriber.getComplexEvents().size());
 	}
 
 	private void delay(){
