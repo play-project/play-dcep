@@ -50,8 +50,8 @@ public class ScenarioAbstractTest {
 		root = (Component) factory.newComponent("PsDcepComponent", context);
 		GCM.getGCMLifeCycleController(root).startFc();
 
-		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface("QueryDispatchApi"));
-		testApi = (DistributedEtalisTestApi) root.getFcInterface("DistributedEtalisTestApi");
+		queryDispatchApi = (QueryDispatchApi) root.getFcInterface(QueryDispatchApi.class.getSimpleName());
+		testApi = (DistributedEtalisTestApi) root.getFcInterface(DistributedEtalisTestApi.class.getSimpleName());
 		
 		try {
 			Thread.sleep(10000);
