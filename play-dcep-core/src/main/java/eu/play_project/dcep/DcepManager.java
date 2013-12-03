@@ -35,7 +35,7 @@ public class DcepManager {
 	Logger logger;
 	List<PAComponentRepresentative>  dEtalis; // Mapping between instance name and instance.
 	//String destinations[]= {"127.0.0.1", "dEtalis1.s-node.de"};
-	String destinations[]= {"localhost"};
+	String destinations[]= {"141.21.14.179"};
 
 	int lastUsedNode;
 	
