@@ -2,7 +2,8 @@
 @prefix e: <http://events.event-processing.org/ids/> .
 @prefix dsb: <http://www.petalslink.org/dsb/topicsns/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix inria: <http://events.event-processing.org/uc/matlab/> .
+@prefix inria: <http://events.event-processing.org/uc/Matlab/> .
+@prefix mlt: <http://events.event-processing.org/MatlabTravelTime/> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
 e:MatlabEvent1 {
@@ -12,7 +13,7 @@ e:MatlabEvent1 {
 		inria:entryPoint <blank://loc1> ;
 		inria:exitPoint <blank://loc2> ;
 		inria:startTime "06:50:00" ;
-		inria:travelTime "12:00" ;
+		inria:travelTime "12" ;
 		a :MatlabTravelTime ;
 		:endTime "2013-12-02T17:51:54.472"^^xsd:dateTime ;
 		:source <http://sources.event-processing.org/ids/matlab#source> ;

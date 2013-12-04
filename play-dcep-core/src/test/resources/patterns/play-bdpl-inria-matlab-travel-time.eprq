@@ -10,12 +10,13 @@
 # TODO:
 # - The arrival time not more than 6:00 PM 
 # - The maximum time of the highway is given by the user (event): Entry point , Exit point , time 
-# - The Event aout the traffic condition has (entry point, exist point, time, duration) 
+# - The Event about the traffic condition has (entry point, exist point, time, duration) 
 # - The user is located about 100m from the entry point of a highway entry
 # - 
 
 PREFIX mlt:     <http://events.event-processing.org/MatlabTravelTime/>
 PREFIX mlu:     <http://events.event-processing.org/MatlabUser/>
+PREFIX mgu:     <http://events.event-processing.org/MyGreenServicesUsers/>
 PREFIX mgs:     <http://events.event-processing.org/MyGreenServicesSensors/>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ucmatlab: <http://events.event-processing.org/uc/Matlab/>
@@ -38,22 +39,21 @@ CONSTRUCT {
 			?e1 :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> .
 			?e1 :location [ geo:lat ?latitude1 ; geo:long ?longitude1 ] .
 			?e1 :endTime ?endTime1 .
-			?e1 mlu:travelTime ?travelTime1 .
-			?e1 mlu:idUser ?userId .
+			?e1 mlt:travelTime ?travelTime1 .
+			?e1 mgu:idUser ?userId .
 			}
 		SEQ		
 		EVENT ?id2 {
 			?e2 rdf:type :MatlabTravelTime .
 			?e2 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
-			?e2 :location [ geo:lat ?latitude2 ; geo:long ?longitude2 ] .
+			?e2 ucmatlab:entryPoint [ geo:lat ?latitude2 ; geo:long ?longitude2 ] .
 			?e2 mlt:travelTime ?travelTime2 .
 			?e2 :endTime ?endTime2 .
-			?e2 mgs:dateTime ?date .
 			}
 			FILTER (
 				abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1 # nearby
 				&& (?travelTime1 < ?travelTime2) 
-				&& ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2
+				# && ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2
 			)
 	} ("PT3M"^^xsd:duration, sliding)
 }
