@@ -1,0 +1,31 @@
+@prefix : <http://events.event-processing.org/types/> .
+@prefix e: <http://events.event-processing.org/ids/> .
+@prefix dsb: <http://www.petalslink.org/dsb/topicsns/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix inria: <http://events.event-processing.org/uc/matlab/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+e:MatlabEvent1 {
+	e:MatlabEvent1#event
+		inria:sequenceNumber "1"^^xsd:integer ;
+		inria:uniqueId "inria:MatlabEvent1" ;
+		inria:entryPoint <blank://loc1> ;
+		inria:exitPoint <blank://loc2> ;
+		inria:startTime "06:50:00" ;
+		inria:travelTime "12:00" ;
+		a :MatlabTravelTime ;
+		:endTime "2013-12-02T17:51:54.472"^^xsd:dateTime ;
+		:source <http://sources.event-processing.org/ids/matlab#source> ;
+		:stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
+
+	<blank://loc1>
+        geo:lat   "47.2687469"^^xsd:double ;
+        geo:long  "15.2559"^^xsd:double .
+
+	<blank://loc2>
+        geo:lat   "43.2687469"^^xsd:double ;
+        geo:long  "10.2559"^^xsd:double .
+		
+}
+
+		
