@@ -17,7 +17,10 @@ import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
-
+/**
+ * @author Iyad Alshabani
+ * @author Roland Stühmer
+ */
 public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 
 	boolean start = false;
