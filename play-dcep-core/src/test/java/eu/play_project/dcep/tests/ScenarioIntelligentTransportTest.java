@@ -1,5 +1,7 @@
 package eu.play_project.dcep.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
 
 import org.junit.Test;
@@ -28,7 +30,7 @@ public class ScenarioIntelligentTransportTest extends ScenarioAbstractTest {
 	private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
 	
 	@Test
-	public void testMyGreenServicesScenario() throws QueryDispatchException, IOException {
+	public void testIntelligentTransportScenario() throws QueryDispatchException, IOException {
 		
 		String queryString;
 
@@ -50,13 +52,13 @@ public class ScenarioIntelligentTransportTest extends ScenarioAbstractTest {
 
 		testApi.attach(subscriber);
 		logger.info("Publish events");
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Users.trig", Syntax.Trig)));
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Matlab.trig", Syntax.Trig)));
 
 		// Wait
 		delay();
 
-		//assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
-		// TODO stuehmer: finish test with a pattern by Iyad
+		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
 	}
 	
 	private void delay(){
