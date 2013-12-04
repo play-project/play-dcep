@@ -51,7 +51,7 @@ CONSTRUCT {
 			?e2 mgs:dateTime ?date .
 			}
 			FILTER 
-				(abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1) # nearby
+				(abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1 # nearby
 				&& (?travelTime1 <= ?travelTime2) 
 				&& ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2)
 			)
