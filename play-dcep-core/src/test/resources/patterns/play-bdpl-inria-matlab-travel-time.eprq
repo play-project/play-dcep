@@ -28,7 +28,7 @@ CONSTRUCT {
 	:e :stream <http://streams.event-processing.org/ids/PollutionAlert#stream> .
 	:e :message "You can take the High way now, conditions are ideal" .
 	:e :members ?e1, ?e2 .
-	:e mlt:travelTime ?travelTime .
+	:e mlt:travelTime ?travelTime1 .
 	:e mlu:idUser ?userId .
 } WHERE {
 	WINDOW {
@@ -37,8 +37,8 @@ CONSTRUCT {
 			?e1 rdf:type :MyGreenServicesSensors .
 			?e1 :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> .
 			?e1 :location [ geo:lat ?latitude1 ; geo:long ?longitude1 ] .
-			?e1 mlu:endTime ?endTime1
-			?e1 mlu:travelTime ?travelTime1
+			?e1 mlu:endTime ?endTime1 .
+			?e1 mlu:travelTime ?travelTime1 .
 			?e1 mlu:idUser ?userId .
 			}
  
@@ -47,14 +47,14 @@ CONSTRUCT {
 		EVENT ?id1 {
 			?e2 rdf:type :MatlabTravelTime .
 			?e2 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
-			?e2 :location [ geo:lat ?latitude2 ; geo:long ?longitude2 ] 
-			?e2 mlt:travelTime ?travelTime12 .
+			?e2 :location [ geo:lat ?latitude2 ; geo:long ?longitude2 ] .
+			?e2 mlt:travelTime ?travelTime2 .
 			?e2 mlt:endTime ?endTime2 .
 			?e2 mgs: ?date .
 			}
 			FILTER 
 				(abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1) # nearby
-				&& (?TravelTime1 <= ?travelTime2) 
+				&& (?travelTime1 <= ?travelTime2) 
 				&& ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2)
 			)
 	} ("PT3M"^^xsd:duration, sliding)
