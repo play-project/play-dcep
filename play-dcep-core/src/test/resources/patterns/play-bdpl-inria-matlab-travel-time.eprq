@@ -52,7 +52,7 @@ CONSTRUCT {
 			}
 			FILTER (
 				abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1 # nearby
-				&& (?travelTime1 <= ?travelTime2) 
+				&& (?travelTime1 < ?travelTime2) 
 				&& ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2
 			)
 	} ("PT3M"^^xsd:duration, sliding)
