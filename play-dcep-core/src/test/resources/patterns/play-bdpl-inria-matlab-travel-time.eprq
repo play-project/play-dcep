@@ -50,10 +50,10 @@ CONSTRUCT {
 			?e2 :endTime ?endTime2 .
 			?e2 mgs:dateTime ?date .
 			}
-			FILTER 
-				(abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1 # nearby
+			FILTER (
+				abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1 # nearby
 				&& (?travelTime1 <= ?travelTime2) 
-				&& ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2)
+				&& ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2
 			)
 	} ("PT3M"^^xsd:duration, sliding)
 }
