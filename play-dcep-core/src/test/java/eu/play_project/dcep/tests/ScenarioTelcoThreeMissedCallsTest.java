@@ -48,9 +48,9 @@ public class ScenarioTelcoThreeMissedCallsTest extends ScenarioAbstractTest {
 
 		testApi.attach(subscriber);
 		logger.info("Publish events");
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTestCall0.nq", Syntax.Nquads)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTestCall1.nq", Syntax.Nquads)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTestCll2.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTest_Call0.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTest_Call1.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTest_Call2.nq", Syntax.Nquads)));
 
 		// Wait
 		delay();
