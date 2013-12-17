@@ -147,7 +147,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 									"(";
 										//Filter
 										constructResult += FilterExpression(inputQuery); // Add data only if filter matches.
-										
+										if(!constructResult.endsWith("(")) {
+											constructResult += ", ";		// Connect filter and construct template.
+										}
 										//Generate code for construct result.
 										while (constructTemplIter.hasNext()) {
 											triple = constructTemplIter.next();
@@ -316,7 +318,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 					filterExp += filterExpressionVisitor.getEle();
 				}
 			}
-			filterExp += ", ";
 		}
 		return filterExp;
 	}
