@@ -316,6 +316,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 					filterExp += filterExpressionVisitor.getEle();
 				}
 			}
+			filterExp += ", ";
 		}
 		return filterExp;
 	}
