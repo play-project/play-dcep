@@ -137,7 +137,7 @@ public class FullRealtimeCepTests {
 		// Wait
 		delay();
 
-		assertTrue(subscriber.getComplexEvents().size()==3);
+		assertEquals(3, subscriber.getComplexEvents().size());
 		
 
 		// Stop and terminate GCM Components
@@ -391,24 +391,6 @@ public class FullRealtimeCepTests {
 
 
 		assertEquals(subscriber.getComplexEvents().size(), 60);
-
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				logger.info("Terminating component: "
-						+ subcomponent.getFcType());
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
-			
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Test
@@ -505,7 +487,6 @@ public class FullRealtimeCepTests {
 
 		// Get query.
 		queryString = getSparqlQueries("play-bdpl-crisis-01b-radiationincrease.eprq");
-		System.out.println(queryString);
 		
 		// Compile query
 		queryDispatchApi.registerQuery("queryId", queryString);
@@ -517,7 +498,7 @@ public class FullRealtimeCepTests {
 		testApi.attach(subscriber);
 	
 		logger.info("Publish evetns");
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 5; i++) {
 			LinkedList<Quadruple> quads = new LinkedList<Quadruple>();
 			Quadruple q1 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
@@ -543,7 +524,7 @@ public class FullRealtimeCepTests {
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
 					NodeFactory.createURI("http://www.mines-albi.fr/nuclearcrisisevent/unit"),
-					NodeFactory.createURI("km/h"));
+					NodeFactory.createURI("mSv"));
 			Quadruple q7 = new Quadruple(
 					NodeFactory.createURI("http://events.event-processing.org/ids/webapp_11_measure_d0f808a8-029d-4e6a-aa8c-ad61d936d8a4" + i + " #event"),
 					NodeFactory.createURI("http://events.event-processing.org/eventId/" + i),
@@ -558,33 +539,14 @@ public class FullRealtimeCepTests {
 			quads.add(q6);
 			quads.add(q7);
 			testApi.publish(new CompoundEvent(quads));
-			
 			Thread.sleep(100);
 		}
 
 		// Wait
 		delay();
 
-
 		assertEquals(1, subscriber.getComplexEvents().size());
 
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				logger.info("Terminating component: "
-						+ subcomponent.getFcType());
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
-			
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Test
