@@ -459,24 +459,6 @@ public class FullRealtimeCepTests {
 
 
 		assertEquals(1, subscriber.getComplexEvents().size());
-
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				logger.info("Terminating component: "
-						+ subcomponent.getFcType());
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
-			
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	@Test
@@ -761,7 +743,7 @@ public class FullRealtimeCepTests {
 	 * For event e4 the average is < 5, because e1 is out of window.
 	 */
 	@Test
-	public void testAggregateAverageWindSpeed() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, InterruptedException{
+	public void aggregateAverageWindSpeedTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, QueryDispatchException, InterruptedException{
 		String queryString;
 
 		// Get query.
@@ -790,28 +772,11 @@ public class FullRealtimeCepTests {
 		testApi.publish(createWeatherEvent("example1" + Math.random(), 1));  // e2
 		Thread.sleep(3000);													 // wait 3s
 		testApi.publish(createWeatherEvent("example1" + Math.random(), 1));  // e3
-		Thread.sleep(2000);													 // wait 2s
+		Thread.sleep(5000);													 // wait 2s
 		testApi.publish(createWeatherEvent("example1" + Math.random(), 1));  // e4 is out of window w1.
-	
-		
-		// Wait
-		delay();
-		assertTrue(subscriber.getComplexEvents().size()==3);
-		
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			 for(Component subcomponent : GCM.getContentController(root).getFcSubComponents()){
-				GCM.getGCMLifeCycleController(subcomponent).terminateGCMComponent();
-			 }
-	
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
 	}
+
+
 
 	@Test
 	public void testThreeMissedCalls() throws QueryDispatchException, IOException {
