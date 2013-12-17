@@ -139,25 +139,6 @@ public class FullRealtimeCepTests {
 		delay();
 
 		assertEquals(3, subscriber.getComplexEvents().size());
-		
-
-		// Stop and terminate GCM Components
-		try {
-			GCM.getGCMLifeCycleController(root).stopFc();
-			// Terminate all subcomponents.
-			for (Component subcomponent : GCM.getContentController(root)
-					.getFcSubComponents()) {
-				logger.info("Terminating component: "
-						+ subcomponent.getFcType());
-				GCM.getGCMLifeCycleController(subcomponent)
-						.terminateGCMComponent();
-			}
-			
-		} catch (IllegalLifeCycleException e) {
-			e.printStackTrace();
-		} catch (NoSuchInterfaceException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -676,7 +657,7 @@ public class FullRealtimeCepTests {
 	}
 
 
-
+	
 	@Test
 	public void testThreeMissedCalls() throws QueryDispatchException, IOException {
 		
