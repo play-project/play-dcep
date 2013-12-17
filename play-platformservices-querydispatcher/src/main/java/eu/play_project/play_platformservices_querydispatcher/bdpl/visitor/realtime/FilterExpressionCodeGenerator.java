@@ -171,10 +171,4 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			logger.info("ExprFunction '{}' will be ignored. No ELE code will be generated for this token. {}", func.getClass().getName(), this.getClass().getSimpleName());
 		}
 	}
-
-	public void visit(E_Now v){
-		System.out.println(v);
-	}
-
-
 }
