@@ -106,9 +106,13 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_StrContains) {
 			ele.append( " (xpath(element(sparqlFilter, [keyWord="
 					+ stack.pop()
-					+ "], []), //sparqlFilter(contains(@keyWord,'"
+					+ "], []), //sparqlFilter(contains(@keyWord,'");
 					//Cutting away opening and closing quotes.
-					+ rightElem.substring(1, (rightElem.length()-1)) + "')), _))");
+					if(rightElem.startsWith("(")) {
+						ele.append(rightElem.substring(1, (rightElem.length()-1)) + "')), _))");
+					} else {
+						ele.append(rightElem + "')), _))");
+					}
 			stack.push(cC.getFilterVar());
 		} else {
 			throw new RuntimeException("Operator not implemented " + func.getClass().getName());
