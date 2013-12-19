@@ -45,7 +45,6 @@ public class PlaySerializer extends Serializer{
 		// Find shared variables for select query
 		VariableTypeManager vtm = new VariableTypeManager(query);
 		vtm.collectVars();
-
 		Set<String> vars = vtm.getSelectSharedVariables(VariableTypes.REALTIME_TYPE, VariableTypes.CONSTRUCT_TYPE, VariableTypes.HISTORIC_TYPE);
 
 		String selectString = null;
@@ -53,14 +52,12 @@ public class PlaySerializer extends Serializer{
 		// Add select variables
 		for (String key : queries.keySet()) {
 			hq = new HistoricalQuery();
-			// Add preifix
+			// Add prefix
 			selectString = e.getPrefixNames() + "\n";
 			selectString += "SELECT DISTINCT ";
 			// Variables in current query.
 			for (String var : vars) {
 				selectString += " ?" + var;
-				//Set variables.
-				hq.getVariables().add("?" + var);
 			}
 			
 			// Set values.
