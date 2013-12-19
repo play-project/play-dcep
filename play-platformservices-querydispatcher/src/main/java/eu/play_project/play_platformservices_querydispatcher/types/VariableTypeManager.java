@@ -1,9 +1,11 @@
 package eu.play_project.play_platformservices_querydispatcher.types;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.hp.hpl.jena.query.Query;
 
@@ -78,7 +80,7 @@ public class VariableTypeManager {
 	/**
 	 * Returns all variables with given type1 and type2.
 	 */
-	public List<String> geIntersection(int type1, int type2){
+	public List<String> getIntersection(int type1, int type2) {
 		List<String> vars =  new LinkedList<String>();
 		for (String var : variables.keySet()) {
 			if(this.isType(var, type1)){
@@ -89,4 +91,23 @@ public class VariableTypeManager {
 		}
 		return vars;
 	}
+	
+	/**
+	 * Returns all variables with are in historic part and in real time or construct part.
+	 */
+	public Set<String> getSelectSharedVariables(int realtime, int construct, int historic) {
+		Set<String> vars =  new HashSet<String>();
+		for (String var : variables.keySet()) {
+			if(this.isType(var, historic)){
+				if(this.isType(var, construct)){
+					vars.add(var);
+				}
+				if(this.isType(var, realtime)){
+					vars.add(var);
+				} 
+			}
+		}
+		return vars;
+	}
+	
 }

@@ -201,7 +201,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 	public String SaveSharedVariableValues() {
 		String elePattern = "";
-		List<String> vars = nameManager.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
+		List<String> vars = nameManager.getIntersection(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
 		
 		Iterator<String> iter = vars.iterator();
 		String var;
