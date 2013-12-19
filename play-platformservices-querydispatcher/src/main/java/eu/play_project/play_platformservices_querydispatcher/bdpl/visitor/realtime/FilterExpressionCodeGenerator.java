@@ -54,20 +54,36 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 		// Transform infix operators to prefix operators. E.g. (1 + 2) -3 -> plus(1, 2, R), minus(R, 3, R2)
 		// Use post-order traversal except if node is a infix operator in prolog. In this case use In-order traversal.
 
+		//Put boolean operands in parenthesis. (left parenthesis)
+		if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalAnd) {
+			ele.append("("); // AND representation in prolog.
+		}else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalOr) {
+			ele.append("(");  // OR representation in prolog
+		}
+		
+		
 		// Get left values
 		func.getArg1().visit(this);
 		
 		//Infix operator
 		if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalAnd) {
-			ele.append("), ("); // AND representation in prolog.
-			stack.push(""); //NOP
+			ele.append(")), (("); // AND representation in prolog.
+			stack.push("");
 		}else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalOr) {
-			ele.append("); (");  // OR representation in prolog
-			stack.push(""); //NOP
+			ele.append(")); ((");  // OR representation in prolog
+			stack.push(""); 
 		}
 		
 		// Right values
 		func.getArg2().visit(this);
+		
+		//Put boolean operands in parenthesis. (right parenthesis)
+		if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalAnd) {
+			ele.append(")"); // AND representation in prolog.
+		}else if (func instanceof com.hp.hpl.jena.sparql.expr.E_LogicalOr) {
+			ele.append(")");  // OR representation in prolog
+		}
+		
 
 		String  rightElem = stack.pop();
 		
@@ -94,7 +110,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			ele.append("greaterOrEqual(" + stack.pop() + "," + rightElem + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_GreaterThan) {
-			if(ele.length()>2 && (!ele.toString().endsWith(", ") && !ele.toString().endsWith(" ("))) ele.append(","); // TODO look if this is needed for other operators
+			if(ele.length()>2 && (!ele.toString().endsWith(", ") && !ele.toString().endsWith("("))) ele.append(","); // TODO look if this is needed for other operators
 			ele.append("greater(" + stack.pop() + "," + rightElem + ")");
 			stack.push(cC.getFilterVar());
 		} else if (func instanceof com.hp.hpl.jena.sparql.expr.E_Equals) {
