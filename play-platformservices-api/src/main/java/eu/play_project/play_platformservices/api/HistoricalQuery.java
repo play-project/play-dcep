@@ -15,9 +15,11 @@ public class HistoricalQuery implements Serializable{
 	private static final long serialVersionUID = 100L;
 	private String cloudId;
 	private String query;
+	private List<String> variables; // Variables which will be filled by historical query.
 	private boolean hasSharedVariablesWithRealtimePart = false;
 	
 	public HistoricalQuery() {
+		variables = new LinkedList<String>();
 	}
 
 	/**
@@ -42,6 +44,14 @@ public class HistoricalQuery implements Serializable{
 
 	public void setQuery(String query) {
 		this.query = query;
+	}
+
+	public List<String> getVariables() {
+		return variables;
+	}
+
+	public void setVariables(List<String> variables) {
+		this.variables = variables;
 	}
 
 	public boolean hasSharedVariablesWithRealtimePart() {

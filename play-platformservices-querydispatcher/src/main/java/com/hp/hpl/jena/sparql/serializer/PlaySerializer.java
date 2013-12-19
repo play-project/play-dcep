@@ -58,6 +58,8 @@ public class PlaySerializer extends Serializer{
 			// Variables in current query.
 			for (String var : vars) {
 				selectString += " ?" + var;
+				//Set variables.
+				hq.getVariables().add("?" + var);
 			}
 			
 			// Set values.

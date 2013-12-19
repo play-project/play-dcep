@@ -192,7 +192,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			// Check if shared variables exists.
 			boolean sharedVariablesExists =  false;
 			for (HistoricalQuery hQuery : query.getHistoricalQueries()) {
-				if(!hQuery.getVariables().isEmpty()){
+				if(hQuery.hasSharedVariablesWithRealtimePart()){
 					sharedVariablesExists = true;
 				}
 			}
