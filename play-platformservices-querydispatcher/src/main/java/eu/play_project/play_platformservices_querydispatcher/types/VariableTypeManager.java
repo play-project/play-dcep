@@ -78,7 +78,7 @@ public class VariableTypeManager {
 	/**
 	 * Returns all variables with given type1 and type2.
 	 */
-	public List<String> getVariables(int type1, int type2){
+	public List<String> geIntersection(int type1, int type2){
 		List<String> vars =  new LinkedList<String>();
 		for (String var : variables.keySet()) {
 			if(this.isType(var, type1)){
