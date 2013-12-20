@@ -2,7 +2,7 @@
 @prefix e: <http://events.event-processing.org/ids/> .
 @prefix dsb: <http://www.petalslink.org/dsb/topicsns/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix inria: <http://events.event-processing.org/uc/Matlab/> .
+@prefix inria: <http://events.event-processing.org/MatlabTravelTime/> .
 @prefix mlt: <http://events.event-processing.org/MatlabTravelTime/> .
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 
