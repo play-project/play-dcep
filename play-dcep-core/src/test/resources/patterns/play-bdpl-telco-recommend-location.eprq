@@ -42,15 +42,4 @@ CONSTRUCT {
 		?e1 :endTime ?eventDate1 .
 		?e1 :location [ geo:lat 48.849249770484356 ; geo:long 2.3039040065044345 ] .
 	}
-	GRAPH ?id2 {
-		?e2 rdf:type :UcTelcoCall .
-		?e2 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
-		?e2 :endTime ?eventDate2 .
-		?e2 :location [ geo:lat ?latitude2 ; geo:long ?longitude2 ] .
-		FILTER (
-				abs(48.84755056311516 - ?latitude2) < 0.1
-				&& abs(2.311692827815153 - ?longitude2) < 0.5 # near Esplanade Jacques Chaban Delmas
-				&& fn:days-from-duration(?eventDate1 - ?eventDate2) <= 1 # Yesterday and Today
-		)
-	}
 }

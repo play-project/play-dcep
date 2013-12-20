@@ -19,7 +19,7 @@ PREFIX mlu:     <http://events.event-processing.org/MatlabUser/>
 PREFIX mgu:     <http://events.event-processing.org/MyGreenServicesUsers/>
 PREFIX mgs:     <http://events.event-processing.org/MyGreenServicesSensors/>
 PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ucmatlab: <http://events.event-processing.org/uc/Matlab/>
+PREFIX ucmatlab: <http://events.event-processing.org/MatlabTravelTime/>
 PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
 PREFIX sioc:    <http://rdfs.org/sioc/ns#>
@@ -34,15 +34,6 @@ CONSTRUCT {
 	:e mlu:idUser ?userId .
 } WHERE {
 	WINDOW {
-		EVENT ?id1 {
-			?e1 rdf:type :MyGreenServicesSensors .
-			?e1 :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> .
-			?e1 :location [ geo:lat ?latitude1 ; geo:long ?longitude1 ] .
-			?e1 :endTime ?endTime1 .
-			?e1 mlt:travelTime ?travelTime1 .
-			?e1 mgu:idUser ?userId .
-			}
-		SEQ		
 		EVENT ?id2 {
 			?e2 rdf:type :MatlabTravelTime .
 			?e2 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
@@ -50,11 +41,7 @@ CONSTRUCT {
 			?e2 mlt:travelTime ?travelTime2 .
 			?e2 :endTime ?endTime2 .
 			}
-			FILTER (
-				abs(?latitude1 - ?latitude2) < 1 && abs(?longitude1 - ?longitude2) < 0.1 # nearby
-				&& (?travelTime1 < ?travelTime2) 
-				# && ((?endTime2-?endTime1) + ?travelTime2) < ?endTime2
-			)
+			
 	} ("PT3M"^^xsd:duration, sliding)
 }
 
