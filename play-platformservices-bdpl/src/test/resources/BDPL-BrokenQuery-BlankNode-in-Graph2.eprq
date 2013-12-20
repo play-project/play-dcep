@@ -1,0 +1,7 @@
+# abc @expectedException< ff>
+PREFIX : <http://play-project.eu/bdpl> 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://events.event-processing.org/types/>
+
+CONSTRUCT   { :e rdf:type :Temperature . ?a ?b ?c }
+WHERE    { EVENT ?id1 {?s ?p ?o} GRAPH ?a { :a :b [ :c :d ] }}

@@ -1,0 +1,21 @@
+complex(CEID1, 'http://patternId.example.com//123') do (
+		generateConstructResult([V1],[V2],[V3], CEID1), 
+		generateConstructResult(['http://example.com/id'],['http://example.com#type'],['"42"'], CEID1)
+	) 
+<- ('http://type.example.com'(VID1) 
+	'WHERE' (
+				rdf(VS, VP, VO, VID1),
+				rdf('http://example.com/id','http://example.com#type', V3, VID1),
+				(xpath(element(sparqlFilter, [keyWord=V3], []), //sparqlFilter(contains(@keyWord,'FF')), _)), 
+				incrementReferenceCounter(VID1)
+			)
+	) SEQ 
+	('http://type.example.com'(VID2) 
+	'WHERE' (
+				rdf(S, P, O, VID2),
+				rdf('http://example.com/id','http://example.com#type', V3, VID2),
+				(xpath(element(sparqlFilter, [keyWord=V3], []), //sparqlFilter(contains(@keyWord,'FF')), _)), 
+				incrementReferenceCounter(VID1)
+			)
+	), random(1000000, 9000000, CEID1) 
+	

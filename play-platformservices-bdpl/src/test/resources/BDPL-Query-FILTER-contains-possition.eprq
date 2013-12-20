@@ -1,0 +1,20 @@
+PREFIX : <http://play-project.eu/M12/>
+PREFIX rdf:		<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	CONSTRUCT{ ?friend1 ?friend2 ?friend3 .
+				:e rdf:type :ComplexFackebookEvent}
+		WHERE{
+			WINDOW{
+				EVENT ?id1{ :source :is :myFackebookAccountID.
+							?friend1 :talksAbout ?topic.
+							:e rdf:type :Fackebook .}
+                             SEQ
+				EVENT ?id2{ :source :is :myFackebookAccountID.
+							?friend2 :talksAbout ?topic.
+							:e rdf:type :Fackebook}
+							FILTER contains(?topic, "Jeans")
+                             SEQ
+				EVENT ?id3{ :source :is :myFackebookAccountID.
+							:e rdf:type :Fackebook.
+							?friend3 :talksAbout ?topic}
+         } ("PT30M"^^xsd:duration, sliding)
+        }

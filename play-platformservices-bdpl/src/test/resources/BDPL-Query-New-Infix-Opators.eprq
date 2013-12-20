@@ -1,0 +1,17 @@
+PREFIX dc: <http://play-project.eu/bdpl> 
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://play-project.eu/default> 
+
+CONSTRUCT{ 
+			:e rdf:type :example.
+			?company ?hasStockprice ?price1;
+			?hasAcquired ?othercompany;
+			?hasStockPrice ?price2;
+		}
+	WHERE{
+				EVENT ?g {?company ?hasStockprice ?price1 }
+			SEQ EVENT ?a {?company ?hasAcquired ?othercompany}
+		EQUALS	EVENT ?f {?company ?hasStockPrice ?price2 }
+   OPTIONALSEQ  EVENT ?f {?company ?hasStockPrice ?price2 }
+ EQUALSOPTIONAL EVENT ?f {?company ?hasStockPrice ?price2 }
+ }

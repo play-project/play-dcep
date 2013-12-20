@@ -1,0 +1,14 @@
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://play-project.eu/default> 
+
+CONSTRUCT { 
+		:e rdf:type :Finance.
+		?company ?hasStockPrice ?price2
+}
+WHERE{
+	WINDOW{
+		EVENT ?id1{ ?company ?hasStockPrice ?price1}
+		SEQ
+		EVENT ?id2{ ?company ?hasStockPrice ?price2}
+	}("PT12M10S"^^xsd:duration, tumbling)
+}	

@@ -1,0 +1,41 @@
+# HAVING AVG query.
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd:	   <http://www.w3.org/2001/XMLSchema>
+PREFIX user:   <http://graph.facebook.com/schema/user#>
+PREFIX :       <http://events.event-processing.org/types/>
+ 
+CONSTRUCT {    :e rdf:type :FacebookCepResult.
+               :e user:name ?friend1.
+               :e user:name ?friend2.
+               :e user:name ?friend3.
+               :e :discussionTopic ?about1.
+               :e :discussionTopic ?about2.
+               :e :discussionTopic ?about3
+}
+WHERE{
+        WINDOW{
+            EVENT ?id1{
+                ?e1 rdf:type :FacebookStatusFeedEvent.
+                ?e1 :status ?about1.
+                ?e1 :name ?friend1.
+				?e1 :temperature ?t1
+                }
+                FILTER contains(?about1, "JEANS")
+            SEQ
+            EVENT ?id2{
+                ?e2 rdf:type :FacebookStatusFeedEvent.
+                ?e2 :status ?about2.
+                ?e2 :name ?friend2.
+				?e2 :temperature ?t2
+                }
+                FILTER contains(?about2, "JEANS")
+            SEQ
+            EVENT ?id3{
+                ?e3 rdf:type :FacebookStatusFeedEvent.
+                ?e3 :status ?about3.
+                ?e3 :name ?friend3.
+				?e3 :temperature ?t3
+                }
+                FILTER contains(?about3, "JEANS")
+        } ("PT30M"^^xsd:duration, sliding)
+} HAVING(AVG(?t) >= "30"^^xsd:float)

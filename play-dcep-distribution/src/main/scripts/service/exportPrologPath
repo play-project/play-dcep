@@ -1,0 +1,11 @@
+export SWI_HOME_DIR=/usr/lib/swipl-5.10.2
+
+# Add needet libs to library path.
+export PATH=$PATH:/usr/lib/swipl-5.10.2/lib/x86_64-linux/
+export PATH=$PATH:/usr/lib/swipl-5.10.2/lib/
+export PATH=$PATH:/usr/lib/swipl-5.10.2/library/
+export SWI_HOME_DIR=/usr/lib/swipl-5.10.2
+
+lib_path=$PATH:$SWI_LIB_PATH:$SWI_BIN_PATH
+export LD_LIBRARY_PATH=$lib_path
+export DYLD_LIBRARY_PATH=$lib_path

@@ -1,0 +1,20 @@
+# This pattern will be valid some time but for now it throws: @expectedException<Encountered " "str" "STR "" at line\>.
+PREFIX om-owl: <http://knoesis.wright.edu/ssw/ont/sensor-observation.owl#>
+PREFIX weather: <http://knoesis.wright.edu/ssw/ont/weather.owl#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :SRBench-q1 .
+	:e :stream <http://streams.event-processing.org/ids/Srbench#stream>.
+}
+WHERE {
+	WINDOW {
+		EVENT weather:RainfallObservation STREAM :WeatherStream {
+			?e1 :stream <http://streams.event-processing.org/ids/Srbench#stream>. 
+			?e2 a <http://events.event-processing.org/types/Event>.
+			}
+	} ("PT60M"^^xsd:duration, sliding)
+}

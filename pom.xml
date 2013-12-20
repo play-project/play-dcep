@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.ow2.play</groupId>
+		<artifactId>play-parent</artifactId>
+		<version>1.2-SNAPSHOT</version>
+	</parent>
+
+	<groupId>org.ow2.play</groupId>
+	<artifactId>play-dcep</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>play-dcep</name>
+	<description>The PLAY Distributed Complex Event Processing (DCEP) component.</description>
+	<inceptionYear>2010</inceptionYear>
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
+	<modules>
+		<module>play-platformservices-core</module>
+		<module>play-platformservices-api</module>
+		<module>play-platformservices-bdpl</module>
+		<module>play-platformservices-querydispatcher</module>
+		<module>play-platformservices-eventvalidation</module>
+		<module>play-dcep-api</module>
+		<module>play-dcep-core</module>
+		<module>play-dcep-distributedetalis</module>
+		<module>play-dcep-dcepmanager</module>
+		<module>play-dcep-distribution</module>
+		<module>play-dcep-utils</module>
+	</modules>
+
+	<scm>
+		<url>https://github.com/play-project/play-dcep</url>
+		<connection>scm:git:git://github.com/play-project/play-dcep.git</connection>
+		<developerConnection>scm:git:https://github.com/play-project/play-dcep.git</developerConnection>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/play-project/play-dcep/issues</url>
+	</issueManagement>
+
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License version 3.0</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<properties>
+		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
+		<jetty.version>7.5.4.v20111024</jetty.version>
+		<eclipse.codeStyleBaseUrl>https://raw.github.com/play-project/play-dcep/develop/src/site/resources</eclipse.codeStyleBaseUrl>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.ow2.play</groupId>
+				<artifactId>play-commons-constants</artifactId>
+				<version>${play.commons.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ow2.play</groupId>
+				<artifactId>play-commons-eventformat</artifactId>
+				<version>${play.commons.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.ow2.play</groupId>
+				<artifactId>play-commons-eventtypes</artifactId>
+				<version>${play.commons.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.8</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>javacc-maven-plugin</artifactId>
+					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.1</version>
+				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.despegar.maven.plugin</groupId>
+										<artifactId>maven-m2e-codestyle</artifactId>
+										<versionRange>[1.0.3,)</versionRange>
+										<goals>
+											<goal>configure</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>	
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-doap-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<doapFile>doap.rdf</doapFile>
+				</configuration>
+				<executions>
+					<execution>
+						<id>site</id>
+						<phase>site</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.9</version>
+				<configuration>
+					<message>Building site for ${project.version}</message>
+					<server>github</server>
+					<path>${project.distributionManagement.site.url}</path>
+					<merge>true</merge>
+					<noJekyll>true</noJekyll>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>site-deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<!-- Only deploy the Github site, skip the standard maven site :stuehmer -->
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<additionalConfig>
+						<file>
+							<name>.settings/org.eclipse.jdt.core.prefs</name>
+							<url>${eclipse.codeStyleBaseUrl}/org.eclipse.jdt.core.prefs</url>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.jdt.ui.prefs</name>
+							<url>${eclipse.codeStyleBaseUrl}/org.eclipse.jdt.ui.prefs</url>
+						</file>
+						<file>
+							<name>.settings/org.eclipse.core.resources.prefs</name>
+							<url>${eclipse.codeStyleBaseUrl}/org.eclipse.core.resources.prefs</url>
+						</file>
+					</additionalConfig>
+					<downloadSources>true</downloadSources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.despegar.maven.plugin</groupId>
+				<artifactId>maven-m2e-codestyle</artifactId>
+				<version>1.0.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>configure</goal>
+						</goals>
+						<configuration>
+							<codeStyleBaseUrl>${eclipse.codeStyleBaseUrl}</codeStyleBaseUrl>
+							<baseDir>${basedir}</baseDir>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+		<site>
+			<id>github-pages-site</id>
+			<name>Deployment through GitHub's site deployment plugin</name>
+			<url>site/${project.version}</url>
+		</site>
+	</distributionManagement>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled> <!-- save a lot of time on site generation :stuehmer -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.9</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-doap-plugin</artifactId>
+				<version>1.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<repositories>
+		<!-- Repository to retrieve snapshots of the parent -->
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<id>ow2-snapshot</id>
+			<name>OW2 Snapshot Repository</name>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
+</project>
