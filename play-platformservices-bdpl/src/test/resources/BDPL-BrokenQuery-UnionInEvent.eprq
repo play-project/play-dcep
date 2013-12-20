@@ -1,2 +1,0 @@
-# An invalid query which mixes UNION with EVENT @expectedException<Was expecting one of: \n <VAR1> ...\>
-SELECT ?title WHERE  EVENT ?a{?x dc:title ?title}

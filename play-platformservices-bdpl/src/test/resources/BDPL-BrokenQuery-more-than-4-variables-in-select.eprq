@@ -1,5 +1,0 @@
-# Too many variables. @expectedException<Was expecting one of:\n\t<VAR1>...\n\t\<VAR2> ...\n\t"(" ...>
-PREFIX dc: <http://play-project.eu/bdpl> 
-SELECT ?a ?b ?c ?d ?e
-	WHERE 
-		EVENT ?a{?x ?title ?title} SEQ EVENT ?a{?x dc:title ?title}
