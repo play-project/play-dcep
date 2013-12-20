@@ -79,6 +79,6 @@ abs(InputValue, AbsValue):-
 abs(InputValue1, AbsValue):- 
 (
 	transformToNumber(InputValue, InputValue1),
-	InputValue < 0,
+	InputValue1 < 0,
 	AbsValue is (InputValue1*(-1))
 ).
