@@ -81,11 +81,7 @@ public class SingleDistributedEtalisInstanceRunner {
 		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
 		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
 		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
-		final String PROACTIVE_COMMUNICATION_PROTOCOL = "pnp";
-		
-		logger.debug("Setting system property 'proactive.communication.protocol' to: " + PROACTIVE_COMMUNICATION_PROTOCOL);
-		CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL.setValue(PROACTIVE_COMMUNICATION_PROTOCOL);
-
+	
 		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
 		PNPConfig.PA_PNP_PORT.setValue(Integer.parseInt(PROACTIVE_PNP_PORT));
 		
@@ -94,15 +90,6 @@ public class SingleDistributedEtalisInstanceRunner {
 		
 		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
 		CentralPAPropertyRepository.PA_RMI_PORT.setValue(Integer.parseInt(PROACTIVE_RMI_PORT));
-		
-		logger.debug("Setting system property 'proactive.runtime.ping' to: false");
-		CentralPAPropertyRepository.PA_RUNTIME_PING.setValue(false);
-		
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-				.setValue("proactive.java.policy");
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue(org.objectweb.proactive.core.component.Fractive.class.getName());
 
 		/*
 		 * Set up Components

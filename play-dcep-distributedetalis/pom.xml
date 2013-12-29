@@ -101,6 +101,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
+			<artifactId>play-dcep-utils</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.ow2.play</groupId>
 			<artifactId>play-platformservices-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>

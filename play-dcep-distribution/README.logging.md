@@ -19,8 +19,8 @@ Logging in DCEP
 Logging in DCEP is done mostly though SLF4J but some dependencies require workarounds such as logging bridges.
 
 * [DCEP itself](https://github.com/play-project/play-dcep/), [RDF2Go](http://semanticweb.org/wiki/RDF2Go), [EventCloud](https://bitbucket.org/eventcloud/eventcloud) and others log though SLF4J to logback (recommended practise)
-* [jtalis](https://code.google.com/p/etalis/) and [Jersey 2.x](https://jersey.java.net/) log to `java.util.logging` (JUL) and is redirected through the `jul-to-slf4j` bridge
-* [ProActive and GCM](http://proactive.activeeon.com) log to LOG4J (and should not be redirected because of some custom LOG4J appenders)
+* [jtalis](https://code.google.com/p/etalis/) and [Jersey 2.x](https://jersey.java.net/) log to `java.util.logging` (JUL) and are redirected through the `jul-to-slf4j` bridge
+* [ProActive and GCM](http://proactive.activeeon.com) log to LOG4J (and should not be redirected because of some custom LOG4J appenders they use)
 
 Finally:
 * logback writes to STDOUT (configured in `conf/log4j.xml`)

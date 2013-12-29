@@ -8,26 +8,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.event_processing.events.types.FacebookStatusFeedEvent;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.node.NodeException;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
@@ -49,7 +46,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 		System.out.println(getSparqlQueries("play-epsparql-m12-jeans-example-query.eprq"));
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void instantiatePlayPlatformTest() throws IllegalLifeCycleException,
 			NoSuchInterfaceException, ADLException, InterruptedException, QueryDispatchException {
@@ -221,8 +218,6 @@ public class ConnectPSandDCEPTest implements Serializable {
 	public void sendEvents(){
 		start = true;
 		System.out.println("Start Producer");
-		System.out.println("Send 2000 Events \n\n\n\n\n\n\n");
-		
 	}
 	
 	public static CompoundEvent createEvent(String eventId){
@@ -253,17 +248,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-				.setValue("proactive.java.policy");
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
-
-		
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("PsDcepComponent", context);
+		root = ProActiveHelpers.newComponent("PsDcepComponent");
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root

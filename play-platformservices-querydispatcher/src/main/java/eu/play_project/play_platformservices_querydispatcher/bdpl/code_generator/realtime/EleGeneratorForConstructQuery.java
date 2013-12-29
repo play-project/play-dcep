@@ -118,6 +118,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
+		elePattern += ", constructResultIsNotEmpty(" + getVarNameManager().getCeid() + ")";
 		getVarNameManager().resetTriplestoreVariable();
 		elePattern += ")";
 	}
@@ -144,6 +145,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		constructResult += "" +
 				"forall((" + queriesConcatenated.toString() + "), " +
 									"(";
+										//Filter
+										constructResult += FilterExpression(inputQuery); // Add data only if filter matches.
+										if(!constructResult.endsWith("(")) {
+											constructResult += ", ";		// Connect filter and construct template.
+										}
+										//Generate code for construct result.
 										while (constructTemplIter.hasNext()) {
 											triple = constructTemplIter.next();
 											if (!containsSharedVariablesTest(triple)) {
@@ -166,8 +173,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 											}
 										}
 										constructResult += SaveSharedVariableValues();
-										//Filter
-										constructResult += FilterExpression(inputQuery);
 				constructResult += ")";
 		constructResult += ")";
 		elePattern += constructResult.toString();
@@ -196,7 +201,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 	public String SaveSharedVariableValues() {
 		String elePattern = "";
-		List<String> vars = nameManager.getVariables(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
+		List<String> vars = nameManager.getIntersection(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE);
 		
 		Iterator<String> iter = vars.iterator();
 		String var;
@@ -307,7 +312,11 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		for (Element currentElement : q.getEventQuery()) {
 			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
 			if(filterExpressionVisitor.getEle().length() > 1) {
-				filterExp += "," + filterExpressionVisitor.getEle();
+				if(filterExp.length() > 1) {
+					filterExp += ", " + filterExpressionVisitor.getEle();
+				} else {
+					filterExp += filterExpressionVisitor.getEle();
+				}
 			}
 		}
 		return filterExp;

@@ -1,0 +1,23 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uccrisis: <http://www.mines-albi.fr/nuclearcrisisevent/>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type uccrisis:AlertEvent .
+	:e :stream <http://streams.event-processing.org/ids/situationalAlertEvent#stream> .
+	:e uccrisis:description "MF Alert" .
+	:e :message "High wind speed values" .
+	:e uccrisis:value ?value1
+}
+WHERE {
+	EVENT ?id1 {
+		?e2 rdf:type uccrisis:MeasureEvent .
+		?e2 :stream <http://streams.event-processing.org/ids/situationalEvent#stream> .
+		?e2 uccrisis:unit "km/h" .
+		?e2 uccrisis:localisation ?localisation .
+		?e2 uccrisis:value ?value1 .
+		}
+		FILTER (?value1 > 10)
+}

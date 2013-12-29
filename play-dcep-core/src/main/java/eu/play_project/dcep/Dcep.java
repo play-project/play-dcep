@@ -1,9 +1,6 @@
 package eu.play_project.dcep;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +16,6 @@ import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.body.ComponentEndActive;
 import org.objectweb.proactive.core.component.body.ComponentInitActive;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,11 +67,6 @@ Serializable {
 		logger = LoggerFactory.getLogger(this.getClass());
 		logger.info("Initialising {} component.", this.getClass()
 				.getSimpleName());
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-		.setValue("org.objectweb.proactive.core.component.Fractive");
-		
-		init();
 	}
 
 	@Override
@@ -166,6 +157,10 @@ Serializable {
 						.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
 				configApi = ((ConfigApi)dEtalis.getFcInterface(ConfigApi.class.getSimpleName()));
 				configDEtalisInstance(configApi);
+				
+				// Register apis
+				Fractive.registerByName(this.dEtalis, "dEtalis");
+
 			} catch (NoSuchInterfaceException e) {
 				logger.error("Error initialising DCEP: {}", e.getMessage());
 				logger.debug("Error initialising DCEP:", e);
@@ -182,19 +177,9 @@ Serializable {
 				logger.error("Error initialising DCEP: {}", e.getMessage());
 				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
-			}
-			
-			// Register apis
-			try {
-				Registry registry = LocateRegistry.getRegistry();
-			} catch (RemoteException e) {
-				logger.error("Error initialising DCEP: ", e);
-				//throw new DcepException("Error initialising DCEP: ", e);
-			}
-			try {
-				Fractive.registerByName(this.dEtalis, "dEtalis");
 			} catch (ProActiveException e) {
-				logger.error("Error initialising DCEP: ", e);
+				logger.error("Error initialising DCEP: {}", e.getMessage());
+				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
 			}
 			

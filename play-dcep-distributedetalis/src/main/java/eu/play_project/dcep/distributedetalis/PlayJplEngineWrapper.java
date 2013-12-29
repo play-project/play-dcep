@@ -52,7 +52,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 			return q.allSolutions();
 		} catch (PrologException e) {
 			logger.error("Error executing Prolog goal. {}", e.getMessage());
-			return new Hashtable[0];
+			throw new DistributedEtalisException(String.format("Error executing Prolog goal. %s", e.getMessage()), e);
 		}
 	}
 

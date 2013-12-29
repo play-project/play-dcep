@@ -27,9 +27,11 @@ Installation
 ------------
 [Install Guide](https://github.com/play-project/play-dcep/tree/master/play-dcep-distribution)
 
-Issues
-------
+Development
+-----------
 [Issues and bug reporting](https://github.com/play-project/play-dcep/issues)
+
+[Developing with Eclipse](README.eclipse.md)
 
 Other
 -----

@@ -33,9 +33,7 @@
 		<module>play-dcep-distributedetalis</module>
 		<module>play-dcep-dcepmanager</module>
 		<module>play-dcep-distribution</module>
-		<!-- I removed this from the build because it takes so much time... please
-			enter this directory manually :stuehmer -->
-		<!--<module>play-dcep-distribution-eventcloud-remote-tests</module> -->
+		<module>play-dcep-utils</module>
 	</modules>
 
 	<scm>

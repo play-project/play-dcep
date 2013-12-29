@@ -1,24 +1,19 @@
 package eu.play_project.dcep.distribution;
 
-import java.util.HashMap;
-
 import javax.jms.IllegalStateException;
 
 import org.apache.commons.io.IOUtils;
 import org.etsi.uri.gcm.util.GCM;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.fractal.api.control.LifeCycleController;
 import org.objectweb.proactive.core.body.exceptions.BodyTerminatedRequestException;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
-import org.objectweb.proactive.extensions.pnp.PNPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.constants.DcepConstants;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
@@ -72,40 +67,20 @@ public class Main {
 
 	}
 
+	/**
+	 * Start DCEP with a {@code *.fractal} file name.
+	 * 
+	 * A few configuration parameters for ProActive are in the DCEP Constants
+	 * file {@code play-dcep-distribution.properties} (e.g. the ones which
+	 * differ for Unit Tests). For the rest see the file
+	 * {@link ProActiveHelpers}.
+	 */
 	public static void start(String componentName) throws Exception {
-		final String PROACTIVE_PNP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port");
-		final String PROACTIVE_HTTP_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.http.port");
-		final String PROACTIVE_RMI_PORT = DcepConstants.getProperties().getProperty("dcep.proactive.rmi.port");
-		final String PROACTIVE_COMMUNICATION_PROTOCOL = "pnp";
-		
-		logger.debug("Setting system property 'proactive.communication.protocol' to: " + PROACTIVE_COMMUNICATION_PROTOCOL);
-		CentralPAPropertyRepository.PA_COMMUNICATION_PROTOCOL.setValue(PROACTIVE_COMMUNICATION_PROTOCOL);
-
-		logger.debug("Setting system property 'proactive.pnp.port' to: " + PROACTIVE_PNP_PORT);
-		PNPConfig.PA_PNP_PORT.setValue(Integer.parseInt(PROACTIVE_PNP_PORT));
-		
-		logger.debug("Setting system property 'proactive.http.port' to: " + PROACTIVE_HTTP_PORT);
-		CentralPAPropertyRepository.PA_XMLHTTP_PORT.setValue(Integer.parseInt(PROACTIVE_HTTP_PORT));
-		
-		logger.debug("Setting system property 'proactive.rmi.port' to: " + PROACTIVE_RMI_PORT);
-		CentralPAPropertyRepository.PA_RMI_PORT.setValue(Integer.parseInt(PROACTIVE_RMI_PORT));
-		
-		logger.debug("Setting system property 'proactive.runtime.ping' to: false");
-		CentralPAPropertyRepository.PA_RUNTIME_PING.setValue(false);
-		
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-				.setValue("proactive.java.policy");
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue(org.objectweb.proactive.core.component.Fractive.class.getName());
 
 		/*
 		 * Set up Components
 		 */
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-		
-		root = (Component) factory.newComponent(componentName, context);
+		root = ProActiveHelpers.newComponent(componentName);
 
 		GCM.getGCMLifeCycleController(root).startFc();
 
