@@ -1,0 +1,32 @@
+@prefix : <http://events.event-processing.org/types/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix e: <http://events.event-processing.org/ids/> .
+@prefix s: <http://streams.event-processing.org/ids/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix mlt: <http://events.event-processing.org/MatlabTravelTime/> .
+@prefix mlu: <http://events.event-processing.org/MatlabUser/> .
+@prefix mgu: <http://events.event-processing.org/MyGreenServicesUsers/> .
+@prefix mgs: <http://events.event-processing.org/MyGreenServicesSensors/> .
+@prefix ucmatlab: <http://events.event-processing.org/uc/Matlab/> .
+
+e:MyGreenServicesUsers-MGSU-51385414904562 {
+
+	e:MyGreenServicesUsers-MGSU-51385414904562
+        a         :MyGreenServicesSensors ;
+        mgu:dateTime "2013-11-25 22:28:13" ;
+        mgu:idUser "5" ;
+        mgu:uniqueId "MyGreenServicesUsers-MGSU-51385414904562" ;
+		mlt:travelTime "10" ;
+        :endTime "2013-11-25T22:28:24.562"^^xsd:dateTime ;
+        :source <http://sources.event-processing.org/ids/myGreenServices#source> ;
+        :stream <http://streams.event-processing.org/ids/MyGreenServicesUsers#stream> ;
+        geo:lat "43.6350425" ; # old location spec
+        geo:lng "7.0911899" ;
+		:location <blank://loc1> . # new location spec
+
+	<blank://loc1>
+        geo:lat   "43.6350425"^^xsd:double ;
+        geo:long  "7.0911899"^^xsd:double .
+
+}

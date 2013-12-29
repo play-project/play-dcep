@@ -5,21 +5,17 @@ import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.node.NodeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +29,7 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -137,17 +134,6 @@ public class DEtalisTests implements Serializable {
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException, DistributedEtalisException {
 
-		// CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue("proactive.java.policy");
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY.setValue(System
-				.getProperty("user.dir")
-				+ "\\src\\main\\resources\\proactive.java.policy");
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
-		// setProAktiveHome();
-
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
 		// GCMApplication gcma = PAGCMDeployment.loadApplicationDescriptor(
 		// new
 		// URL("file:/"+System.getProperty("user.dir")+"/src/main/resources/applicationDescriptor.xml"));
@@ -156,7 +142,7 @@ public class DEtalisTests implements Serializable {
 		//
 		// context.put("deployment-descriptor", gcma);
 
-		root = (Component) factory.newComponent("DistributedEtalis", context);
+		root = ProActiveHelpers.newComponent("DistributedEtalis");
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		distributedEtalisTestApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root

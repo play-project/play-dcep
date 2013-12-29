@@ -24,8 +24,8 @@ import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.play_commons.constants.Pattern;
 import eu.play_project.play_platformservices.PlayPlatformservicesRest;
 import eu.play_project.play_platformservices.api.QueryDetails;
@@ -41,16 +41,10 @@ public class PlatformservicesRestProactiveTest {
 	 */
 	@Before
 	public void setup() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, IOException {
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-		.setValue("proactive.java.policy");
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-		.setValue("org.objectweb.proactive.core.component.Fractive");
-		
 		Factory factory = FactoryFactory.getFactory();
 		HashMap<String, Object> context = new HashMap<String, Object>();
 		
-		root = (Component) factory.newComponent("PlatformServicesTest", context);
+		root = ProActiveHelpers.newComponent("PlatformServicesTest");
 		GCM.getGCMLifeCycleController(root).startFc();
 		
 		client = ClientBuilder.newClient();

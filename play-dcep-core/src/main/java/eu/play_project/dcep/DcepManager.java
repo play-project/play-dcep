@@ -15,7 +15,6 @@ import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.adl.FactoryFactory;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.objectweb.proactive.core.util.URIBuilder;
 import org.objectweb.proactive.extensions.gcmdeployment.PAGCMDeployment;
 import org.objectweb.proactive.gcmdeployment.GCMApplication;
@@ -35,7 +34,7 @@ public class DcepManager {
 	Logger logger;
 	List<PAComponentRepresentative>  dEtalis; // Mapping between instance name and instance.
 	//String destinations[]= {"127.0.0.1", "dEtalis1.s-node.de"};
-	String destinations[]= {"localhost"};
+	String destinations[]= {"127.0.0.1"};
 
 	int lastUsedNode;
 	
@@ -62,8 +61,6 @@ public class DcepManager {
 	}
 
 	private void createInstances() {
-		CentralPAPropertyRepository.GCM_PROVIDER.setValue("org.objectweb.proactive.core.component.Fractive");
-
 		for (int i = 1; i < (destinations.length); i++) {
 			try {
 				// Start node

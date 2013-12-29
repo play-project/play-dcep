@@ -124,12 +124,6 @@ public class DispatcherTest {
 		//Test if generated select query is OK.
 		assertEquals(temperatureAstream, queries.get(0).getQuery());
 		assertEquals(temperatureBstream, queries.get(1).getQuery());
-		
-		
-		for (String varname : queries.get(0).getVariables()) {
-			System.out.println(varname);
-		}
-
 	}
 	
 	@Test

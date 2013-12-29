@@ -3,13 +3,16 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode;
 
+import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 
 public class PlaySerializer extends Serializer{
@@ -33,40 +36,37 @@ public class PlaySerializer extends Serializer{
                      e,
                      new FmtExprSPARQL(writer, cxt1),
                      new FmtTemplate(writer, cxt2)) ;
-		// TODO make it more efficient.
 
         List<HistoricalQuery> result = new LinkedList<HistoricalQuery>();
         HistoricalQuery hq;
         
 		Map<String, String> queries = e.getHistoricalCloudQueries();
-		List<String> vars = query.getResultVars(); // FIXME different values for historical query.
-		vars.add("firstEvent");
+
+		// Find shared variables for select query
+		VariableTypeManager vtm = new VariableTypeManager(query);
+		vtm.collectVars();
+		Set<String> vars = vtm.getSelectSharedVariables(VariableTypes.REALTIME_TYPE, VariableTypes.CONSTRUCT_TYPE, VariableTypes.HISTORIC_TYPE);
+
 		String selectString = null;
 
 		// Add select variables
 		for (String key : queries.keySet()) {
 			hq = new HistoricalQuery();
-			// Add preifix
+			// Add prefix
 			selectString = e.getPrefixNames() + "\n";
 			selectString += "SELECT DISTINCT ";
 			// Variables in current query.
 			for (String var : vars) {
-				if (queries.get(key).contains("?" + var)) {
-					selectString += " ?" + var;
-					//Set variables.
-					hq.getVariables().add(var);
-				}
+				selectString += " ?" + var;
+				//Set variables.
+				hq.getVariables().add("?" + var);
 			}
+			
 			// Set values.
 			hq.setQuery(selectString +" \n WHERE { \n" + queries.get(key) + "} ");
 			hq.setCloudId(key);
 			result.add(hq);
 		}
 		return result;
-		
-
 	}
-    
- 
-
 }

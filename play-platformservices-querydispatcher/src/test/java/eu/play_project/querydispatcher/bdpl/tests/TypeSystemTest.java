@@ -91,7 +91,6 @@ public class TypeSystemTest {
 		
 		QueryTemplate queryTemplate = queryTemplateGenerator.createQueryTemplate(query);
 		
-
 		HistoricalData historicalData = new HistoricalData();
 		List<String> values = new LinkedList<String>();
 		values.add("value1");
@@ -100,7 +99,6 @@ public class TypeSystemTest {
 		
 		historicalData.put("screenName01", values);
 		List<Quadruple> result = queryTemplate.fillTemplate(historicalData, NodeFactory.createURI("http://example.com/tests") ,  NodeFactory.createURI("http://example.com/eventId"));
-		
 		
 		assertTrue((result.get(0).getObject().equals(NodeFactory.createLiteral("value3")) || result.get(0).getObject().equals(NodeFactory.createLiteral("value2")) || result.get(0).getObject().equals(NodeFactory.createLiteral("value1"))));
 		assertTrue((result.get(1).getObject().equals(NodeFactory.createLiteral("value3")) || result.get(1).getObject().equals(NodeFactory.createLiteral("value2")) || result.get(1).getObject().equals(NodeFactory.createLiteral("value1"))));

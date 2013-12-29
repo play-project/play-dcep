@@ -3,18 +3,14 @@ package eu.play_project.dcep.distribution.tests;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 
 import org.etsi.uri.gcm.util.GCM;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.fractal.adl.ADLException;
-import org.objectweb.fractal.adl.Factory;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.fractal.api.control.IllegalLifeCycleException;
-import org.objectweb.proactive.core.component.adl.FactoryFactory;
-import org.objectweb.proactive.core.config.CentralPAPropertyRepository;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
@@ -23,6 +19,7 @@ import com.hp.hpl.jena.query.Syntax;
 
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.dcep.distributedetalis.utils.PrologHelpers;
 import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
@@ -76,17 +73,7 @@ public class RegisterQueriesTest {
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
 			ADLException {
 
-		CentralPAPropertyRepository.JAVA_SECURITY_POLICY
-				.setValue("proactive.java.policy");
-
-		CentralPAPropertyRepository.GCM_PROVIDER
-				.setValue("org.objectweb.proactive.core.component.Fractive");
-
-		
-		Factory factory = FactoryFactory.getFactory();
-		HashMap<String, Object> context = new HashMap<String, Object>();
-
-		root = (Component) factory.newComponent("DcepPsTest", context);
+		root = ProActiveHelpers.newComponent("DcepPsTest");
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface(QueryDispatchApi.class.getSimpleName()));
