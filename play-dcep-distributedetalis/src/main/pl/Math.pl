@@ -8,15 +8,11 @@
 %Relational operator
 equal(A, B) :- 
 (
-	transformToNumber(A, A1),
-	transformToNumber(B, B1),
 	A1 = B1
 ).
 
 notEqual(A, B) :- 
 (
-	transformToNumber(A, A1),
-	transformToNumber(B, B1),
 	A1 =\= B1
 ).
 
