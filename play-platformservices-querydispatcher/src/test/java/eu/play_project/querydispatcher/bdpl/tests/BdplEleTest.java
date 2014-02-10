@@ -137,7 +137,7 @@ public class BdplEleTest {
 		try {
 			visitor1.generateQuery(query);
 		} catch(RuntimeException e) {
-			e.getMessage().toString().contains("\"30\"^^xsd:stringis not a valid value in math expressions");
+			assertTrue(e.getMessage().toString().contains("\"30\"^^xsd:stringis not a valid value in math expressions"));
 		}
 		String etalisPattern = visitor1.getEle();
 
