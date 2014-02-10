@@ -20,4 +20,4 @@ WHERE{
                 }
                 FILTER contains(?about1, "JEANS")
         } ("PT30M"^^xsd:duration, sliding)
-} HAVING(AVG(?t1) >= "30"^^xsd:float)
+} HAVING(AVG(?t1) >= "fff"^^xsd:float)

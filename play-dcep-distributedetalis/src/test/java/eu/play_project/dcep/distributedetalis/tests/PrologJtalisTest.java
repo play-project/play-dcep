@@ -1,11 +1,9 @@
-package eu.play_project.dcep.distributedetalis.test;
+package eu.play_project.dcep.distributedetalis.tests;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static eu.play_project.play_commons.constants.Namespace.EVENTS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -140,19 +138,19 @@ public class PrologJtalisTest {
 		assertFalse(result.equals(new EtalisEvent("complex2", 1)));
 	}
 	
-//	@Test
-//	public void loadSemWebLibTest(){
-//		try{
-//			// Load SWI-Prolog Semantic Web Library
-//			ctx.getEngineWrapper().executeGoal("[library(semweb/rdf_db)]");
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//			fail("It was not possible to load the semweb/rdf_db library ");
-//		}
-//
-//
-//		delay();
-//	}
+	@Test
+	public void loadSemWebLibTest(){
+		try{
+			// Load SWI-Prolog Semantic Web Library
+			ctx.getEngineWrapper().executeGoal("[library(semweb/rdf_db)]");
+		}catch (Exception e) {
+			e.printStackTrace();
+			fail("It was not possible to load the semweb/rdf_db library ");
+		}
+
+
+		delay();
+	}
 	
 	@Ignore
 	@Test
