@@ -19,6 +19,7 @@ import org.junit.Test;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
@@ -65,6 +66,7 @@ public class BdplEleTest {
 
 		System.out.println(etalisPattern);
 	}
+	
 
 
 	@Test
@@ -112,10 +114,47 @@ public class BdplEleTest {
 		System.out.println(etalisPattern);
 	}
 	
+	/**
+	 * Check if wrong data type in filter will be detected.
+	 */
+	@Test
+	public void filterTypeCheck() throws IOException {
+		String queryString = getSparqlQuery("queries/DataTypeCheck.eprq");
+		Query query = null;
+
+		System.out.println(queryString);
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		try {
+			visitor1.generateQuery(query);
+		} catch(RuntimeException e) {
+			e.getMessage().toString().contains("\"30\"^^xsd:stringis not a valid value in math expressions");
+		}
+		String etalisPattern = visitor1.getEle();
+
+		// Add query details.
+		QueryDetails details = new QueryDetails(patternId);
+		// Set properties for windows in QueryDetails
+		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
+		query.getWindow().accept(windowVisitor);
+		details.setRdfDbQueries(visitor1.getRdfDbQueries());
+
+		System.out.println(etalisPattern);
+	}
+	
 	@Test
 	public void globalFilterVariables() throws IOException {
 		
-		
+		NodeValue f;
 		String queryString = getSparqlQuery("play-bdpl-crisis-02b-windintensity.eprq");
 		Query query = null;
 
