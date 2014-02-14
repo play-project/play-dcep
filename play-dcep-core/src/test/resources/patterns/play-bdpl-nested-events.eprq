@@ -9,17 +9,8 @@ PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
 PREFIX :        <http://events.event-processing.org/types/>
 
 CONSTRUCT {
-	:e rdf:type :UcTelcoEsrRecom .
-	:e :stream <http://streams.event-processing.org/ids/TaxiUCESRRecomDcep#stream> .
-	:e :message "Based on yesterday and today, there is something worth to be seen near this place!" .
-	:e :members ?e1 .
-	:e uctelco:callerPhoneNumber "33638611117" . # Philippe
-	:e uctelco:calleePhoneNumber ?callee1 .
-	:e uctelco:direction ?direction .
-	:e uctelco:ackRequired "true"^^xsd:boolean .
-	:e uctelco:answerRequired "true"^^xsd:boolean .
-	:e uctelco:action <blank://action1> .
-	<blank://action1> rdf:type uctelco:OpenTwitter .
+	:e rdf:type :NestedEventsExample .
+	:e :stream <http://streams.event-processing.org/ids/NestedEventsExample#stream> .
 } WHERE {
 	{
 		EVENT ?id1 {
