@@ -72,7 +72,6 @@ public class SPARQLParserBDPL extends BDPL_SPARQLParser11Base
     boolean allowAggregatesInExpressions = false ;
     boolean predicate;
     boolean type;
-	// Stack mathStack =  new Stack();
 }
 
 PARSER_END(SPARQLParserBDPL)
@@ -264,20 +263,22 @@ void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testEx
    (<WHERE>)?
    th = <LBRACE> //Historical part needs this value.
 	(
+	  (
 	  //Realtime query with window.
 	   < BEGIN_WINDOW >
 	   		<LBRACE>
-	   			< EVENT > EventClause()
+	   			EventClause()
 			<RBRACE>
 		t = < WINDOWSIZE >
 				(
 		  			< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(t.image);}
 				|   < WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(t.image);}
 				)
-			<RPAREN> {getQuery().setWindow(win);}	  
+			<RPAREN> {getQuery().setWindow(win);}
+		)  
 	|
 		//Realtime query without window.
-	   < EVENT > EventClause()
+	    EventClause()
 	)
 	// Historical query is optional.
 	WhereClauseH(th)
@@ -1925,7 +1926,8 @@ Element EventGraphPattern() :{ Element el; Node n;}
 {
   {ElementGroup elg = new ElementGroup();}
   {startGroup(elg);}
-  
+
+  <EVENT>
   n = 	VarOrIri()
   < LBRACE >
   	{startTriplesBlock();}
@@ -1944,18 +1946,18 @@ Element EventGraphPattern() :{ Element el; Node n;}
   }
 }
 
-// Stefan
-void EventClause() :
+void EventClause() : {}
 {
-  Element el = null;
-}
-{
-  EventGraphPattern()
-  (EpSparqlFilter())?
-  (EPSparqlBinOperators() < EVENT > EventClause())?
-  //  ((< LBRACE >) (< EVENT >) E() < RBRACE >) % Braces important??
+  ( // Nested expression
+		<LBRACE>  EventClause() <RBRACE> (EPSparqlBinOperators() EventClause())?
+	| // Single expression
+		EventGraphPattern() (EpSparqlFilter())? (MoreEvents())*
+  )
 }
 
+void MoreEvents() : {}
+{	EPSparqlBinOperators() EventGraphPattern() (EpSparqlFilter())?
+}
 
 // Binary operators for BDPL.
 void EPSparqlBinOperators() :
@@ -1966,11 +1968,11 @@ void EPSparqlBinOperators() :
 {
  (
   t=  < SEQ >
-  | t= < AND >
-  | t= < OR >
-  | t= < EQUALS >
-  | t= < OPTIONALSEQ >
-  | t= < EQUALSOPTIONAL >
+  | t = < AND >
+  | t = < OR >
+  | t = < EQUALS >
+  | t = < OPTIONALSEQ >
+  | t = < EQUALSOPTIONAL >
  )
 
   {
