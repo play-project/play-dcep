@@ -50,6 +50,7 @@ public class BdplTest {
 				"BDPL-Query-Type.eprq",
 				"BDPL-Query-WINDOW-sliding.eprq",
 				"BDPL-Query-WINDOW-tumbling.eprq",
+				"BDPL-Query-nested-events.eprq",
 				"play-bdpl-crisis-01a-radiation.eprq",
 				"play-bdpl-crisis-01b-radiationincrease.eprq",
 				"play-bdpl-crisis-02a-winddirection.eprq",
