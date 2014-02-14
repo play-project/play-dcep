@@ -32,11 +32,9 @@ CONSTRUCT {
 			?e1 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
 		}
 	}
-	AND
+	SEQ
 	EVENT ?id1 {
 		?e1 rdf:type :MyGreenServicesSensors .
 		?e1 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
 	}	
-	
-	
 }
