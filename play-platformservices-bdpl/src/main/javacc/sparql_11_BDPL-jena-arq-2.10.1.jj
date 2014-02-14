@@ -281,7 +281,7 @@ void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testEx
 	    EventClause()
 	)
 	// Historical query is optional.
-	WhereClauseH(th)
+	(WhereClauseH(th))*
 
   <RBRACE>
 }
@@ -664,8 +664,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GraphGraphPattern()
  |
    el = ServiceGraphPattern()
- |
-   el = Filter()
+ |   el = Filter()
  |
    el = Bind()
  |
@@ -1949,10 +1948,11 @@ Element EventGraphPattern() :{ Element el; Node n;}
 void EventClause() : {}
 {
   ( // Nested expression
-		<LBRACE>  EventClause() <RBRACE> (EPSparqlBinOperators() EventClause())?
+		(		  <LBRACE>  EventClause() <RBRACE> (EPSparqlBinOperators() EventClause())?)
 	| // Single expression
 		EventGraphPattern() (EpSparqlFilter())? (MoreEvents())*
   )
+  
 }
 
 void MoreEvents() : {}
@@ -2013,6 +2013,6 @@ Element EpSparqlFilter() :
 Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
 {
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
-   el = GroupGraphPatternSub()
+   el = GraphGraphPattern()
     { return el ; }
 }
