@@ -36,7 +36,27 @@ public class SyntaxTreeTests {
 		}
 		
 		// Check result.
-		String[] expectedResults = {"?e3", "SEQ", "?e4", "OR", "?e5"};
+		String[] expectedResults = {"?e3", "?e4", "SEQ", "OR", "?e5"};
+		SimpleEvenTreeVisitor v = new SimpleEvenTreeVisitor(expectedResults);
+		query.getEventQuery().get(0).visit(v);
+	}
+	
+	@Test
+	public void nestedEvents() throws IOException {
+		
+		// Load query
+		String queryString = getSparqlQuery("queries/NestedEvent.eprq");
+		
+		// Generate tree.
+		Query query = null;
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception was thrown: " + e);
+		}
+		
+		// Check result.
+		String[] expectedResults = {"?e1", "OR", "?e2", "SEQ", "?e3"};
 		SimpleEvenTreeVisitor v = new SimpleEvenTreeVisitor(expectedResults);
 		query.getEventQuery().get(0).visit(v);
 	}
