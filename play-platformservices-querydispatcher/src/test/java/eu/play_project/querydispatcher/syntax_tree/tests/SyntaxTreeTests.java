@@ -36,7 +36,7 @@ public class SyntaxTreeTests {
 		}
 		
 		// Check result.
-		String[] expectedResults = {"?e3", "?e4", "?e5"};
+		String[] expectedResults = {"?e3", "SEQ", "?e4", "OR", "?e5"};
 		SimpleEvenTreeVisitor v = new SimpleEvenTreeVisitor(expectedResults);
 		query.getEventQuery().get(0).visit(v);
 	}

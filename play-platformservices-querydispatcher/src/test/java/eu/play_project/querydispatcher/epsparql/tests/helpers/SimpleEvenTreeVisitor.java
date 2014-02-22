@@ -12,7 +12,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 public class SimpleEvenTreeVisitor extends GenericVisitor {
 	
 	String[] expctedResults;
-	int index = 0;
+	int index;
 	
 	public SimpleEvenTreeVisitor(String[] expctedResults) {
 		this.expctedResults = expctedResults;
@@ -22,6 +22,7 @@ public class SimpleEvenTreeVisitor extends GenericVisitor {
 	@Override
 	public void visit(ElementEventBinOperator el) {
 		el.getLeft().visit(this);
+		Assert.assertEquals(expctedResults[index++], el.getTyp());
 		el.getRight().visit(this);
 	}
 	
