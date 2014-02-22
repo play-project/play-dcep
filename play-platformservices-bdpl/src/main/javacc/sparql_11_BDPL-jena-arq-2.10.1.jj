@@ -258,7 +258,7 @@ String SourceSelector() : { String iri ; }
   iri = iri() { return iri ; }
 }
 // Modified whereClause for BDPL 
-void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testExp; Window win; }
+void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Window win;}
 {
    (<WHERE>)?
    th = <LBRACE> //Historical part needs this value.
@@ -267,7 +267,7 @@ void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testEx
 	  //Realtime query with window.
 	   < BEGIN_WINDOW >
 	   		<LBRACE>
-	   			EventClause()
+	   			el = EventClause()
 			<RBRACE>
 		t = < WINDOWSIZE >
 				(
@@ -277,9 +277,11 @@ void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testEx
 			<RPAREN> {getQuery().setWindow(win);}
 		)  
 	|
-		//Realtime query without window.
-	    EventClause()
+		//Real time query without window.
+	    el = EventClause()
 	)
+	{getQuery().getEventQuery().add(el);}
+	
 	// Historical query is optional.
 	(WhereClauseH(th))*
 
@@ -1921,7 +1923,7 @@ TOKEN:
 
 
 // PLAY extensions
-Element EventGraphPattern() :{ Element el; Node n;}
+ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
 {
   {ElementGroup elg = new ElementGroup();}
   {startGroup(elg);}
@@ -1936,33 +1938,41 @@ Element EventGraphPattern() :{ Element el; Node n;}
   < RBRACE >
   
   {endGroup(elg);}
-  {
-//    getQuery().setQueryPattern(new ElementEventGraph(n, elg)); // Save Event in ARQ AST
-//    return new ElementEventGraph(n, elg);
- 	ElementEventGraph tmp = new ElementEventGraph(n, elg);
-    getQuery().addEventElement(tmp);
-    return tmp;
-  }
+  {return new ElementEventGraph(n, elg);}
 }
 
-void EventClause() : {}
+Element EventClause() : {Element e; ElementEventBinOperator subElements = null; Element eventClauseL; ElementEventBinOperator op = null; Element eventClauseR =  null;}
 {
-  ( // Nested expression
-		(		  <LBRACE>  EventClause() <RBRACE> (EPSparqlBinOperators() EventClause())?)
-	| // Single expression
-		EventGraphPattern() (EpSparqlFilter())? (MoreEvents())*
-  )
-  
+	<LBRACE> eventClauseL = EventClause() <RBRACE> (op = EPSparqlBinOperators() eventClauseR = EventClause())?	{		if(op != null) {			op.setLeft(eventClauseL);		    op.setRight(eventClauseR);			return op;		} else {			return eventClauseL;		}		      	}|
+	eventClauseL = Event()  (op = EPSparqlBinOperators() eventClauseR = EventClause())?
+	{
+		if(op != null) {
+			op.setLeft(eventClauseL);
+		    op.setRight(eventClauseR);
+			return op;
+		} else {
+			return eventClauseL;
+		}      
+	}  
 }
 
-void MoreEvents() : {}
-{	EPSparqlBinOperators() EventGraphPattern() (EpSparqlFilter())?
+ElementEventGraph Event() :{ ElementEventGraph e;}
+{	e = EventGraphPattern() (EpSparqlFilter())?
+	{
+	  return e;	}
+}
+
+ElementEventBinOperator MoreEvents() : {ElementEventBinOperator op; ElementEventGraph e2;}
+{	op = EPSparqlBinOperators() e2 = EventGraphPattern() (EpSparqlFilter())?
+	{
+	  op.setRight(e2);
+	  return op;
+	}
 }
 
 // Binary operators for BDPL.
-void EPSparqlBinOperators() :
+ElementEventBinOperator EPSparqlBinOperators() :
 {
-   ElementEventBinOperator binOp = null;
    Token t = null;
 }
 {
@@ -1976,8 +1986,7 @@ void EPSparqlBinOperators() :
  )
 
   {
-  	ElementEventBinOperator tmp = new ElementEventBinOperator(t.image);
-	getQuery().addEventBinOperator(tmp);
+  	return new ElementEventBinOperator(t.image);
   } 
 }
 
