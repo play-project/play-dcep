@@ -356,8 +356,8 @@ public class BdplEleTest {
 		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-		
-		assertTrue(etalisPattern.contains("variabeValuesAdd('http://patterns.event-processing.org/patterns/42','screenName02',VscreenName02)))"));
+		System.out.println(etalisPattern);
+		assertTrue(etalisPattern.contains("variabeValuesAdd(CEID8,'screenName02',VscreenName02)))") || etalisPattern.contains("variabeValuesAdd(CEID1,'screenName02',VscreenName02)))"));
 	}
 	
 

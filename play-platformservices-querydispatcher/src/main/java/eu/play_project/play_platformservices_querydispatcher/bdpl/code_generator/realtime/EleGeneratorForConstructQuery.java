@@ -311,7 +311,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private String FilterExpression(Query q) {
 		String filterExp = "";
 		
-		for (Element currentElement : q.getEventQuery()) {
+		EventPatternOperatorCollector v = new EventPatternOperatorCollector();
+		v.collectValues(q.getEventQuery());
+		
+		for (Element currentElement : v.getEventPatterns()) {
 			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
 			if(filterExpressionVisitor.getEle().length() > 1) {
 				if(filterExp.length() > 1) {
@@ -375,8 +378,9 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	 */
 	private List<String> AllRdfQueryDbMethodDecl(Query q, String patternId) {
 		List<String> dbDecl = new LinkedList<String>();
-		
-		for (Element currentElement : q.getEventQuery()) {
+		EventPatternOperatorCollector v = new EventPatternOperatorCollector();
+		v.collectValues(q.getEventQuery());
+		for (Element currentElement : v.getEventPatterns()) {
 			getVarNameManager().processNextEvent();
 			dbDecl.add(RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString());
 		}
