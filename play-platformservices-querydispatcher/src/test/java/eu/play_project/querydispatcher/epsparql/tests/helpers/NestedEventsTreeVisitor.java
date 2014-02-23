@@ -15,12 +15,12 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
  * @author Stefan Obermeier
  *
  */
-public class PostOrderTreeVisitor extends GenericVisitor {
+public class NestedEventsTreeVisitor extends GenericVisitor {
 	
 	String[] expctedResults;
 	int index;
 	
-	public PostOrderTreeVisitor(String[] expctedResults) {
+	public NestedEventsTreeVisitor(String[] expctedResults) {
 		this.expctedResults = expctedResults;
 		index = 0;
 	}

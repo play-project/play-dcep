@@ -8,8 +8,8 @@ CONSTRUCT{
 :e rdf:type :Temperature .
 }
  WHERE {
-	EVENT ?id{ ?x pl:nice ?name} 
+	EVENT ?id { ?x pl:nice ?name} 
 	SEQ
-	EVENT ?id{ ?x pl:nice ?name}
+	EVENT ?id { ?x pl:nice ?name}
 }
 	

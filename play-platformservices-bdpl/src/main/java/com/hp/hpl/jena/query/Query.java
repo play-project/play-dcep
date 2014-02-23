@@ -107,10 +107,6 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 		return eventQuery;
 	}
 
-	public void setEventQuery(ArrayList<Element> eventQuery) {
-		this.eventQuery = eventQuery;
-	}
-
 	public void addEventElement(Element element){
     	eventQuery.add(element);
     }

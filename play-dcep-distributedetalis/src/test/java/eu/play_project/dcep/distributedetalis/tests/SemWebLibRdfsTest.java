@@ -14,7 +14,7 @@ import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 
 
-public class SemWebLibTests {
+public class SemWebLibRdfsTest {
 	private JtalisContextImpl ctx;
 	
 	/**

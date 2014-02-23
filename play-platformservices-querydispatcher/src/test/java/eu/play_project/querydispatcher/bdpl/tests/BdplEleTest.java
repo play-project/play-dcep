@@ -31,8 +31,11 @@ import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventIterator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
@@ -41,30 +44,20 @@ public class BdplEleTest {
 	@Test
 	public void testManualParserUsage() throws IOException {
 
-		String queryString = getSparqlQuery("queries/HavingAvgExp2.eprq");
+		String queryString = getSparqlQuery("queries/HistoricRealtimeQuery.eprq");
 		Query query = null;
+		System.out.println(queryString);
 
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
-
-		HavingVisitor v = new HavingVisitor();
-
-		for (Expr el : query.getHavingExprs()) {
-			el.visit(v);
-		}
-
-		// Use custom visitor
-		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-
-		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
-
-		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
-
-		System.out.println(etalisPattern);
+		
+		EventIterator v = new EventIterator();
+		query.getEventQuery().get(0).visit(v);
+		System.out.println(query.getEventQuery().size());
+		
 	}
 	
 

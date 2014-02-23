@@ -267,7 +267,7 @@ void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Wi
 	  //Realtime query with window.
 	   < BEGIN_WINDOW >
 	   		<LBRACE>
-	   			el = EventClause(null)
+	   			el = EventClause()
 			<RBRACE>
 		t = < WINDOWSIZE >
 				(
@@ -278,7 +278,7 @@ void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Wi
 		)  
 	|
 		//Real time query without window.
-	    el = EventClause(null)
+	    el = EventClause()
 	)
 	{getQuery().getEventQuery().add(el);}
 	
@@ -1941,22 +1941,41 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
   {return new ElementEventGraph(n, elg);}
 }
 
-Element EventClause(ElementEventBinOperator opL) : {Element e; ElementEventBinOperator subElements = null; Element eventClauseL = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
+Element EventClause() : {Element eventClause = null; ElementEventBinOperator op = null;}
+{    eventClause = NestedEvents()
+    (
+	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
+	  {
+	    op.setChilds(eventClause, eventClauseR);
+	    eventClause = op;
+	  }
+	)*
+
+	{return eventClause;}|
+	eventClause = Event()
+	(
+	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
+	  {
+	    op.setChilds(eventClause, eventClauseR);
+	    eventClause = op;
+	  }
+	)* 
+
+	{return eventClause;}
+}
+
+Element NestedEvents() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
 {
-	<LBRACE> eventClauseR = EventClause(opL)
-	{		opL.setRight(eventClauseR);
-	}
-	<RBRACE> (op = BdplBinOperators() eventClauseR = EventClause(op))?	{		if(op != null) {			op.setLeft(eventClauseL);		    op.setRight(eventClauseR);			return op;		} else {			return eventClauseL;		}		      	}|
-	eventClauseL = Event()  (op = BdplBinOperators() eventClauseR = EventClause(op))?
-	{
-		if(op != null) {
-			op.setLeft(eventClauseL);
-		    op.setRight(eventClauseR);
-			return op;
-		} else {
-			return eventClauseL;
-		}      
-	}  
+    
+	<LBRACE> eventClause = Events() <RBRACE>
+	{return eventClause;}
+}
+
+Element Events() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
+{
+	eventClause = Event()
+	(	  op = BdplBinOperators() eventClauseR = Event()	  {	    op.setChilds(eventClause, eventClauseR);	    eventClause = op;	  }	)*
+	{return eventClause;}
 }
 
 ElementEventGraph Event() :{ ElementEventGraph e;}

@@ -34,7 +34,6 @@ public interface ElementVisitor
 	public void visit(ElementEventFilter el);
 	public void visit(BooleanOperator booleanOperator);
 	public void visit(ElementFnAbsFilter elementFnAbsFilter);
-
 }
 
 /*
