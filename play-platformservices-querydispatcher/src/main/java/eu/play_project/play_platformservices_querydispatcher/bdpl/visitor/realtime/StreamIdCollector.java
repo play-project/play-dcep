@@ -9,6 +9,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
@@ -74,18 +75,17 @@ public class StreamIdCollector {
 		Set<String> streams = new HashSet<String>();
 		ValueOrganizerVisitor valueOrganizerVisitor = new ValueOrganizerVisitor();
 
-		for (Element element : query.getEventQuery()) {
-			element.visit(valueOrganizerVisitor);
-			if (valueOrganizerVisitor.getStreamURIs() != null) {
-				Set<String> streamIds = valueOrganizerVisitor.getStreamURIs();
-				for (String id : streamIds) {
-					streams.add(Stream.toTopicUri(id));
-				}
+		query.getEventQuery().visit(valueOrganizerVisitor);
+		if (valueOrganizerVisitor.getStreamURIs() != null) {
+			Set<String> streamIds = valueOrganizerVisitor.getStreamURIs();
+			for (String id : streamIds) {
+				streams.add(Stream.toTopicUri(id));
 			}
 		}
 
 		return streams;
 	}
+	
 
 	/**
 	 * Returns the historic stream IDs without the {@code #stream} suffix to be used with EC and DSB.
@@ -155,6 +155,13 @@ public class StreamIdCollector {
 				element.visit(this);
 			}
 		}
+		
+		@Override
+		public void visit(ElementEventBinOperator el) {
+			el.getLeft().visit(this);
+			el.getRight().visit(this);
+		}
+
 	}
 
 	// Test if the type is http://events.event-processing.org/types/stream
@@ -179,4 +186,6 @@ public class StreamIdCollector {
 			return uri;
 		}
 	}
+	
+	
 }

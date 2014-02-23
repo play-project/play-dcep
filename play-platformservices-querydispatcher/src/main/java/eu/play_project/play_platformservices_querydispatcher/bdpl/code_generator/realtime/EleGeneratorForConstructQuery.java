@@ -20,6 +20,7 @@ import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResultVisitor;
@@ -44,13 +45,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	// Manages variables which are globally unique.
 	private UniqueNameManager uniqueNameManager;
 	// Returns one triple after the other.
-	private Iterator<Element> eventQueryIter;
-	// Return operators used in the query. E.g. SEQ, AND, OR ... In the order they are used in the query.
-	private Iterator<ElementEventBinOperator> binOperatorIter;
+	private Iterator<ElementEventGraph> eventQueryIter;
+	// Returns one operator after the other.
+	private Iterator<String> binOperatorIter;
 	// Detect the type of an event.
 	private EventTypeVisitor eventTypeVisitor;
 	//Visitors to generate code.
-	private BinOperatorVisitor binOperatorVisitor;
 	private FilterExpressionCodeGenerator filterExpressionVisitor;
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
@@ -70,16 +70,15 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 		elePattern = "";
 		this.inputQuery = inQuery;
-		eventQueryIter = inQuery.getEventQuery().iterator();
-		binOperatorIter = inQuery.getEventBinOperator().iterator();
 		uniqueNameManager = getVarNameManager();
 		uniqueNameManager.newQuery(); // Rest uniqueNameManager.
 		uniqueNameManager.setWindowTime(inQuery.getWindow().getValue());
+		
 		// Instantiate visitors.
+		EventPatternOperatorCollector eventPatternVisitor =  new EventPatternOperatorCollector();
 		eventTypeVisitor = new EventTypeVisitor();
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
-		binOperatorVisitor =  new BinOperatorVisitor();
 		havingVisitor =  new HavingVisitor();
 		
 		queryTemplate = new QueryTemplateImpl();
@@ -89,6 +88,11 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		nameManager =  UniqueNameManager.getVariableTypeManage();
 		nameManager.collectVars();
 
+		// Collect event patterns and operators.
+		eventPatternVisitor.collectValues(inQuery.getEventQuery());
+		eventQueryIter = eventPatternVisitor.getEventPatterns().iterator();
+		binOperatorIter = eventPatternVisitor.getOperators().iterator();
+		
 		rdfDbQueries = new LinkedList<String>();
 		
 		// Start code generation.
@@ -102,8 +106,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		SimpleEventPattern();
 		
 		while(binOperatorIter.hasNext()){
-			binOperatorIter.next().visit(binOperatorVisitor);
-			elePattern += binOperatorVisitor.getBinOperator();
+			elePattern += binOperatorIter.next();
 			SimpleEventPattern();
 		}
 	}
@@ -365,7 +368,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	/**
-	 * Generate rdf db method declerations.
+	 * Generate rdf db method decelerations.
 	 * E.g. dbQuery_abc_e1(Ve1).
 	 * @param q Parsed Jena query.
 	 * @return

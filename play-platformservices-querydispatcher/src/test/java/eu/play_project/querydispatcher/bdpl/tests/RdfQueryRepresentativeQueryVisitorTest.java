@@ -42,7 +42,7 @@ public class RdfQueryRepresentativeQueryVisitorTest {
 		}
 	
 		RdfQueryRepresentativeQueryVisitor v = new RdfQueryRepresentativeQueryVisitor();
-		query.getEventQuery().get(0).visit(v);
+		query.getEventQuery().visit(v);
 	
 		// Queries for variable t1,e1,friend1,about1.
 		String[] expectedResult = {

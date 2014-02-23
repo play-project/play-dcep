@@ -280,7 +280,7 @@ void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Wi
 		//Real time query without window.
 	    el = EventClause()
 	)
-	{getQuery().getEventQuery().add(el);}
+	{getQuery().seteventQuery(el);}
 	
 	// Historical query is optional.
 	(WhereClauseH(th))*

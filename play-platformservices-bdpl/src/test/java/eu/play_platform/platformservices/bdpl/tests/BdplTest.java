@@ -102,7 +102,7 @@ public class BdplTest {
 					QueryFactory.create(query[0], Syntax.syntaxBDPL);
 				} catch (QueryException e) {
 					if (!e.getMessage().contains(query[1])) { // Test if expected exception
-						e.printStackTrace();
+						//e.printStackTrace();
 						throw new Exception("Not expected exception was thrown in " + fileName + "\n" + query[1] + " is expected");
 					}
 				}

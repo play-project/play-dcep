@@ -90,30 +90,20 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     // Play extensions ----------------------------------
     // Event Data
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ArrayList<Element> eventQuery = new ArrayList<Element>() ;
-    private final List<ElementEventBinOperator> eventBinOperator = new ArrayList<ElementEventBinOperator>();
+    private Element eventQuery;
     private Window window = new DummyWindow();
 
 
-    public List<ElementEventBinOperator> getEventBinOperator() {
-		return eventBinOperator;
-	}
-
-	public void addEventBinOperator(ElementEventBinOperator eventBinOperator) {
-		this.eventBinOperator.add(eventBinOperator);
-	}
-
-    public List<Element> getEventQuery() {
+    public Element getEventQuery() {
 		return eventQuery;
 	}
 
-	public void addEventElement(Element element){
-    	eventQuery.add(element);
+	public void seteventQuery(Element element){
+    	eventQuery = element;
     }
 
 	public void clearCEPData(){
-		eventQuery.clear();
-		eventBinOperator.clear();
+		eventQuery = null;
 	}
 
 	public Window getWindow(){

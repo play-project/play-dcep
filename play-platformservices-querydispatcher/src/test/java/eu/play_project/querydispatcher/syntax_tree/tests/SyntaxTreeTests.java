@@ -39,7 +39,7 @@ public class SyntaxTreeTests {
 		// Check result.
 		String[] expectedResults = {"?e3", "SEQ", "?e4", "OR", "?e5"};
 		SimpleEvenTreeVisitor v = new SimpleEvenTreeVisitor(expectedResults);
-		query.getEventQuery().get(0).visit(v);
+		query.getEventQuery().visit(v);
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class SyntaxTreeTests {
 		// Check result.
 		String[] expectedResults = {"?e3", "SEQ", "(", "?e1", "OR", "?e2", ")"};
 		NestedEventsTreeVisitor v = new NestedEventsTreeVisitor(expectedResults);
-		query.getEventQuery().get(0).visit(v);
+		query.getEventQuery().visit(v);
 	}
 	
 	public static String getSparqlQuery(String queryFile) throws IOException {

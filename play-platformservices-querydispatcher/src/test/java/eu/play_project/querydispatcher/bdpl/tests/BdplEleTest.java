@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.hp.hpl.jena.query.Query;
@@ -32,6 +33,7 @@ import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventIterator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
@@ -55,8 +57,7 @@ public class BdplEleTest {
 		}
 		
 		EventIterator v = new EventIterator();
-		query.getEventQuery().get(0).visit(v);
-		System.out.println(query.getEventQuery().size());
+		query.getEventQuery().visit(v);
 	}
 	
 
@@ -260,38 +261,48 @@ public class BdplEleTest {
 		assertEquals("calcAverage(dbId0, 1800, Result10), greaterOrEqual(Result10,30.0)", v
 				.getCode().toString());
 	}
-
+	
 	@Test
-	public void testStartParser() throws InterruptedException {
-		String queryString = getQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq")[0];
-		// queryString =
-		// "PREFIX : <http://example.com> CONSTRUCT{:e :type :FacebookCepResult.} {EVENT ?id{?e1 :location [ :lat ?Latitude1; :long ?Longitude1 ]} GRAPH ?id{?s ?p ?o}}";
-		System.out.println(queryString);
+	public void collectEventPatternsAndOperatorsTest1() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/NestedEvent.eprq");
+
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		System.out.println("Query \n" + query);
-
-		// Use custom visitor
-		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId("'" + Namespace.PATTERN.getUri() + "123456'");
-
-		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
+		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
+		visitor1.collectValues(query.getEventQuery());
 		
-		System.out.println(etalisPattern);
+		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
 
-		// try { // FIXME sobermeier: this does not work anymore since 'complex'
-		// events now have individual names
-		// PlayEleParser parser = new PlayEleParser(new ByteArrayInputStream(etalisPattern.getBytes()));
-		// parser.Start();
-		// parseEtalisPattern(etalisPattern);
-		// } catch (ParseException e) {
-		// e.printStackTrace();
-		// fail("Pars error: " + e.getMessage());
-		// }
+		String[] expectedOperator = {"SEQ(", "OR" , ")"};
+		Assert.assertArrayEquals(expectedOperator , visitor1.getOperators().toArray());
 	}
+	
+	@Test
+	public void collectEventPatternsAndOperatorsTest2() throws IOException {
 
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/SimpleTree.eprq");
+
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
+		visitor1.collectValues(query.getEventQuery());
+		
+		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
+
+		String[] expectedOperator = {"SEQ", "OR"};
+		System.out.println(visitor1.getOperators());
+		Assert.assertArrayEquals(expectedOperator , visitor1.getOperators().toArray());
+	}
+	
 	@Test
 	public void testShowQdResult() throws IOException {
 
@@ -362,7 +373,7 @@ public class BdplEleTest {
 		FilterExpressionCodeGenerator visitor = new FilterExpressionCodeGenerator();
 
 		// Get first EventGraph
-		ElementEventGraph eventGraph = (ElementEventGraph) query.getEventQuery().get(0);
+		ElementEventGraph eventGraph = (ElementEventGraph) query.getEventQuery();
 
 		Element filter = eventGraph.getFilterExp();
 
