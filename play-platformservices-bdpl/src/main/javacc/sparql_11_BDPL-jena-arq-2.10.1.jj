@@ -1978,14 +1978,15 @@ Element Events() : {Element e; ElementEventBinOperator subElements = null; Eleme
 	{return eventClause;}
 }
 
-ElementEventGraph Event() :{ ElementEventGraph e;}
-{	e = EventGraphPattern() (BdplFilter())?
+ElementEventGraph Event() :{ ElementEventGraph e; Element filter =  null;}
+{	e = EventGraphPattern() (filter = BdplFilter())?
 	{
+	  e.setFilterExp(filter);
 	  return e;	}
 }
 
 ElementEventBinOperator MoreEvents() : {ElementEventBinOperator op; ElementEventGraph e2;}
-{	op = BdplBinOperators() e2 = EventGraphPattern() (BdplFilter())?
+{	op = BdplBinOperators() e2 = Event()
 	{
 	  op.setRight(e2);
 	  return op;
@@ -2029,10 +2030,6 @@ Element BdplFilter() :
 }
 {
   filter = Filter()
-  {
-    ((ElementEventGraph)getQuery().getEventQuery().get(getQuery().getEventQuery().size()-1)).setFilterExp(filter);
-  }
-
   {return filter;}
 }
 
