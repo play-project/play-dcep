@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
@@ -26,6 +29,8 @@ import eu.play_project.play_platformservices.api.QueryDetails;
  */
 public class StreamIdCollector {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	public void getStreamIds(Query query, QueryDetails qd) {
 		if (qd == null) {
 			throw new RuntimeException("Parameter QueryDetails is null");
@@ -98,13 +103,17 @@ public class StreamIdCollector {
 		ValueOrganizerVisitor valueOrganizerVisitor = new ValueOrganizerVisitor();
 
 		Element element = query.getQueryPattern(); //Historic query.
-		element.visit(valueOrganizerVisitor);
-		if (valueOrganizerVisitor.getStreamURIs().size() > 0) {
-			streams = new HashSet<String>();
-			for (String stream : valueOrganizerVisitor.getStreamURIs()) {
-				streams.add(Stream.toTopicUri(stream));
+			if (element !=  null) {
+				element.visit(valueOrganizerVisitor);
+				if (valueOrganizerVisitor.getStreamURIs().size() > 0) {
+					streams = new HashSet<String>();
+					for (String stream : valueOrganizerVisitor.getStreamURIs()) {
+						streams.add(Stream.toTopicUri(stream));
+					}
+				}
+			} else {
+				logger.debug("No historic part in query to collect stream id from.");
 			}
-		}
 		return streams;
 	}
 
