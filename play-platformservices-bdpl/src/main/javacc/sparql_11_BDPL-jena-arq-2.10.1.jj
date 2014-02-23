@@ -1941,7 +1941,7 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
   {return new ElementEventGraph(n, elg);}
 }
 
-Element EventClause() : {Element eventClause = null; ElementEventBinOperator op = null;}
+Element EventClause() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
 {    eventClause = NestedEvents()
     (
 	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())

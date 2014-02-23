@@ -57,7 +57,6 @@ public class BdplEleTest {
 		EventIterator v = new EventIterator();
 		query.getEventQuery().get(0).visit(v);
 		System.out.println(query.getEventQuery().size());
-		
 	}
 	
 
