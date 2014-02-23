@@ -9,8 +9,6 @@ import org.junit.Test;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
-import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 
 public class RdfQueryRepresentativeQueryVisitorTest {
@@ -57,18 +55,6 @@ public class RdfQueryRepresentativeQueryVisitorTest {
 			assertEquals(expectedResult[i], v.getRdfQueryRepresentativeQuery().get(key));
 			i++;
 		}
-	
-		System.out.println(v.getRdfQueryRepresentativeQuery());
-	
-		// Use custom visitor
-		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-	
-		visitor1.setPatternId("'http://patternId.example.com/123456'");
-	
-		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
-	
-		System.out.println(etalisPattern);
 	}
 
 }

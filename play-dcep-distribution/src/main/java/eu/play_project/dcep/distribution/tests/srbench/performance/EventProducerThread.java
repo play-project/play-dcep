@@ -1,11 +1,8 @@
 package eu.play_project.dcep.distribution.tests.srbench.performance;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.bouncycastle.crypto.RuntimeCryptoException;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 

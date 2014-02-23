@@ -1,7 +1,5 @@
 package eu.play_project.querydispatcher.syntax_tree.tests;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
@@ -10,7 +8,6 @@ import org.junit.Test;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventIterator;
 import eu.play_project.querydispatcher.bdpl.tests.BdplEleTest;
 import eu.play_project.querydispatcher.epsparql.tests.helpers.NestedEventsTreeVisitor;
 import eu.play_project.querydispatcher.epsparql.tests.helpers.SimpleEvenTreeVisitor;

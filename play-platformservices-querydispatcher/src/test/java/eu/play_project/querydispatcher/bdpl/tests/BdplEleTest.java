@@ -35,9 +35,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventIterator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 

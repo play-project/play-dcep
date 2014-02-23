@@ -16,14 +16,17 @@ public class EventIterator extends GenericVisitor implements Iterable<Element>, 
 
 	// Methods from interface Iterator
 
+	@Override
 	public boolean hasNext() {
 		return true;
 	}
 
+	@Override
 	public Element next() {
 		return null;
 	}
 
+	@Override
 	public void remove() {
 		// No remove.
 	}

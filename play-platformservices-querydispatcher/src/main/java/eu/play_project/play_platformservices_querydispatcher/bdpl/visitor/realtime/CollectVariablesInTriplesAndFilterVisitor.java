@@ -5,13 +5,9 @@ import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.expr.E_Now;
-import com.hp.hpl.jena.sparql.expr.ExprFunction0;
 import com.hp.hpl.jena.sparql.expr.ExprFunction1;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;

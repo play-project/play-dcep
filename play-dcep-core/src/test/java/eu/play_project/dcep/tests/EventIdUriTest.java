@@ -4,10 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-
 import org.junit.Test;
 import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;

@@ -3,13 +3,9 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realt
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Assert;
-
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
-import com.hp.hpl.jena.sparql.syntax.ElementGroup;
-import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 /**
  * Separate event patterns from operators. For more intuitive code generation.
