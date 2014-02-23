@@ -12,11 +12,12 @@ import com.hp.hpl.jena.query.QueryFactory;
 
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventIterator;
 import eu.play_project.querydispatcher.bdpl.tests.BdplEleTest;
+import eu.play_project.querydispatcher.epsparql.tests.helpers.PostOrderTreeVisitor;
 import eu.play_project.querydispatcher.epsparql.tests.helpers.SimpleEvenTreeVisitor;
 
 /**
  * Check if the produced tree has the expected structure.
- * @author Stefan Obermeier sobermeier
+ * @author Stefan Obermeier
  *	
  */
 public class SyntaxTreeTests {
@@ -36,7 +37,7 @@ public class SyntaxTreeTests {
 		}
 		
 		// Check result.
-		String[] expectedResults = {"?e3", "?e4", "SEQ", "OR", "?e5"};
+		String[] expectedResults = {"?e3", "SEQ", "?e4", "OR", "?e5"};
 		SimpleEvenTreeVisitor v = new SimpleEvenTreeVisitor(expectedResults);
 		query.getEventQuery().get(0).visit(v);
 	}
@@ -46,18 +47,19 @@ public class SyntaxTreeTests {
 		
 		// Load query
 		String queryString = getSparqlQuery("queries/NestedEvent.eprq");
-		
+		System.out.println(queryString);
 		// Generate tree.
 		Query query = null;
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Exception was thrown: " + e);
 		}
 		
 		// Check result.
-		String[] expectedResults = {"?e1", "OR", "?e2", "SEQ", "?e3"};
-		SimpleEvenTreeVisitor v = new SimpleEvenTreeVisitor(expectedResults);
+		String[] expectedResults = {"?e3", "SEQ", "(", "?e1", "OR", "?e2", ")"};
+		PostOrderTreeVisitor v = new PostOrderTreeVisitor(expectedResults);
 		query.getEventQuery().get(0).visit(v);
 	}
 	

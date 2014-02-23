@@ -9,6 +9,12 @@ import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
 
+/**
+ * Visit event binary operators and events in in-order fashion.
+ * Compare string representation of the visited node with expected value.
+ * @author sobermeier
+ *
+ */
 public class SimpleEvenTreeVisitor extends GenericVisitor {
 	
 	String[] expctedResults;

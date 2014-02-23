@@ -1,7 +1,5 @@
 package eu.play_project.querydispatcher.epsparql.tests.helpers;
 
-import java.util.Stack;
-
 import org.junit.Assert;
 
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
@@ -11,28 +9,35 @@ import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
 
+/**
+ * Visit tree elements to generate ELE and compare the visited nodes with with expected values.
+ * Visit tree in in-order  fashion and add brackets. 
+ * @author Stefan Obermeier
+ *
+ */
 public class PostOrderTreeVisitor extends GenericVisitor {
 	
 	String[] expctedResults;
 	int index;
-	Stack<String> stack;
 	
 	public PostOrderTreeVisitor(String[] expctedResults) {
 		this.expctedResults = expctedResults;
-		stack = new Stack<String>();
 		index = 0;
 	}
 	
 	@Override
 	public void visit(ElementEventBinOperator el) {
 		el.getLeft().visit(this);
-		el.getRight().visit(this);
 		
-		String right = stack.pop();
-		String left = stack.pop();
-		Assert.assertEquals(expctedResults[index++], left);
-		Assert.assertEquals(expctedResults[index++], right);
-		Assert.assertEquals(expctedResults[index++], el.getTyp());
+		if(el.getRight() instanceof ElementEventGraph) {
+			Assert.assertEquals(el.getTyp(), expctedResults[index++]);
+			el.getRight().visit(this);
+		} else {
+			Assert.assertEquals(el.getTyp(), expctedResults[index++]);
+			Assert.assertEquals("(", expctedResults[index++]);
+			el.getRight().visit(this);
+			Assert.assertEquals(")", expctedResults[index++]);
+		}
 	}
 	
 	@Override
@@ -47,6 +52,6 @@ public class PostOrderTreeVisitor extends GenericVisitor {
 	
 	@Override
 	public void visit(ElementPathBlock el) {
-		stack.push(el.getPattern().get(0).getSubject().toString());
+		Assert.assertEquals(el.getPattern().get(0).getSubject().toString(), expctedResults[index++]);
 	}
 }
