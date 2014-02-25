@@ -26,6 +26,6 @@ CONSTRUCT {
 	SEQ
 	EVENT ?id3 {
 		?e3 rdf:type :MyGreenServicesSensors .
-		?e3 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
+		?e3 :stream <http://streams.event-processing.org/ids/MyGreenServicesSensors#stream> .
 	}	
 }
