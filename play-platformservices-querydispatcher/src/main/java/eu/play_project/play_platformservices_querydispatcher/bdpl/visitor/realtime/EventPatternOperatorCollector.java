@@ -37,11 +37,11 @@ public class EventPatternOperatorCollector extends GenericVisitor {
 		el.getLeft().visit(this);
 		
 		if(el.getRight() instanceof ElementEventGraph) {
-			operators.add(el.getTyp());
+			operators.add("'" + el.getTyp() + "'");
 			el.getRight().visit(this);
 		} else {
 			
-			opTmp.append(el.getTyp());
+			opTmp.append("'" + el.getTyp() + "'");
 			opTmp.append("(");
 			operators.add(opTmp.toString());
 			opTmp = new StringBuffer();
