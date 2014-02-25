@@ -64,7 +64,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 	@Override
 	public void generateQuery(Query inQuery) {
-		//Detect eventtypes
+		//Detect event types
 		//variableAgregatedType = new AgregatedVariableTypes().detectType(inQuery);
 
 		elePattern = "";
@@ -289,8 +289,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer dbQueryMethod = new StringBuffer();
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
-		// Combine decl and impl.
-		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
+		StringBuffer ignoreQueryIfEvntIdIsNotGiven = new StringBuffer();
+		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; ");
+		
+		
+		// Combine decl and impel.
+		dbQueryMethod.append(dbQueryDecl + ":-(" + ignoreQueryIfEvntIdIsNotGiven + "(" + flatDbQueries + "))");
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
