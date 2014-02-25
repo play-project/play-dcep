@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
@@ -140,5 +141,13 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 				triplestoreQuery += ", ";
 			}
 		}	
+	}
+	
+	@Override
+	public void visit(ElementEventBinOperator el) {
+		el.getLeft().visit(this);
+		triplestoreQuery = "'" + el.getTyp() + "'";
+		el.getRight().visit(this);
+		
 	}
 }

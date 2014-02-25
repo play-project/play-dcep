@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.node.NodeException;
@@ -18,20 +17,17 @@ import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
-public class EventIdUriTest extends ScenarioAbstractTest {
-	
-	boolean start = false;
-	static Component root;
-	public static boolean test;
+public class NestedEvents extends ScenarioAbstractTest {
 	private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
 	
 	@Test
-	public void testEentIdAsUri() throws QueryDispatchException, IOException {
-		
+	public void runTest() throws IOException, QueryDispatchException {
+
 		String queryString;
 
 		// Get query.
-		queryString = loadSparqlQuery("patterns/play-bdpl-telco-recommend-location.eprq");
+		queryString = loadSparqlQuery("patterns/play-bdpl-nested-events.eprq");
+		System.out.println(queryString);
 
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
@@ -48,9 +44,8 @@ public class EventIdUriTest extends ScenarioAbstractTest {
 
 		testApi.attach(subscriber);
 		logger.info("Publish events");
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoLocationTest_Call.trig", Syntax.Trig)));
-		// TODO stuehmer finish test
-	
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Matlab.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioMyGreenServicesTest_Sensors.trig", Syntax.Trig)));
 
 		// Wait
 		delay();
@@ -69,5 +64,4 @@ public class EventIdUriTest extends ScenarioAbstractTest {
 	public static void main(String[] args) throws ModelRuntimeException, IOException {
 		System.out.println(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Matlab.trig", Syntax.Trig)));
 	}
-
 }
