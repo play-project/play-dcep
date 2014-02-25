@@ -44,11 +44,8 @@ public class NestedEvents extends ScenarioAbstractTest {
 
 		testApi.attach(subscriber);
 		logger.info("Publish events");
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoLocationTest_Call.trig", Syntax.Trig)));
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Matlab.trig", Syntax.Trig)));
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioMyGreenServicesTest_Sensors.trig", Syntax.Trig)));
-		
-	
 
 		// Wait
 		delay();

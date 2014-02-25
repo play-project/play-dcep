@@ -290,7 +290,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
 		StringBuffer ignoreQueryIfEvntIdIsNotGiven = new StringBuffer();
-		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; ");
+		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (was optional).
 		
 		
 		// Combine decl and impel.
