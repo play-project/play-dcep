@@ -15,6 +15,7 @@ CONSTRUCT {
 	:e :var1 ?nummer.
 	:e :var2 ?nummer2.
 } WHERE {
+	{
 		EVENT ?id1 {
 			?e1 rdf:type :UcTelcoCall .
 			?e1 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
@@ -27,6 +28,7 @@ CONSTRUCT {
 			?e2 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
 			?e2 inria:sequenceNumber ?nummer.
 		}
+	}
 	SEQ
 	EVENT ?id3 {
 		?e3 rdf:type :MyGreenServicesSensors .
