@@ -17,8 +17,8 @@ import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
-public class NestedEvents extends ScenarioAbstractTest {
-	private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
+public class NestedEventsTest extends ScenarioAbstractTest {
+	private final Logger logger = LoggerFactory.getLogger(NestedEventsTest.class);
 	
 	@Test
 	public void runTest() throws IOException, QueryDispatchException {
