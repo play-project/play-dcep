@@ -2,41 +2,31 @@
 #Scipt to install requierd software to run PLAY cep-components on a Debian machine.
 
 TOOL_URL=https://raw.github.com/play-project/play-dcep/master/play-dcep-distribution/src/main/scripts
-PROLOG_SRC_URL=http://www.home.hs-karlsruhe.de/~obst1011/fzi/play/
+PROLOG_SRC_URL=http://www.swi-prolog.org/download/stable/src/
 INSTALL_DIR=/opt/dcep
-IPv6_PREFIX=2001:6f8:100d:b::
 
 installBasicSoftware(){
 	#Add non-free repositories.
 	cd /etc/apt/sources.list.d/
 	wget $TOOL_URL/non-free-sources.list
 	apt-get -y update
-	
-	#Accept SUN Java licence agreements
-	echo "sun-java6-jdk shared/accepted-sun-dlj-v1-1 select true" | debconf-set-selections
-	echo "sun-java6-jre shared/accepted-sun-dlj-v1-1 select true" | debconf-set-selections
-	
+
 	#Install tools.
-	apt-get -f -y install screen vim maven2 subversion sun-java6-jdk ntpdate unzip
-	update-alternatives --set java /usr/lib/jvm/java-6-sun/jre/bin/java
-	export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.26/
+	apt-get -f -y install screen vim maven git ntpdate unzip
 }
 
 installCEP_Engine(){
 	# Install SWI-Prolog
 	  apt-get --yes install gcc make
 	# Install dependencies to compile prolog sources.
-	  apt-get --yes install build-essential autoconf curl chrpath ncurses-dev libreadline-dev libunwind7-dev libxext-dev libice-dev libjpeg-dev libxinerama-dev libxft-dev libxpm-dev libxt-dev pkg-config libssl-dev unixodbc-dev junit zlib1g-dev libarchive-dev
+	  apt-get --yes install build-essential autoconf curl chrpath ncurses-dev libreadline-dev libunwind7-dev libgmp-dev libxext-dev libice-dev libjpeg-dev libxinerama-dev libxft-dev libxpm-dev libxt-dev pkg-config libssl-dev unixodbc-dev openjdk-7-jdk junit zlib1g-dev libarchive-dev libossp-uuid-dev
 
 	# Compile and install SWI-Prolog
 	cd /tmp/
-	wget $PROLOG_SRC_URL/pl-5.10.2.tar.gz
-	tar -xzf pl-5.10.2.tar.gz
-	cd pl-5.10.2
-	./build.templ
-
-	# Get CEP-Engine
-	
+	wget $PROLOG_SRC_URL/pl-6.6.1.tar.gz
+	tar -xzf pl-6.6.1.tar.gz
+	cd pl-6.6.1
+	./build.templ --prefix=/usr/local
 }
 
 installProActive(){
