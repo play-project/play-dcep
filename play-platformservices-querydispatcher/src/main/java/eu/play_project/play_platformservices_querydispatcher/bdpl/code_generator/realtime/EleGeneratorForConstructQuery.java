@@ -19,6 +19,7 @@ import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
@@ -53,6 +54,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private FilterExpressionCodeGenerator filterExpressionVisitor;
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
+	private EqualizeEventIdVariableWithTriplestoreId eCcodeGeneratorVisitor;
 	private VariableTypeManager nameManager;
 	
 	private List<String> rdfDbQueries; // Rdf db queries represents the semantic web part of a BDPL query. ETALIS calls this queries to check conditions for the current events.
@@ -78,6 +80,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		eventTypeVisitor = new EventTypeVisitor();
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
+		eCcodeGeneratorVisitor = new EqualizeEventIdVariableWithTriplestoreId(uniqueNameManager);
 		havingVisitor =  new HavingVisitor();
 		
 		queryTemplate = new QueryTemplateImpl();
@@ -254,15 +257,20 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	private void AdditionalConditions(){
 		TriplestoreQuery();
+		EventIdVarIsSynonymousWithTriplestoreId();
 		ReferenceCounter();
 //		elePattern += ", ";
 //		PerformanceMeasurement();
-		// FIXME sobermeier: re-add these lines and test for PrologException on simple events
 		
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";
 			GenerateCEID();
 		}
+	}
+	
+	private void EventIdVarIsSynonymousWithTriplestoreId() {
+		currentElement.visit(eCcodeGeneratorVisitor);
+		elePattern += eCcodeGeneratorVisitor.getEqualizeCode();
 	}
 
 	private void ReferenceCounter(){

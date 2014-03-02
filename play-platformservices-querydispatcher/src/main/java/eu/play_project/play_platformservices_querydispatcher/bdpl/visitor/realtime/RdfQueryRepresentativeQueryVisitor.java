@@ -130,7 +130,6 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 				code.append(",");
 				code.append(getVarNameManager().getTriplestoreVariable());
 				code.append(")");
-				
 				varRepresentative.put(name, code.toString());
 				code = new StringBuffer();
 			}

@@ -58,8 +58,6 @@ public class BdplEleTest {
 		query.getEventQuery().visit(v);
 	}
 	
-
-
 	@Test
 	public void testBasicEleGeneration() throws IOException {
 
@@ -105,6 +103,34 @@ public class BdplEleTest {
 		System.out.println(etalisPattern);
 	}
 	
+	@Test
+	public void testVarEqualize() throws IOException {
+
+		String queryString = getSparqlQuery("queries/play-bdpl-event-id-in-var.eprq");
+		Query query = null;
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception was thrown: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		
+		assertTrue(etalisPattern.contains(", Vid1=ViD2, "));
+	}
+	
 	/**
 	 * Check if wrong data type in filter will be detected.
 	 */
@@ -145,7 +171,6 @@ public class BdplEleTest {
 	@Test
 	public void globalFilterVariables() throws IOException {
 		
-		NodeValue f;
 		String queryString = getSparqlQuery("play-bdpl-crisis-02b-windintensity.eprq");
 		Query query = null;
 

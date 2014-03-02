@@ -18,10 +18,12 @@ public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 	
 	private Set<String> vars; 
 
-	
 	@Override
 	public void visit(ElementEventGraph el) {
-		vars = new HashSet<String>();	
+		vars = new HashSet<String>();
+		// Visit event id.
+		el.getGraphNameNode().visitWith(this);
+		
 		// Visit triples
 		el.getElement().visit(this);
 	}

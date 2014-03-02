@@ -67,7 +67,7 @@ public class DispatcherTest {
 		}
 		
 		// Get query.
-		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("queries/play-bdpl-clic2Call.eprq");
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -77,12 +77,13 @@ public class DispatcherTest {
 		vtm.collectVars();
 		
 		List<String> vars = vtm.getVariables(VariableTypes.CONSTRUCT_TYPE);
-		assertTrue(vars.size() == 5);
+		assertTrue(vars.size() == 6);
 		assertTrue(vars.contains("e1"));
 		assertTrue(vars.contains("e2"));
 		assertTrue(vars.contains("bob"));
 		assertTrue(vars.contains("alice"));
 		assertTrue(vars.contains("tweetContent"));
+		assertTrue(vars.contains("id1"));
 
 		vars = vtm.getVariables(VariableTypes.REALTIME_TYPE);
 		assertTrue(vars.size() == 8);
@@ -97,7 +98,6 @@ public class DispatcherTest {
 
 
 		vars = vtm.getVariables(VariableTypes.HISTORIC_TYPE);
-		System.out.println(vars.size());
 		assertTrue(vars.size() == 5);
 		assertTrue(vars.contains("id3"));
 		assertTrue(vars.contains("e3"));
