@@ -671,8 +671,7 @@ public class FormatterElement extends FormatterBase
 
 	@Override
 	public void visit(ElementEventGraph el) {
-		// TODO Auto-generated method stub
-		
+		visitNodePattern("EVENT", el.getGraphNameNode(), el.getElement()) ;
 	}
 
 	@Override
