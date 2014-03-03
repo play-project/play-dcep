@@ -40,7 +40,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
 public class BdplEleTest {
-
+	
 	@Test
 	public void testManualParserUsage() throws IOException {
 
@@ -101,6 +101,36 @@ public class BdplEleTest {
 				.build();
 
 		System.out.println(etalisPattern);
+	}
+	/**
+	 * Check if code for all members will be generated.
+	 */
+	@Test
+	public void testMembersFeature() throws IOException {
+
+		String queryString = getSparqlQuery("queries/bdpl-members-feature.eprq");
+		Query query = null;
+
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception was thrown: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+		String etalisPattern = visitor1.getEle();
+		assertTrue(etalisPattern.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD2,CEID1)"));
+		assertTrue(etalisPattern.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD3,CEID1)"));
 	}
 	
 	@Test
