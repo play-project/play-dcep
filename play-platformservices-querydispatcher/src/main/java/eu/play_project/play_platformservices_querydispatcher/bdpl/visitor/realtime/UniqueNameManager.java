@@ -75,9 +75,8 @@ public class UniqueNameManager {
 
 	public void newQuery(int numberOfEvents){
 		triplestoreVariableStart = triplestoreVariableEnd;
-		triplestoreVariableStart++;
 		triplestoreVariable = triplestoreVariableStart;
-		triplestoreVariableEnd = triplestoreVariableStart + numberOfEvents;
+		triplestoreVariableEnd = triplestoreVariableEnd + numberOfEvents;
 	}
 	
 	/**
@@ -87,6 +86,8 @@ public class UniqueNameManager {
 	 */
 	public List<String> getAllTripleStoreVariablesOfThisQuery(){
 		LinkedList<String> vars = new LinkedList<String>();
+		System.out.println(triplestoreVariableStart);
+		System.out.println(triplestoreVariableEnd);
 		for (long i = triplestoreVariableStart; i < triplestoreVariableEnd; i++) {
 			vars.add("ViD" + (i + 1));
 		}
