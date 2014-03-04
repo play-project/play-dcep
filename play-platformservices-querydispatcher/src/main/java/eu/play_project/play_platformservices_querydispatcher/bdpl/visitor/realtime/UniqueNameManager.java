@@ -73,11 +73,11 @@ public class UniqueNameManager {
 	 * Now it is possible to retrieve all triple store variables from this point with getAllTripleStoreVariablesOfThisQuery() .
 	 */
 
-	public void newQuery(){
+	public void newQuery(int numberOfEvents){
 		triplestoreVariableStart = triplestoreVariableEnd;
 		triplestoreVariableStart++;
-		triplestoreVariable = triplestoreVariableEnd;
-		triplestoreVariable++;
+		triplestoreVariable = triplestoreVariableStart;
+		triplestoreVariableEnd = triplestoreVariableStart + numberOfEvents;
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class UniqueNameManager {
 	public long processNextEvent(){
 
 		if (++triplestoreVariable >  triplestoreVariableEnd) {
-			triplestoreVariableEnd = triplestoreVariable;
+			throw new RuntimeException("No event left. This query schould contains " + (triplestoreVariableEnd - triplestoreVariableStart));
 		}
 		return triplestoreVariable;
 	}

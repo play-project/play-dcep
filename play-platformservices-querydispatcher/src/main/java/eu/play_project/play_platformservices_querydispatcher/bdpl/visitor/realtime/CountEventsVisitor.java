@@ -23,9 +23,10 @@ import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 public class CountEventsVisitor extends GenericVisitor {
 	int numberOfEvents = 0;
 	
-	public void count(Element el) {
+	public int count(Element el) {
 		numberOfEvents = 0;
 		el.visit(this);
+		return numberOfEvents;
 	}
 	
 	@Override

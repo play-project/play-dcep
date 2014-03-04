@@ -19,6 +19,7 @@ import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
@@ -55,6 +56,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
 	private EqualizeEventIdVariableWithTriplestoreId eCcodeGeneratorVisitor;
+	private CountEventsVisitor eventCounter;
 	private VariableTypeManager nameManager;
 	
 	private List<String> rdfDbQueries; // Rdf db queries represents the semantic web part of a BDPL query. ETALIS calls this queries to check conditions for the current events.
@@ -72,7 +74,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern = "";
 		this.inputQuery = inQuery;
 		uniqueNameManager = getVarNameManager();
-		uniqueNameManager.newQuery(); // Rest uniqueNameManager.
+		
 		uniqueNameManager.setWindowTime(inQuery.getWindow().getValue());
 		
 		// Instantiate visitors.
@@ -81,8 +83,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
 		eCcodeGeneratorVisitor = new EqualizeEventIdVariableWithTriplestoreId(uniqueNameManager);
+		eventCounter =  new CountEventsVisitor();
 		havingVisitor =  new HavingVisitor();
 		
+		uniqueNameManager.newQuery(eventCounter.count(inQuery.getEventQuery()));
 		queryTemplate = new QueryTemplateImpl();
 		
 		// Collect basic informations like variable types.
