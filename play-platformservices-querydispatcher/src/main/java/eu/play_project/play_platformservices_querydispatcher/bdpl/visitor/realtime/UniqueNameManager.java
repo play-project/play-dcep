@@ -68,9 +68,9 @@ public class UniqueNameManager {
 	}
 	
 	/**
-	 * Sometimes it is necessary to know all triplestore variables of one query.
+	 * Sometimes it is necessary to know all triple store variables of one query.
 	 * With this method the current state will be persisted.
-	 * Now it is possible to redrive all triplestore variables from this point with getAllTripleStoreVariablesOfThisQuery() .
+	 * Now it is possible to retrieve all triple store variables from this point with getAllTripleStoreVariablesOfThisQuery() .
 	 */
 
 	public void newQuery(){
