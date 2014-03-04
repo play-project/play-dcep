@@ -75,7 +75,6 @@ public class StreamIdCollectorTest {
 		assertTrue(qd.getInputStreams().equals(expectedInputStreams));
 
 		// Test historical streams
-		System.out.println(qd.getHistoricStreams());
 		assertEquals(expectedHistoricalStreams, qd.getHistoricStreams());
 		
 	}

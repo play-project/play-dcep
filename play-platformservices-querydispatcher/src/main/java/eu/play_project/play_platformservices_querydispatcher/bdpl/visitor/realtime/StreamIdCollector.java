@@ -160,7 +160,6 @@ public class StreamIdCollector {
 
 		@Override
 		public void visit(ElementGroup el) {
-			System.out.println(el.getElements().size());
 			// Visit all group elements
 			for (Element element : el.getElements()) {
 				element.visit(this);
