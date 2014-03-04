@@ -157,8 +157,7 @@ public class BdplEleTest {
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-		
-		assertTrue(etalisPattern.contains(", Vid1=ViD2, "));
+		assertTrue(etalisPattern.contains(", Vid1=ViD"));
 	}
 	
 	/**
@@ -331,7 +330,7 @@ public class BdplEleTest {
 		
 		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
 
-		String[] expectedOperator = {"SEQ(", "OR" , ")"};
+		String[] expectedOperator = {"'SEQ'(", "'OR'" , ")"};
 		Assert.assertArrayEquals(expectedOperator , visitor1.getOperators().toArray());
 	}
 	
@@ -351,7 +350,7 @@ public class BdplEleTest {
 		
 		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
 
-		String[] expectedOperator = {"SEQ", "OR"};
+		String[] expectedOperator = {"'SEQ'", "'OR'"};
 		System.out.println(visitor1.getOperators());
 		Assert.assertArrayEquals(expectedOperator , visitor1.getOperators().toArray());
 	}
@@ -401,7 +400,7 @@ public class BdplEleTest {
 
 		// Get query.
 		queryString = getSparqlQuery("queries/HistoricRealtimeQuery2.eprq");
-		System.out.println(queryString);
+
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
@@ -409,8 +408,7 @@ public class BdplEleTest {
 		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-		System.out.println(etalisPattern);
-		assertTrue(etalisPattern.contains("variabeValuesAdd(CEID8,'screenName02',VscreenName02)))") || etalisPattern.contains("variabeValuesAdd(CEID1,'screenName02',VscreenName02)))"));
+		assertTrue(etalisPattern.contains("'screenName02',VscreenName02)))") || etalisPattern.contains("'screenName02',VscreenName02)))"));
 	}
 	
 
