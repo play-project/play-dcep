@@ -29,7 +29,6 @@ private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTranspo
 
 		// Get query.
 		queryString = loadSparqlQuery("patterns/play-bdpl-nested-events-shared-vars.eprq");
-		System.out.println(queryString);
 
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);

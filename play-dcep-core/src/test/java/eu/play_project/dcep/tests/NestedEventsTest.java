@@ -27,7 +27,6 @@ public class NestedEventsTest extends ScenarioAbstractTest {
 
 		// Get query.
 		queryString = loadSparqlQuery("patterns/play-bdpl-nested-events.eprq");
-		System.out.println(queryString);
 
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
