@@ -20,7 +20,6 @@ import org.junit.Test;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
@@ -40,7 +39,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
 public class BdplEleTest {
-
+	
 	@Test
 	public void testManualParserUsage() throws IOException {
 
@@ -102,6 +101,37 @@ public class BdplEleTest {
 
 		System.out.println(etalisPattern);
 	}
+	/**
+	 * Check if code for all members will be generated.
+	 */
+	@Test
+	public void testMembersFeature() throws IOException {
+
+		String queryString = getSparqlQuery("queries/bdpl-members-feature.eprq");
+		Query query = null;
+System.out.println(queryString);
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		visitor1.setPatternId(patternId);
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception was thrown: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+		String ele = visitor1.getEle();
+		System.out.println(ele);
+		assertTrue(ele.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD27, CEID10)"));
+		assertTrue(ele.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD28, CEID10)"));
+	}
 	
 	@Test
 	public void testVarEqualize() throws IOException {
@@ -127,8 +157,7 @@ public class BdplEleTest {
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-		
-		assertTrue(etalisPattern.contains(", Vid1=ViD2, "));
+		assertTrue(etalisPattern.contains(", Vid1=ViD"));
 	}
 	
 	/**
@@ -301,7 +330,7 @@ public class BdplEleTest {
 		
 		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
 
-		String[] expectedOperator = {"SEQ(", "OR" , ")"};
+		String[] expectedOperator = {"'SEQ'(", "'OR'" , ")"};
 		Assert.assertArrayEquals(expectedOperator , visitor1.getOperators().toArray());
 	}
 	
@@ -321,7 +350,7 @@ public class BdplEleTest {
 		
 		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
 
-		String[] expectedOperator = {"SEQ", "OR"};
+		String[] expectedOperator = {"'SEQ'", "'OR'"};
 		System.out.println(visitor1.getOperators());
 		Assert.assertArrayEquals(expectedOperator , visitor1.getOperators().toArray());
 	}
@@ -371,7 +400,7 @@ public class BdplEleTest {
 
 		// Get query.
 		queryString = getSparqlQuery("queries/HistoricRealtimeQuery2.eprq");
-		System.out.println(queryString);
+
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
@@ -379,8 +408,7 @@ public class BdplEleTest {
 		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
-		System.out.println(etalisPattern);
-		assertTrue(etalisPattern.contains("variabeValuesAdd(CEID8,'screenName02',VscreenName02)))") || etalisPattern.contains("variabeValuesAdd(CEID1,'screenName02',VscreenName02)))"));
+		assertTrue(etalisPattern.contains("'screenName02',VscreenName02)))") || etalisPattern.contains("'screenName02',VscreenName02)))"));
 	}
 	
 

@@ -283,13 +283,11 @@ void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Wi
 	{getQuery().seteventQuery(el);}
 	
 	// Historical query is optional.
-	(WhereClauseH(th))*
-
+	WhereClauseH(th)
   <RBRACE>
 }
 
-// Historical WhereClause. Default without <LBRACE > and < RBRACE >
-void WhereClauseH(Token t) : { Element el ;}
+// Historical WhereClause. Default without <LBRACE > and < RBRACE >void WhereClauseH(Token t) : { Element el ;}
 {
    { startWherePattern() ; }
 	el = GroupGraphPatternNoBraces(t) { getQuery().setQueryPattern(el) ; }
@@ -638,7 +636,7 @@ Element GroupGraphPatternSub() : { Element el = null ; }
     )?
   )*
       { endGroup(elg) ; }
-      { return elg ; }
+      { return elg ;}
 }
 Element TriplesBlock(ElementPathBlock acc) : { }
 {
@@ -2041,6 +2039,14 @@ Element BdplFilter() :
 Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
 {
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
-   el = GraphGraphPattern()
-    { return el ; }
+  (
+    { startSubSelect(beginLine, beginColumn) ; }
+    SubSelect()
+    {
+      Query q = endSubSelect(beginLine, beginColumn) ;
+      el = new ElementSubQuery(q) ;
+    }
+  | el = GroupGraphPatternSub()
+  )
+  { return el ;}
 }

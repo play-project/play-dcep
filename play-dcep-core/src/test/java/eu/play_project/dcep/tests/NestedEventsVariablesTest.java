@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
@@ -30,7 +29,6 @@ private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTranspo
 
 		// Get query.
 		queryString = loadSparqlQuery("patterns/play-bdpl-nested-events-shared-vars.eprq");
-		System.out.println(queryString);
 
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);

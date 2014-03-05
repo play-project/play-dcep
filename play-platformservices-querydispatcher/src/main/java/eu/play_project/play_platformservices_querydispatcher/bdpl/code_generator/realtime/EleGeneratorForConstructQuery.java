@@ -19,6 +19,7 @@ import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
@@ -55,6 +56,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
 	private EqualizeEventIdVariableWithTriplestoreId eCcodeGeneratorVisitor;
+	private CountEventsVisitor eventCounter;
 	private VariableTypeManager nameManager;
 	
 	private List<String> rdfDbQueries; // Rdf db queries represents the semantic web part of a BDPL query. ETALIS calls this queries to check conditions for the current events.
@@ -72,7 +74,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern = "";
 		this.inputQuery = inQuery;
 		uniqueNameManager = getVarNameManager();
-		uniqueNameManager.newQuery(); // Rest uniqueNameManager.
+		
 		uniqueNameManager.setWindowTime(inQuery.getWindow().getValue());
 		
 		// Instantiate visitors.
@@ -81,11 +83,13 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
 		eCcodeGeneratorVisitor = new EqualizeEventIdVariableWithTriplestoreId(uniqueNameManager);
+		eventCounter =  new CountEventsVisitor();
 		havingVisitor =  new HavingVisitor();
 		
-		queryTemplate = new QueryTemplateImpl();
+		// Collect basic informations like number of events or variable types.
+		uniqueNameManager.newQuery(eventCounter.count(inQuery.getEventQuery()));
 		
-		// Collect basic informations like variable types.
+		queryTemplate = new QueryTemplateImpl();
 		UniqueNameManager.initVariableTypeManager(inQuery);
 		nameManager =  UniqueNameManager.getVariableTypeManage();
 		nameManager.collectVars();
@@ -118,6 +122,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
+		MemberEvents();
 		SaveSharedVariableValues();
 		Having();
 		//PrintStatisticsData();
@@ -182,6 +187,17 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += constructResult.toString();
 	}
 
+	private String MemberEvents() {
+		String code = "";
+		String staticCode = ", generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members'";
+
+		for (String var : uniqueNameManager.getAllTripleStoreVariablesOfThisQuery()) {
+			code += staticCode + "," + var + ", " + uniqueNameManager.getCeid() + ")";
+		}
+		elePattern += code;
+		return code;
+	}
+	
 	private boolean containsSharedVariablesTest(Triple triple){
 		boolean result = false;
 		if(triple.getSubject().isVariable()){
@@ -298,11 +314,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
 		StringBuffer ignoreQueryIfEvntIdIsNotGiven = new StringBuffer();
-		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (was optional).
-		
+		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (event was optional).
 		
 		// Combine decl and impel.
-		dbQueryMethod.append(dbQueryDecl + ":-(" + ignoreQueryIfEvntIdIsNotGiven + "(" + flatDbQueries + "))");
+		dbQueryMethod.append(dbQueryDecl + ":-(" + "(" + flatDbQueries + "))");
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.

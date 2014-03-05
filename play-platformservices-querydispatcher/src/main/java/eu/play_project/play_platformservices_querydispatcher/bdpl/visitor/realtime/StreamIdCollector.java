@@ -87,7 +87,7 @@ public class StreamIdCollector {
 				streams.add(Stream.toTopicUri(id));
 			}
 		}
-
+		
 		return streams;
 	}
 	
@@ -104,6 +104,7 @@ public class StreamIdCollector {
 
 		Element element = query.getQueryPattern(); //Historic query.
 			if (element !=  null) {
+				
 				element.visit(valueOrganizerVisitor);
 				if (valueOrganizerVisitor.getStreamURIs().size() > 0) {
 					streams = new HashSet<String>();
@@ -117,8 +118,8 @@ public class StreamIdCollector {
 		return streams;
 	}
 
-	// Return value of URI elment and travers form ElementPathBlock to URI
-	// elment.
+	// Return value of URI element and traverse form ElementPathBlock to URI
+	// element.
 	private class ValueOrganizerVisitor extends GenericVisitor {
 		Set<String> streamURIs;
 

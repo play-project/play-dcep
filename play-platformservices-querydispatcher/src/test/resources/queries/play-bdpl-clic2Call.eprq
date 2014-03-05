@@ -17,7 +17,7 @@ CONSTRUCT {
     :e :message "The caller tried to reach the callee several times within 1 minute with no success." .
     :e sioc:content ?tweetContent .
 	:e :members ?e1, ?e2.
-	:e :eventId ?id
+	:e :eventId ?id1
 }
 WHERE {
     WINDOW {
