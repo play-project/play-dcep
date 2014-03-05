@@ -109,7 +109,7 @@ public class BdplEleTest {
 
 		String queryString = getSparqlQuery("queries/bdpl-members-feature.eprq");
 		Query query = null;
-
+System.out.println(queryString);
 		// Instantiate code generator
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 
@@ -127,9 +127,10 @@ public class BdplEleTest {
 		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 
 		visitor1.generateQuery(query);
-		String etalisPattern = visitor1.getEle();
-		assertTrue(etalisPattern.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD2,CEID1)"));
-		assertTrue(etalisPattern.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD3,CEID1)"));
+		String ele = visitor1.getEle();
+		System.out.println(ele);
+		assertTrue(ele.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD27, CEID10)"));
+		assertTrue(ele.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD28, CEID10)"));
 	}
 	
 	@Test

@@ -86,10 +86,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		eventCounter =  new CountEventsVisitor();
 		havingVisitor =  new HavingVisitor();
 		
+		// Collect basic informations like number of events or variable types.
 		uniqueNameManager.newQuery(eventCounter.count(inQuery.getEventQuery()));
-		queryTemplate = new QueryTemplateImpl();
 		
-		// Collect basic informations like variable types.
+		queryTemplate = new QueryTemplateImpl();
 		UniqueNameManager.initVariableTypeManager(inQuery);
 		nameManager =  UniqueNameManager.getVariableTypeManage();
 		nameManager.collectVars();
@@ -194,6 +194,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		for (String var : uniqueNameManager.getAllTripleStoreVariablesOfThisQuery()) {
 			code += staticCode + "," + var + ", " + uniqueNameManager.getCeid() + ")";
 		}
+		elePattern += code;
 		return code;
 	}
 	
@@ -313,11 +314,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
 		StringBuffer ignoreQueryIfEvntIdIsNotGiven = new StringBuffer();
-		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (was optional).
-		
+		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (event was optional).
 		
 		// Combine decl and impel.
-		dbQueryMethod.append(dbQueryDecl + ":-(" + ignoreQueryIfEvntIdIsNotGiven + "(" + flatDbQueries + "))");
+		dbQueryMethod.append(dbQueryDecl + ":-(" + "(" + flatDbQueries + "))");
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
