@@ -72,7 +72,6 @@ public class SPARQLParserBDPL extends BDPL_SPARQLParser11Base
     boolean allowAggregatesInExpressions = false ;
     boolean predicate;
     boolean type;
-	// Stack mathStack =  new Stack();
 }
 
 PARSER_END(SPARQLParserBDPL)
@@ -259,34 +258,36 @@ String SourceSelector() : { String iri ; }
   iri = iri() { return iri ; }
 }
 // Modified whereClause for BDPL 
-void WhereClause() : { Element el ; Token th ; Token t ; Update up ; Expr testExp; Window win; }
+void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Window win;}
 {
    (<WHERE>)?
    th = <LBRACE> //Historical part needs this value.
 	(
+	  (
 	  //Realtime query with window.
 	   < BEGIN_WINDOW >
 	   		<LBRACE>
-	   			< EVENT > EventClause()
+	   			el = EventClause()
 			<RBRACE>
 		t = < WINDOWSIZE >
 				(
 		  			< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(t.image);}
 				|   < WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(t.image);}
 				)
-			<RPAREN> {getQuery().setWindow(win);}	  
+			<RPAREN> {getQuery().setWindow(win);}
+		)  
 	|
-		//Realtime query without window.
-	   < EVENT > EventClause()
+		//Real time query without window.
+	    el = EventClause()
 	)
+	{getQuery().seteventQuery(el);}
+	
 	// Historical query is optional.
 	WhereClauseH(th)
-
   <RBRACE>
 }
 
-// Historical WhereClause. Default without <LBRACE > and < RBRACE >
-void WhereClauseH(Token t) : { Element el ;}
+// Historical WhereClause. Default without <LBRACE > and < RBRACE >void WhereClauseH(Token t) : { Element el ;}
 {
    { startWherePattern() ; }
 	el = GroupGraphPatternNoBraces(t) { getQuery().setQueryPattern(el) ; }
@@ -635,7 +636,7 @@ Element GroupGraphPatternSub() : { Element el = null ; }
     )?
   )*
       { endGroup(elg) ; }
-      { return elg ; }
+      { return elg ;}
 }
 Element TriplesBlock(ElementPathBlock acc) : { }
 {
@@ -663,8 +664,7 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GraphGraphPattern()
  |
    el = ServiceGraphPattern()
- |
-   el = Filter()
+ |   el = Filter()
  |
    el = Bind()
  |
@@ -1921,11 +1921,12 @@ TOKEN:
 
 
 // PLAY extensions
-Element EventGraphPattern() :{ Element el; Node n;}
+ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
 {
   {ElementGroup elg = new ElementGroup();}
   {startGroup(elg);}
-  
+
+  <EVENT>
   n = 	VarOrIri()
   < LBRACE >
   	{startTriplesBlock();}
@@ -1935,52 +1936,83 @@ Element EventGraphPattern() :{ Element el; Node n;}
   < RBRACE >
   
   {endGroup(elg);}
-  {
-//    getQuery().setQueryPattern(new ElementEventGraph(n, elg)); // Save Event in ARQ AST
-//    return new ElementEventGraph(n, elg);
- 	ElementEventGraph tmp = new ElementEventGraph(n, elg);
-    getQuery().addEventElement(tmp);
-    return tmp;
-  }
+  {return new ElementEventGraph(n, elg);}
 }
 
-// Stefan
-void EventClause() :
-{
-  Element el = null;
-}
-{
-  EventGraphPattern()
-  (EpSparqlFilter())?
-  (EPSparqlBinOperators() < EVENT > EventClause())?
-  //  ((< LBRACE >) (< EVENT >) E() < RBRACE >) % Braces important??
+Element EventClause() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
+{    eventClause = NestedEvents()
+    (
+	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
+	  {
+	    op.setChilds(eventClause, eventClauseR);
+	    eventClause = op;
+	  }
+	)*
+
+	{return eventClause;}|
+	eventClause = Event()
+	(
+	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
+	  {
+	    op.setChilds(eventClause, eventClauseR);
+	    eventClause = op;
+	  }
+	)* 
+
+	{return eventClause;}
 }
 
+Element NestedEvents() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
+{
+    
+	<LBRACE> eventClause = Events() <RBRACE>
+	{return eventClause;}
+}
+
+Element Events() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
+{
+	eventClause = Event()
+	(	  op = BdplBinOperators() eventClauseR = Event()	  {	    op.setChilds(eventClause, eventClauseR);	    eventClause = op;	  }	)*
+	{return eventClause;}
+}
+
+ElementEventGraph Event() :{ ElementEventGraph e; Element filter =  null;}
+{	e = EventGraphPattern() (filter = BdplFilter())?
+	{
+	  e.setFilterExp(filter);
+	  return e;	}
+}
+
+ElementEventBinOperator MoreEvents() : {ElementEventBinOperator op; ElementEventGraph e2;}
+{	op = BdplBinOperators() e2 = Event()
+	{
+	  op.setRight(e2);
+	  return op;
+	}
+}
 
 // Binary operators for BDPL.
-void EPSparqlBinOperators() :
+ElementEventBinOperator BdplBinOperators() :
 {
-   ElementEventBinOperator binOp = null;
    Token t = null;
 }
 {
  (
   t=  < SEQ >
-  | t= < AND >
-  | t= < OR >
-  | t= < EQUALS >
-  | t= < OPTIONALSEQ >
-  | t= < EQUALSOPTIONAL >
+  | t = < AND >
+  | t = < OR >
+  | t = < EQUALS >
+  | t = < OPTIONALSEQ >
+  | t = < EQUALSOPTIONAL >
  )
 
   {
-  	ElementEventBinOperator tmp = new ElementEventBinOperator(t.image);
-	getQuery().addEventBinOperator(tmp);
+  	return new ElementEventBinOperator(t.image);
   } 
 }
 
 // BDPL operators in FILTER expression.
-void EPSparqlFilterOperators() :
+void BdplFilterOperators() :
 {}
 {
  (
@@ -1990,16 +2022,12 @@ void EPSparqlFilterOperators() :
   )
 }
 
-Element EpSparqlFilter() :
+Element BdplFilter() :
 {
 	Element filter = null;
 }
 {
   filter = Filter()
-  {
-    ((ElementEventGraph)getQuery().getEventQuery().get(getQuery().getEventQuery().size()-1)).setFilterExp(filter);
-  }
-
   {return filter;}
 }
 
@@ -2011,6 +2039,14 @@ Element EpSparqlFilter() :
 Element GroupGraphPatternNoBraces(Token t) : { Element el = null ;}
 {
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
-   el = GroupGraphPatternSub()
-    { return el ; }
+  (
+    { startSubSelect(beginLine, beginColumn) ; }
+    SubSelect()
+    {
+      Query q = endSubSelect(beginLine, beginColumn) ;
+      el = new ElementSubQuery(q) ;
+    }
+  | el = GroupGraphPatternSub()
+  )
+  { return el ;}
 }

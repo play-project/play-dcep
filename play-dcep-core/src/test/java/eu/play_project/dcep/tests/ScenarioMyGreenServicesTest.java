@@ -56,7 +56,6 @@ public class ScenarioMyGreenServicesTest extends ScenarioAbstractTest {
 
 		// Wait
 		delay();
-
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
 	}
 	

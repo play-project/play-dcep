@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distributedetalis.test;
+package eu.play_project.dcep.distributedetalis.tests;
 
 import java.io.File;
 import java.io.IOException;

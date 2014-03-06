@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distributedetalis.test;
+package eu.play_project.dcep.distributedetalis.tests;
 
 import static org.junit.Assert.fail;
 
@@ -14,7 +14,7 @@ import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 
 
-public class SemWebLibTests {
+public class SemWebLibRdfsTest {
 	private JtalisContextImpl ctx;
 	
 	/**

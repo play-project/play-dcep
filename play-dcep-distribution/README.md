@@ -29,7 +29,7 @@ Tested on `CentOS release 6.3 (Final) 64bit`:
 
 ### Runtime Requirements:
 #### Java (>=1.6)
-#### SWI Prolog (5.10.2)
+#### SWI Prolog (5.10.2/6.6.X )
 ```
 yum install readline-devel libjpeg
 cd /tmp

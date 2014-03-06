@@ -4,11 +4,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
@@ -25,6 +29,8 @@ import eu.play_project.play_platformservices.api.QueryDetails;
  */
 public class StreamIdCollector {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	public void getStreamIds(Query query, QueryDetails qd) {
 		if (qd == null) {
 			throw new RuntimeException("Parameter QueryDetails is null");
@@ -74,18 +80,17 @@ public class StreamIdCollector {
 		Set<String> streams = new HashSet<String>();
 		ValueOrganizerVisitor valueOrganizerVisitor = new ValueOrganizerVisitor();
 
-		for (Element element : query.getEventQuery()) {
-			element.visit(valueOrganizerVisitor);
-			if (valueOrganizerVisitor.getStreamURIs() != null) {
-				Set<String> streamIds = valueOrganizerVisitor.getStreamURIs();
-				for (String id : streamIds) {
-					streams.add(Stream.toTopicUri(id));
-				}
+		query.getEventQuery().visit(valueOrganizerVisitor);
+		if (valueOrganizerVisitor.getStreamURIs() != null) {
+			Set<String> streamIds = valueOrganizerVisitor.getStreamURIs();
+			for (String id : streamIds) {
+				streams.add(Stream.toTopicUri(id));
 			}
 		}
-
+		
 		return streams;
 	}
+	
 
 	/**
 	 * Returns the historic stream IDs without the {@code #stream} suffix to be used with EC and DSB.
@@ -98,18 +103,23 @@ public class StreamIdCollector {
 		ValueOrganizerVisitor valueOrganizerVisitor = new ValueOrganizerVisitor();
 
 		Element element = query.getQueryPattern(); //Historic query.
-		element.visit(valueOrganizerVisitor);
-		if (valueOrganizerVisitor.getStreamURIs().size() > 0) {
-			streams = new HashSet<String>();
-			for (String stream : valueOrganizerVisitor.getStreamURIs()) {
-				streams.add(Stream.toTopicUri(stream));
+			if (element !=  null) {
+				
+				element.visit(valueOrganizerVisitor);
+				if (valueOrganizerVisitor.getStreamURIs().size() > 0) {
+					streams = new HashSet<String>();
+					for (String stream : valueOrganizerVisitor.getStreamURIs()) {
+						streams.add(Stream.toTopicUri(stream));
+					}
+				}
+			} else {
+				logger.debug("No historic part in query to collect stream id from.");
 			}
-		}
 		return streams;
 	}
 
-	// Return value of URI elment and travers form ElementPathBlock to URI
-	// elment.
+	// Return value of URI element and traverse form ElementPathBlock to URI
+	// element.
 	private class ValueOrganizerVisitor extends GenericVisitor {
 		Set<String> streamURIs;
 
@@ -155,6 +165,13 @@ public class StreamIdCollector {
 				element.visit(this);
 			}
 		}
+		
+		@Override
+		public void visit(ElementEventBinOperator el) {
+			el.getLeft().visit(this);
+			el.getRight().visit(this);
+		}
+
 	}
 
 	// Test if the type is http://events.event-processing.org/types/stream
@@ -179,4 +196,6 @@ public class StreamIdCollector {
 			return uri;
 		}
 	}
+	
+	
 }

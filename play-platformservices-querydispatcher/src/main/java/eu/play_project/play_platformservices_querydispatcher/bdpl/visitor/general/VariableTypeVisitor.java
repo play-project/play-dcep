@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.expr.aggregate.AggMin;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSample;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSum;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
@@ -67,9 +68,8 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 		
 		//Variables in real time part.
 		state = VariableTypes.REALTIME_TYPE;
-		for(Element element : query.getEventQuery()){
-			element.visit(this);
-		}
+		query.getEventQuery().visit(this);
+
 		
 		//Variables in historic part.
 		state = VariableTypes.HISTORIC_TYPE;
@@ -82,6 +82,12 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 			expr.visit(this);
 		}
 
+	}
+	
+	@Override
+	public void visit(ElementEventBinOperator el) {
+		el.getLeft().visit(this);
+		el.getRight().visit(this);
 	}
 
 	// Set type.

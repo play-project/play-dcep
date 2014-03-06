@@ -20,13 +20,11 @@ WHERE{
 		?e2 :current ?temperature .
 		?e2 :date ?pub_date 
 	}
-
 	GRAPH ?id3 {
 		?e3 rdf:type :Temperature .
 		?e3 :stream <http://streams.event-processing.org/ids/TemperatureB#stream> .
 		?e3 :date ?pub_date 
 	}
-
 	GRAPH ?id4 {
 		?e4 rdf:type :Temperature .
 		?e4 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .
