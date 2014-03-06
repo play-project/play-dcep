@@ -316,10 +316,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
 		StringBuffer ignoreQueryIfEvntIdIsNotGiven = new StringBuffer();
-		ignoreQueryIfEvntIdIsNotGiven.append("var(" + getVarNameManager().getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (event was optional).
+		ignoreQueryIfEvntIdIsNotGiven.append("var(" + uniqueNameManager.getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (event was optional).
 		
 		// Combine decl and impel.
-		dbQueryMethod.append(dbQueryDecl + ":-(" + "(" + flatDbQueries + "))");
+		dbQueryMethod.append(dbQueryDecl + ":-(" + ignoreQueryIfEvntIdIsNotGiven + "(" + flatDbQueries + "))");
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.

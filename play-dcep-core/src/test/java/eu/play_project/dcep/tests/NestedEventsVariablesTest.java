@@ -50,10 +50,8 @@ private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTranspo
 
 		// Wait
 		delay();
-
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
 		assertTrue(subscriber.getComplexEvents().get(0).getTriples().get(6).getObject().toString().equals("\"1\""));
-		assertTrue(subscriber.getComplexEvents().get(0).getTriples().get(7).getObject().toString().startsWith("\"_"));
 	}
 	
 	private void delay(){

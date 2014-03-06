@@ -50,6 +50,8 @@ public class NestedEventsTest extends ScenarioAbstractTest {
 		delay();
 
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
+		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(6).getObject().toString(), "http://events.event-processing.org/ids/MatlabEvent1");
+		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getObject().toString(), "http://events.event-processing.org/ids/MyGreenServicesSensors-MGSS-341385414530246");
 	}
 	
 	private void delay(){
