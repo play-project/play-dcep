@@ -65,8 +65,15 @@ public class PlaySerializer extends Serializer{
 			// Set values.
 			hq.setQuery(selectString +" \n WHERE { \n" + queries.get(key) + "} ");
 			hq.setCloudId(key);
+			
+			if(vars.size() > 0) {
+				hq.setHasSharedVariablesWithRealtimePart(true);
+			}
+			
 			result.add(hq);
 		}
+		
+
 		return result;
 	}
 }

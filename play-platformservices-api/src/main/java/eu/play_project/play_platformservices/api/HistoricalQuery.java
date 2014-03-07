@@ -55,7 +55,7 @@ public class HistoricalQuery implements Serializable{
 		return hasSharedVariablesWithRealtimePart;
 	}
 
-	public void hasSharedVariablesWithRealtimePart(boolean hasSharedVariablesWithRealtimePart) {
+	public void setHasSharedVariablesWithRealtimePart(boolean hasSharedVariablesWithRealtimePart) {
 		this.hasSharedVariablesWithRealtimePart = hasSharedVariablesWithRealtimePart;
 	}
 
