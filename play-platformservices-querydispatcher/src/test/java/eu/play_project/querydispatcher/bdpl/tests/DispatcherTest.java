@@ -212,7 +212,8 @@ public class DispatcherTest {
 				.bdpl(queryString)
 				.build();
 		
-		assertTrue(bdpl.getHistoricalQueries().get(0).hasSharedVariablesWithRealtimePart());
+		assertTrue("Historical query is not marked as query with shared Variables.", bdpl.getHistoricalQueries().get(0).hasSharedVariablesWithRealtimePart());
+		assertTrue(bdpl.getEleQuery().contains(",variabeValuesAdd(CEID1,'bob',Vbob)"));
 	}
 	
 	@Test
