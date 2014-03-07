@@ -71,7 +71,6 @@ public class Engine implements HistoricalDataEngine {
 					vb.put(var, binding);
 				}
 			}
-
 			HistoricalQueryContainer hq = new HistoricalQueryContainer(query, vb);
 
 			if(!addResultRegistry(stream, hq.getQuery(), rrs, svs, variableNames)){

@@ -373,9 +373,7 @@ public class PrologJtalisTest {
 		context.registerOutputProvider(new AbstractJtalisEventProvider() {
 			@Override
 			public void outputEvent(EtalisEvent event) {
-				System.out.println("\n\n\n");
 				System.out.println(event);
-				System.out.println("\n\n\n");
 				list.add(event);
 			}
 		});
