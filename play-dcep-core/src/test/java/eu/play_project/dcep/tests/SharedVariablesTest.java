@@ -1,6 +1,6 @@
 package eu.play_project.dcep.tests;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -13,6 +13,8 @@ import org.ontoware.rdf2go.exception.ModelRuntimeException;
 import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hp.hpl.jena.graph.Triple;
 
 import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
@@ -56,6 +58,16 @@ public class SharedVariablesTest extends ScenarioAbstractTest {
 		delay();
 
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
+		
+		//Historical data exists.
+		assertEquals("We expect exactly one complex event as a result.", "\"Life is beautiful\"", subscriber.getComplexEvents().get(0).getTriples().get(20).getObject().toString());
+		//Restriction from real time parts works.
+		for (Triple triple : subscriber.getComplexEvents().get(0).getTriples()) {
+			if(triple.getObject().toString().contains("33612345670")) {
+				fail();
+			}
+		}
+		
 		System.out.println(subscriber.getComplexEvents());
 	}
 	
