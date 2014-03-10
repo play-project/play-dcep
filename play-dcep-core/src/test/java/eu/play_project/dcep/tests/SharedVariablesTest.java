@@ -1,11 +1,11 @@
 package eu.play_project.dcep.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
 import org.junit.Test;
+import org.objectweb.fractal.api.Component;
 import org.objectweb.proactive.ActiveObjectCreationException;
 import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.node.NodeException;
@@ -14,24 +14,29 @@ import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.graph.Triple;
+
 import eu.play_project.dcep.SimplePublishApiSubscriber;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
-public class NestedEventsVariablesTest extends ScenarioAbstractTest {
+public class SharedVariablesTest extends ScenarioAbstractTest {
 	
-private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
+	boolean start = false;
+	static Component root;
+	public static boolean test;
+	private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
 	
 	@Test
-	public void runTest() throws IOException, QueryDispatchException {
-
+	public void testIntelligentTransportScenario() throws QueryDispatchException, IOException {
+		
 		String queryString;
 
 		// Get query.
-		queryString = loadSparqlQuery("patterns/play-bdpl-nested-events-shared-vars.eprq");
+		queryString = loadSparqlQuery("play-epsparql-telco-recom-tweets-historic.eprq");
 
 		// Compile query
-		queryDispatchApi.registerQuery("example1", queryString);
+		queryDispatchApi.registerQuery("sharedVarTest", queryString);
 
 		//Subscribe to get complex events.
 		SimplePublishApiSubscriber subscriber = null;
@@ -45,18 +50,29 @@ private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTranspo
 
 		testApi.attach(subscriber);
 		logger.info("Publish events");
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Matlab.trig", Syntax.Trig)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioMyGreenServicesTest_Sensors.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTest_Call0.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTest_Call1.nq", Syntax.Nquads)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioTelcoThreeMissedCallsTest_Call2.nq", Syntax.Nquads)));
 
 		// Wait
 		delay();
+
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
-		assertTrue(subscriber.getComplexEvents().get(0).getTriples().get(6).getObject().toString().equals("\"1\""));
+		
+		//Historical data exists.
+		assertEquals("We expect exactly one complex event as a result.", "\"Life is beautiful\"", subscriber.getComplexEvents().get(0).getTriples().get(20).getObject().toString());
+		
+		//Restriction from real time parts works.
+		for (Triple triple : subscriber.getComplexEvents().get(0).getTriples()) {
+			if(triple.getObject().toString().contains("33612345670")) {
+				fail();
+			}
+		}
 	}
 	
 	private void delay(){
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -67,3 +83,4 @@ private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTranspo
 	}
 
 }
+

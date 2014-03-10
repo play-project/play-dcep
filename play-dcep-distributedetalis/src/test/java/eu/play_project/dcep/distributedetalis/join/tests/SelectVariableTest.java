@@ -4,11 +4,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.play_project.dcep.distributedetalis.api.VariableBindings;
+import eu.play_project.dcep.distributedetalis.join.Engine;
+import eu.play_project.dcep.distributedetalis.join.HistoricalQueryContainer;
 import eu.play_project.dcep.distributedetalis.join.SelectVariable;
 
 
@@ -141,6 +145,26 @@ public class SelectVariableTest {
 		}
 		assertTrue("Union size error when one none empty value set union null value set", values.size()==2);
 		assertTrue("Union element lost when one none empty value set union null value set", pass);
+	}
+	
+	@Test
+	public void testSparqlValuesCodeGeneration() {
+		
+		// Prepare data.
+		VariableBindings vb = new VariableBindings();
+		List<Object> values = new LinkedList<Object>();
+		values.add("wert1");
+		values.add("wert2");
+		vb.put("var1", values);
+		vb.put("var2", values);
+		
+		// Generate code.
+		HistoricalQueryContainer hqc = new HistoricalQueryContainer("WHERE {}", vb);
+		
+		assertTrue(hqc.getQuery().contains("VALUES ( ?var1 ?var2 )"));
+		assertTrue(hqc.getQuery().contains("( \"wert1\" \"wert1\" )"));
+		
+		Engine e;
 	}
 
 }

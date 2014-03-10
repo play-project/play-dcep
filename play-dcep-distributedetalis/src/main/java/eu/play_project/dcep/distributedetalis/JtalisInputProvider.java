@@ -1,6 +1,7 @@
 package eu.play_project.dcep.distributedetalis;
 
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_ENTRY;
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
 
 import java.io.Serializable;
 import java.util.concurrent.BlockingQueue;
@@ -52,7 +53,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 			// Add RDF payload to Prolog:
 			semWebLib.addEvent(event);
 			// Trigger event in ETALIS:
-			events.put(new EtalisEvent("'" + eventType + "'", eventId));
+			events.put(new EtalisEvent(quoteForProlog(eventType), eventId));
 		} catch (InterruptedException e) {
 			logger.error(LOG_DCEP_FAILED_ENTRY + "Error adding event to Jtalis queue.", e);
 		} catch (DistributedEtalisException e) {
@@ -76,14 +77,15 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 	public EtalisEvent getEvent() {
 		
 		// Return the oldest event (FIFO) blocking if there is none:
-		try {
+		while (true) {
+			try {
 				EtalisEvent e = events.take();
 				incrementEventCounter();
 				return e;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			} catch (InterruptedException e) {
+				logger.debug("Thread '{}' got interrupted while taking an event from the queue.", Thread.currentThread());
+			}
 		}
-		return null;
 	}
 	
 	@Override

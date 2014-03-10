@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Node_ANY;
@@ -26,7 +28,7 @@ import eu.play_platform.platformservices.bdpl.VariableTypes;
 public class TriplestoreQueryVisitor extends GenericVisitor {
 	
 	private String triplestoreQuery;
-	private UniqueNameManager uniqueNameManager;
+	private final UniqueNameManager uniqueNameManager;
 	private String aggregateValuesCode;
 
 	// Start
@@ -42,7 +44,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public void visit(ElementGroup el) {
 		// Visit all group elements
 		for(int i=0; i<el.getElements().size(); i++){
-			el.getElements().get(i).visit(this); 
+			el.getElements().get(i).visit(this);
 		}
 	}
 	
@@ -69,13 +71,13 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 
 	@Override
 	public Object visitLiteral(Node_Literal it, LiteralLabel lit) {
-		triplestoreQuery += "'" + lit.getLexicalForm() + "', ";
+		triplestoreQuery += quoteForProlog(lit.getLexicalForm()) + ", ";
 		return lit;
 	}
 
 	@Override
 	public Object visitURI(Node_URI it, String uri) {
-		triplestoreQuery += "'" + uri + "', ";
+		triplestoreQuery += quoteForProlog(uri) + ", ";
 		return uri;
 	}
 
@@ -130,7 +132,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 			tmpTriplePath.getSubject().visitWith(this);
 			tmpTriplePath.getPredicate().visitWith(this);
 			tmpTriplePath.getObject().visitWith(this);
-			triplestoreQuery += uniqueNameManager.getTriplestoreVariable() + ")"; 
+			triplestoreQuery += uniqueNameManager.getTriplestoreVariable() + ")";
 			
 			//Add save aggregate values code if it exists.
 			if(!aggregateValuesCode.equals("")){
@@ -140,7 +142,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 			if(iter.hasNext()){
 				triplestoreQuery += ", ";
 			}
-		}	
+		}
 	}
 	
 	@Override

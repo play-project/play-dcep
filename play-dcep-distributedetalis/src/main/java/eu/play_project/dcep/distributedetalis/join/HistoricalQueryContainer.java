@@ -14,6 +14,7 @@ import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 
 /**
  * @author Ningyuan Pan
+ * @author Roland Stühmer
  */
 public class HistoricalQueryContainer {
 	final static String SELECT = "SELECT";
@@ -28,15 +29,15 @@ public class HistoricalQueryContainer {
 	
 	public HistoricalQueryContainer(String query, VariableBindings variableBindings){
 		if(query == null)
-			throw new IllegalArgumentException("Original query should not be null");
+			throw new IllegalArgumentException("Original query must not be null");
 		map = new VariableBindings();
 		for (String varName : variableBindings.keySet()) {
-			// Trasfer only variables with nonempty bindings:
+			// Transfer only variables with nonempty bindings:
 			if (variableBindings.get(varName) != null && !variableBindings.get(varName).isEmpty()) {
 				map.put(varName, variableBindings.get(varName));
 			}
 		}
-		if(map != null)
+		if(!map.isEmpty())
 			this.query = addVALUES(query);
 		else
 			this.query = query;
@@ -54,7 +55,7 @@ public class HistoricalQueryContainer {
 		StringBuilder sparqlb = new StringBuilder(oquery);
 		index = oquery.indexOf(VALUES);
 		if(index != -1){
-			throw new IllegalArgumentException("Original query already has VALUES clause");
+			throw new IllegalArgumentException("Original query already has " + VALUES + " clause");
 		}
 		else {
 			index = oquery.indexOf(WHERE);
@@ -62,7 +63,7 @@ public class HistoricalQueryContainer {
 		
 			// add VALUES block in WHERE block
 			if (index == -1){
-				throw new IllegalArgumentException("Original query has no WHERE clause");
+				throw new IllegalArgumentException("Original query has no " + WHERE + " clause");
 			}
 			else{
 				while(index < oquery.length()){
@@ -91,8 +92,9 @@ public class HistoricalQueryContainer {
 		
 		StringBuilder ret = new StringBuilder();
 		if(makeVariableList()){
-			ret.append("\n VALUES ( ");
+			ret.append("\n " + VALUES + " ( ");
 			for(int i = 0; i < vvariables.size(); i++){
+				ret.append("?");
 				ret.append(vvariables.get(i));
 				ret.append(" ");
 			}

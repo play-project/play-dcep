@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.NodeFactory;
@@ -25,7 +27,7 @@ public class EventTypeVisitor extends GenericVisitor implements ElementVisitor, 
 			if(tmpTriplePath.getObject().isURI()){
 				if (tmpTriplePath.getPredicate().equals(NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))){
 					if(tmpTriplePath.getObject().isURI()){
-						eventType =  "'" + tmpTriplePath.getObject().getURI() + "'";
+						eventType =  quoteForProlog(tmpTriplePath.getObject().getURI());
 					}else{
 						throw new RuntimeException("Event type must be a URI");
 					}

@@ -1,6 +1,7 @@
 package eu.play_project.dcep.distributedetalis;
 
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_EXIT;
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.unquoteFromProlog;
 import static eu.play_project.play_commons.constants.Event.DATE_FORMAT_8601;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
@@ -163,10 +164,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			subject = subject.substring(1, subject.length() - 1);
 			String predicate = item.get("P").toString();
 			predicate = predicate.substring(1, predicate.length() - 1);
-			String object = item.get("O").toString();
-			if (object.startsWith("'") && object.endsWith("'")) {
-				object = object.substring(1, object.length() - 1);
-			}
+			String object = unquoteFromProlog(item.get("O").toString());
 
 			Node objectNode = EventHelpers.toJenaNode(object);
 			
@@ -210,16 +208,17 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			} else {
 				variableBindings = new VariableBindings();
 			}
+			logger.debug("PROLOG VALUES: {}", variableBindings);
+
 			
 			//Get historical data to the given binding.
 			HistoricalData values = this.historicData.get(query.getHistoricalQueries(), variableBindings);
+			logger.debug("HISTORIC VALUES: {}", values);
 
 			if (values.isEmpty()) {
 				// there is no matching historic data so the event pattern is not fulfilled:
 				throw new RetractEventException();
 			} else {
-				logger.debug("PROLOG VALUES: {}", variableBindings);
-				logger.debug("HISTORIC VALUES: {}", values);
 				quadruples.addAll(query.getConstructTemplate().fillTemplate(values, GRAPHNAME, EVENTID));
 				logger.debug("(3/3) static quads, prolog quads, historic quads:\n{}", quadruples);
 			}
@@ -251,7 +250,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 				// Add new value to list
 				if (varValue != null && !varValue.isEmpty()) {
-					variableValues.get(varName).add(varValue);
+					variableValues.get(varName).add(unquoteFromProlog(varValue));
 				}
 			}
 		} catch (Exception e) {

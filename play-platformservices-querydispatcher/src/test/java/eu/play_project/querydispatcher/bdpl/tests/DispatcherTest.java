@@ -18,15 +18,23 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.api.QueryTemplate;
+import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 /**
  * 
@@ -152,7 +160,7 @@ public class DispatcherTest {
 	
 	@Test
 	public void testQueryTemplateGenerator() throws IOException{
-		 QueryTemplateGenerator ab  =  new  QueryTemplateGenerator();
+		 QueryTemplateGenerator templateGenerator  =  new  QueryTemplateGenerator();
 		 
 		// Get query.
 		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
@@ -160,7 +168,52 @@ public class DispatcherTest {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
-		QueryTemplate qt = ab.createQueryTemplate(query);
+		QueryTemplate qt = templateGenerator.createQueryTemplate(query);
+	}
+	
+	@Test
+	public void generateBdplQuery() throws IOException, QueryDispatchException {
+		EleGenerator eleGenerator =  new EleGeneratorForConstructQuery();
+		String queryString = getSparqlQuery("play-epsparql-telco-recom-tweets-historic.eprq");
+		
+		// Parse query
+		Query q;
+		try {
+			q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
+		} catch (com.hp.hpl.jena.query.QueryException e) {
+			throw new QueryDispatchException(e.getMessage());
+		}
+
+		// Generate CEP-language
+		eleGenerator.setPatternId("patternId1");
+		eleGenerator.generateQuery(q);
+
+		// Add queryDetails
+		QueryDetails qd = new QueryDetails("patternId1");
+
+		// Set properties for windows in QueryDetails
+		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);
+		q.getWindow().accept(windowVisitor);
+
+		// Set stream ids in QueryDetails.
+		StreamIdCollector streamIdCollector = new StreamIdCollector();
+		streamIdCollector.getStreamIds(q, qd);
+		
+		// Set complex event type.
+		qd.setComplexType((new ComplexTypeFinder()).visit(q.getConstructTemplate()));
+
+		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
+		
+		BdplQuery bdpl = BdplQuery.builder()
+				.details(qd)
+				.ele(eleGenerator.getEle())
+				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
+				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
+				.bdpl(queryString)
+				.build();
+		
+		assertTrue("Historical query is not marked as query with shared Variables.", bdpl.getHistoricalQueries().get(0).hasSharedVariablesWithRealtimePart());
+		assertTrue(bdpl.getEleQuery().contains(",variabeValuesAdd(CEID1,'bob',Vbob)"));
 	}
 	
 	@Test

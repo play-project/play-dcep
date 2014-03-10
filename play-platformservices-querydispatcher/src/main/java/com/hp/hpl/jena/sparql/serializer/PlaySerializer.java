@@ -38,7 +38,7 @@ public class PlaySerializer extends Serializer{
                      new FmtTemplate(writer, cxt2)) ;
 
         List<HistoricalQuery> result = new LinkedList<HistoricalQuery>();
-        HistoricalQuery hq = new HistoricalQuery();
+        HistoricalQuery hq;
         
 		Map<String, String> queries = e.getHistoricalCloudQueries();
 
@@ -59,14 +59,21 @@ public class PlaySerializer extends Serializer{
 			for (String var : vars) {
 				selectString += " ?" + var;
 				//Set variables.
-				hq.getVariables().add("?" + var);
+				hq.getVariables().add(var);
 			}
 			
 			// Set values.
 			hq.setQuery(selectString +" \n WHERE { \n" + queries.get(key) + "} ");
 			hq.setCloudId(key);
+			
+			if(vars.size() > 0) {
+				hq.setHasSharedVariablesWithRealtimePart(true);
+			}
+			
 			result.add(hq);
 		}
+		
+
 		return result;
 	}
 }

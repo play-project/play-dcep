@@ -1,5 +1,7 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -128,15 +130,15 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		
 			logger.debug("Register query: {}", bdplQuery.getEleQuery());
 			
-			etalis.addDynamicRuleWithId("'" + bdplQuery.getDetails().getQueryId() + "'" + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
+			etalis.addDynamicRuleWithId(quoteForProlog(bdplQuery.getDetails().getQueryId()) + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
 			// Start tumbling window. (If a tumbling window was defined.)
 			if (!etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow())) {
 				throw new DistributedEtalisException("Error registering tumbling window for queryId " + bdplQuery.getDetails().getQueryId());
 			}
 			
 			//Register db queries.
-			for (String dbQuerie : bdplQuery.getDetails().getRdfDbQueries()) {
-				if (!etalis.getEngineWrapper().executeGoal("assert(" + dbQuerie + ")")) {
+			for (String dbQuery : bdplQuery.getDetails().getRdfDbQueries()) {
+				if (!etalis.getEngineWrapper().executeGoal("assert(" + dbQuery + ")")) {
 					throw new DistributedEtalisException("Error registering RdfDbQueries for queryId " + bdplQuery.getDetails().getQueryId());
 				}
 			}

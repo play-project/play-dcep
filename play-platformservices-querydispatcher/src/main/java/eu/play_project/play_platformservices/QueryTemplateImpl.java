@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.HistoricalData;
@@ -27,8 +28,6 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 	@Override
 	public void appendLine(Node graph, Node subject, Node predicate, Node object) {
 		Quadruple line = new Quadruple(graph, subject, predicate, object);
-		
-		logger.debug("Adding template line: {}", line);
 
 		appendLine(line);
 	}
@@ -86,7 +85,8 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 	private List<Quadruple> fillTemplateHelper(Set<Node[]> t, HistoricalData historicalData, int step) {
 		Set<Node[]> tNext = new HashSet<Node[]>();
 		for (Node[] tempLine : t) {
-			if (tempLine[step].isVariable()) {
+			if (checkIfVariable(tempLine[step])) {
+				tempLine[step] = NodeFactory.createVariable(tempLine[step].toString().replace("?", "").replace("$", ""));
 				for (String value : historicalData.get(tempLine[step].getName())) {
 					Node[] qNext = tempLine.clone();
 					qNext[step] = EventHelpers.toJenaNode(value);
@@ -116,6 +116,15 @@ public class QueryTemplateImpl implements QueryTemplate, Serializable {
 			}
 			
 			return result;
+		}
+	}
+	
+	
+	private boolean checkIfVariable(Node n) {
+		if(n.toString().startsWith("?") || n.toString().startsWith("$")) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

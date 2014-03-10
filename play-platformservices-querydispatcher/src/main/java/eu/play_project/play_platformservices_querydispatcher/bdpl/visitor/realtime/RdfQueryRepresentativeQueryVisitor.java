@@ -1,5 +1,6 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 /**
- * Generate code for variable representative. 
+ * Generate code for variable representative.
  * For each variable one query is needed which provides all possible values of this variable.
  * @author sobermeier
  *
@@ -69,13 +70,13 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 
 	@Override
 	public Object visitLiteral(Node_Literal it, LiteralLabel lit) {
-		code.append("'" + lit.getLexicalForm() + "'");
+		code.append(quoteForProlog(lit.getLexicalForm()));
 		return lit;
 	}
 
 	@Override
 	public Object visitURI(Node_URI it, String uri) {
-		code.append("'" + uri + "'");
+		code.append(quoteForProlog(uri));
 		return uri;
 	}
 
@@ -94,7 +95,7 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 			code.append(resultNode.toString());
 			return resultNode.toString();
 		} else {
-			// It is a ordinary vraible.
+			// It is a ordinary variable.
 			code.append("V" + name);
 			return "V" + name;
 		}
@@ -122,7 +123,7 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 			if (!varRepresentative.containsKey(name)) {
 				code.append("rdf(");
 				// Use existing visitors.
-				triple.getSubject().visitWith(this); 
+				triple.getSubject().visitWith(this);
 				code.append(",");
 				triple.getPredicate().visitWith(this);
 				code.append(",");
