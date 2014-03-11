@@ -6,12 +6,12 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
+import eu.play_project.dcep.api.DcepTestApi;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
 /**
- * Generate events and push them to the DistributedEtalisTestApi. The event rate
+ * Generate events and push them to the DcepTestApi. The event rate
  * can be adapted. An instance of this class runs in his own thread. For this
  * reason the possible delay between events do not stops other threads.
  * 
@@ -20,7 +20,7 @@ import fr.inria.eventcloud.api.Quadruple;
  */
 public class EventProducerThread implements Runnable {
 	private final Thread thisThread;
-	private final List<DistributedEtalisTestApi> testApi;
+	private final List<DcepTestApi> testApi;
 	private final MeasurementUnit meausrementUnit;
 	private final int numberOfEvents;
 	private int delay;
@@ -34,7 +34,7 @@ public class EventProducerThread implements Runnable {
 	 * @param delay
 	 *            Delay between two events. Given in ms.
 	 */
-	public EventProducerThread(int numberOfEvents, int delay, List<DistributedEtalisTestApi> testApi) {
+	public EventProducerThread(int numberOfEvents, int delay, List<DcepTestApi> testApi) {
 		this.testApi = testApi;
 		this.numberOfEvents = numberOfEvents;
 		this.delay =  delay;
@@ -59,7 +59,7 @@ public class EventProducerThread implements Runnable {
 		for (int i = 0; i < (numberOfEvents / testApi.size()); i++) {
 
 			// Distribute events in Round-robin fashion to all CEP-Engines.
-			for (DistributedEtalisTestApi api : testApi) {
+			for (DcepTestApi api : testApi) {
 				api.publish(createEvent("http://example.com/eventId/" + hostname + "_" + i ));
 			
 				// Some statistics

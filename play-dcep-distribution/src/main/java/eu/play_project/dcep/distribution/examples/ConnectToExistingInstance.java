@@ -21,12 +21,11 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
+import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.utils.PrologHelpers;
 import eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher;
 import eu.play_project.play_commons.constants.Namespace;
@@ -72,14 +71,14 @@ public class ConnectToExistingInstance {
 		try {
 			dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
 					.getFcInterface(DcepManagmentApi.class.getSimpleName()));
-			configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root
+			configApi = ((eu.play_project.dcep.api.ConfigApi) root
 					.getFcInterface(ConfigApi.class.getSimpleName()));
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();
 		}
 
 		//Configure dEtalis instance.
-		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
+		configApi.setConfigLocal("play-epsparql-clic2call-historical-data.trig");
 		
 		// Register query
 		dcepManagmentApi.registerEventPattern(generateEle(getSparqlQueries("play-bdpl-crisis-01a-radiation.eprq")));

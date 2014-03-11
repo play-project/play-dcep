@@ -14,15 +14,15 @@ import org.objectweb.proactive.core.component.representative.PAComponentRepresen
 import org.objectweb.proactive.core.util.URIBuilder;
 
 import eu.play_project.dcep.api.DcepManagementException;
+import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distribution.tests.srbench.performance.ComplexEventSubscriber;
 
 public class SingleDistributedEtalisInstanceSubscriber {
 
 	private static ComplexEventSubscriber subscriber = null;
-	private static DistributedEtalisTestApi testApiI1;
+	private static DcepTestApi testApiI1;
 
 	public static void main(String[] args) throws ADLException,
 			IllegalLifeCycleException, NoSuchInterfaceException,
@@ -55,8 +55,8 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		}
 
 		try {
-			 testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
-					.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+			 testApiI1 = ((eu.play_project.dcep.api.DcepTestApi) root
+					.getFcInterface(DcepTestApi.class.getSimpleName()));
 
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();

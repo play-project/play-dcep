@@ -2,7 +2,7 @@ package eu.play_project.dcep.distribution.tests.srbench.performance;
 
 import java.io.Serializable;
 
-import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.api.SimplePublishApi;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 

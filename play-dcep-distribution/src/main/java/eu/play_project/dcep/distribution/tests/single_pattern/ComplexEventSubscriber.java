@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.api.SimplePublishApi;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 

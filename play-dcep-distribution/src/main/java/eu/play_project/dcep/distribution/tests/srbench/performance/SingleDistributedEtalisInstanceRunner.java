@@ -12,10 +12,10 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.ProActiveException;
 import org.objectweb.proactive.core.component.Fractive;
 
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
+import eu.play_project.dcep.api.ConfigApi;
+import eu.play_project.dcep.api.DcepManagementException;
+import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 
 
@@ -26,9 +26,9 @@ import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
  */
 public class SingleDistributedEtalisInstanceRunner {
 	private static ComplexEventSubscriber subscriber = null;
-	private static DistributedEtalisTestApi testApi;
+	private static DcepTestApi testApi;
 	
-	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, ProActiveException, DistributedEtalisException, IOException {
+	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, ProActiveException, DistributedEtalisException, IOException, DcepManagementException {
 		
 		//Start component.
 		Component root = ProActiveHelpers.newComponent("DistributedEtalis");
@@ -40,11 +40,11 @@ public class SingleDistributedEtalisInstanceRunner {
 		
 		//Configure component.
 		ConfigApi configApi = ((ConfigApi)root.getFcInterface(ConfigApi.class.getSimpleName()));
-		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
+		configApi.setConfig("play-epsparql-clic2call-historical-data.trig");
 		
 		
 		//Subscribe to print complex events to local console.
-//		testApi = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+//		testApi = ((eu.play_project.dcep.tests.distributedetalis.api.DcepTestApi) root.getFcInterface(DcepTestApi.class.getSimpleName()));
 //		try {
 //			subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
 //		} catch (ActiveObjectCreationException e) {

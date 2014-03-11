@@ -17,8 +17,8 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 
+import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.dcep.distributedetalis.utils.PrologHelpers;
 import eu.play_project.play_commons.constants.Namespace;
@@ -29,7 +29,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator
 
 public class RegisterQueriesTest {
 	public static QueryDispatchApi queryDispatchApi;
-	public static DistributedEtalisTestApi testApi;
+	public static DcepTestApi testApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;
@@ -77,7 +77,7 @@ public class RegisterQueriesTest {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface(QueryDispatchApi.class.getSimpleName()));
-		testApi = (DistributedEtalisTestApi) root.getFcInterface(DistributedEtalisTestApi.class.getSimpleName());
+		testApi = (DcepTestApi) root.getFcInterface(DcepTestApi.class.getSimpleName());
 		
 		try {
 			Thread.sleep(20000);

@@ -12,19 +12,18 @@ import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
-import org.slf4j.LoggerFactory;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -42,7 +41,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
  */
 public class SingleDistributedEtalisInstancePublisher {
 
-	private static List<DistributedEtalisTestApi> testApis =  new LinkedList<DistributedEtalisTestApi>();
+	private static List<DcepTestApi> testApis =  new LinkedList<DcepTestApi>();
 	private static List<DcepManagmentApi> managementApis =  new LinkedList<DcepManagmentApi>();
 	private static List<ConfigApi> configApis =   new LinkedList<ConfigApi>();
 	static int patternIdCounter = 0;
@@ -56,9 +55,9 @@ public class SingleDistributedEtalisInstancePublisher {
 		for (int i = 1; i < args.length; i++) {
 			// Connect to DistributedEtalis instance 1.
 			PAComponentRepresentative root1 = Fractive.lookup((URIBuilder.buildURI(args[i], "dEtalis", "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
-			configApis.add(i-1, ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName())));
-			configApis.get(i-1).setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
-			testApis.add(i-1, ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root1.getFcInterface(DistributedEtalisTestApi.class.getSimpleName())));
+			configApis.add(i-1, ((eu.play_project.dcep.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName())));
+			configApis.get(i-1).setConfigLocal("play-epsparql-clic2call-historical-data.trig");
+			testApis.add(i-1, ((eu.play_project.dcep.api.DcepTestApi) root1.getFcInterface(DcepTestApi.class.getSimpleName())));
 			managementApis.add(i-1, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
 		}
 

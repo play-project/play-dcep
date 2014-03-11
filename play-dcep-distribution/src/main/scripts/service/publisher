@@ -42,7 +42,7 @@ maxShutdownTime=15                                    # maximum number of second
 pidFile="/var/run/$serviceNameLo.pid"                 # name of PID file (PID = process ID number)
 javaCommand="java"                                    # name of the Java launcher without the path
 javaExe="$javaCommand"                                # file name of the Java application launcher executable
-javaArgs="-Djava.security.manager -Djava.security.policy=conf/proactive.java.policy -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Slf4jLogger -server -cp ${applDir}/conf/:${applDir}/lib/${serviceNameLo}-jar-with-dependencies.jar eu.play_project.dcep.distribution.tests.srbench.performance.SingleDistributedEtalisInstancePublisher $2 $3 $4 $5 $6 $7 $8 $9"
+javaArgs="-Djava.security.manager -Djava.security.policy=conf/proactive.java.policy -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Slf4jLogger -server -cp ${applDir}/conf/:${applDir}/lib/${serviceNameLo}-jar-with-dependencies.jar eu.play_project.dcep.tests.distribution.tests.srbench.performance.SingleDistributedEtalisInstancePublisher $2 $3 $4 $5 $6 $7 $8 $9"
                                                       # arguments for Java launcher
 javaCommandLine="$javaExe $javaArgs"                  # command line to start the Java service application
 javaCommandLineKeyword="${applDir}/lib/${serviceNameLo}-jar-with-dependencies.jar"

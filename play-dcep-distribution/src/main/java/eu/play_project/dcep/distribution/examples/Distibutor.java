@@ -13,9 +13,8 @@ import org.objectweb.proactive.extensions.gcmdeployment.PAGCMDeployment;
 import org.objectweb.proactive.gcmdeployment.GCMApplication;
 import org.objectweb.proactive.gcmdeployment.GCMVirtualNode;
 
+import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import fr.inria.eventcloud.api.PublishApi;
 
@@ -50,7 +49,7 @@ public class Distibutor {
 				.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
 		ConfigApi configApi = ((ConfigApi) root.getFcInterface(ConfigApi.class.getSimpleName()));
-		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
+		configApi.setConfigLocal("play-epsparql-clic2call-historical-data.trig");
 
 		// Register apis
 		java.rmi.registry.Registry registry = LocateRegistry.getRegistry();

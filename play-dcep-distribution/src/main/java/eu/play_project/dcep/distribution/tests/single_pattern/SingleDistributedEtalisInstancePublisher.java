@@ -15,6 +15,7 @@ import org.objectweb.fractal.api.NoSuchInterfaceException;
 import org.objectweb.proactive.core.component.Fractive;
 import org.objectweb.proactive.core.component.representative.PAComponentRepresentative;
 import org.objectweb.proactive.core.util.URIBuilder;
+
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -22,13 +23,12 @@ import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
+import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
@@ -48,7 +48,7 @@ import fr.inria.eventcloud.api.Quadruple;
  */
 public class SingleDistributedEtalisInstancePublisher {
 
-	private static DistributedEtalisTestApi testApiI1;
+	private static DcepTestApi testApiI1;
 	private static DcepManagmentApi managementApiI1;
 	private static ConfigApi configApi = null;
 
@@ -63,7 +63,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		// Register queries.
 		try {
 			//Configure dEtalis instance.
-			configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-historical-data.trig"));
+			configApi.setConfigLocal("play-epsparql-clic2call-historical-data.trig");
 			
 			managementApiI1.registerEventPattern(createCepQuery("p1", getSparqlQueries("benchmarks/srbench/q3.eprq")));
 			
@@ -104,8 +104,8 @@ public class SingleDistributedEtalisInstancePublisher {
 
 
 		try {
-			 testApiI1 = ((eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi) root
-					.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+			 testApiI1 = ((eu.play_project.dcep.api.DcepTestApi) root
+					.getFcInterface(DcepTestApi.class.getSimpleName()));
 			
 			managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root
 					.getFcInterface(DcepManagmentApi.class.getSimpleName()));
