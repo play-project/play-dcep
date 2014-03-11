@@ -121,6 +121,10 @@
 					<artifactId>commons-logging</artifactId>
 					<groupId>commons-logging</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>social-filter</artifactId>
+					<groupId>com.ebmwebsourcing.projects.soceda.wp2-federated-middleware-layer.social-components</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -195,14 +199,6 @@
 	</dependencies>
 
 	<repositories>
-		<repository>
-			<id>sti2-archiva-external</id>
-			<url>http://maven.sti2.at/archiva/repository/external</url>
-		</repository>
-		<repository>
-			<id>sti2-archiva-snapshot</id>
-			<url>http://maven.sti2.at/archiva/repository/snapshots</url>
-		</repository>
 		<repository>
 			<id>dspace-releases</id>
 			<name>dspace releases repository</name>
