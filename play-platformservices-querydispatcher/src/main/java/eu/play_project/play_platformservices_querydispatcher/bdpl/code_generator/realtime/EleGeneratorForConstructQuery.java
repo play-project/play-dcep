@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -23,6 +24,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
@@ -192,8 +194,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private String MemberEvents() {
 		String code = "";
 		String staticCode = ", generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members'";
+		
+		EventMembersFromStream members = new EventMembersFromStream();
 
-		for (String var : uniqueNameManager.getAllTripleStoreVariablesOfThisQuery()) {
+		for (Node var : members.getMembersRepresentative(inputQuery)) {
 			code += staticCode + "," + var + ", " + uniqueNameManager.getCeid() + ")";
 		}
 		elePattern += code;
