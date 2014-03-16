@@ -126,8 +126,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
-		MemberEvents();
-		SaveSharedVariableValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
@@ -185,6 +183,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 												}
 											}
 										}
+										constructResult += MemberEvents();
 										constructResult += SaveSharedVariableValues();
 				constructResult += ")";
 		constructResult += ")";
@@ -197,11 +196,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		EventMembersFromStream members = new EventMembersFromStream();
 
-		for (Node var : members.getMembersRepresentative(inputQuery)) {
+		for (String var : members.getMembersRepresentative(inputQuery)) {
 			code += staticCode + "," + var + ", " + uniqueNameManager.getCeid() + ")";
 		}
-		elePattern += code;
-		return code;
+		return code; 
 	}
 	
 	private boolean containsSharedVariablesTest(Triple triple){

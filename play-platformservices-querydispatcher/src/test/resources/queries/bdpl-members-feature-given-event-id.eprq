@@ -18,4 +18,9 @@ WHERE {
 		:se rdf:type uccrisis:MeasureEvent .
 		:se :stream <http://streams.event-processing.org/ids/situationalEvent#stream> .
 	}
+	SEQ
+	EVENT :st {
+		:st rdf:type uccrisis:MeasureEvent .
+		:st :stream <http://streams.event-processing.org/ids/situationalEvent#stream> .
+	}
 }

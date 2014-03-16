@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
@@ -42,8 +43,9 @@ public class EventMembersFromStream {
 		 * @param query
 		 * @return
 		 */
-		public Set<Node> getMembersRepresentative(Query query) {		
+		public Set<String> getMembersRepresentative(Query query) {		
 			ValueOrganizerVisitor valueOrganizerVisitor  = new ValueOrganizerVisitor();
+			query.getEventQuery().visit(valueOrganizerVisitor);
 			return valueOrganizerVisitor.getMembersRepresentative();
 		}
 		
@@ -51,10 +53,10 @@ public class EventMembersFromStream {
 		// Return value of URI element and traverse form ElementPathBlock to URI
 		// element.
 		private class ValueOrganizerVisitor extends GenericVisitor {
-			Set<Node> membersRepresentative;
+			Set<String> membersRepresentative;
 
 			public ValueOrganizerVisitor(){
-				membersRepresentative =  new HashSet<Node>();
+				membersRepresentative =  new HashSet<String>();
 			}
 			
 			@Override
@@ -87,13 +89,19 @@ public class EventMembersFromStream {
 				for (TriplePath tmpTriplePath : el.getPattern().getList()) {
 					// Check if type is ok
 					if (tmpTriplePath.getPredicate().visitWith(v) != null) {
-						membersRepresentative.add(tmpTriplePath.getSubject());
-							break;
+						if(tmpTriplePath.getSubject().isVariable()){
+							membersRepresentative.add("V" + ((Var)tmpTriplePath.getSubject()).getName());
+						} else if (tmpTriplePath.getSubject().isURI()) {
+							membersRepresentative.add("<" + (tmpTriplePath.getSubject()) + ">");
+						} else if (tmpTriplePath.getSubject().isBlank()) {
+							membersRepresentative.add((tmpTriplePath.getSubject().toString()));
 						}
+							break; // If stream was found it is not necessary to continue.
 					}
 				}
+			}
 
-			public Set<Node> getMembersRepresentative() {
+			public Set<String> getMembersRepresentative() {
 				return this.membersRepresentative;
 			}
 

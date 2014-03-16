@@ -14,7 +14,6 @@ public class ElementEventBinOperator extends Element {
 
 	public ElementEventBinOperator(String type){
 		this.type = type;
-		logger.debug("New BinOperator {}", type);
 	}
 	
 	public String getTyp() {
