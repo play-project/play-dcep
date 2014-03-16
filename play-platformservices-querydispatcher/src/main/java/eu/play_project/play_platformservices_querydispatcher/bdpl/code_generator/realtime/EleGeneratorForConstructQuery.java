@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -23,6 +24,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
@@ -124,8 +126,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
-		MemberEvents();
-		SaveSharedVariableValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
@@ -183,6 +183,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 												}
 											}
 										}
+										constructResult += MemberEvents();
 										constructResult += SaveSharedVariableValues();
 				constructResult += ")";
 		constructResult += ")";
@@ -192,12 +193,13 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private String MemberEvents() {
 		String code = "";
 		String staticCode = ", generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members'";
+		
+		EventMembersFromStream members = new EventMembersFromStream();
 
-		for (String var : uniqueNameManager.getAllTripleStoreVariablesOfThisQuery()) {
+		for (String var : members.getMembersRepresentative(inputQuery)) {
 			code += staticCode + "," + var + ", " + uniqueNameManager.getCeid() + ")";
 		}
-		elePattern += code;
-		return code;
+		return code; 
 	}
 	
 	private boolean containsSharedVariablesTest(Triple triple){

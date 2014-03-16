@@ -58,9 +58,9 @@ public class SharedVariablesTest extends ScenarioAbstractTest {
 		delay();
 
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
-		
+
 		//Historical data exists.
-		assertEquals("We expect exactly one complex event as a result.", "\"Life is beautiful\"", subscriber.getComplexEvents().get(0).getTriples().get(20).getObject().toString());
+		assertEquals("We expect exactly one complex event as a result.", "\"Life is beautiful\"", subscriber.getComplexEvents().get(0).getTriples().get(17).getObject().toString());
 		
 		//Restriction from real time parts works.
 		for (Triple triple : subscriber.getComplexEvents().get(0).getTriples()) {

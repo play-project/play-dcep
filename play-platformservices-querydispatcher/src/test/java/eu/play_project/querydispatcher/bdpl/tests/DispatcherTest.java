@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -33,6 +34,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
@@ -214,6 +216,28 @@ public class DispatcherTest {
 		
 		assertTrue("Historical query is not marked as query with shared Variables.", bdpl.getHistoricalQueries().get(0).hasSharedVariablesWithRealtimePart());
 		assertTrue(bdpl.getEleQuery().contains(",variabeValuesAdd(CEID1,'bob',Vbob)"));
+	}
+	
+	@Test
+	public void testMemberRepresentativCollector() throws IOException {
+		if(logger == null){
+			logger= LoggerFactory.getLogger(DispatcherTest.class);
+		}
+		
+		// Get query.
+		String queryString = BdplEleTest.getSparqlQuery("queries//bdpl-members-feature-given-event-id.eprq");
+		
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		
+		EventMembersFromStream v = new EventMembersFromStream();
+		Set<String> result = v.getMembersRepresentative(query);
+
+		assertEquals(3, result.size());
+		assertTrue(result.contains("Ve1"));
+		assertTrue(result.contains("<http://events.event-processing.org/types/se>"));
+		assertTrue(result.contains("<http://events.event-processing.org/types/st>"));
+
 	}
 	
 	@Test
