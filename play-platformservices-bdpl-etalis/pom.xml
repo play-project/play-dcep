@@ -10,11 +10,11 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>play-platformservices-bdpl</artifactId>
+	<artifactId>play-platformservices-bdpl-etalis</artifactId>
 	<packaging>jar</packaging>
 
-	<name>play-platformservices-bdpl</name >
-	<description>The grammar for Big Data Processing Language (BDPL).</description>
+	<name>play-platformservices-bdpl-etalis</name >
+	<description>The grammar for Big Data Processing Language (BDPL) based on Jena and ETALIS.</description>
 
 	<dependencies>
 		<dependency>

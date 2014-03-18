@@ -144,7 +144,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-core</artifactId>
+			<artifactId>play-platformservices-bdpl-esper</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
 				<exclusion>

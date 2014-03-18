@@ -9,33 +9,28 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>play-platformservices-querydispatcher</artifactId>
+	<artifactId>play-platformservices-querydispatcher-esper</artifactId>
 	<packaging>jar</packaging>
 
-	<name>play-platformservices-querydispatcher</name>
+	<name>play-platformservices-querydispatcher-esper</name>
 	<description>The PLAY Query Dispatch service.</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-bdpl</artifactId>
+			<artifactId>play-platformservices-bdpl-esper</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-platformservices-core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-dcep-distributedetalis</artifactId>
 			<version>${project.version}</version>
 			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
 				<exclusion>
 					<artifactId>jena-arq</artifactId>
 					<groupId>org.apache.jena</groupId>
