@@ -35,6 +35,7 @@ public class BdplTest {
 	public void testPositiveTests() {
 				
 		for (String fileName : new String[] {
+				"BDPL-Query-HistoricSyntax.eprq",
 				"BDPL-Query-nested-events-2.eprq",
 				"BDPL-Query-nested-events.eprq",
 				"BDPL-Query-HAVING.eprq",

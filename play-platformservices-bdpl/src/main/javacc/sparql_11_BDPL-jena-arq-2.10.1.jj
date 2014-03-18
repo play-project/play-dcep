@@ -184,7 +184,7 @@ void ConstructQuery() : { Template t ;
     t = ConstructTemplate()
       { getQuery().setConstructTemplate(t) ; }
     ( DatasetClause() )*
-    WhereClause()
+    WhereClauseBDPL()
     SolutionModifier()
     // Not empty construct Stefan
 // |
@@ -258,7 +258,7 @@ String SourceSelector() : { String iri ; }
   iri = iri() { return iri ; }
 }
 // Modified whereClause for BDPL 
-void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Window win;}
+void WhereClauseBDPL() : {Element el; Token th; Token t; Update up; Expr testExp; Window win;}
 {
    (<WHERE>)?
    th = <LBRACE> //Historical part needs this value.
@@ -286,6 +286,15 @@ void WhereClause() : {Element el; Token th; Token t; Update up; Expr testExp; Wi
 	WhereClauseH(th)
   <RBRACE>
 }
+
+void WhereClause() : { Element el ; }
+{
+   (<WHERE>)?
+   { startWherePattern() ; }
+   el = GroupGraphPattern() { getQuery().setQueryPattern(el) ; }
+   { finishWherePattern() ; }
+}
+
 
 // Historical WhereClause. Default without <LBRACE > and < RBRACE >void WhereClauseH(Token t) : { Element el ;}
 {
@@ -664,6 +673,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = GraphGraphPattern()
  |
    el = ServiceGraphPattern()
+ |
+   el = HistoricGraphPattern()
  |   el = Filter()
  |
    el = Bind()
@@ -688,6 +699,13 @@ Element ServiceGraphPattern() : { Element el ; Node n ; boolean silent = false ;
   (<SILENT>
    { silent=true; }
   )?
+  n = VarOrIri()
+  el = GroupGraphPattern()
+    { return new ElementService(n, el, silent) ; }
+}
+Element HistoricGraphPattern() : { Element el ; Node n ; boolean silent = false ; }
+{
+  <HISTORIC>
   n = VarOrIri()
   el = GroupGraphPattern()
     { return new ElementService(n, el, silent) ; }
@@ -1656,6 +1674,7 @@ TOKEN [IGNORE_CASE] :
 | < MINUS_P: "minus" >
 | < BIND: "bind" >
 | < SERVICE: "service" >
+| < HISTORIC: "historic" >
 | < EXISTS: "exists" >
 | < NOT: "not" >
 //|  < UNSAID:      "unsaid" >
