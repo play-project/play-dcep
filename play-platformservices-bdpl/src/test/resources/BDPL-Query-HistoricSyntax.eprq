@@ -1,0 +1,61 @@
+#
+# Title: "Fast Flower Delivery" 1:Bid Phase. Enrich DeliveryRequest with minimum ranking for drivers of the shop.
+#
+# 
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uccrisis: <http://www.mines-albi.fr/nuclearcrisisevent/>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :BidRequest.
+	:e :stream <http://streams.event-processing.org/ids/situationalAlertEvent#stream> .
+	:e :store	?store .
+	:e :requestId ?requestId.
+	:e :addresseeLocation ?addresseeLocation .
+	:e :requiredPickupTime ?requiredPickupTime .
+	:e :requiredDeliveryTime ?requiredDeliveryTime .
+	:e :minimumRanking ?minimumRanking .
+	:e :driver ?driver
+	}
+WHERE {
+	EVENT ?id1 {
+		?e1 rdf:type :DeliveryRequestEnriched .
+		?e1 :stream <http://streams.event-processing.org/ids/situationalEvent#stream> .
+		?e1 :store	?store .
+		?e1 :requestId ?requestId .
+		?e1 :addresseeLocation ?addresseeLocation .
+		?e1 :requiredPickupTime ?requiredPickupTime .
+		?e1 :requiredDeliveryTime ?requiredDeliveryTime .
+		?e1 :minimumRanking ?minimumRanking .
+	}
+	HISTORIC <http://4store.dbpedia.org> {
+		?s1 rdf:type :DriverLocation .
+		?s1 :driver ?driver .
+		?s1 :location ?addresseeLocation .
+		?driver rdf:type :Driver .
+		?driver :ranking ?ranking .
+		FILTER (?minimumRanking >= ?ranking )
+	}
+	HISTORIC <http://4store.fzi.de> {
+
+		GRAPH ?id2 {
+			?s1 rdf:type :DriverLocation .
+			?s1 :driver ?driver .
+			?s1 :location ?addresseeLocation .
+		}
+		{ SELECT ?time {
+			GRAPH ?id3 {
+				?driver rdf:type :Driver .
+				?driver :ranking ?ranking .
+				?driver :updateTime ?time .
+				FILTER (?minimumRanking >= ?ranking )
+			}
+		 }	
+			ORDER BY DESC(?time)
+			LIMIT 5
+		}
+	}
+}
