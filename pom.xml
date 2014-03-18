@@ -26,6 +26,7 @@
 		<module>play-platformservices-core</module>
 		<module>play-platformservices-api</module>
 		<module>play-platformservices-bdpl</module>
+		<module>play-platformservices-bdpl-esper</module>
 		<module>play-platformservices-querydispatcher</module>
 		<module>play-platformservices-eventvalidation</module>
 		<module>play-dcep-api</module>

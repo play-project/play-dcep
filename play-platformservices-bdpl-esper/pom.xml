@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.ow2.play</groupId>
+		<artifactId>play-dcep</artifactId>
+		<version>1.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>play-platformservices-bdpl-esper</artifactId>
+	<packaging>jar</packaging>
+
+	<name>play-platformservices-bdpl-esper</name >
+	<description>The grammar for Big Data Processing Language (BDPL) based on Sesame and Esper.</description>
+
+	<dependencies>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javacc-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>javacc-bdpl</id>
+						<goals>
+							<goal>javacc</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include>**/*sparql_11_BDPL-jena-arq-2.10.1.jj</include>
+							</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/javacc</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+<!-- 
+						<lifecyclemappingmetadata>
+							<pluginexecutions>
+								<pluginexecution>
+									<pluginexecutionfilter>
+										<groupid>org.codehaus.mojo</groupid>
+										<artifactid>javacc-maven-plugin</artifactid>
+										<versionrange>[2.6,)</versionrange>
+										<goals>
+											<goal>javacc</goal>
+										</goals>
+									</pluginexecutionfilter>
+									<action>
+										<execute></execute>
+									</action>
+								</pluginexecution>
+							</pluginexecutions>
+						</lifecyclemappingmetadata>
+-->
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>javacc-maven-plugin</artifactId>
+										<versionRange>[2.6,)</versionRange>
+										<goals>
+											<goal>javacc</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<configurator>
+											<id>org.objectledge.maven.connectors.javacc</id>
+										</configurator>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>						
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>javacc-maven-plugin</artifactId>
+				<configuration>
+					<cssHref>http://www.w3.org/StyleSheets/TR/base.css</cssHref>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
