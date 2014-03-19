@@ -28,7 +28,7 @@ $ mvn org.fusesource.mvnplugins:maven-graph-plugin:1.10:reactor -Dhide-scope=tes
 ![Dependency Graph](src/site/images/reactor-graph.png?raw=true)
 
 
-Optional Eclipse Plugins
+Maven Site
 ------------------------
 Generate the Maven Site documentation for all modules (multi-module site):
 ```
