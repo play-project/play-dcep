@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-bdpl-esper</artifactId>
+			<artifactId>play-platformservices-querydispatcher-esper</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

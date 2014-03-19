@@ -52,7 +52,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-core</artifactId>
+			<artifactId>play-platformservices-querydispatcher</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<exclusions>
@@ -64,15 +64,47 @@
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-querydispatcher</artifactId>
+			<artifactId>
+				play-platformservices-eventvalidation
+			</artifactId>
 			<version>${project.version}</version>
-			<type>jar</type>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-dcep-utils</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>fr.inria.eventcloud</groupId>
@@ -100,29 +132,28 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>
-				play-platformservices-eventvalidation
-			</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-dcep-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-dcep-utils</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.cxf.services.wsn</groupId>
+				<artifactId>cxf-services-wsn-core</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-bundle</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>cxf-bundle-minimal</artifactId>
+				<groupId>org.apache.cxf</groupId>
+				<version>${cxf.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
 	<repositories>
 		<repository>
 			<id>infin-it</id>

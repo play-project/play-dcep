@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-bdpl-etalis</artifactId>
+			<artifactId>play-platformservices-querydispatcher-etalis</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -103,17 +103,7 @@
 					<groupId>org.apache.cxf</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-dcep-utils</artifactId>
-			<version>${project.version}</version>
 		</dependency>		
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>fr.inria.eventcloud</groupId>
 			<artifactId>eventcloud-core</artifactId>

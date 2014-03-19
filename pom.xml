@@ -23,7 +23,6 @@
 	</prerequisites>
 
 	<modules>
-		<module>play-platformservices-core</module>
 		<module>play-platformservices-api</module>
 		<module>play-platformservices-bdpl-etalis</module>
 		<module>play-platformservices-bdpl-esper</module>
@@ -35,7 +34,6 @@
 		<module>play-dcep-node-core</module>
 		<module>play-dcep-node-esper</module>
 		<module>play-dcep-node-etalis</module>
-		<module>play-dcep-dcepmanager</module>
 		<module>play-dcep-utils</module>
 		<module>play-dcep-distribution-etalis</module>
 		<module>play-dcep-distribution-esper</module>
