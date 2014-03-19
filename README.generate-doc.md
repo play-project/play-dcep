@@ -19,12 +19,13 @@ Generating DCEP Documentation
 
 Dependency graph for DCEP modules
 ---------------------------------
-Generate a dependency graph as PNG image of all DCEP modules (excluding external dependencies):
+Generate a dependency graph as PNG image of all DCEP modules (excluding external dependencies). Requires GraphViz `dot` programme on your PATH.
 
 ```
 $ mvn org.fusesource.mvnplugins:maven-graph-plugin:1.10:reactor -Dhide-scope=test -Dhide-external=true reactor-graph.png
 ```
 
+Result:
 ![Dependency Graph](src/site/images/reactor-graph.png?raw=true)
 
 
