@@ -33,6 +33,8 @@ Development
 
 [Developing with Eclipse](README.eclipse.md)
 
+[Generating documentation](README.generate-doc.md)
+
 Other
 -----
 [Reports](http://play-project.github.com/play-dcep/site/1.0-SNAPSHOT/project-reports.html) |
