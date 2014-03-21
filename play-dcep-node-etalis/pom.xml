@@ -234,5 +234,15 @@
 				<filtering>false</filtering>
 			</resource>
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+			<testResource>
+				<filtering>false</filtering>
+				<directory>src/test/adl</directory>
+			</testResource>
+		</testResources>
 	</build>
 </project>

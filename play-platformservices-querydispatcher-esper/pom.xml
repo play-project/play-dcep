@@ -22,6 +22,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-platformservices-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.xmlgraphics</groupId>
 			<artifactId>batik-ext</artifactId>
 			<version>1.7</version>

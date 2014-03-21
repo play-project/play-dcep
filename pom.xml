@@ -34,7 +34,6 @@
 		<module>play-dcep-node-core</module>
 		<module>play-dcep-node-esper</module>
 		<module>play-dcep-node-etalis</module>
-		<module>play-dcep-utils</module>
 		<module>play-dcep-distribution-etalis</module>
 		<module>play-dcep-distribution-esper</module>
 	</modules>
