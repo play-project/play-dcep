@@ -17,6 +17,11 @@
 	<description>The grammar for Big Data Processing Language (BDPL) based on Sesame and Esper.</description>
 
 	<dependencies>
+	<dependency>
+		<groupId>org.openrdf.sesame</groupId>
+		<artifactId>sesame-queryparser-sparql</artifactId>
+		<version>${sesame.version}</version>
+	</dependency>
 	</dependencies>
 
 	<build>
@@ -28,13 +33,8 @@
 					<execution>
 						<id>javacc-bdpl</id>
 						<goals>
-							<goal>javacc</goal>
+							<goal>jjtree-javacc</goal>
 						</goals>
-						<configuration>
-							<includes>
-								<include>**/*sparql_11_BDPL-jena-arq-2.10.1.jj</include>
-							</includes>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -73,7 +73,7 @@
 										<artifactid>javacc-maven-plugin</artifactid>
 										<versionrange>[2.6,)</versionrange>
 										<goals>
-											<goal>javacc</goal>
+											<goal>jjtree-javacc</goal>
 										</goals>
 									</pluginexecutionfilter>
 									<action>
@@ -91,7 +91,7 @@
 										<artifactId>javacc-maven-plugin</artifactId>
 										<versionRange>[2.6,)</versionRange>
 										<goals>
-											<goal>javacc</goal>
+											<goal>jjtree-javacc</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
