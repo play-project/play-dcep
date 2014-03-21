@@ -706,7 +706,7 @@ Element ServiceGraphPattern() : { Element el ; Node n ; boolean silent = false ;
 Element HistoricGraphPattern() : { Element el ; Node n ; boolean silent = false ; }
 {
   <HISTORIC>
-  n = VarOrIri()
+  n = VarOrIri() < STREAM >
   el = GroupGraphPattern()
     { return new ElementService(n, el, silent) ; }
 }
@@ -1877,6 +1877,7 @@ TOKEN :
 | < FPATH: "->" >
 | < RPATH: "<-" >
 | < QMARK: "?" >
+| < STREAM: "#stream">
 }
 // See XML chars.txt for notes
 TOKEN:
