@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
+import com.hp.hpl.jena.sparql.syntax.ElementService;
 
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_platformservices.api.QueryDetails;
@@ -58,7 +59,7 @@ public class StreamIdCollector {
 
 		while (iter.hasNext() && !streamIdFound) {
 			triple = iter.next();
-			if (triple.getPredicate().visitWith(v) != null) {
+			if (!(Boolean)triple.getPredicate().visitWith(v)) {
 				if (triple.getObject().visitWith(valueVisitor) == null) {
 					throw new RuntimeException("Output stream Id is not a URI or Literal");
 				} else {
@@ -129,11 +130,12 @@ public class StreamIdCollector {
 		
 		@Override
 		public void visit(ElementPathBlock el) {
+			System.out.println("A1   " + el);
 			TypeCheckVisitor v = new TypeCheckVisitor();
 			UriValueVisitor valueVisotor = new UriValueVisitor();
 			for (TriplePath tmpTriplePath : el.getPattern().getList()) {
 				// Check if type is ok
-				if (tmpTriplePath.getPredicate().visitWith(v) != null) {
+				if (!(Boolean)tmpTriplePath.getPredicate().visitWith(v)) {
 					if (tmpTriplePath.getObject().visitWith(valueVisotor) == null) {
 						throw new RuntimeException("Input stream Id is not a URI or Literal");
 					} else {
@@ -146,6 +148,7 @@ public class StreamIdCollector {
 
 		@Override
 		public void visit(ElementNamedGraph el){
+			System.out.println("A2   " + el);
 			el.getElement().visit(this);
 		}
 		
@@ -171,20 +174,25 @@ public class StreamIdCollector {
 			el.getLeft().visit(this);
 			el.getRight().visit(this);
 		}
+		
+		@Override
+		public void visit(ElementService el) {
+			el.getServiceNode().visitWith(this);
+			// el.getElement().visit(this); //ServiceNode has a higher priority. For this reason it is not necessary to visit the other elements.
+		}
 
 	}
 
 	// Test if the type is http://events.event-processing.org/types/stream
 	private class TypeCheckVisitor extends GenericVisitor {
-		private final String ok = "OK";
 
 		@Override
 		public Object visitURI(Node_URI it, String uri) {
 
 			if (uri.equals(org.event_processing.events.types.Event.STREAM.toString()) || uri.equals((org.event_processing.events.types.Event.STREAM + "/"))) {
-				return ok;
+				return new Boolean(true);
 			}
-			return null;
+			return new Boolean(false);
 		}
 	}
 

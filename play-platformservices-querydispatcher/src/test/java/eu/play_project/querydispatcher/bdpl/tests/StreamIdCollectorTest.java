@@ -48,7 +48,7 @@ public class StreamIdCollectorTest {
 	}
 	
 	@Test
-	public void testStreamIdCollectorHistoric() throws IOException {
+	public void testStreamIdCollectorHistoricFromStream() throws IOException {
 		
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/Temperature"}));
 		Set<String> expectedHistoricalStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TemperatureA", "http://streams.event-processing.org/ids/TemperatureB"}));
@@ -76,6 +76,39 @@ public class StreamIdCollectorTest {
 
 		// Test historical streams
 		assertEquals(expectedHistoricalStreams, qd.getHistoricStreams());
+		
+	}
+	
+	@Test
+	public void testStreamIdCollectorPreferHistoric() throws IOException {
+		
+		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/Temperature"}));
+		Set<String> expectedHistoricalStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TemperatureA", "http://streams.event-processing.org/ids/TemperatureB"}));
+		String expectedOutputStream = "http://streams.event-processing.org/ids/Temperatures";
+		
+		// Get query.
+		String queryString = BdplEleTest.getSparqlQuery("queries/MultipleDestinationHistoric.eprq");
+		String queryId = "exampleQuery2";
+		System.out.println(queryString);
+		assertNotNull("Testing Query was not found on classpath", queryString);
+		
+		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		QueryDetails qd = new QueryDetails();
+		qd.setQueryId(queryId);
+
+		StreamIdCollector streamIdCollector = new StreamIdCollector();
+		streamIdCollector.getStreamIds(q, qd);
+
+		// Test output stream
+		//assertTrue(qd.getOutputStream().equals(expectedOutputStream));
+		
+		// Test input streams
+		//assertTrue(qd.getInputStreams().equals(expectedInputStreams));
+
+		// Test historical streams
+		System.out.println(qd.getInputStreams());
+		//assertEquals(expectedHistoricalStreams, qd.getHistoricStreams());
 		
 	}
 }
