@@ -59,12 +59,12 @@
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-eventadapter-abstractrdfreceiver-rest</artifactId>
-			<version>${project.version}</version>
+			<version>${play.eventadapter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-eventadapter-abstractrdfsender-rest</artifactId>
-			<version>${project.version}</version>
+			<version>${play.eventadapter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>jtalis</groupId>

@@ -198,17 +198,6 @@
 			<artifactId>logback-classic</artifactId>
 		</dependency>		
 		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-test-srbench-simulator</artifactId>
-			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdf2go.impl.sesame</artifactId>
 			<version>4.8.4-SNAPSHOT</version>
