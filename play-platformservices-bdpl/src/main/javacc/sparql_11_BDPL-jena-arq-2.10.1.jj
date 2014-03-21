@@ -706,7 +706,7 @@ Element ServiceGraphPattern() : { Element el ; Node n ; boolean silent = false ;
 Element HistoricGraphPattern() : { Element el ; Node n ; boolean silent = false ; }
 {
   <HISTORIC>
-  n = VarOrIri() < STREAM >
+  n = VarOrIri()  {if(!n.toString().endsWith("#stream")) {throw new ParseException("URI aftr HISTORIC hst to end with #stream");}}
   el = GroupGraphPattern()
     { return new ElementService(n, el, silent) ; }
 }
@@ -1877,7 +1877,6 @@ TOKEN :
 | < FPATH: "->" >
 | < RPATH: "<-" >
 | < QMARK: "?" >
-| < STREAM: "#stream">
 }
 // See XML chars.txt for notes
 TOKEN:

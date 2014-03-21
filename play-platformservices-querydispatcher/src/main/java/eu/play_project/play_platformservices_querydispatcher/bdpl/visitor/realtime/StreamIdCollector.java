@@ -51,7 +51,6 @@ public class StreamIdCollector {
 	 */
 	private String getOutputStream(Query query) {
 		TypeCheckVisitor v = new TypeCheckVisitor();
-		UriValueVisitor valueVisitor = new UriValueVisitor();
 
 		boolean streamIdFound = false;
 		Iterator<Triple> iter = query.getConstructTemplate().getTriples().iterator();
@@ -59,12 +58,12 @@ public class StreamIdCollector {
 
 		while (iter.hasNext() && !streamIdFound) {
 			triple = iter.next();
-			if (!(Boolean)triple.getPredicate().visitWith(v)) {
-				if (triple.getObject().visitWith(valueVisitor) == null) {
-					throw new RuntimeException("Output stream Id is not a URI or Literal");
-				} else {
-					String streamId = (String) triple.getObject().visitWith(valueVisitor);
+			if ((Boolean)triple.getPredicate().visitWith(v)) {
+				if (triple.getObject().isURI()) {
+					String streamId = (String) triple.getObject().toString();
 					return Stream.toTopicUri(streamId);
+				} else {
+					throw new RuntimeException("Output stream Id is not a URI or Literal");
 				}
 			}
 		}
@@ -130,17 +129,15 @@ public class StreamIdCollector {
 		
 		@Override
 		public void visit(ElementPathBlock el) {
-			System.out.println("A1   " + el);
 			TypeCheckVisitor v = new TypeCheckVisitor();
-			UriValueVisitor valueVisotor = new UriValueVisitor();
 			for (TriplePath tmpTriplePath : el.getPattern().getList()) {
 				// Check if type is ok
-				if (!(Boolean)tmpTriplePath.getPredicate().visitWith(v)) {
-					if (tmpTriplePath.getObject().visitWith(valueVisotor) == null) {
-						throw new RuntimeException("Input stream Id is not a URI or Literal");
-					} else {
-						streamURIs.add((String) tmpTriplePath.getObject().visitWith(valueVisotor));
+				if ((Boolean)tmpTriplePath.getPredicate().visitWith(v)) {
+					if (tmpTriplePath.getObject().isURI()) {
+						streamURIs.add((String) tmpTriplePath.getObject().toString());
 						break;
+					} else {
+						throw new RuntimeException("Input stream Id is not a URI or Literal");
 					}
 				}
 			}
@@ -148,7 +145,6 @@ public class StreamIdCollector {
 
 		@Override
 		public void visit(ElementNamedGraph el){
-			System.out.println("A2   " + el);
 			el.getElement().visit(this);
 		}
 		
@@ -177,10 +173,12 @@ public class StreamIdCollector {
 		
 		@Override
 		public void visit(ElementService el) {
-			el.getServiceNode().visitWith(this);
-			// el.getElement().visit(this); //ServiceNode has a higher priority. For this reason it is not necessary to visit the other elements.
+			if(el.getServiceNode().isURI()) {
+				streamURIs.add(el.getServiceNode().toString());
+			} else {
+				throw new RuntimeException("Input stream Id " + el.getServiceNode().toString() + " is not a URI.");
+			}
 		}
-
 	}
 
 	// Test if the type is http://events.event-processing.org/types/stream
@@ -194,16 +192,5 @@ public class StreamIdCollector {
 			}
 			return new Boolean(false);
 		}
-	}
-
-	// Test if the type is http://events.event-processing.org/types/stream
-	private class UriValueVisitor extends GenericVisitor {
-
-		@Override
-		public Object visitURI(Node_URI it, String uri) {
-			return uri;
-		}
-	}
-	
-	
+	}	
 }

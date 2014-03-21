@@ -31,7 +31,7 @@ WHERE {
 		?e1 :requiredDeliveryTime ?requiredDeliveryTime .
 		?e1 :minimumRanking ?minimumRanking .
 	}
-	HISTORIC <http://4store.dbpedia.org> {
+	HISTORIC <http://4store.dbpedia.org#stream> {
 		?s1 rdf:type :DriverLocation .
 		?s1 :driver ?driver .
 		?s1 :location ?addresseeLocation .
@@ -39,15 +39,18 @@ WHERE {
 		?driver :ranking ?ranking .
 		FILTER (?minimumRanking >= ?ranking )
 	}
-	HISTORIC <http://4store.fzi.de> {
+	HISTORIC <http://4store.fzi.de#stream> {
 		GRAPH ?id2 {
 			?s1 rdf:type :DriverLocation .
+			?s1 :stream <http://streams.event-processing.org/ids/stream1t#stream> .
 			?s1 :driver ?driver .
 			?s1 :location ?addresseeLocation .
+			
 		}
 		{ SELECT ?time {
 			GRAPH ?id3 {
 				?driver rdf:type :Driver .
+				?driver :stream <http://streams.event-processing.org/ids/stream2t#stream> .
 				?driver :ranking ?ranking .
 				?driver :updateTime ?time .
 				FILTER (?minimumRanking >= ?ranking )
