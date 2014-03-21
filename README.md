@@ -25,7 +25,7 @@ events and there is no need to model mappings to binary formats.
 
 Installation
 ------------
-[Install Guide](https://github.com/play-project/play-dcep/tree/master/play-dcep-distribution-etalis)
+[Install Guide](play-dcep-distribution-etalis/)
 
 Development
 -----------
@@ -39,6 +39,6 @@ Other
 -----
 [Reports](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/project-reports.html) |
 [JavaDoc](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/apidocs/index.html) |
-[BDPL Grammar](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/play-platformservices-bdpl/jjdoc/index.html) |
+[BDPL Grammar](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/play-platformservices-bdpl-etalis/jjdoc/index.html) |
 [DOAP](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/doap.rdf) |
 [License](LICENSE.txt)
