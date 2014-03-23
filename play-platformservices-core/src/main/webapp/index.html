@@ -4,6 +4,9 @@
 <script src="/webjars/underscore-min.js"></script>
 <script src="/webjars/backbone-min.js"></script>
 <script src="/webjars/jquery.tmpl.min.js"></script>
+<script src="/webjars/bootstrap.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/webjars/bootstrap-theme.min.css" />
 
 <script type="text/javascript">
 
@@ -86,14 +89,27 @@ $(function () {
 
 </head>
 
-    <body>
-        <p><input id="new-name" type="text"><button id="add">Add</button></p>
-        <div id="patterns"></div>
-    </body>
-    <script id="pattern-template" type="x-jquery-tmpl">
-        <input type="text" value="${id}">
+<body>
+	<ul class="breadcrumb">
+		<li><a href="/play.gov/">Home</a> <span class="divider">/</span></li>
+		<li><a href="/play.gov/patterns/registered">Patterns</a> <span
+			class="divider">/</span></li>
+		<li class="active">Deployed</li>
+	</ul>
+	<p><input id="new-name" type="text"><button id="add">Add</button></p>
+    <div id="patterns" class="accordion-body collapse"></div>
+</body>
+
+<script id="pattern-template" type="x-jquery-tmpl">
+    <div class="accordion-heading">
+    	<a class="accordion-toggle" data-toggle="collapse" data-parent="#patterns" href="#collapse_${id}">Pattern ID - ${id}</a>
+    </div>
+	<div id="collapse_${id}" class="accordion-body collapse">
+   	<div class="accordion-inner">
 		<textarea>${content}</textarea>
-        <button>Delete</button>
-    </script>
-    
+		<button class="btn btn-danger">Delete</button>
+	</div>
+	</div>
+</script>
+
 </html>
