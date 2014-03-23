@@ -7,15 +7,15 @@
 
 <script type="text/javascript">
 
-var Entities = {};
+var Patterns = {};
 
-Entities.Collection = Backbone.Collection.extend({
+Patterns.Collection = Backbone.Collection.extend({
     url: '/patterns'
 });
  
-Entities.Views = {};
+Patterns.Views = {};
  
-Entities.Views.Edit = Backbone.View.extend({
+Patterns.Views.Edit = Backbone.View.extend({
     change: function () {
         this.model.set({
             name: $(this.el).children('input').val()
@@ -38,15 +38,15 @@ Entities.Views.Edit = Backbone.View.extend({
         _(this).bindAll('change', 'destroy', 'render');
     },
     render: function () {
-        $('#entity-template').tmpl(this.model.toJSON()).appendTo(this.el);
+        $('#pattern-template').tmpl(this.model.toJSON()).appendTo(this.el);
         this.delegateEvents();
     }
 });
  
-Entities.Views.List = Backbone.View.extend({
+Patterns.Views.List = Backbone.View.extend({
     append: function (model) {
-        var p = $('<p>').appendTo('#entities'),
-            view = new Entities.Views.Edit({
+        var p = $('<p>').appendTo('#patterns'),
+            view = new Patterns.Views.Edit({
                 model: model,
                 el: p[0]
             });
@@ -58,7 +58,7 @@ Entities.Views.List = Backbone.View.extend({
         this.collection.bind('add', this.append);
     },
     render: function () {
-        $('#entities').empty();
+        $('#patterns').empty();
         this.collection.each(function (model) {
             this.append(model);
         }, this);
@@ -66,8 +66,8 @@ Entities.Views.List = Backbone.View.extend({
 });
  
 $(function () {
-    var collection = new Entities.Collection(),
-        view = new Entities.Views.List({
+    var collection = new Patterns.Collection(),
+        view = new Patterns.Views.List({
             collection: collection
         });
  
@@ -88,10 +88,11 @@ $(function () {
 
     <body>
         <p><input id="new-name" type="text"><button id="add">Add</button></p>
-        <div id="entities"></div>
+        <div id="patterns"></div>
     </body>
-    <script id="entity-template" type="x-jquery-tmpl">
+    <script id="pattern-template" type="x-jquery-tmpl">
         <input type="text" value="${id}">
+		<textarea>${content}</textarea>
         <button>Delete</button>
     </script>
     
