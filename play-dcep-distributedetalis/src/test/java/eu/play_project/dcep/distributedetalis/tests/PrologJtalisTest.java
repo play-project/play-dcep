@@ -1,11 +1,11 @@
-package eu.play_project.dcep.distributedetalis.test;
+package eu.play_project.dcep.distributedetalis.tests;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.unquoteFromProlog;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_PLACEHOLDER;
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static eu.play_project.play_commons.constants.Namespace.EVENTS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -67,8 +67,6 @@ public class PrologJtalisTest {
 	 * Instantiate ETALIS
 	 * @throws InterruptedException
 	 */
-	@Ignore
-	@Test
 	public void instantiateJtalis() throws InterruptedException{
 
 		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -140,19 +138,19 @@ public class PrologJtalisTest {
 		assertFalse(result.equals(new EtalisEvent("complex2", 1)));
 	}
 	
-//	@Test
-//	public void loadSemWebLibTest(){
-//		try{
-//			// Load SWI-Prolog Semantic Web Library
-//			ctx.getEngineWrapper().executeGoal("[library(semweb/rdf_db)]");
-//		}catch (Exception e) {
-//			e.printStackTrace();
-//			fail("It was not possible to load the semweb/rdf_db library ");
-//		}
-//
-//
-//		delay();
-//	}
+	@Test
+	public void loadSemWebLibTest(){
+		try{
+			// Load SWI-Prolog Semantic Web Library
+			ctx.getEngineWrapper().executeGoal("[library(semweb/rdf_db)]");
+		}catch (Exception e) {
+			e.printStackTrace();
+			fail("It was not possible to load the semweb/rdf_db library ");
+		}
+
+
+		delay();
+	}
 	
 	@Ignore
 	@Test
@@ -243,7 +241,7 @@ public class PrologJtalisTest {
 			Hashtable binding = (Hashtable) q.nextElement();
 			Term t = (Term) binding.get("S");
 			System.out.println(t);
-			assertTrue(t.toString().equals("'" + eventId + EVENT_ID_SUFFIX + "'"));
+			assertTrue(t.toString().equals(quoteForProlog(eventId + EVENT_ID_SUFFIX)));
 			
 			q.close(); // To avoid transaction problems with rdf db.
 		}
@@ -375,9 +373,7 @@ public class PrologJtalisTest {
 		context.registerOutputProvider(new AbstractJtalisEventProvider() {
 			@Override
 			public void outputEvent(EtalisEvent event) {
-				System.out.println("\n\n\n");
 				System.out.println(event);
-				System.out.println("\n\n\n");
 				list.add(event);
 			}
 		});
@@ -941,9 +937,7 @@ public class PrologJtalisTest {
 			String predicate = item.get("P").toString();
 			predicate = predicate.substring(1, predicate.length() - 1);
 			String object = item.get("O").toString();
-			if (object.startsWith("'") && object.endsWith("'")) {
-				object = object.substring(1, object.length() - 1);
-			}
+			object = unquoteFromProlog(object);
 
 			Node objectNode = EventHelpers.toJenaNode(object);
 			

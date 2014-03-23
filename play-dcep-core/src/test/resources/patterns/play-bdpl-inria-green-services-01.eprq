@@ -31,7 +31,6 @@ CONSTRUCT {
 	:e rdf:type :UcTelcoEsrRecom .
 	:e :stream <http://streams.event-processing.org/ids/PollutionAlert#stream> .
 	:e :message "There is pollution with near your current position" .
-	:e :members ?e1, ?e2 .
 	:e mgs:polluant ?polluant .
 	:e geo:lat ?latitude2 .
 	:e geo:lng ?longitude2 .

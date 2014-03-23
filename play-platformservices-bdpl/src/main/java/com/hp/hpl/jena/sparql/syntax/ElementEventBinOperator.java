@@ -8,11 +8,12 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 public class ElementEventBinOperator extends Element {
 
 	String type;
+	Element left;
+	Element right;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public ElementEventBinOperator(String type){
 		this.type = type;
-		logger.debug("New BinOperator {}", type);
 	}
 	
 	public String getTyp() {
@@ -36,6 +37,27 @@ public class ElementEventBinOperator extends Element {
 	@Override
 	public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
 		return false;
+	}
+
+	public void setChilds(Element left, Element right) {
+		this.left = left;
+		this.right = right;
+	}
+	
+	public Element getLeft() {
+		return this.left;
+	}
+
+	public void setLeft(Element left) {
+		this.left = left;
+	}
+
+	public Element getRight() {
+		return this.right;
+	}
+
+	public void setRight(Element right) {
+		this.right = right;
 	}
 
 }

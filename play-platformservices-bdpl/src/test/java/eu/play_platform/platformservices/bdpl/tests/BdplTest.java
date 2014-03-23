@@ -10,9 +10,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -25,16 +25,19 @@ public class BdplTest {
 		BDPL_QUERY, BDPL_BROKEN_QUERY
 	}
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void manualTest(){
-		QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxBDPL);
+		Query q = QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxBDPL);
 	}
 		
 	@Test
 	public void testPositiveTests() {
 				
 		for (String fileName : new String[] {
+				"BDPL-Query-HistoricSyntax.eprq",
+				"BDPL-Query-nested-events-2.eprq",
+				"BDPL-Query-nested-events.eprq",
 				"BDPL-Query-HAVING.eprq",
 				"BDPL-Query-CONSTRUCT-Query.eprq",
 				"BDPL-Query-Event-and-GRAPH.eprq",
@@ -99,7 +102,7 @@ public class BdplTest {
 					QueryFactory.create(query[0], Syntax.syntaxBDPL);
 				} catch (QueryException e) {
 					if (!e.getMessage().contains(query[1])) { // Test if expected exception
-						e.printStackTrace();
+						//e.printStackTrace();
 						throw new Exception("Not expected exception was thrown in " + fileName + "\n" + query[1] + " is expected");
 					}
 				}
@@ -150,11 +153,11 @@ public class BdplTest {
 	}
 	
 	/**
-	 * Returns the filenaes of the testfiles depending on the type of the testfile.
-	 * The filename of a file with contains a broken query (a query which the parser do not acceapt) must start with "BDPL-BrokenQuery".
+	 * Returns the filenames of the test files depending on the type of the test file.
+	 * The filename of a file with contains a broken query (a query which the parser do not accept) must start with "BDPL-BrokenQuery".
 	 * The filename of a file with a regular query must start with "BDPL-Query".
 	 * @param dir Directory of the files.
-	 * @param type Type of the fiel.
+	 * @param type Type of the file.
 	 * @return All filenames with the specified type.
 	 */
 	public static List<String> getFilenames(File dir, TestType type) {

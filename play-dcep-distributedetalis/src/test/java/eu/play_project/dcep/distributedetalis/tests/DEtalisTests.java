@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distributedetalis.test;
+package eu.play_project.dcep.distributedetalis.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

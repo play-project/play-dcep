@@ -53,8 +53,9 @@ import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
 
 /**
- * An abstract connection manager implementing common methods needed to receive
- * events via WS-Notification.
+ * An abstract connection manager to get real-time events from the PLAY
+ * Platform. Access to historic data, however, must be implemented by extending
+ * classes.
  * 
  * @author Roland Stühmer
  */
@@ -156,19 +157,21 @@ public abstract class EcConnectionManagerWsn implements EcConnectionManager {
 			throw new EcConnectionmanagerException("Error while checking the DSB.", e);
 		}
 		
+		/*
+		 * Clean up left-over subscriptions from possible previous crash
+		 */
 		try {
 			persistence = new Sqlite();
 			for (SubscriptionPerCloud sub : persistence.getSubscriptions()) {
 				logger.info("Cleaning stale subscription from cloud {}: {}", sub.cloudId,
 						sub.subscriptionId);
-
 				try {
 					rdfReceiver.unsubscribe(sub.subscriptionId);
 				} catch (Exception e) {
 					logger.debug(e.getMessage());
 				}
 			}
-
+			persistence.deleteAllSubscriptions();
 		} catch (PersistenceException e) {
 			throw new EcConnectionmanagerException(e.getMessage(), e);
 		}

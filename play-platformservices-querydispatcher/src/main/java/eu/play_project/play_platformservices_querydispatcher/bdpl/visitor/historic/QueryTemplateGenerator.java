@@ -54,4 +54,5 @@ public class QueryTemplateGenerator {
 
 		return queryTemplate;
 	}
+	
 }

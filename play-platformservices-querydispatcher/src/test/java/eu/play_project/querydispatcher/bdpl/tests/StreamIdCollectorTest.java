@@ -1,7 +1,6 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -58,11 +57,11 @@ public class StreamIdCollectorTest {
 		// Get query.
 		String queryString = BdplEleTest.getSparqlQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
 		String queryId = "exampleQuery2";
-		
+		System.out.println(queryString);
 		assertNotNull("Testing Query was not found on classpath", queryString);
 		
 		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		
+
 		QueryDetails qd = new QueryDetails();
 		qd.setQueryId(queryId);
 
@@ -70,14 +69,13 @@ public class StreamIdCollectorTest {
 		streamIdCollector.getStreamIds(q, qd);
 
 		// Test output stream
-		System.out.println(qd.getOutputStream());
 		assertTrue(qd.getOutputStream().equals(expectedOutputStream));
 		
 		// Test input streams
 		assertTrue(qd.getInputStreams().equals(expectedInputStreams));
 
 		// Test historical streams
-		assertTrue(qd.getHistoricStreams().equals(expectedHistoricalStreams));
+		assertEquals(expectedHistoricalStreams, qd.getHistoricStreams());
 		
 	}
 }

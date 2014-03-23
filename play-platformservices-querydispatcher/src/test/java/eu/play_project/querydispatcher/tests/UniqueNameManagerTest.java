@@ -13,7 +13,7 @@ public class UniqueNameManagerTest {
 		UniqueNameManager unm = UniqueNameManager.getVarNameManager();
 
 		// Simulate code generation for different patterns.
-		unm.newQuery();
+		unm.newQuery(2);
 		assertEquals(unm.getCurrentSimpleEventNumber(), 1);
 
 		unm.processNextEvent();
@@ -28,7 +28,7 @@ public class UniqueNameManagerTest {
 		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD3");
 
 		// Process new query.
-		unm.newQuery();
+		unm.newQuery(5);
 		assertEquals(unm.getCurrentSimpleEventNumber(), 4);
 
 		unm.processNextEvent();
@@ -49,6 +49,9 @@ public class UniqueNameManagerTest {
 
 		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD5");
 		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD6");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(2), "ViD7");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(3), "ViD8");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(4), "ViD9");
 
 	}
 

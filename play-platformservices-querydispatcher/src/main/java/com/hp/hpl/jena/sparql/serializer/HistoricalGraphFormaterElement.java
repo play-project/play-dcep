@@ -39,7 +39,7 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 		// Save cloud ID and the corresponding query.
 		if (historicalCloudQueries.containsKey(DetectCloudId.getCloudId())) {
 			historicalCloudQueries.put(DetectCloudId.getCloudId(),
-					historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());
+			historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());
 		} else {
 			historicalCloudQueries.put(DetectCloudId.getCloudId(), out.toString());
 		}

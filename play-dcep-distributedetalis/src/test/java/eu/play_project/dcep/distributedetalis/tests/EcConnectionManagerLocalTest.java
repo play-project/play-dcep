@@ -1,11 +1,13 @@
-package eu.play_project.dcep.distributedetalis.test;
+package eu.play_project.dcep.distributedetalis.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -38,7 +40,7 @@ import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
  * Tests of the local version of EcConnectionManager.
  * 
  * @author Stefan Obermeier
- * 
+ * @author Roland Stühmer
  */
 public class EcConnectionManagerLocalTest {
 
@@ -116,21 +118,36 @@ public class EcConnectionManagerLocalTest {
 		HistoricalQuery hq = new HistoricalQuery();
 		hq.setCloudId("local");
 		hq.setQuery("PREFIX sioc: <http://rdfs.org/sioc/ns#> \nPREFIX : <http://events.event-processing.org/types/> \nPREFIX uctelco: <http://events.event-processing.org/uc/telco/> \nPREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> \nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e3 ?tweetTime ?firstEvent ?tweetContent ?id3 ?firstEvent \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :TwitterEvent .\n    ?e3 :stream <http://streams.event-processing.org/ids/TwitterFeed#stream> .\n    ?e3 :endTime ?tweetTime .\n    ?e3 :test ?firstEvent .\n    ?e3 sioc:content ?tweetContent\n\t FILTER ( ?tweetTime > ?firstEvent )\n    }} \n ");
+		hq.getVariables().addAll(Arrays.asList(new String [] {"e3", "tweetTime", "firstEvent", "tweetContent", "id3", "firstEvent"}));
 		list.add(hq);
-		VariableBindings variableBindings = new VariableBindings();
-		variableBindings.put("?e3", new ArrayList<Object>());
-		variableBindings.put("?tweetTime", new ArrayList<Object>());
-		variableBindings.put("?firstEvent", new ArrayList<Object>());
-		variableBindings.put("?tweetContent", new ArrayList<Object>());
-		variableBindings.put("?id3", new ArrayList<Object>());
-		variableBindings.put("?firstEvent", new ArrayList<Object>());
+		VariableBindings variableBindings;
+		
+		variableBindings = new VariableBindings();
+		variableBindings.put("e3", new ArrayList<Object>());
+		variableBindings.put("tweetTime", new ArrayList<Object>());
+		variableBindings.put("firstEvent", new ArrayList<Object>());
+		variableBindings.put("tweetContent", Arrays.asList(new Object [] {"Tweettext 1"}));
+		variableBindings.put("id3", new ArrayList<Object>());
+		variableBindings.put("firstEvent", new ArrayList<Object>());
 			
 		EcConnectionManagerLocal ecm =  new EcConnectionManagerLocal("historical-data/clic2call-historical-data.trig");
 		
 		Engine historicData = new Engine(ecm);
 		HistoricalData values = historicData.get(list, variableBindings);
+		assertEquals("We expect a result here", 1, values.get("tweetContent").size());
+		System.out.println("HISTORIC VALUES: " + values);
+		
+		variableBindings = new VariableBindings();
+		variableBindings.put("e3", new ArrayList<Object>());
+		variableBindings.put("tweetTime", new ArrayList<Object>());
+		variableBindings.put("firstEvent", new ArrayList<Object>());
+		variableBindings.put("tweetContent", Arrays.asList(new Object [] {"BOGUS Tweettext 2"}));
+		variableBindings.put("id3", new ArrayList<Object>());
+		variableBindings.put("firstEvent", new ArrayList<Object>());
 
-		System.out.println(values);
-	}
+		values = historicData.get(list, variableBindings);
+		assertNull("We expect an empty result here", values.get("tweetContent"));
+		System.out.println("HISTORIC VALUES: " + values);
+}
 
 }

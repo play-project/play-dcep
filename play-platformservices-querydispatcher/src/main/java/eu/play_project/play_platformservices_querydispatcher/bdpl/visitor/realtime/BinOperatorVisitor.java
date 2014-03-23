@@ -1,6 +1,8 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
@@ -20,7 +22,7 @@ public class BinOperatorVisitor extends GenericVisitor implements ElementVisitor
 
 	@Override
 	public void visit(ElementEventBinOperator el) {
-		binOperator = "'" + el.getTyp() + "'";
+		binOperator = quoteForProlog(el.getTyp());
 	}
 	
 	@Override

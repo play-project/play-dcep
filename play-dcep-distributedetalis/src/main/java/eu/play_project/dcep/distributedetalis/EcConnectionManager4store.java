@@ -23,6 +23,12 @@ import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
+/**
+ * The connection manager to get real-time events from the PLAY Platform and get
+ * historical data from the RDF store <a href="http://4store.org/">4store</a>.
+ * 
+ * @author Roland Stühmer
+ */
 public class EcConnectionManager4store extends EcConnectionManagerWsn {
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManager4store.class);
 	private Client fourStoreClient;

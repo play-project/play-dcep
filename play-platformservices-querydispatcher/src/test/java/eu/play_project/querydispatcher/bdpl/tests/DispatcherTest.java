@@ -4,25 +4,39 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
+import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
+import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.api.QueryTemplate;
+import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 /**
  * 
@@ -67,7 +81,7 @@ public class DispatcherTest {
 		}
 		
 		// Get query.
-		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
+		String queryString = BdplEleTest.getSparqlQuery("queries/play-bdpl-clic2Call.eprq");
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
@@ -75,14 +89,15 @@ public class DispatcherTest {
 		VariableTypeManager vtm = new VariableTypeManager(query);
 		
 		vtm.collectVars();
-		
+		System.out.println(queryString);
 		List<String> vars = vtm.getVariables(VariableTypes.CONSTRUCT_TYPE);
-		assertTrue(vars.size() == 5);
+		assertTrue(vars.size() == 6);
 		assertTrue(vars.contains("e1"));
 		assertTrue(vars.contains("e2"));
 		assertTrue(vars.contains("bob"));
 		assertTrue(vars.contains("alice"));
 		assertTrue(vars.contains("tweetContent"));
+		assertTrue(vars.contains("id1"));
 
 		vars = vtm.getVariables(VariableTypes.REALTIME_TYPE);
 		assertTrue(vars.size() == 8);
@@ -97,7 +112,6 @@ public class DispatcherTest {
 
 
 		vars = vtm.getVariables(VariableTypes.HISTORIC_TYPE);
-		System.out.println(vars.size());
 		assertTrue(vars.size() == 5);
 		assertTrue(vars.contains("id3"));
 		assertTrue(vars.contains("e3"));
@@ -106,6 +120,7 @@ public class DispatcherTest {
 		assertTrue(vars.contains("tweetContent"));
 	}
 	
+	@Ignore //TODO update ele string.
 	@Test
 	public void testDispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
@@ -118,9 +133,9 @@ public class DispatcherTest {
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
 
 		// Test results.
-		String temperatureAstream = "PREFIX : <http://events.event-processing.org/types/> \nPREFIX xsd: <http://events.event-processing.org/types/> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?e2 ?temperature ?pub_date ?id2 ?e4 ?id4 \n WHERE { \nGRAPH ?id2\n  { ?e2 rdf:type :Temperature .\n    ?e2 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e2 :current ?temperature .\n    ?e2 :date ?pub_date\n  }\nGRAPH ?id4\n  { ?e4 rdf:type :Temperature .\n    ?e4 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e4 :current ?temperature\n  }} ";
+		String temperatureAstream = "PREFIX : <http://events.event-processing.org/types/> \nPREFIX xsd: <http://events.event-processing.org/types/> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?temperature \n WHERE { \nGRAPH ?id2\n  { ?e2 rdf:type :Temperature .\n    ?e2 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e2 :current ?temperature .\n    ?e2 :date ?pub_date\n  }\nGRAPH ?id4\n  { ?e4 rdf:type :Temperature .\n    ?e4 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e4 :current ?temperature\n  }} ";
 		String temperatureBstream = "PREFIX : <http://events.event-processing.org/types/> \nPREFIX xsd: <http://events.event-processing.org/types/> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?pub_date ?e3 ?id3 \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :Temperature .\n    ?e3 :stream <http://streams.event-processing.org/ids/TemperatureB#stream> .\n    ?e3 :date ?pub_date\n  }} ";
-		
+
 		//Test if generated select query is OK.
 		assertEquals(temperatureAstream, queries.get(0).getQuery());
 		assertEquals(temperatureBstream, queries.get(1).getQuery());
@@ -147,7 +162,7 @@ public class DispatcherTest {
 	
 	@Test
 	public void testQueryTemplateGenerator() throws IOException{
-		 QueryTemplateGenerator ab  =  new  QueryTemplateGenerator();
+		 QueryTemplateGenerator templateGenerator  =  new  QueryTemplateGenerator();
 		 
 		// Get query.
 		String queryString = BdplEleTest.getSparqlQuery("play-epsparql-clic2call-plus-tweet.eprq");
@@ -155,7 +170,98 @@ public class DispatcherTest {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
-		QueryTemplate qt = ab.createQueryTemplate(query);
+		QueryTemplate qt = templateGenerator.createQueryTemplate(query);
+	}
+	
+	@Test
+	public void generateBdplQuery() throws IOException, QueryDispatchException {
+		EleGenerator eleGenerator =  new EleGeneratorForConstructQuery();
+		String queryString = getSparqlQuery("play-epsparql-telco-recom-tweets-historic.eprq");
+		
+		// Parse query
+		Query q;
+		try {
+			q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
+		} catch (com.hp.hpl.jena.query.QueryException e) {
+			throw new QueryDispatchException(e.getMessage());
+		}
+
+		// Generate CEP-language
+		eleGenerator.setPatternId("patternId1");
+		eleGenerator.generateQuery(q);
+
+		// Add queryDetails
+		QueryDetails qd = new QueryDetails("patternId1");
+
+		// Set properties for windows in QueryDetails
+		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);
+		q.getWindow().accept(windowVisitor);
+
+		// Set stream ids in QueryDetails.
+		StreamIdCollector streamIdCollector = new StreamIdCollector();
+		streamIdCollector.getStreamIds(q, qd);
+		
+		// Set complex event type.
+		qd.setComplexType((new ComplexTypeFinder()).visit(q.getConstructTemplate()));
+
+		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
+		
+		BdplQuery bdpl = BdplQuery.builder()
+				.details(qd)
+				.ele(eleGenerator.getEle())
+				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
+				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
+				.bdpl(queryString)
+				.build();
+		
+		assertTrue("Historical query is not marked as query with shared Variables.", bdpl.getHistoricalQueries().get(0).hasSharedVariablesWithRealtimePart());
+		assertTrue(bdpl.getEleQuery().contains(",variabeValuesAdd(CEID1,'bob',Vbob)"));
+	}
+	
+	@Test
+	public void testMemberRepresentativCollector() throws IOException {
+		if(logger == null){
+			logger= LoggerFactory.getLogger(DispatcherTest.class);
+		}
+		
+		// Get query.
+		String queryString = BdplEleTest.getSparqlQuery("queries//bdpl-members-feature-given-event-id.eprq");
+		
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		
+		EventMembersFromStream v = new EventMembersFromStream();
+		Set<String> result = v.getMembersRepresentative(query);
+
+		assertEquals(3, result.size());
+		assertTrue(result.contains("Ve1"));
+		assertTrue(result.contains("<http://events.event-processing.org/types/se>"));
+		assertTrue(result.contains("<http://events.event-processing.org/types/st>"));
+
+	}
+	
+	@Test
+	public void testEventCounter() throws IOException {
+
+		String queryString = getSparqlQuery("queries/bdpl-members-feature.eprq");
+		Query query = null;
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		} catch (Exception e) {
+			System.out.println("Exception was thrown: " + e);
+		}
+
+		CountEventsVisitor v = new CountEventsVisitor();
+		
+		v.count(query.getEventQuery());
+		
+		assertEquals(2, (v.getNumberOfEvents()));
+	}
+	
+	public static String getSparqlQuery(String queryFile) throws IOException {
+		return IOUtils.toString(BdplEleTest.class.getClassLoader().getResourceAsStream(queryFile), StandardCharsets.UTF_8);
 	}
 
 }

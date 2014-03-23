@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
 
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
+import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.unquoteFromProlog;
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
 import java.util.ArrayList;
@@ -7,20 +9,23 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.BinOperatorVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResultVisitor;
@@ -45,16 +50,17 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	// Manages variables which are globally unique.
 	private UniqueNameManager uniqueNameManager;
 	// Returns one triple after the other.
-	private Iterator<Element> eventQueryIter;
-	// Return operators used in the query. E.g. SEQ, AND, OR ... In the order they are used in the query.
-	private Iterator<ElementEventBinOperator> binOperatorIter;
+	private Iterator<ElementEventGraph> eventQueryIter;
+	// Returns one operator after the other.
+	private Iterator<String> binOperatorIter;
 	// Detect the type of an event.
 	private EventTypeVisitor eventTypeVisitor;
 	//Visitors to generate code.
-	private BinOperatorVisitor binOperatorVisitor;
 	private FilterExpressionCodeGenerator filterExpressionVisitor;
 	private HavingVisitor havingVisitor;
 	private TriplestoreQueryVisitor triplestoreQueryVisitor;
+	private EqualizeEventIdVariableWithTriplestoreId eCcodeGeneratorVisitor;
+	private CountEventsVisitor eventCounter;
 	private VariableTypeManager nameManager;
 	
 	private List<String> rdfDbQueries; // Rdf db queries represents the semantic web part of a BDPL query. ETALIS calls this queries to check conditions for the current events.
@@ -66,30 +72,37 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 	@Override
 	public void generateQuery(Query inQuery) {
-		//Detect eventtypes
+		//Detect event types
 		//variableAgregatedType = new AgregatedVariableTypes().detectType(inQuery);
 
 		elePattern = "";
 		this.inputQuery = inQuery;
-		eventQueryIter = inQuery.getEventQuery().iterator();
-		binOperatorIter = inQuery.getEventBinOperator().iterator();
 		uniqueNameManager = getVarNameManager();
-		uniqueNameManager.newQuery(); // Rest uniqueNameManager.
+		
 		uniqueNameManager.setWindowTime(inQuery.getWindow().getValue());
+		
 		// Instantiate visitors.
+		EventPatternOperatorCollector eventPatternVisitor =  new EventPatternOperatorCollector();
 		eventTypeVisitor = new EventTypeVisitor();
 		triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager);
 		filterExpressionVisitor = new FilterExpressionCodeGenerator();
-		binOperatorVisitor =  new BinOperatorVisitor();
+		eCcodeGeneratorVisitor = new EqualizeEventIdVariableWithTriplestoreId(uniqueNameManager);
+		eventCounter =  new CountEventsVisitor();
 		havingVisitor =  new HavingVisitor();
 		
-		queryTemplate = new QueryTemplateImpl();
+		// Collect basic informations like number of events or variable types.
+		uniqueNameManager.newQuery(eventCounter.count(inQuery.getEventQuery()));
 		
-		// Collect basic informations like variable types.
+		queryTemplate = new QueryTemplateImpl();
 		UniqueNameManager.initVariableTypeManager(inQuery);
 		nameManager =  UniqueNameManager.getVariableTypeManage();
 		nameManager.collectVars();
 
+		// Collect event patterns and operators.
+		eventPatternVisitor.collectValues(inQuery.getEventQuery());
+		eventQueryIter = eventPatternVisitor.getEventPatterns().iterator();
+		binOperatorIter = eventPatternVisitor.getOperators().iterator();
+		
 		rdfDbQueries = new LinkedList<String>();
 		
 		// Start code generation.
@@ -103,8 +116,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		SimpleEventPattern();
 		
 		while(binOperatorIter.hasNext()){
-			binOperatorIter.next().visit(binOperatorVisitor);
-			elePattern += binOperatorVisitor.getBinOperator();
+			elePattern += binOperatorIter.next();
 			SimpleEventPattern();
 		}
 	}
@@ -114,7 +126,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
 		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
 		GenerateConstructResult();
-		SaveSharedVariableValues();
 		Having();
 		//PrintStatisticsData();
 		DecrementReferenceCounter();
@@ -172,12 +183,25 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 												}
 											}
 										}
+										constructResult += MemberEvents();
 										constructResult += SaveSharedVariableValues();
 				constructResult += ")";
 		constructResult += ")";
 		elePattern += constructResult.toString();
 	}
 
+	private String MemberEvents() {
+		String code = "";
+		String staticCode = ", generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members'";
+		
+		EventMembersFromStream members = new EventMembersFromStream();
+
+		for (String var : members.getMembersRepresentative(inputQuery)) {
+			code += staticCode + "," + var + ", " + uniqueNameManager.getCeid() + ")";
+		}
+		return code; 
+	}
+	
 	private boolean containsSharedVariablesTest(Triple triple){
 		boolean result = false;
 		if(triple.getSubject().isVariable()){
@@ -212,7 +236,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			}
 			
 			var= iter.next();
-			elePattern += "variabeValuesAdd(" + uniqueNameManager.getCeid() + ",'" + var + "'," + "V" + var + ")";
+			elePattern += "variabeValuesAdd(" + uniqueNameManager.getCeid() + "," + quoteForProlog(var) + "," + "V" + var + ")";
 			
 			if(iter.hasNext()){
 				elePattern += ",";
@@ -253,15 +277,20 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	private void AdditionalConditions(){
 		TriplestoreQuery();
+		EventIdVarIsSynonymousWithTriplestoreId();
 		ReferenceCounter();
 //		elePattern += ", ";
 //		PerformanceMeasurement();
-		// FIXME sobermeier: re-add these lines and test for PrologException on simple events
 		
 		if(!binOperatorIter.hasNext()){
 			elePattern += ",";
 			GenerateCEID();
 		}
+	}
+	
+	private void EventIdVarIsSynonymousWithTriplestoreId() {
+		currentElement.visit(eCcodeGeneratorVisitor);
+		elePattern += eCcodeGeneratorVisitor.getEqualizeCode();
 	}
 
 	private void ReferenceCounter(){
@@ -288,8 +317,11 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer dbQueryMethod = new StringBuffer();
 		String dbQueryDecl = RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString();
 		
-		// Combine decl and impl.
-		dbQueryMethod.append(dbQueryDecl + ":-(" + flatDbQueries + ")");
+		StringBuffer ignoreQueryIfEvntIdIsNotGiven = new StringBuffer();
+		ignoreQueryIfEvntIdIsNotGiven.append("var(" + uniqueNameManager.getTriplestoreVariable() + ") -> true; "); // This means that this event was not consumed (event was optional).
+		
+		// Combine decl and impel.
+		dbQueryMethod.append(dbQueryDecl + ":-(" + ignoreQueryIfEvntIdIsNotGiven + "(" + flatDbQueries + "))");
 		rdfDbQueries.add(dbQueryMethod.toString());
 		
 		//Generate call for query.
@@ -309,7 +341,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private String FilterExpression(Query q) {
 		String filterExp = "";
 		
-		for (Element currentElement : q.getEventQuery()) {
+		EventPatternOperatorCollector v = new EventPatternOperatorCollector();
+		v.collectValues(q.getEventQuery());
+		
+		for (Element currentElement : v.getEventPatterns()) {
 			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
 			if(filterExpressionVisitor.getEle().length() > 1) {
 				if(filterExp.length() > 1) {
@@ -338,7 +373,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	@Override
 	public void setPatternId(String patternId) {
-		this.patternId = "'" + patternId + "'";
+		this.patternId = quoteForProlog(patternId);
 	}
 
 	@Override
@@ -366,15 +401,16 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 	
 	/**
-	 * Generate rdf db method declerations.
+	 * Generate rdf db method decelerations.
 	 * E.g. dbQuery_abc_e1(Ve1).
 	 * @param q Parsed Jena query.
 	 * @return
 	 */
 	private List<String> AllRdfQueryDbMethodDecl(Query q, String patternId) {
 		List<String> dbDecl = new LinkedList<String>();
-		
-		for (Element currentElement : q.getEventQuery()) {
+		EventPatternOperatorCollector v = new EventPatternOperatorCollector();
+		v.collectValues(q.getEventQuery());
+		for (Element currentElement : v.getEventPatterns()) {
 			getVarNameManager().processNextEvent();
 			dbDecl.add(RdfQueryDbMethodDecl(currentElement, uniqueNameManager.getCurrentSimpleEventNumber()).toString());
 		}
@@ -390,7 +426,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		StringBuffer dbQueryDecl = new StringBuffer();
 
 		// Schema "dbQuery" + patternId + idForEvent
-		dbQueryDecl.append("'dbQuery_" + patternId.replace("'", "") + "_e" + l + "'(");
+		dbQueryDecl.append("'dbQuery_" + unquoteFromProlog(patternId) + "_e" + l + "'(");
 		dbQueryDecl.append(getVarNameManager().getTriplestoreVariable() + ", "); // Mapping
 																			     // between
 																			     // event

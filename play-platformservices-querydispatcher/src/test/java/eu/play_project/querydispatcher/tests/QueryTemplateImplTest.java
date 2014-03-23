@@ -83,7 +83,7 @@ public class QueryTemplateImplTest {
 		Query q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
 
 		// Generate CEP-language
-		eleGenerator.setPatternId("'" + Namespace.PATTERN.getUri() + "123" + "'"); // TODO sobermeier: Remove in the future, ETALIS will do this
+		eleGenerator.setPatternId(Namespace.PATTERN.getUri() + "123");
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails
@@ -96,9 +96,6 @@ public class QueryTemplateImplTest {
 				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
 				.constructTemplate(eleGenerator.getQueryTemplate())
 				.build();
-
-		System.out.println("FFF");
-		
 		
 	}
 	

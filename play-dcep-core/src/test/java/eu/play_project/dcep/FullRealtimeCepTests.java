@@ -165,7 +165,6 @@ public class FullRealtimeCepTests {
 		delay();
 		
 		//Contains coffee and tea.
-		System.out.println();
 		assertEquals(5, subscriber.getComplexEvents().size());
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getMatchObject().toString(), "\"Tea\"");
 		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(8).getMatchObject().toString(), "\"Coffee\"");
@@ -253,7 +252,6 @@ public class FullRealtimeCepTests {
 		// Wait
 		delay();
 
-		System.out.println(subscriber.getComplexEvents().get(0));
 		assertEquals(1, subscriber.getComplexEvents().size());
 		
 		assertTrue(subscriber.getComplexEvents().toString().contains("33"));
@@ -367,7 +365,6 @@ public class FullRealtimeCepTests {
 
 		// Get query.
 		queryString = getSparqlQueries("play-bdpl-crisis-02b-windintensity.eprq");
-		System.out.println(queryString);
 		
 		// Compile query
 		queryDispatchApi.registerQuery("queryId", queryString);
@@ -506,7 +503,6 @@ public class FullRealtimeCepTests {
 
 		// Get query.
 		queryString = getSparqlQueries("historical-query-no-shard-variables.eprq");
-		System.out.println(queryString);
 		
 		// Compile query
 		queryDispatchApi.registerQuery("queryId", queryString);

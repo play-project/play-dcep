@@ -27,6 +27,7 @@ import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
+import eu.play_project.dcep.distributedetalis.utils.PrologHelpers;
 import eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher;
 import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.BdplQuery;
@@ -154,7 +155,7 @@ public class ConnectToExistingInstance {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+		String patternId = PrologHelpers.quoteForProlog(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		//String patternId = "'p1'";
 		visitor1.setPatternId(patternId);
 

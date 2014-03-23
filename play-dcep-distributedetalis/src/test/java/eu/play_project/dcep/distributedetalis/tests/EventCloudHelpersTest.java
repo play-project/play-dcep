@@ -1,4 +1,4 @@
-package eu.play_project.dcep.distributedetalis.test;
+package eu.play_project.dcep.distributedetalis.tests;
 
 import static eu.play_project.play_commons.constants.Event.EVENT_ID_SUFFIX;
 import static eu.play_project.play_commons.constants.Namespace.EVENTS;
@@ -11,7 +11,6 @@ import java.util.List;
 import org.event_processing.events.types.Event;
 import org.junit.Test;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
-
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.vocabulary.RDF;

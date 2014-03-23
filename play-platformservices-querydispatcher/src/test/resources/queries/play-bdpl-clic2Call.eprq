@@ -1,0 +1,49 @@
+#
+# Title: Clic2Call plus a historic Tweet
+#
+
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uctelco: <http://events.event-processing.org/uc/telco/>
+PREFIX geo:    <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX sioc:   <http://rdfs.org/sioc/ns#>
+PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX :       <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+    :e rdf:type :UcTelcoClic2Call .
+    :e :stream <http://streams.event-processing.org/ids/TaxiUCClic2Call#stream>.
+    :e uctelco:callerPhoneNumber ?alice .
+    :e uctelco:calleePhoneNumber ?bob .
+    :e :message "The caller tried to reach the callee several times within 1 minute with no success." .
+    :e sioc:content ?tweetContent .
+	:e :members ?e1, ?e2.
+	:e :eventId ?id1
+}
+WHERE {
+    WINDOW {
+        EVENT ?id1 {
+            ?e1 rdf:type :UcTelcoCall .
+            ?e1 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
+            ?e1 uctelco:callerPhoneNumber ?alice .
+            ?e1 uctelco:calleePhoneNumber ?bob .
+            ?e1 uctelco:direction ?direction .
+            ?e1 :endTime ?firstEvent.
+            }
+        SEQ
+        EVENT ?id2 {
+            ?e2 rdf:type :UcTelcoCall .
+            ?e2 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
+            ?e2 uctelco:callerPhoneNumber ?alice .
+            ?e2 uctelco:calleePhoneNumber ?bob .
+            ?e2 uctelco:direction ?direction .
+            }
+    } ("PT1M"^^xsd:duration, sliding)
+    GRAPH ?id3 {
+        ?e3 rdf:type :TwitterEvent .
+        ?e3 :stream <http://streams.event-processing.org/ids/TwitterFeed#stream> .
+        ?e3 :endTime ?tweetTime .
+		?e3 :test ?firstEvent .
+        ?e3 sioc:content ?tweetContent
+        FILTER (?tweetTime > ?firstEvent)
+    }   
+}

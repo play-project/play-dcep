@@ -1,0 +1,14 @@
+# Wrong data type in FILTER @expectedException<wrong data type, string expected.>
+PREFIX : <http://play-project.eu/M12/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema>
+PREFIX rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+CONSTRUCT { 
+	:e rdf:type :FacebookComplexEvent
+}
+WHERE{
+	EVENT ?id1{ :source :is :myFackebookAccountID.
+				:e rdf:type :FacebookSimpleEvent.
+				?friend1 :talksAbout ?topic
+	}
+	FILTER (?topic = "Jeans"^^xsd:double)
+}

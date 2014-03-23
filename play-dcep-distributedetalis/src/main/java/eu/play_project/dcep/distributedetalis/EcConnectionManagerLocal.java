@@ -30,6 +30,11 @@ import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
 
+/**
+ * An offline connection manager e.g., to be used in Unit Tests.
+ * 
+ * @author Stefan Obermeier
+ */
 public class EcConnectionManagerLocal implements Serializable, EcConnectionManager {
 
 	private static final long serialVersionUID = 100L;

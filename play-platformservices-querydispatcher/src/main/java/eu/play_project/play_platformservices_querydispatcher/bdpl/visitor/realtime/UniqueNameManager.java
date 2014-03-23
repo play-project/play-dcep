@@ -68,16 +68,15 @@ public class UniqueNameManager {
 	}
 	
 	/**
-	 * Sometimes it is necessary to know all triplestore variables of one query.
+	 * Sometimes it is necessary to know all triple store variables of one query.
 	 * With this method the current state will be persisted.
-	 * Now it is possible to redrive all triplestore variables from this point with getAllTripleStoreVariablesOfThisQuery() .
+	 * Now it is possible to retrieve all triple store variables from this point with getAllTripleStoreVariablesOfThisQuery() .
 	 */
 
-	public void newQuery(){
+	public void newQuery(int numberOfEvents){
 		triplestoreVariableStart = triplestoreVariableEnd;
-		triplestoreVariableStart++;
-		triplestoreVariable = triplestoreVariableEnd;
-		triplestoreVariable++;
+		triplestoreVariable = triplestoreVariableStart;
+		triplestoreVariableEnd = triplestoreVariableEnd + numberOfEvents;
 	}
 	
 	/**
@@ -98,7 +97,7 @@ public class UniqueNameManager {
 	public long processNextEvent(){
 
 		if (++triplestoreVariable >  triplestoreVariableEnd) {
-			triplestoreVariableEnd = triplestoreVariable;
+			throw new RuntimeException("No event left. This query schould contains " + (triplestoreVariableEnd - triplestoreVariableStart));
 		}
 		return triplestoreVariable;
 	}

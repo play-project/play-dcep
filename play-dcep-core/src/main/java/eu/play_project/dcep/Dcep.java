@@ -195,7 +195,7 @@ Serializable {
 		String middleware = DcepConstants.getProperties().getProperty("dcep.middleware", "local");
 
 		if(middleware.equals("local")) {
-			configApi.setConfig(new DetalisConfigLocal("historical-data/clic2call-historical-data.trig"));
+			configApi.setConfig(new DetalisConfigLocal("historical-data/play-bdpl-telco-recom-tweets-historic-data.trig"));
 		}
 		else if(middleware.equals("eventcloud")) {
 			configApi.setConfig(new DetalisConfigNet());

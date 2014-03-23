@@ -1,0 +1,26 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uccrisis: <http://www.mines-albi.fr/nuclearcrisisevent/>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type uccrisis:AlertEvent .
+	:e :stream <http://streams.event-processing.org/ids/situationalAlertEvent#stream> .
+}
+WHERE {
+	EVENT ?id1 {
+		?e1 rdf:type uccrisis:MeasureEvent .
+		?e1 :stream <http://streams.event-processing.org/ids/situationalEvent#stream> .
+	}
+	SEQ
+	EVENT :se {
+		:se rdf:type uccrisis:MeasureEvent .
+		:se :stream <http://streams.event-processing.org/ids/situationalEvent#stream> .
+	}
+	SEQ
+	EVENT :st {
+		:st rdf:type uccrisis:MeasureEvent .
+		:st :stream <http://streams.event-processing.org/ids/situationalEvent#stream> .
+	}
+}

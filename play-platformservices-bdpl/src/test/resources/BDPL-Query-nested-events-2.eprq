@@ -1,0 +1,31 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uctelco: <http://events.event-processing.org/uc/telco/>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX esr:     <http://imu.ntua.gr/play/esr/mcm/2#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX user:    <http://graph.facebook.com/schema/user#>
+PREFIX sioc:    <http://rdfs.org/sioc/ns#>
+PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :NestedEventsExample .
+	:e :stream <http://streams.event-processing.org/ids/NestedEventsExample#stream> .
+} WHERE {
+	EVENT ?id3 {
+		?e3 rdf:type :MyGreenServicesSensors .
+		?e3 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
+	}	
+	SEQ
+	{
+		EVENT ?id1 {
+			?e1 rdf:type :UcTelcoCall .
+			?e1 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
+		}
+		OR
+		EVENT ?id2 {
+			?e2 rdf:type :MatlabTravelTime .
+			?e2 :stream <http://streams.event-processing.org/ids/MatlabTravelTime#stream> .
+		}
+	}
+}

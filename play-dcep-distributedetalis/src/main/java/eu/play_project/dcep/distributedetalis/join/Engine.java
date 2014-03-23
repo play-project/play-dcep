@@ -17,10 +17,11 @@ import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
 import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
+import eu.play_project.play_platformservices.api.VariableNames;
 
 /**
  * @author Ningyuan Pan
- *
+ * @author Roland Stühmer
  */
 public class Engine implements HistoricalDataEngine {
 
@@ -41,7 +42,7 @@ public class Engine implements HistoricalDataEngine {
 			VariableBindings variableBindings) {
 
 		Map<String, String> historicalQueries = new HashMap<String, String>();
-		Map<String, List<String>> variableNames = new HashMap<String, List<String>>();
+		Map<String, VariableNames> variableNames = new HashMap<String, VariableNames>();
 		for (HistoricalQuery historicalQuery : queries) {
 			historicalQueries.put(historicalQuery.getCloudId(), historicalQuery.getQuery());
 			variableNames.put(historicalQuery.getCloudId(), historicalQuery.getVariables());
@@ -50,7 +51,7 @@ public class Engine implements HistoricalDataEngine {
 		return this.get(historicalQueries, variableNames, variableBindings);
 	}
 
-	public HistoricalData get(Map<String, String> queries, Map<String, List<String>> variableNames, VariableBindings variableBindings){
+	public HistoricalData get(Map<String, String> queries, Map<String, VariableNames> variableNames, VariableBindings variableBindings){
 		HistoricalData ret = new HistoricalData();
 
 		// data structures used by core
@@ -63,11 +64,13 @@ public class Engine implements HistoricalDataEngine {
 			String query = queries.get(stream);
 			VariableBindings vb = new VariableBindings();
 
-			List<String> vars = variableNames.get(stream);
+			VariableNames vars = variableNames.get(stream);
 			for(String var : vars){
-				vb.put(var, variableBindings.get(var));
+				List<Object> binding = variableBindings.get(var);
+				if (binding != null && !binding.isEmpty()) {
+					vb.put(var, binding);
+				}
 			}
-
 			HistoricalQueryContainer hq = new HistoricalQueryContainer(query, vb);
 
 			if(!addResultRegistry(stream, hq.getQuery(), rrs, svs, variableNames)){
@@ -80,7 +83,7 @@ public class Engine implements HistoricalDataEngine {
 		return ret;
 	}
 
-	private boolean addResultRegistry(String stream, String hquery, List<SelectResults> rrs, Map<String, SelectVariable> svs, Map<String, List<String>> variableNames) {
+	private boolean addResultRegistry(String stream, String hquery, List<SelectResults> rrs, Map<String, SelectVariable> svs, Map<String, VariableNames> variableNames) {
 
 		SelectResults rr;
 		try {
@@ -93,7 +96,7 @@ public class Engine implements HistoricalDataEngine {
 		if(rr.getSize() == 0)
 			return false;
 		else{
-			List<String> vars = variableNames.get(stream);
+			VariableNames vars = variableNames.get(stream);
 			for(String var : vars){
 				SelectVariable sv = svs.get(var);
 				if(sv == null){
