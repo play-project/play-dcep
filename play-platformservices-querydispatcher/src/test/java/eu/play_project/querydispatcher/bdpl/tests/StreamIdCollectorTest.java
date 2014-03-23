@@ -48,7 +48,7 @@ public class StreamIdCollectorTest {
 	}
 	
 	@Test
-	public void testStreamIdCollectorHistoric() throws IOException {
+	public void testStreamIdCollectorHistoricFromStream() throws IOException {
 		
 		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/Temperature"}));
 		Set<String> expectedHistoricalStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/TemperatureA", "http://streams.event-processing.org/ids/TemperatureB"}));
@@ -77,5 +77,36 @@ public class StreamIdCollectorTest {
 		// Test historical streams
 		assertEquals(expectedHistoricalStreams, qd.getHistoricStreams());
 		
+	}
+	
+	@Test
+	public void testStreamIdCollectorPreferHistoric() throws IOException {
+		
+		Set<String> expectedInputStreams = new HashSet<String>(Arrays.asList(new String[] {"http://streams.event-processing.org/ids/situationalEvent"}));
+		Set<String> expectedHistoricalStreams = new HashSet<String>(Arrays.asList(new String[] {"http://4store.fzi.de", "http://4store.dbpedia.org"}));
+		String expectedOutputStream = "http://streams.event-processing.org/ids/situationalAlertEvent";
+		
+		// Get query.
+		String queryString = BdplEleTest.getSparqlQuery("queries/MultipleDestinationHistoric.eprq");
+		String queryId = "exampleQuery2";
+		System.out.println(queryString);
+		assertNotNull("Testing Query was not found on classpath", queryString);
+
+		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		QueryDetails qd = new QueryDetails();
+		qd.setQueryId(queryId);
+
+		StreamIdCollector streamIdCollector = new StreamIdCollector();
+		streamIdCollector.getStreamIds(q, qd);
+
+		// Test output stream
+		assertEquals(expectedOutputStream, qd.getOutputStream());
+		
+		// Test input streams
+		assertEquals(expectedInputStreams, qd.getInputStreams());
+
+		// Test historical streams
+		assertEquals(expectedHistoricalStreams, qd.getHistoricStreams());
 	}
 }
