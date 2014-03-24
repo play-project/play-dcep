@@ -34,10 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.platformservices.eventvalidation.InvalidEventException;
-import eu.play_project.platformservices.eventvalidation.Validator;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
+import eu.play_project.play_commons.eventtypes.eventvalidation.InvalidEventException;
+import eu.play_project.play_commons.eventtypes.eventvalidation.Validator;
 import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import eu.play_project.play_eventadapter.AbstractSenderRest;
 import eu.play_project.play_eventadapter.NoRdfEventException;

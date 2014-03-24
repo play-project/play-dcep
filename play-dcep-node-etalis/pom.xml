@@ -172,12 +172,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-platformservices-eventvalidation</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>

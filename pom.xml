@@ -28,7 +28,6 @@
 		<module>play-platformservices-bdpl-esper</module>
 		<module>play-platformservices-querydispatcher-etalis</module>
 		<module>play-platformservices-querydispatcher-esper</module>
-		<module>play-platformservices-eventvalidation</module>
 		<module>play-dcep-api</module>
 		<module>play-dcep-core</module>
 		<module>play-dcep-node-core</module>
