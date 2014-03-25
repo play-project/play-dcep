@@ -28,13 +28,11 @@
 		<module>play-platformservices-bdpl-esper</module>
 		<module>play-platformservices-querydispatcher-etalis</module>
 		<module>play-platformservices-querydispatcher-esper</module>
-		<module>play-platformservices-eventvalidation</module>
 		<module>play-dcep-api</module>
 		<module>play-dcep-core</module>
 		<module>play-dcep-node-core</module>
 		<module>play-dcep-node-esper</module>
 		<module>play-dcep-node-etalis</module>
-		<module>play-dcep-utils</module>
 		<module>play-dcep-distribution-etalis</module>
 		<module>play-dcep-distribution-esper</module>
 	</modules>
@@ -129,17 +127,18 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>	
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+						<showDeprecation>true</showDeprecation>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<showDeprecation>true</showDeprecation>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-doap-plugin</artifactId>
