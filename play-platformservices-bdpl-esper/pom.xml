@@ -26,6 +26,25 @@
 
 	<build>
 		<plugins>
+			
+			<!-- maven clean plugin : delete old jjtree files -->
+		  	<plugin>
+			    <artifactId>maven-clean-plugin</artifactId>
+			    <version>2.5</version>
+			    <configuration>
+			      <filesets>
+			        <fileset>
+			          <directory>${jjtree.output.path}</directory>
+			          <includes>
+			            <include>*.java</include>
+			          </includes>
+			          <followSymlinks>false</followSymlinks>
+			        </fileset>
+			      </filesets>
+			    </configuration>
+		  	</plugin>
+  			
+  			<!-- javacc plugin : create jjtree files -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>javacc-maven-plugin</artifactId>
@@ -35,6 +54,9 @@
 						<goals>
 							<goal>jjtree-javacc</goal>
 						</goals>
+						<configuration>
+							<interimDirectory>${project.build.directory}/generated-sources/javacc</interimDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -56,6 +78,41 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<!-- maven resources plugin -->
+		    <plugin>
+		        <artifactId>maven-resources-plugin</artifactId>
+		        <version>2.6</version>
+		        <executions>
+		          <execution>
+		            <id>copy-resources</id>
+		            <phase>process-resources</phase>
+		            <goals>
+		              <goal>copy-resources</goal>
+		            </goals>
+		            <configuration>
+		              <encoding>UTF-8</encoding>
+		              <overwrite>true</overwrite>
+		              <outputDirectory>${jjtree.output.path}</outputDirectory>
+		              <resources>          
+		                <resource>
+		                  <directory>${jjtree.sparql.ast.path}</directory>
+		                  <includes>
+		          			<include>*.java</include>
+		        		   </includes>
+		                </resource>
+		                <resource>
+		                  <directory>${jjtree.bdpl.ast.path}</directory>
+		                  <includes>
+		          			<include>*.java</include>
+		        		   </includes>
+		                </resource>
+		              </resources>              
+		            </configuration>            
+		          </execution>
+		        </executions>
+		      </plugin>
+      
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -119,4 +176,9 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<properties>
+		<jjtree.output.path>${project.build.directory}/generated-sources/javacc/org/openrdf/query/parser/sparql/ast</jjtree.output.path>
+		<jjtree.sparql.ast.path>${project.basedir}/src/main/resources/org/openrdf/query/parser/sparql/ast</jjtree.sparql.ast.path>
+		<jjtree.bdpl.ast.path>${project.basedir}/src/main/resources/eu/play_platform/platformservices/bdpl/parser/ast</jjtree.bdpl.ast.path>
+	</properties>
 </project>

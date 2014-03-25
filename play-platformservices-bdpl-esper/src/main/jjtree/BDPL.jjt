@@ -33,7 +33,7 @@ options {
 
 PARSER_BEGIN(SyntaxTreeBuilder)
 
-package ningyuan.pan.query.parser.bdpl.ast;
+package org.openrdf.query.parser.sparql.ast;
 
 import java.io.StringReader;
 
