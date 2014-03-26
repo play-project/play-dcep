@@ -156,6 +156,28 @@ public class DispatcherTest {
 		System.out.println(queries.get(0).getQuery());
 		try {
 			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
+			QueryFactory.create(queries.get(1).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+
+	@Test
+	public void testQueryDispatchHistoric() throws IOException {
+		// Get query.
+		String queryString = BdplEleTest.getSparqlQuery("queries/1-BidPhase_gps-region-detection.eprq");
+		System.out.println(queryString);
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		// Dispatch query
+		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
+
+		// Check if result is a valid SPARQL string.
+		System.out.println(queries.get(0).getQuery());
+		try {
+			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
 			// QueryFactory.create(queries.get(1).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
 		} catch (Exception e) {
 			fail();

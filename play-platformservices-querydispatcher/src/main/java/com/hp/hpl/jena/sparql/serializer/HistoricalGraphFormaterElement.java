@@ -83,14 +83,6 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 		DetectCloudId.setCloudId(el.getServiceNode().toString());
 
         visitNodePattern("", null, el.getElement()) ;
-    	System.out.println("\n\n\n ----------------------------------------------------------------- \n " + out.toString());
-		// Save cloud ID and the corresponding query. Queries with the same cloud id are concatenated.
-		if (historicalCloudQueries.containsKey(DetectCloudId.getCloudId())) {
-			historicalCloudQueries.put(DetectCloudId.getCloudId(),
-			historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());
-		} else {
-			historicalCloudQueries.put(DetectCloudId.getCloudId(), out.toString());
-		}
 
 		// Continue with old buffer.
 		super.out = original;
