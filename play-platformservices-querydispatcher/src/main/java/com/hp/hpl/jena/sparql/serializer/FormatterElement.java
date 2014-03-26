@@ -392,7 +392,7 @@ public class FormatterElement extends FormatterBase
         int len = label.length() ;
         out.print(label) ;
         out.print(" ") ;
-        String nodeStr = ( node == null ) ? "*" : slotToString(node) ;
+        String nodeStr = ( node == null ) ? "" : slotToString(node) ;
         out.print(nodeStr) ;
         len += nodeStr.length() ;
         if ( GRAPH_FIXED_INDENT )

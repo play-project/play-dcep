@@ -85,7 +85,7 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 			InputStream in = this.getClass().getClassLoader()
 					.getResourceAsStream(historicDataFileName);
 			if (in == null) {
-				throw new IllegalArgumentException("File: " + inputRdfModelFileName + " not found");
+				throw new IllegalArgumentException("File: " + historicDataFileName + " not found");
 			}
 
 			// Read data from file.

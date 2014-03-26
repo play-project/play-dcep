@@ -108,5 +108,7 @@ public class StreamIdCollectorTest {
 
 		// Test historical streams
 		assertEquals(expectedHistoricalStreams, qd.getHistoricStreams());
+		
+		System.out.println(q);
 	}
 }

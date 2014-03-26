@@ -6,8 +6,11 @@ import java.util.Map;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node_ANY;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
@@ -38,14 +41,14 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 		visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement());
 
 		// Save cloud ID and the corresponding query.
-		if( DetectCloudId.getState() == State.FOUND ) {
+		//if( DetectCloudId.getState() == State.FOUND ) {
 			if (historicalCloudQueries.containsKey(DetectCloudId.getCloudId())) {
 				historicalCloudQueries.put(DetectCloudId.getCloudId(),
 				historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());
 			} else {
 				historicalCloudQueries.put(DetectCloudId.getCloudId(), out.toString());
 			}
-		}
+		//}
 
 		// Continue with old buffer.
 		super.out = original;
@@ -78,11 +81,10 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 		DetectCloudId.resetBuffer();
 		DetectCloudId.startServiceGraph();
 		DetectCloudId.setCloudId(el.getServiceNode().toString());
-		
+
         visitNodePattern("", null, el.getElement()) ;
-
-		// Save cloud ID and the corresponding query.
-
+    	System.out.println("\n\n\n ----------------------------------------------------------------- \n " + out.toString());
+		// Save cloud ID and the corresponding query. Queries with the same cloud id are concatenated.
 		if (historicalCloudQueries.containsKey(DetectCloudId.getCloudId())) {
 			historicalCloudQueries.put(DetectCloudId.getCloudId(),
 			historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());

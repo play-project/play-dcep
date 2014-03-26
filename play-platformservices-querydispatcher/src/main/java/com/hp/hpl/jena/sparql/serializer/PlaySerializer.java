@@ -56,11 +56,16 @@ public class PlaySerializer extends Serializer{
 			// Add prefix
 			selectString = e.getPrefixNames() + "\n";
 			selectString += "SELECT DISTINCT ";
+			
 			// Variables in current query.
 			for (String var : vars) {
 				selectString += " ?" + var;
 				//Set variables.
 				hq.getVariables().add(var);
+			}
+			
+			if(vars.size() == 0) {
+				selectString += "*";
 			}
 			
 			// Set values.
