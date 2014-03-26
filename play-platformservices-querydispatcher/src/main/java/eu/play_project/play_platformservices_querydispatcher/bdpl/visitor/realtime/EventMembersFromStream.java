@@ -1,29 +1,21 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_URI;
-import com.hp.hpl.jena.graph.Node_Variable;
-import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
-
-import eu.play_project.play_commons.constants.Stream;
-import eu.play_project.play_platformservices.api.QueryDetails;
 
 
 /**

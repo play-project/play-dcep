@@ -149,6 +149,7 @@ public class DEtalisTests implements Serializable {
 				.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
 
 		configApi = ((eu.play_project.dcep.distributedetalis.api.ConfigApi) root.getFcInterface(ConfigApi.class.getSimpleName()));
+
 		configApi.setConfig(new DetalisConfigLocal("play-epsparql-clic2call-plus-tweet-historical-data.trig"));
 
 		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root.getFcInterface(DcepManagmentApi.class.getSimpleName()));

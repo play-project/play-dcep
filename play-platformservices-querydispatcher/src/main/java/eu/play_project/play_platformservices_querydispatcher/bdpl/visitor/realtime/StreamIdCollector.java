@@ -60,7 +60,7 @@ public class StreamIdCollector {
 			triple = iter.next();
 			if ((Boolean)triple.getPredicate().visitWith(v)) {
 				if (triple.getObject().isURI()) {
-					String streamId = (String) triple.getObject().toString();
+					String streamId = triple.getObject().toString();
 					return Stream.toTopicUri(streamId);
 				} else {
 					throw new RuntimeException("Output stream Id is not a URI or Literal");
@@ -134,7 +134,7 @@ public class StreamIdCollector {
 				// Check if type is ok
 				if ((Boolean)tmpTriplePath.getPredicate().visitWith(v)) {
 					if (tmpTriplePath.getObject().isURI()) {
-						streamURIs.add((String) tmpTriplePath.getObject().toString());
+						streamURIs.add(tmpTriplePath.getObject().toString());
 						break;
 					} else {
 						throw new RuntimeException("Input stream Id is not a URI or Literal");

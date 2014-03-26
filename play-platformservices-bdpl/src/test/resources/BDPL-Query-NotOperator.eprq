@@ -1,0 +1,30 @@
+#
+# Title: "Fast Flower Delivery" 1:Assignment phase. Send alert if no bidder exists.
+# 
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :NoBiddersAlert .
+	:e :stream <http://streams.event-processing.org/ids/fds#stream> .
+	:e :requestId ?requestId .
+	}
+WHERE {
+	NOT(
+		EVENT ?id1 {
+			?e1 rdf:type :BidRequest .
+			?e1 :stream <http://streams.event-processing.org/ids/fds#stream> .
+			?e1 :driver ?drivers .
+		},
+		EVENT ?id2 {
+			?e2 rdf:type :DeliveryBid .
+			?e2 :stream <http://streams.event-processing.org/ids/fds#stream> .
+			?e2 :requestId ?requestId . 
+			?e2 :store	?store . 
+			?e2 :driver ?bider .
+			?e2 :committedPickupTime ?time .
+		},
+		("PT2M"^^xsd:duration)
+	)
+}

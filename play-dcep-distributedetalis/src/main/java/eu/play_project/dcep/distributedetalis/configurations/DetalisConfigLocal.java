@@ -3,6 +3,8 @@ package eu.play_project.dcep.distributedetalis.configurations;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import jpl.PrologException;
 
@@ -28,15 +30,25 @@ import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 public class DetalisConfigLocal implements Configuration, Serializable{
 
 	private static final long serialVersionUID = 100L;
-	private String inputRdfModelFile;
+	private List<String> inputRdfModelFile;
 	private Logger logger;
 	private MeasurementUnit measurementUnit;
 	private LoadPrologCode cl;
 	
 	public  DetalisConfigLocal(){}
 	
-	public DetalisConfigLocal(String inputRdfModelFile){
+	public DetalisConfigLocal(List<String> inputRdfModelFile){
 		this.inputRdfModelFile = inputRdfModelFile;
+		
+		logger = LoggerFactory.getLogger(this.getClass());
+		logger.info("Configuring DistributedEtalis using {}", this.getClass().getSimpleName());
+		
+		cl = new LoadPrologCode();
+	}
+	
+	public DetalisConfigLocal(String inputRdfModelFile){
+		this.inputRdfModelFile = new LinkedList<String>();
+		this.inputRdfModelFile.add(inputRdfModelFile);
 		
 		logger = LoggerFactory.getLogger(this.getClass());
 		logger.info("Configuring DistributedEtalis using {}", this.getClass().getSimpleName());
