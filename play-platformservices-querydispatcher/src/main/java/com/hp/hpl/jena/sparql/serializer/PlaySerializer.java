@@ -26,6 +26,7 @@ public class PlaySerializer extends Serializer{
     public static List<HistoricalQuery> serializeToMultipleSelectQueries(Query query){
         // For the query pattern
         SerializationContext cxt1 = new SerializationContext(query, new NodeToLabelMapBNode("b", false) ) ;
+        
         // For the construct pattern
         SerializationContext cxt2 = new SerializationContext(query, new NodeToLabelMapBNode("c", false)  ) ;
         IndentedLineBuffer writer = new IndentedLineBuffer() ;
@@ -35,7 +36,7 @@ public class PlaySerializer extends Serializer{
         serializeARQ(query, writer,
                      e,
                      new FmtExprSPARQL(writer, cxt1),
-                     new FmtTemplate(writer, cxt2)) ;
+                     new FmtTemplate(writer, cxt2));
 
         List<HistoricalQuery> result = new LinkedList<HistoricalQuery>();
         HistoricalQuery hq;
@@ -63,7 +64,7 @@ public class PlaySerializer extends Serializer{
 			}
 			
 			// Set values.
-			hq.setQuery(selectString +" \n WHERE { \n" + queries.get(key) + "} ");
+			hq.setQuery(selectString +" \n WHERE { \n  " + queries.get(key) + "\n } ");
 			hq.setCloudId(key);
 			
 			if(vars.size() > 0) {
