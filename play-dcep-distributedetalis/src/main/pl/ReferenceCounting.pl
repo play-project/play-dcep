@@ -47,7 +47,7 @@ collectGarbage(ID) :-
 	 true
 ).
 
-%Delte unused triples.
+%Delete unused triples.
 %Delete all events older than value of $Delay. If they are not in use.
 collectGarbage :- 
 (

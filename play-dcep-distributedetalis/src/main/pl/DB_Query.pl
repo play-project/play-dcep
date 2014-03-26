@@ -21,13 +21,3 @@ solutionExists(Class, EventId) :-
 ).
 
 
-% Einfach geschaltelte Schleife.
-
-%rdf_assert(a1, b1, c1, e1).
-%rdf_assert(a2, b1, c1, e1).
-%rdf_assert(a3, b2, c1, e1).
-%rdf_assert(a4, b3, c1, e1).
-
-f6:-(\+forall(rdf(A, B, c1, e1), (\+((rdf(A, B, c1, e1), rdf(A,  b1, c1, e1)))))). % Result exits
-f7:-(\+forall(rdf(A, B, c1, e1), (\+((rdf(A, B, c1, e1), rdf(a5, b1, c1, e1)))))). % No positive result.
-

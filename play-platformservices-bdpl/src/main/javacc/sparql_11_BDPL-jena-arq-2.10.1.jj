@@ -1749,7 +1749,7 @@ TOKEN [IGNORE_CASE] :
 | < SHA512: "SHA512" >
 | < TRUE: "true" >
 | < FALSE: "false" >
-// Stefan new tokens for PLAY
+// BDPL tokens.
 | < EVENT : "event" >
 | < SEQ : ("seq"){1} >
 | < OR : ("or"){1} >

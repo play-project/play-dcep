@@ -1,7 +1,9 @@
 package eu.play_project.dcep;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.etsi.uri.gcm.util.GCM;
@@ -195,7 +197,12 @@ Serializable {
 		String middleware = DcepConstants.getProperties().getProperty("dcep.middleware", "local");
 
 		if(middleware.equals("local")) {
-			configApi.setConfig(new DetalisConfigLocal(DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig")));
+			//Read historic data filenames.
+			List<String> historicDataFileNames = new ArrayList<String>();
+			for (String historicDataFileName : DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig").split(",")) {
+				historicDataFileNames.add(historicDataFileName.trim());
+			}
+			configApi.setConfig(new DetalisConfigLocal(historicDataFileNames));
 		}
 		else if(middleware.equals("eventcloud")) {
 			configApi.setConfig(new DetalisConfigNet());
