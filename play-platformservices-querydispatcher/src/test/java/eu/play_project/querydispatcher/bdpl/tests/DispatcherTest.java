@@ -12,12 +12,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -175,10 +173,8 @@ public class DispatcherTest {
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
 
 		// Check if result is a valid SPARQL string.
-		System.out.println(queries.get(0).getQuery());
 		try {
 			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
-			// QueryFactory.create(queries.get(1).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
 		} catch (Exception e) {
 			fail();
 		}
@@ -191,8 +187,6 @@ public class DispatcherTest {
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		
-		System.out.println(query);
 		
 		StreamIdCollector streamIdCollector = new StreamIdCollector ();
 		
@@ -214,8 +208,6 @@ public class DispatcherTest {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
 		QueryTemplate qt = templateGenerator.createQueryTemplate(query);
-		
-		
 	}
 	
 	@Test

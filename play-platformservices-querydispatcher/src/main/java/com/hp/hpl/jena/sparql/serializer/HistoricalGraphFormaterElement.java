@@ -6,17 +6,13 @@ import java.util.Map;
 import org.apache.jena.atlas.io.IndentedLineBuffer;
 import org.apache.jena.atlas.io.IndentedWriter;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Node_ANY;
 import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
-import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
 
 import eu.play_project.play_platformservices_querydispatcher.historicalQuery.DetectCloudId;
-import eu.play_project.play_platformservices_querydispatcher.historicalQuery.DetectCloudId.State;
 
 public class HistoricalGraphFormaterElement extends FormatterElement {
 
