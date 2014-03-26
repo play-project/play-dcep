@@ -19,19 +19,14 @@ Patterns.Collection = Backbone.Collection.extend({
 });
  
 Patterns.Views = {};
- 
-Patterns.Views.Edit = Backbone.View.extend({
-    change: function () {
-        this.model.set({
-            id: $(this.el).children('input').val()
-        });
-        this.model.save();
-    },
+
+Patterns.Views.Item = Backbone.View.extend({
+
     destroy: function () {
         var el = this.el;
         this.model.destroy({
             success: function () {
-                $(el).remove();
+                $el.remove();
             }
         });
     },
@@ -39,20 +34,24 @@ Patterns.Views.Edit = Backbone.View.extend({
         'click .deletePattern': 'destroy'
     },
     initialize: function () {
-        _(this).bindAll('change', 'destroy', 'render');
+        _(this).bindAll('destroy', 'render');
     },
     render: function () {
-        $('#pattern-template').tmpl(this.model.toJSON()).appendTo(this.el);
+        $('#pattern-template').tmpl(this.model.toJSON()).appendTo(this.$el);
         this.delegateEvents();
     }
 });
  
 Patterns.Views.List = Backbone.View.extend({
+	
+	id: "patterns",
+	 
     append: function (model) {
-        var view = new Patterns.Views.Edit({
-                model: model,
-                el: $('#patterns')
-            });
+        var div = $('<div>').appendTo('#patterns'),
+        view = new Patterns.Views.Item({
+            model: model,
+            el: div[0]
+        });
         view.render(); 
     },
     initialize: function () {
@@ -67,7 +66,7 @@ Patterns.Views.List = Backbone.View.extend({
         }, this);
     }
 });
- 
+
 $(function () {
     var collection = new Patterns.Collection(),
         view = new Patterns.Views.List({
@@ -115,9 +114,7 @@ $(function () {
 			<div class="panel panel-primary">
 			    <div class="panel-heading" class="accordion-toggle" data-toggle="collapse" data-parent="#new-pattern" href="#collapse_new-pattern">
 					<span class="panel-title">
-			    		<a class="accordion-toggle" data-toggle="collapse" data-parent="#patterns" href="#collapse_new-pattern">
-							Deploy a new pattern
-						</a>
+						Deploy a new pattern
 					</span>
 					<button class="btn btn-success btn-xs" type="submit">New</button>
 			    </div>
@@ -144,9 +141,7 @@ $(function () {
 <div class="panel panel-default">
     <div class="panel-heading" class="accordion-toggle" data-toggle="collapse" data-parent="#patterns" href="#collapse_${id}">
 		<span class="panel-title">
-    		<a class="accordion-toggle" data-toggle="collapse" data-parent="#patterns" href="#collapse_${id}">
-				Pattern: ${id}
-			</a>
+			Pattern: ${id}
 		</span>
 		<button class="btn btn-danger btn-xs deletePattern" type="submit">Delete</button>
     </div>
@@ -154,8 +149,11 @@ $(function () {
   	 	<div class="panel-body">
 			<pre class="pre-scrollable">${content}</pre>
 		</div>
+		<!--
 		<div class="panel-footer">
+			<span class="text-muted small">URL: ${url()}</span>
 		</div>
+		-->
 	</div>
 </div>
 </script>
