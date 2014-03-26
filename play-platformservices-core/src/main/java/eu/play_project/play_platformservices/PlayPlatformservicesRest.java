@@ -122,7 +122,7 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	}
 	
 	/**
-	 * A setter (only evailable in REST service not SOAP
+	 * A setter only available in REST service (not SOAP
 	 * {@linkplain PlayPlatformservices}) to add an anonymous query without ID.
 	 * Creates a new random {@linkplain UUID} for the child-resource (new query)
 	 * and creates the resource.
@@ -136,6 +136,25 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 		String queryId = this.playPlatformservices.registerQuery(UUID.randomUUID().toString(), queryString);
 		URI uri = uriInfo.getAbsolutePathBuilder().path(queryId).build();
 		return Response.created(uri).entity(queryId).build();
+	}
+	
+	/**
+	 * A setter only available in REST service (not SOAP
+	 * {@linkplain PlayPlatformservices}) to add an anonymous query without ID.
+	 * Creates a new random {@linkplain UUID} for the child-resource (new query)
+	 * and creates the resource.
+	 * 
+	 * @return {@linkplain Status#CREATED} including the newly created
+	 *         {@linkplain HttpHeaders.LOCATION} header.
+	 */
+	@POST
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response registerQuery(Query query)
+			throws QueryDispatchException {
+		String queryId = this.playPlatformservices.registerQuery(UUID.randomUUID().toString(), query.content);
+		query.id = queryId;
+		URI uri = uriInfo.getAbsolutePathBuilder().path(queryId).build();
+		return Response.created(uri).entity(query).build();
 	}
 	
 	@POST
