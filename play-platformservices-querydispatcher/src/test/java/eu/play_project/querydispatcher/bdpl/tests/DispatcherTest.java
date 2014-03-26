@@ -2,6 +2,7 @@ package eu.play_project.querydispatcher.bdpl.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -11,12 +12,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
@@ -120,25 +119,65 @@ public class DispatcherTest {
 		assertTrue(vars.contains("tweetContent"));
 	}
 	
-	@Ignore //TODO update ele string.
 	@Test
 	public void testDispatchQueryHistoricalMultipleClouds() throws IOException {
 		// Get query.
 		String queryString = BdplEleTest.getSparqlQuery("queries/BDPL-Query-Realtime-Historical-multiple-Clouds.eprq");
-
+		System.out.println(queryString);
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		// Dispatch query
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
 
-		// Test results.
-		String temperatureAstream = "PREFIX : <http://events.event-processing.org/types/> \nPREFIX xsd: <http://events.event-processing.org/types/> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?temperature \n WHERE { \nGRAPH ?id2\n  { ?e2 rdf:type :Temperature .\n    ?e2 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e2 :current ?temperature .\n    ?e2 :date ?pub_date\n  }\nGRAPH ?id4\n  { ?e4 rdf:type :Temperature .\n    ?e4 :stream <http://streams.event-processing.org/ids/TemperatureA#stream> .\n    ?e4 :current ?temperature\n  }} ";
-		String temperatureBstream = "PREFIX : <http://events.event-processing.org/types/> \nPREFIX xsd: <http://events.event-processing.org/types/> \nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n\nSELECT DISTINCT  ?pub_date ?e3 ?id3 \n WHERE { \nGRAPH ?id3\n  { ?e3 rdf:type :Temperature .\n    ?e3 :stream <http://streams.event-processing.org/ids/TemperatureB#stream> .\n    ?e3 :date ?pub_date\n  }} ";
+		// Check if result is a valid SPARQL string.
+		try {
+			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
+			QueryFactory.create(queries.get(1).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void testQueryDispatchHistoricToken() throws IOException {
+		// Get query.
+		String queryString = BdplEleTest.getSparqlQuery("queries/MultipleDestinationHistoric.eprq");
+		System.out.println(queryString);
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		//Test if generated select query is OK.
-		assertEquals(temperatureAstream, queries.get(0).getQuery());
-		assertEquals(temperatureBstream, queries.get(1).getQuery());
+		// Dispatch query
+		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
+
+		// Check if result is a valid SPARQL string.
+		System.out.println(queries.get(0).getQuery());
+		try {
+			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
+			QueryFactory.create(queries.get(1).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+
+	@Test
+	public void testQueryDispatchHistoric() throws IOException {
+		// Get query.
+		String queryString = BdplEleTest.getSparqlQuery("queries/1-BidPhase_gps-region-detection.eprq");
+		System.out.println(queryString);
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		// Dispatch query
+		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
+
+		// Check if result is a valid SPARQL string.
+		try {
+			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
+		} catch (Exception e) {
+			fail();
+		}
 	}
 	
 	@Test
@@ -148,8 +187,6 @@ public class DispatcherTest {
 		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-		
-		System.out.println(query);
 		
 		StreamIdCollector streamIdCollector = new StreamIdCollector ();
 		

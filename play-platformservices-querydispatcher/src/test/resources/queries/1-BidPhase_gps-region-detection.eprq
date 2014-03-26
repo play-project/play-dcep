@@ -1,0 +1,35 @@
+#
+# Title: "Fast Flower Delivery" 1:Bid Phase. Find related quarter to given GPS position.
+# 
+# 
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX dbo: 	<http://dbpedia.org/ontology/>
+PREFIX dbp:		<http://dbpedia.org/property/>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :DriverLocation.
+	:e :stream <http://streams.event-processing.org/ids/locationChannel#stream> .
+	:e :driver ?name .
+	:e :location ?quarter
+	}
+WHERE {
+	EVENT ?id1 {
+		?e1 rdf:type :GPSLocation.
+		?e1 :stream <http://streams.event-processing.org/ids/locationChannel#stream>.
+		?e1 :driver  ?name.
+		?e1	geo:lat ?latitude.
+		?e1	geo:long ?longitude.
+		}
+	HISTORIC <http://app.event-processing.org/4store/test#stream> {
+		GRAPH ?id2 {
+			?quarter dbp:type "Quarter"@en.
+			?quarter dbo:city <http://dbpedia.org/resource/Berlin>.
+			?quarter geo:lat ?lat .
+			?quarter geo:long ?long .
+			FILTER (?long > ?longitude - 0.1 && ?long < ?longitude + 0.1 && ?lat  > ?latitude  - 0.1 && ?lat  < ?latitude  + 0.1) 
+			}
+	}
+}

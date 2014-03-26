@@ -3,6 +3,8 @@ package eu.play_project.dcep;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -57,7 +59,10 @@ public class HistoricDataTest {
 		variableBindings.put("id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI)}));
 
 		//Get historical data to the given binding.
-		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
+		List<String> hdateFileName = new LinkedList<String>();
+		hdateFileName.add("historical-data/play-bdpl-personalmonitoring-historical-data.trig");
+		
+		historicData = new Engine(new EcConnectionManagerLocal(hdateFileName));
 		values = historicData.get(bdpl.getHistoricalQueries(), variableBindings);
 		
 		for (String varName : values.keySet()) {
@@ -75,7 +80,9 @@ public class HistoricDataTest {
 		variableBindings.put("id2", Arrays.asList(new Object[] {NodeFactory.createURI(TEST_URI + "error")}));
 
 		//Get historical data to the given binding.
-		historicData = new Engine(new EcConnectionManagerLocal("historical-data/play-bdpl-personalmonitoring-historical-data.trig"));
+		List<String> hdateFileName2 = new LinkedList<String>();
+		hdateFileName2.add("historical-data/play-bdpl-personalmonitoring-historical-data.trig");
+		historicData = new Engine(new EcConnectionManagerLocal(hdateFileName2));
 		values = historicData.get(bdpl.getHistoricalQueries(), variableBindings);
 		
 		for (String varName : values.keySet()) {

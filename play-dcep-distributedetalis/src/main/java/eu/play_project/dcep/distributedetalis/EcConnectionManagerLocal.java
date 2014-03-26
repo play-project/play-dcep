@@ -5,6 +5,8 @@ import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_EXIT;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.ontoware.rdf2go.exception.ModelRuntimeException;
 import org.ontoware.rdf2go.exception.SyntaxNotSupportedException;
@@ -39,10 +41,17 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 
 	private static final long serialVersionUID = 100L;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerLocal.class);
-	private String inputRdfModelFileName;
+	private List<String> inputRdfModelFileName;
 
-	public EcConnectionManagerLocal(String inputRdfModelFileName) {
+	public EcConnectionManagerLocal(List<String> inputRdfModelFileName) {
 		this.inputRdfModelFileName = inputRdfModelFileName;
+		logger.info("Initialising {}.", this.getClass().getSimpleName());
+	}
+	
+	public EcConnectionManagerLocal(String inputRdfModelFileName) {
+		this.inputRdfModelFileName = new LinkedList<String>();
+		this.inputRdfModelFileName.add(inputRdfModelFileName);
+		
 		logger.info("Initialising {}.", this.getClass().getSimpleName());
 	}
 
@@ -72,25 +81,27 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 			throw new RuntimeException("No data in jena model.");
 		}
 
-		InputStream in = this.getClass().getClassLoader()
-				.getResourceAsStream(inputRdfModelFileName);
-		if (in == null) {
-			throw new IllegalArgumentException("File: " + inputRdfModelFileName + " not found");
-		}
+		for (String historicDataFileName: inputRdfModelFileName) {
+			InputStream in = this.getClass().getClassLoader()
+					.getResourceAsStream(historicDataFileName);
+			if (in == null) {
+				throw new IllegalArgumentException("File: " + historicDataFileName + " not found");
+			}
 
-		// Read data from file.
-		try {
-			logger.debug("Read historical data from file: {}", inputRdfModelFileName);
-			rdf.readFrom(in, Syntax.Trig);
-		} catch (SyntaxNotSupportedException e) {
-			logger.error("Syntax {} is not supported.", Syntax.Trig);
-			e.printStackTrace();
-		} catch (ModelRuntimeException e) {
-			logger.error("ModelRuntimeException: {}", e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			logger.error("IO-Exception: {}", e.getMessage());
-			e.printStackTrace();
+			// Read data from file.
+			try {
+				logger.debug("Read historical data from file: {}", inputRdfModelFileName);
+				rdf.readFrom(in, Syntax.Turtle);
+			} catch (SyntaxNotSupportedException e) {
+				logger.error("Syntax {} is not supported.", Syntax.Turtle);
+				e.printStackTrace();
+			} catch (ModelRuntimeException e) {
+				logger.error("ModelRuntimeException: {}", e.getMessage());
+				e.printStackTrace();
+			} catch (IOException e) {
+				logger.error("IO-Exception: {}", e.getMessage());
+				e.printStackTrace();
+			}
 		}
 
 		// Query data from model
@@ -123,7 +134,7 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 		throw new UnsupportedOperationException("not implemented");
 	}
 
-	public void setInputRdfModelFileName(String inputRdfModelFile) {
+	public void setInputRdfModelFileName(List<String> inputRdfModelFile) {
 		this.inputRdfModelFileName = inputRdfModelFile;
 	}
 
