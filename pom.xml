@@ -58,7 +58,7 @@
 
 	<properties>
 		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
-		<jetty.version>7.5.4.v20111024</jetty.version>
+		<jetty.version>7.6.13.v20130916</jetty.version>
 		<eclipse.codeStyleBaseUrl>https://raw.github.com/play-project/play-dcep/develop/src/site/resources</eclipse.codeStyleBaseUrl>
 		<play.eventadapter.version>1.0-SNAPSHOT</play.eventadapter.version>
 		<sesame.version>2.7.9</sesame.version>

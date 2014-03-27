@@ -10,6 +10,7 @@ import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
+import com.hp.hpl.jena.sparql.syntax.ElementService;
 
 import eu.play_project.play_platformservices_querydispatcher.historicalQuery.DetectCloudId;
 
@@ -29,20 +30,21 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 
 		super.out = new IndentedLineBuffer();
 
-		// Set start state.
-		DetectCloudId.startGraph();
+
+		DetectCloudId.resetBuffer();
+		
 		// Process elements.
 		visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement());
-		// Set end state.
-		DetectCloudId.endGraph();
 
 		// Save cloud ID and the corresponding query.
-		if (historicalCloudQueries.containsKey(DetectCloudId.getCloudId())) {
-			historicalCloudQueries.put(DetectCloudId.getCloudId(),
-			historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());
-		} else {
-			historicalCloudQueries.put(DetectCloudId.getCloudId(), out.toString());
-		}
+		//if( DetectCloudId.getState() == State.FOUND ) {
+			if (historicalCloudQueries.containsKey(DetectCloudId.getCloudId())) {
+				historicalCloudQueries.put(DetectCloudId.getCloudId(),
+				historicalCloudQueries.get(DetectCloudId.getCloudId()) + "\n" + out.toString());
+			} else {
+				historicalCloudQueries.put(DetectCloudId.getCloudId(), out.toString());
+			}
+		//}
 
 		// Continue with old buffer.
 		super.out = original;
@@ -62,6 +64,25 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 		}
 
 	}
+	
+
+    @Override
+    public void visit(ElementService el) {
+		// PLAY: Replace output buffer temporally to get one graph only
+		IndentedWriter original = super.out;
+
+		super.out = new IndentedLineBuffer();
+		
+		// Set start state.
+		DetectCloudId.resetBuffer();
+		DetectCloudId.startServiceGraph();
+		DetectCloudId.setCloudId(el.getServiceNode().toString());
+
+        visitNodePattern("", null, el.getElement()) ;
+
+		// Continue with old buffer.
+		super.out = original;
+    }
 
 	public Map<String, String> getHistoricalCloudQueries() {
 		return historicalCloudQueries;

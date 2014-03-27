@@ -34,6 +34,8 @@ import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
+import com.hp.hpl.jena.sparql.syntax.ElementService;
+import com.hp.hpl.jena.sparql.syntax.ElementSubQuery;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
@@ -73,7 +75,7 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 		
 		//Variables in historic part.
 		state = VariableTypes.HISTORIC_TYPE;
-		if(query.getQueryPattern()!=null){
+		if(query.getQueryPattern() != null){
 			query.getQueryPattern().visit(this);
 		}
 		
@@ -95,6 +97,17 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 	public Object visitVariable(Node_Variable it, String name) {
 		vm.addVariable(name, state);
 		return it;
+	}
+	
+	@Override
+	public void visit(ElementService el) {
+		el.getServiceNode().visitWith(this);
+		el.getElement().visit(this);
+	}
+
+	@Override
+	public void visit(ElementSubQuery el) {
+		el.getQuery().getQueryPattern().visit(this);;
 	}
 	
 	@Override

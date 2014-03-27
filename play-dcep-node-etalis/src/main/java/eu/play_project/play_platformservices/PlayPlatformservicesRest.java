@@ -16,11 +16,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
@@ -35,6 +42,7 @@ import eu.play_project.play_platformservices.api.QueryDetails;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.jaxb.Query;
+import eu.play_project.play_platformservices.jetty.WebJarResourceHandler;
 
 /**
  * The PLAY REST Web Service to manage event patterns. See
@@ -69,16 +77,32 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 
 		this.playPlatformservices = playPlatformservices;
 
-		// create and start a new instance of the http server
-		// exposing the Jersey application at BASE_URI
+		// Web location / serves Jersey servlet:
 		server = new Server(URI.create(BASE_URI).getPort());
-		ServletContextHandler context = new ServletContextHandler();
-		context.setContextPath("/");
-		ServletHolder h = new ServletHolder(new ServletContainer(rc));
-		context.addServlet(h, "/");
-		server.setHandler(context);
-		server.start();
+		ServletContextHandler rootDir = new ServletContextHandler();
+		rootDir.setContextPath("/");
+		rootDir.addServlet(new ServletHolder(new ServletContainer(rc)), "/");
 
+		// Web location /html serves static content
+		ResourceHandler resourceHandler = new ResourceHandler();
+		resourceHandler.setDirectoriesListed(true);
+		resourceHandler.setResourceBase("./src/main/webapp/");
+		ContextHandler htmlDir = new ContextHandler();
+		htmlDir.setContextPath("/html");
+		htmlDir.setHandler(resourceHandler);
+		
+		// Web location /webjars serves static Javascript libraries:
+		WebJarResourceHandler webjarsHandler = new WebJarResourceHandler();
+		ContextHandler webjarsDir = new ContextHandler();
+		webjarsDir.setContextPath("/webjars");
+		webjarsDir.setHandler(webjarsHandler);
+		
+		// putting it together
+		HandlerCollection handlerList = new HandlerCollection();
+		handlerList.setHandlers(new Handler[] {webjarsDir, htmlDir, rootDir, new DefaultHandler()});
+		server.setHandler(handlerList);
+		  
+		server.start();
 	}
 
 	@POST
@@ -98,9 +122,13 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 	}
 	
 	/**
-	 * A setter (only evailable in REST service not SOAP
+	 * A setter only available in REST service (not SOAP
 	 * {@linkplain PlayPlatformservices}) to add an anonymous query without ID.
-	 * A random {@linkplain UUID} will be assigned and the child-resource created.
+	 * Creates a new random {@linkplain UUID} for the child-resource (new query)
+	 * and creates the resource.
+	 * 
+	 * @return {@linkplain Status#CREATED} including the newly created
+	 *         {@linkplain HttpHeaders.LOCATION} header.
 	 */
 	@POST
 	public Response registerQuery(String queryString)
@@ -108,6 +136,25 @@ public class PlayPlatformservicesRest implements QueryDispatchApi {
 		String queryId = this.playPlatformservices.registerQuery(UUID.randomUUID().toString(), queryString);
 		URI uri = uriInfo.getAbsolutePathBuilder().path(queryId).build();
 		return Response.created(uri).entity(queryId).build();
+	}
+	
+	/**
+	 * A setter only available in REST service (not SOAP
+	 * {@linkplain PlayPlatformservices}) to add an anonymous query without ID.
+	 * Creates a new random {@linkplain UUID} for the child-resource (new query)
+	 * and creates the resource.
+	 * 
+	 * @return {@linkplain Status#CREATED} including the newly created
+	 *         {@linkplain HttpHeaders.LOCATION} header.
+	 */
+	@POST
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response registerQuery(Query query)
+			throws QueryDispatchException {
+		String queryId = this.playPlatformservices.registerQuery(UUID.randomUUID().toString(), query.content);
+		query.id = queryId;
+		URI uri = uriInfo.getAbsolutePathBuilder().path(queryId).build();
+		return Response.created(uri).entity(query).build();
 	}
 	
 	@POST
