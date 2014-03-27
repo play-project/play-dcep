@@ -9,8 +9,11 @@
 <link rel="stylesheet" type="text/css" href="/webjars/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="/webjars/bootstrap-theme.min.css" />
 
-<script type="text/javascript">
+<!-- TODO stuehmer: deploying a new pattern (without ID) does not update the ID on the client after sending to server -->
+<!-- TODO stuehmer: pressing Delete does not refresh the accordion and also needlessly opens the accordion-panel -->
 
+<script type="text/javascript">
+	
 var Patterns = {};
 
 Patterns.Collection = Backbone.Collection.extend({
