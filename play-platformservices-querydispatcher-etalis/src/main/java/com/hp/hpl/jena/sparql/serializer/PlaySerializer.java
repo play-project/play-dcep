@@ -72,7 +72,8 @@ public class PlaySerializer extends Serializer{
 			hq.setQuery(selectString +" \n WHERE { \n  " + queries.get(key) + "\n } ");
 			hq.setCloudId(key);
 			
-			if(vars.size() > 0) {
+			VariableTypeManager vm = new VariableTypeManager(query);
+			if(vm.getIntersection(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE).size() > 0) {
 				hq.setHasSharedVariablesWithRealtimePart(true);
 			}
 			

@@ -5,11 +5,11 @@ import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_ENTRY;
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_ENTRY;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.BlockingQueue;
 
-import org.apache.commons.collections.Buffer;
-import org.apache.commons.collections.BufferUtils;
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,7 @@ public class EcConnectionListenerNet extends CompoundEventNotificationListener i
 	private static final long serialVersionUID = 100L;
 	private BlockingQueue<CompoundEvent> eventInputQueue;
 	/** Maintain a circular buffer of recent event IDs which have been seen to detect duplicate events arriving. */
-	private final Buffer duplicatesCache =  BufferUtils.synchronizedBuffer(new CircularFifoBuffer(32));
+	private final Collection<String> duplicatesCache =  Collections.synchronizedCollection(new CircularFifoQueue<String>(32));
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionListenerNet.class);
 
 	// For ProActive:
@@ -61,7 +61,6 @@ public class EcConnectionListenerNet extends CompoundEventNotificationListener i
 		}
 	}
 
-	@SuppressWarnings("unchecked") // TODO stuehmer: will be fixed with https://github.com/play-project/play-dcep/issues/15
 	@Override
 	public boolean isDuplicate(String eventId) {
 		if (duplicatesCache.contains(eventId)) {

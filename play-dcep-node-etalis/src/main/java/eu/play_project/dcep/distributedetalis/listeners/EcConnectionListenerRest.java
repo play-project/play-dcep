@@ -4,14 +4,15 @@ import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP;
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_ENTRY;
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_ENTRY;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import javax.inject.Singleton;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.collections.Buffer;
-import org.apache.commons.collections.BufferUtils;
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.util.ModelUtils;
 import org.ow2.play.governance.platform.user.api.rest.PublishService;
@@ -33,7 +34,7 @@ public class EcConnectionListenerRest extends Application implements PublishServ
 	private final AbstractReceiverRest rdfReceiver;
 	private final Logger logger;
 	/** Maintain a circular buffer of recent event IDs which have been seen to detect duplicate events arriving. */
-	private final Buffer duplicatesCache =  BufferUtils.synchronizedBuffer(new CircularFifoBuffer(32));
+	private final Collection<String> duplicatesCache =  Collections.synchronizedCollection(new CircularFifoQueue<String>(32));
 
 	public EcConnectionListenerRest() { // For JAXB
 		this.rdfReceiver = null;
@@ -99,7 +100,6 @@ public class EcConnectionListenerRest extends Application implements PublishServ
 		this.dEtalis = dEtalis;
 	}
 
-	@SuppressWarnings("unchecked") // TODO stuehmer: will be fixed with https://github.com/play-project/play-dcep/issues/15
 	@Override
 	public boolean isDuplicate(String eventId) {
 		if (duplicatesCache.contains(eventId)) {
