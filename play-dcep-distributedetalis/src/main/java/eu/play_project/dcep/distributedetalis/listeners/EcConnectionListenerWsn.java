@@ -5,10 +5,10 @@ import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_ENTRY;
 import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_ENTRY;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 
-import org.apache.commons.collections.Buffer;
-import org.apache.commons.collections.BufferUtils;
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.util.ModelUtils;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Duplicate
 	private final AbstractReceiverRest rdfReceiver;
 	private final Logger logger;
 	/** Maintain a circular buffer of recent event IDs which have been seen to detect duplicate events arriving. */
-	private final Buffer duplicatesCache =  BufferUtils.synchronizedBuffer(new CircularFifoBuffer(32));
+	private final Collection<String> duplicatesCache =  Collections.synchronizedCollection(new CircularFifoQueue<String>(32));
 	
 	public EcConnectionListenerWsn(AbstractReceiverRest rdfReceiver) {
 		this.rdfReceiver = rdfReceiver;
@@ -91,7 +91,6 @@ public class EcConnectionListenerWsn implements INotificationConsumer, Duplicate
 		this.dEtalis = dEtalis;
 	}
 
-	@SuppressWarnings("unchecked") // TODO stuehmer: will be fixed with https://github.com/play-project/play-dcep/issues/15
 	@Override
 	public boolean isDuplicate(String eventId) {
 		if (duplicatesCache.contains(eventId)) {
