@@ -1,0 +1,162 @@
+<html>
+<head>
+<script src="/webjars/jquery.min.js"></script>
+<script src="/webjars/underscore-min.js"></script>
+<script src="/webjars/backbone-min.js"></script>
+<script src="/webjars/jquery.tmpl.min.js"></script>
+<script src="/webjars/bootstrap.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/webjars/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="/webjars/bootstrap-theme.min.css" />
+
+<script type="text/javascript">
+
+var Patterns = {};
+
+Patterns.Collection = Backbone.Collection.extend({
+	model: Backbone.Model.extend({}),
+    url: '/patterns'
+});
+ 
+Patterns.Views = {};
+
+Patterns.Views.Item = Backbone.View.extend({
+
+    destroy: function () {
+        var el = this.el;
+        this.model.destroy({
+            success: function () {
+                $el.remove();
+            }
+        });
+    },
+    events: {
+        'click .deletePattern': 'destroy'
+    },
+    initialize: function () {
+        _(this).bindAll('destroy', 'render');
+    },
+    render: function () {
+        $('#pattern-template').tmpl(this.model.toJSON()).appendTo(this.$el);
+        this.delegateEvents();
+    }
+});
+ 
+Patterns.Views.List = Backbone.View.extend({
+	
+	id: "patterns",
+	 
+    append: function (model) {
+        var div = $('<div>').appendTo('#patterns'),
+        view = new Patterns.Views.Item({
+            model: model,
+            el: div[0]
+        });
+        view.render(); 
+    },
+    initialize: function () {
+        _(this).bindAll('append', 'render');
+        this.collection.bind('refresh', this.render);
+        this.collection.bind('add', this.append);
+    },
+    render: function () {
+        $('#patterns').empty();
+        this.collection.each(function (model) {
+            this.append(model);
+        }, this);
+    }
+});
+
+$(function () {
+    var collection = new Patterns.Collection(),
+        view = new Patterns.Views.List({
+            collection: collection
+        });
+ 
+    collection.fetch();
+     
+    $('#add').click(function () {
+    	collection.create({
+            content: $('#new-content').val()
+    	})
+    });
+});
+
+</script>
+
+</head>
+
+<body>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span> <span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">DCEP.patterns</a>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<ul class="breadcrumb">
+			<li><a href="../">Home</a></li>
+			<li><a href="./">Patterns</a></li>
+			<li class="active">Deployed</li>
+		</ul>
+
+		<div id="patterns" class="panel-group"></div>
+
+		<div id="new-pattern" class="panel-group">
+			<div class="panel panel-primary">
+			    <div class="panel-heading" class="accordion-toggle" data-toggle="collapse" data-parent="#new-pattern" href="#collapse_new-pattern">
+					<span class="panel-title">
+						Deploy a new pattern
+					</span>
+					<button class="btn btn-success btn-xs" type="submit">New</button>
+			    </div>
+				<div id="collapse_new-pattern" class="panel-collapse collapse">
+			  	 	<div class="panel-body">
+			  	 	<!-- 
+					<div class="input-group">
+						<span class="input-group-addon">ID</span>
+						<input id="new-id" type="text" class="form-control" placeholder="Pattern ID">
+					</div>
+					-->
+					<textarea id="new-content" class="form-control" rows="3" placeholder="Enter BDPL Query..."></textarea>
+					<button id="add" class="btn btn-success btn-xs" type="submit">Deploy</button>
+					</div>
+					<div class="panel-footer">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script id="pattern-template" type="x-jquery-tmpl">
+<div class="panel panel-default">
+    <div class="panel-heading" class="accordion-toggle" data-toggle="collapse" data-parent="#patterns" href="#collapse_${id}">
+		<span class="panel-title">
+			Pattern: ${id}
+		</span>
+		<button class="btn btn-danger btn-xs deletePattern" type="submit">Delete</button>
+    </div>
+	<div id="collapse_${id}" class="panel-collapse collapse">
+  	 	<div class="panel-body">
+			<pre class="pre-scrollable">${content}</pre>
+		</div>
+		<!--
+		<div class="panel-footer">
+			<span class="text-muted small">URL: ${url()}</span>
+		</div>
+		-->
+	</div>
+</div>
+</script>
+
+
+</html>
