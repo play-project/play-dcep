@@ -171,7 +171,13 @@ public class HistoricalQueryContainer {
 	 */
 	private String makeVal(Object value) {
 		if (value instanceof String) {
-			return "\"" + value + "\"";
+			try {
+				String val = value.toString();
+				Double.parseDouble(val);
+				return val;
+			} catch (NumberFormatException e) {
+				return "\"" + value + "\"";
+			}
 		}
 		else if (value instanceof Node_URI) {
 			return "<" + value.toString() + ">";

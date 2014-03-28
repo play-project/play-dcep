@@ -91,7 +91,7 @@ public class EcConnectionManagerLocal implements Serializable, EcConnectionManag
 			// Read data from file.
 			try {
 				logger.debug("Read historical data from file: {}", inputRdfModelFileName);
-				rdf.readFrom(in, Syntax.Turtle);
+				rdf.readFrom(in, Syntax.forFileName(historicDataFileName));
 			} catch (SyntaxNotSupportedException e) {
 				logger.error("Syntax {} is not supported.", Syntax.Turtle);
 				e.printStackTrace();
