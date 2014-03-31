@@ -171,8 +171,9 @@ public class DispatcherTest {
 
 		// Dispatch query
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
-		
-		System.out.println(queries.get(0).getCloudId());
+
+		//Check cloud id.
+		assertEquals("http://app.event-processing.org/4store/test#stream", queries.get(0).getCloudId());
 
 		// Check if result is a valid SPARQL string.
 		try {
