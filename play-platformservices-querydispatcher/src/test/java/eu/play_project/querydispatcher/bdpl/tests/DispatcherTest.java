@@ -151,11 +151,11 @@ public class DispatcherTest {
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
 
 		// Check if result is a valid SPARQL string.
-		System.out.println(queries.get(0).getQuery());
 		try {
 			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
 			QueryFactory.create(queries.get(1).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 			fail();
 		}
 	}
