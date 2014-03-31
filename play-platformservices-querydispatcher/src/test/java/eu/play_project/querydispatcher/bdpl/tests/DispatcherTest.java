@@ -171,7 +171,9 @@ public class DispatcherTest {
 
 		// Dispatch query
 		List<HistoricalQuery> queries = PlaySerializer.serializeToMultipleSelectQueries(query);
-System.out.println(queries.get(0).getQuery());
+		
+		System.out.println(queries.get(0).getCloudId());
+
 		// Check if result is a valid SPARQL string.
 		try {
 			QueryFactory.create(queries.get(0).getQuery(), com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11);

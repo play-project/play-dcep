@@ -32,6 +32,7 @@ import eu.play_project.dcep.distributedetalis.api.ConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
 import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
+import eu.play_project.dcep.distributedetalis.configurations.DetailsConfigLocalJena;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfig4store;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
@@ -203,7 +204,15 @@ Serializable {
 				historicDataFileNames.add(historicDataFileName.trim());
 			}
 			configApi.setConfig(new DetalisConfigLocal(historicDataFileNames));
-		}
+		} 
+		else if(middleware.equals("local.jean")) {
+			//Read historic data filenames.
+			List<String> historicDataFileNames = new ArrayList<String>();
+			for (String historicDataFileName : DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig").split(",")) {
+				historicDataFileNames.add(historicDataFileName.trim());
+			}
+			configApi.setConfig(new DetailsConfigLocalJena(historicDataFileNames));
+		} 
 		else if(middleware.equals("eventcloud")) {
 			configApi.setConfig(new DetalisConfigNet());
 		}

@@ -1,6 +1,5 @@
 package eu.play_project.dcep.distributedetalis.configurations;
 
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.jtalis.core.JtalisContextImpl;
 
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
-import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
+import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocalJena;
 import eu.play_project.dcep.distributedetalis.JtalisInputProvider;
 import eu.play_project.dcep.distributedetalis.JtalisOutputProvider;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
@@ -25,19 +24,16 @@ import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 
-
-
-public class DetalisConfigLocal implements Configuration, Serializable {
-
+public class DetailsConfigLocalJena implements Configuration, Serializable {
 	private static final long serialVersionUID = 100L;
 	private List<String> inputRdfModelFile;
 	private Logger logger;
 	private MeasurementUnit measurementUnit;
 	private LoadPrologCode cl;
 	
-	public  DetalisConfigLocal(){}
+	public  DetailsConfigLocalJena(){}
 	
-	public DetalisConfigLocal(List<String> inputRdfModelFile){
+	public DetailsConfigLocalJena(List<String> inputRdfModelFile){
 		this.inputRdfModelFile = inputRdfModelFile;
 		
 		logger = LoggerFactory.getLogger(this.getClass());
@@ -46,7 +42,7 @@ public class DetalisConfigLocal implements Configuration, Serializable {
 		cl = new LoadPrologCode();
 	}
 	
-	public DetalisConfigLocal(String inputRdfModelFile){
+	public DetailsConfigLocalJena(String inputRdfModelFile){
 		this.inputRdfModelFile = new LinkedList<String>();
 		this.inputRdfModelFile.add(inputRdfModelFile);
 		
@@ -80,7 +76,7 @@ public class DetalisConfigLocal implements Configuration, Serializable {
 		
 		dEtalisConfigApi.setMeasurementUnit(measurementUnit);
 		dEtalisConfigApi.setEventInputProvider(new JtalisInputProvider(semWebLib));
-		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocal(inputRdfModelFile));
+		dEtalisConfigApi.setEcConnectionManager(new EcConnectionManagerLocalJena(inputRdfModelFile));
 		dEtalisConfigApi.getEventSinks().add(dEtalisConfigApi.getEcConnectionManager());
 		dEtalisConfigApi.setEventOutputProvider(new JtalisOutputProvider(
 				dEtalisConfigApi.getEventSinks(),
@@ -128,6 +124,4 @@ public class DetalisConfigLocal implements Configuration, Serializable {
 		//etalis.addDynamicRuleWithId("GarbageCollectionPattern", "complex <- gc(ID) where (setLastInsertedEvent(ID),false)");
 	
 	}
-	
-	
 }
