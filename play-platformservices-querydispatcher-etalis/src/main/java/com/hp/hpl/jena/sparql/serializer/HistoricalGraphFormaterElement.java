@@ -32,16 +32,12 @@ public class HistoricalGraphFormaterElement extends FormatterElement {
 		IndentedWriter original = super.out;
 		super.out = new IndentedLineBuffer();
 
-		DetectCloudId.resetBuffer();
+		//DetectCloudId.resetBuffer();
 		
 		// Process elements.
 		filterExp = new IndentedLineBuffer();
 		visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement());
 
-		// Add filter after GRAPH{} 
-		
-		System.out.println("\n\n\n\n " + out.toString().substring(0, out.toString().length()));
-		
 		// Save cloud ID and the corresponding query.
 		if (historicalCloudQueries.containsKey(DetectCloudId.getCloudId())) {
 			historicalCloudQueries.put(DetectCloudId.getCloudId(),

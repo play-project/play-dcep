@@ -3,8 +3,10 @@ package eu.play_project.dcep.tests;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -92,4 +94,5 @@ public class HistoricDataTest {
 		Assert.assertTrue("An empty result was expected for the specified bindings.", values.isEmpty());
 
 	}
+	
 }

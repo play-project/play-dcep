@@ -32,12 +32,14 @@ WHERE {
 		?e1 :minimumRanking ?minimumRanking .
 	}
 	HISTORIC <http://4store.dbpedia.org#stream> {
-		?s1 rdf:type :DriverLocation .
-		?s1 :driver ?driver .
-		?s1 :location ?addresseeLocation .
-		?driver rdf:type :Driver .
-		?driver :ranking ?ranking .
-		FILTER (?minimumRanking >= ?ranking )
+		GRAPH ?id1 {
+			?s1 rdf:type :DriverLocation .
+			?s1 :driver ?driver .
+			?s1 :location ?addresseeLocation .
+			?driver rdf:type :Driver .
+			?driver :ranking ?ranking .
+			FILTER (?minimumRanking >= ?ranking )
+		}
 	}
 	HISTORIC <http://4store.fzi.de#stream> {
 		GRAPH ?id2 {

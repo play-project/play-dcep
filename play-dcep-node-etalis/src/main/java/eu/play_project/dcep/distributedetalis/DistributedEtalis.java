@@ -3,9 +3,11 @@ package eu.play_project.dcep.distributedetalis;
 import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.quoteForProlog;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,10 +31,12 @@ import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.api.SimplePublishApi;
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
+import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
 import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
+import eu.play_project.dcep.distributedetalis.configurations.DetailsConfigLocalJena;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfig4store;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
@@ -227,10 +231,21 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	public void setConfig(String middleware) throws DcepManagementException {
 		if(init != true) {
 			try {
-				if (middleware.equals("local")) {
-					new DetalisConfigLocal(
-							"historical-data/play-bdpl-telco-recom-tweets-historic-data.trig")
-							.configure(this);
+				if(middleware.equals("local")) {
+					//Read historic data filenames.
+					List<String> historicDataFileNames = new ArrayList<String>();
+					for (String historicDataFileName : DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig").split(",")) {
+						historicDataFileNames.add(historicDataFileName.trim());
+					}
+					new DetalisConfigLocal(historicDataFileNames).configure(this);
+				}
+				else if(middleware.equals("local.jean")) {
+					//Read historic data filenames.
+					List<String> historicDataFileNames = new ArrayList<String>();
+					for (String historicDataFileName : DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig").split(",")) {
+						historicDataFileNames.add(historicDataFileName.trim());
+					}
+					new DetailsConfigLocalJena(historicDataFileNames).configure(this);
 				}
 				else if (middleware.equals("eventcloud")) {
 					new DetalisConfigNet().configure(this);
