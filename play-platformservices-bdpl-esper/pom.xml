@@ -179,6 +179,6 @@
 	<properties>
 		<jjtree.output.path>${project.build.directory}/generated-sources/javacc/org/openrdf/query/parser/sparql/ast</jjtree.output.path>
 		<jjtree.sparql.ast.path>${project.basedir}/src/main/resources/org/openrdf/query/parser/sparql/ast</jjtree.sparql.ast.path>
-		<jjtree.bdpl.ast.path>${project.basedir}/src/main/resources/eu/play_platform/platformservices/bdpl/parser/ast</jjtree.bdpl.ast.path>
+		<jjtree.bdpl.ast.path>${project.basedir}/src/main/resources/eu/play_project/platformservices/bdpl/parser/ast</jjtree.bdpl.ast.path>
 	</properties>
 </project>
