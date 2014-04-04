@@ -7,6 +7,7 @@
 		<groupId>org.ow2.play</groupId>
 		<artifactId>play-parent</artifactId>
 		<version>1.2-SNAPSHOT</version>
+		<relativePath /> <!-- unset the default -->
 	</parent>
 
 	<groupId>org.ow2.play</groupId>
