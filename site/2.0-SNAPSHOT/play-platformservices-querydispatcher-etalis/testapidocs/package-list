@@ -1,0 +1,4 @@
+eu.play_project.querydispatcher.bdpl.tests
+eu.play_project.querydispatcher.epsparql.tests.helpers
+eu.play_project.querydispatcher.syntax_tree.tests
+eu.play_project.querydispatcher.tests

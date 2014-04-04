@@ -1,0 +1,11 @@
+com.hp.hpl.jena.sparql.serializer
+eu.play_project.dcep.distributedetalis.utils
+eu.play_project.play_platformservices
+eu.play_project.play_platformservices_querydispatcher.api
+eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime
+eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general
+eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic
+eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime
+eu.play_project.play_platformservices_querydispatcher.historicalQuery
+eu.play_project.play_platformservices_querydispatcher.playEleParser
+eu.play_project.play_platformservices_querydispatcher.types
