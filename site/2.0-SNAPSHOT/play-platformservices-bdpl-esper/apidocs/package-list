@@ -1,0 +1,3 @@
+eu.play_project.platformservices.bdpl.parser
+org.openrdf.query.parser.sparql
+org.openrdf.query.parser.sparql.ast
