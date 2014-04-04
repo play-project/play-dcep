@@ -1,0 +1,12 @@
+eu.play_platform.platformservices.bdpl.tests
+eu.play_project.dcep.api.tests
+eu.play_project.dcep.distributedetalis.join.tests
+eu.play_project.dcep.distributedetalis.tests
+eu.play_project.dcep.distribution.tests
+eu.play_project.dcep.scenarios
+eu.play_project.dcep.tests
+eu.play_project.play_platformservices.tests
+eu.play_project.querydispatcher.bdpl.tests
+eu.play_project.querydispatcher.epsparql.tests.helpers
+eu.play_project.querydispatcher.syntax_tree.tests
+eu.play_project.querydispatcher.tests
