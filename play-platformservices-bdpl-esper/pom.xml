@@ -87,10 +87,11 @@
 				</executions>
 			</plugin>
 
-			<!-- maven resources plugin : copy bdpl and sparql classes -->
+			<!-- maven resources plugin -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
+					<!-- copy bdpl and sparql classes -->
 					<execution>
 						<id>copy-resources</id>
 						<phase>process-resources</phase>
@@ -112,6 +113,27 @@
 									<directory>${jjtree.bdpl.ast.path}</directory>
 									<includes>
 										<include>*.java</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<!-- copy *jj grammar to a flat path for jjdoc -->
+					<execution>
+						<id>copy-grammar</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.directory}/generated-sources/jjdoc</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${jjtree.output.path}</directory>
+									<includes>
+										<include>*.jj</include>
 									</includes>
 								</resource>
 							</resources>
@@ -162,7 +184,7 @@
 				<configuration>
 					<cssHref>http://www.w3.org/StyleSheets/TR/base.css</cssHref>
 					<sourceDirectories>
-						<file>${project.build.directory}/generated-sources/jjtree-javacc</file>
+						<file>${project.build.directory}/generated-sources/jjdoc</file>
 					</sourceDirectories>
 				</configuration>
 			</plugin>
