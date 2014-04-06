@@ -56,14 +56,25 @@
 				<artifactId>javacc-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>javacc-bdpl</id>
+						<id>jjtree-bdpl</id>
 						<goals>
 							<goal>jjtree</goal>
-							<goal>javacc</goal>
+							
 						</goals>
 						<configuration>
 							<outputDirectory>${project.build.directory}/generated-sources/jjtree-javacc</outputDirectory>
 						</configuration>
+					</execution>
+					
+					<execution>
+						<id>javacc-bdpl</id>
+					<goals>
+						<goal>javacc</goal>
+					</goals>
+					<configuration>
+							<sourceDirectory>${jjtree.output.path}</sourceDirectory>
+							<outputDirectory>${project.build.directory}/generated-sources/jjtree-javacc</outputDirectory>
+					</configuration>
 					</execution>
 				</executions>
 			</plugin>
