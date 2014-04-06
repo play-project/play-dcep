@@ -4,7 +4,12 @@
 package eu.play_project.platformservices.querydispatcher.query.transform;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+
+
 
 import org.openrdf.query.parser.sparql.ast.ASTA;
 import org.openrdf.query.parser.sparql.ast.ASTB;
@@ -16,11 +21,17 @@ import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
 import org.openrdf.query.parser.sparql.ast.ASTTimeBasedEvent;
 import org.openrdf.query.parser.sparql.ast.Node;
 import org.openrdf.query.parser.sparql.ast.VisitorException;
+
 import eu.play_project.platformservices.querydispatcher.query.transform.util.AndClause;
 import eu.play_project.platformservices.querydispatcher.query.transform.util.BDPLTransformException;
+import eu.play_project.platformservices.querydispatcher.query.transform.util.Entry;
 import eu.play_project.platformservices.querydispatcher.query.transform.util.OrClause;
 import eu.play_project.platformservices.querydispatcher.query.transform.util.SeqClause;
+import eu.play_project.platformservices.querydispatcher.query.transform.util.Table;
 import eu.play_project.platformservices.querydispatcher.query.transform.util.Term;
+
+
+
 
 
 
@@ -39,8 +50,10 @@ public class EPLProcessor {
 			throws MalformedQueryException{
 		EPLTranslator translator = new EPLTranslator();
 		
+		Table table = new Table();
+		
 		try {
-			qc.jjtAccept(translator, null);
+			qc.jjtAccept(translator, table);
 		} catch (VisitorException e) {
 			e.printStackTrace();
 		}
@@ -75,7 +88,7 @@ public class EPLProcessor {
 				//test output
 				if(node.getTop())
 				{
-					printExpression(ret);
+					printExpression(ret, (Table)data);
 				}
 				
 				return ret;
@@ -98,7 +111,7 @@ public class EPLProcessor {
 				//test output
 				if(node.getTop())
 				{
-					printExpression(ret);
+					printExpression(ret, (Table)data);
 				}
 				
 				return ret;
@@ -184,15 +197,27 @@ public class EPLProcessor {
 			super.visit(node, data);
 			return data;*/
 			
-			super.visit(node, data);
+			//super.visit(node, data);
 			
-			Term term = new Term("not", 1);
-			SeqClause seq = new SeqClause();
-			seq.addTerm(term);
-			AndClause and = new AndClause();
-			and.addSeqClause(seq);
-			OrClause expression = new OrClause();
-			expression.addAndClause(and);
+			Table notTable = (Table)data;
+			
+			Term [] notTerms = new Term [3];
+			List<Node> children = node.jjtGetChildren();
+			OrClause expression = null;
+			
+			// NotClause must have 3 children. Pay attention to the jjtree file!
+			for(int i = 0; i < children.size(); i++){
+				expression = (OrClause) children.get(i).jjtAccept(this, data);
+				notTerms[i] = expression.getAndClauses().get(0).getSeqClauses().get(0).getTerms().get(0);
+			}
+			
+			Entry entry = new Entry(notTerms[1], notTerms[2]);
+			notTable.put(notTerms[0], entry);
+			
+			List<Term> seq = expression.getAndClauses().get(0).getSeqClauses().get(0).getTerms();
+			seq.clear();
+			seq.add(notTerms[0]);
+			seq.add(notTerms[2]);
 			
 			return expression;
 		}
@@ -886,8 +911,11 @@ public class EPLProcessor {
 			return ret;
 		}
 		
-		private void printExpression(OrClause result){
+		private void printExpression(OrClause result, Table table){
 			List<AndClause> la = result.getAndClauses();
+			
+			Map<Term, Term> notList = new HashMap<Term, Term>();
+			
 			if(la.size() > 0){
 				AndClause first = la.get(0);
 				System.out.print("\n( ");
@@ -897,23 +925,68 @@ public class EPLProcessor {
 				SeqClause strs = lstrs.get(0);
 				List<Term> ltrs = strs.getTerms();
 				Term term = ltrs.get(0);
+				
+				// register not list
+				Entry entry = table.get(term);
+				if(entry != null){
+					notList.put(entry.getNotEnd(), entry.getNot());
+				}
+				
 				System.out.print(term.getType()+" ");
 				for(int j = 1; j < ltrs.size(); j++){
 					term = ltrs.get(j);
+					
 					System.out.print("-> "+term.getType()+" ");
+					
+					for(Term not : notList.values()){
+						System.out.print("and not "+not.getType()+" ");
+					}
+					
+					if(notList.get(term) != null){
+						// not list should be empty, after processing every term!
+						notList.remove(term);
+					}
+					
+					//XXX else?
+					entry = table.get(term);
+					if(entry != null){
+						notList.put(entry.getNotEnd(), entry.getNot());
+					}
 				}
 				System.out.print(") ");
 			
 				for(int i = 1; i < lstrs.size(); i++){
 					System.out.print("and ( ");
+					
 					strs = lstrs.get(i);
 					ltrs = strs.getTerms();
 					
 					term = ltrs.get(0);
-						System.out.print(term.getType()+" ");
+					entry = table.get(term);
+					if(entry != null){
+						notList.put(entry.getNotEnd(), entry.getNot());
+					}
+					
+					System.out.print(term.getType()+" ");
 					for(int j = 1; j < ltrs.size(); j++){
 						term = ltrs.get(j);
+						
 						System.out.print("-> "+term.getType()+" ");
+						
+						for(Term not : notList.values()){
+							System.out.print("and not "+not.getType()+" ");
+						}
+						
+						if(notList.get(term) != null){
+							notList.remove(term);
+						}
+						
+						//XXX else?
+						entry = table.get(term);
+						if(entry != null){
+							notList.put(entry.getNotEnd(), entry.getNot());
+						}
+						
 					}
 					System.out.print(") ");
 				}
@@ -928,10 +1001,32 @@ public class EPLProcessor {
 					strs = lstrs.get(0);
 					ltrs = strs.getTerms();
 					term = ltrs.get(0);
+					
+					entry = table.get(term);
+					if(entry != null){
+						notList.put(entry.getNotEnd(), entry.getNot());
+					}
+					
 					System.out.print(term.getType()+" ");
 					for(int l = 1; l < ltrs.size(); l++){
 						term = ltrs.get(l);
+						
 						System.out.print("-> "+term.getType()+" ");
+						
+						for(Term not : notList.values()){
+							System.out.print("and not "+not.getType()+" ");
+						}
+						
+						if(notList.get(term) != null){
+							notList.remove(term);
+						}
+						
+						//XXX else?
+						entry = table.get(term);
+						if(entry != null){
+							notList.put(entry.getNotEnd(), entry.getNot());
+						}
+						
 					}
 					System.out.print(") ");
 					
@@ -941,10 +1036,32 @@ public class EPLProcessor {
 						ltrs = strs.getTerms();
 						
 						term = ltrs.get(0);
-							System.out.print(term.getType()+" ");
+						
+						entry = table.get(term);
+						if(entry != null){
+							notList.put(entry.getNotEnd(), entry.getNot());
+						}
+						
+						System.out.print(term.getType()+" ");
 						for(int j = 1; j < ltrs.size(); j++){
 							term = ltrs.get(j);
+							
 							System.out.print("-> "+term.getType()+" ");
+							
+							for(Term not : notList.values()){
+								System.out.print("and not "+not.getType()+" ");
+							}
+							
+							if(notList.get(term) != null){
+								notList.remove(term);
+							}
+							
+							//XXX else?
+							entry = table.get(term);
+							if(entry != null){
+								notList.put(entry.getNotEnd(), entry.getNot());
+							}
+							
 						}
 						System.out.print(") ");
 					}

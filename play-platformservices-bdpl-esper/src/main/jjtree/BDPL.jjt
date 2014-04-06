@@ -281,6 +281,7 @@ TOKEN [IGNORE_CASE] :	// BDPL tokens
 {
 	<ARRAY: "array">
 |	<WINDOW: "window">
+// for test add integer
 |	<EVENT: "event" <INTEGER>>
 |	<INTERVAL: "interval">
 |	<AT: "at">
@@ -1983,10 +1984,13 @@ void NotClause():
 {
 
 	<EVENT_UN_OP_1> 
-	<LBRACE> {System.out.print("not( ");}
-	//(EventGraphPattern("") | TimeBasedEvent(""))
-	//(EventGraphPattern("") | TimeBasedEvent(""))
-	//(EventGraphPattern("") | TimeBasedEvent(""))
+	<LBRACE> {System.out.print("( ");}
+	(EventGraphPattern("") | TimeBasedEvent(""))
+	{System.out.print(" -> ( not ");}
+	(EventGraphPattern("") | TimeBasedEvent(""))
+	{System.out.print(" and ");}
+	(EventGraphPattern("") | TimeBasedEvent(""))
+	{System.out.print(" ) ");}
 	<RBRACE> {System.out.print(") ");}
 }
 
