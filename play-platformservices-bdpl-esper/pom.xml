@@ -16,6 +16,12 @@
 	<name>play-platformservices-bdpl-esper</name >
 	<description>The grammar for Big Data Processing Language (BDPL) based on Sesame and Esper.</description>
 
+	<properties>
+		<jjtree.output.path>${project.build.directory}/generated-sources/jjtree-javacc/org/openrdf/query/parser/sparql/ast</jjtree.output.path>
+		<jjtree.sparql.ast.path>${project.basedir}/src/main/resources/org/openrdf/query/parser/sparql/ast</jjtree.sparql.ast.path>
+		<jjtree.bdpl.ast.path>${project.basedir}/src/main/resources/eu/play_project/platformservices/bdpl/parser/ast</jjtree.bdpl.ast.path>
+	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
@@ -26,24 +32,24 @@
 
 	<build>
 		<plugins>
-			
+		
 			<!-- maven clean plugin : delete old jjtree files -->
-		  	<plugin>
-			    <artifactId>maven-clean-plugin</artifactId>
-			    <version>2.5</version>
-			    <configuration>
-			      <filesets>
-			        <fileset>
-			          <directory>${jjtree.output.path}</directory>
-			          <includes>
-			            <include>*.java</include>
-			          </includes>
-			          <followSymlinks>false</followSymlinks>
-			        </fileset>
-			      </filesets>
-			    </configuration>
-		  	</plugin>
-  			
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${jjtree.output.path}</directory>
+							<includes>
+								<include>*.java</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+
   			<!-- javacc plugin : create jjtree files -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -52,14 +58,16 @@
 					<execution>
 						<id>javacc-bdpl</id>
 						<goals>
-							<goal>jjtree-javacc</goal>
+							<goal>jjtree</goal>
+							<goal>javacc</goal>
 						</goals>
 						<configuration>
-							<interimDirectory>${project.build.directory}/generated-sources/javacc</interimDirectory>
+							<outputDirectory>${project.build.directory}/generated-sources/jjtree-javacc</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -72,48 +80,69 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${project.build.directory}/generated-sources/javacc</source>
+								<source>${project.build.directory}/generated-sources/jjtree-javacc</source>
 							</sources>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- maven resources plugin -->
-		    <plugin>
-		        <artifactId>maven-resources-plugin</artifactId>
-		        <version>2.6</version>
-		        <executions>
-		          <execution>
-		            <id>copy-resources</id>
-		            <phase>process-resources</phase>
-		            <goals>
-		              <goal>copy-resources</goal>
-		            </goals>
-		            <configuration>
-		              <encoding>UTF-8</encoding>
-		              <overwrite>true</overwrite>
-		              <outputDirectory>${jjtree.output.path}</outputDirectory>
-		              <resources>          
-		                <resource>
-		                  <directory>${jjtree.sparql.ast.path}</directory>
-		                  <includes>
-		          			<include>*.java</include>
-		        		   </includes>
-		                </resource>
-		                <resource>
-		                  <directory>${jjtree.bdpl.ast.path}</directory>
-		                  <includes>
-		          			<include>*.java</include>
-		        		   </includes>
-		                </resource>
-		              </resources>              
-		            </configuration>            
-		          </execution>
-		        </executions>
-		      </plugin>
-      
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<!-- copy bdpl and sparql classes -->
+					<execution>
+						<id>copy-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<overwrite>true</overwrite>
+							<outputDirectory>${jjtree.output.path}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${jjtree.sparql.ast.path}</directory>
+									<includes>
+										<include>*.java</include>
+									</includes>
+								</resource>
+								<resource>
+									<directory>${jjtree.bdpl.ast.path}</directory>
+									<includes>
+										<include>*.java</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<!-- copy *jj grammar to a flat path for jjdoc -->
+					<execution>
+						<id>copy-grammar</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.build.directory}/generated-sources/jjdoc</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${jjtree.output.path}</directory>
+									<includes>
+										<include>*.jj</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -121,25 +150,6 @@
 					<artifactId>lifecycle-mapping</artifactId>
 					<version>1.0.0</version>
 					<configuration>
-<!-- 
-						<lifecyclemappingmetadata>
-							<pluginexecutions>
-								<pluginexecution>
-									<pluginexecutionfilter>
-										<groupid>org.codehaus.mojo</groupid>
-										<artifactid>javacc-maven-plugin</artifactid>
-										<versionrange>[2.6,)</versionrange>
-										<goals>
-											<goal>jjtree-javacc</goal>
-										</goals>
-									</pluginexecutionfilter>
-									<action>
-										<execute></execute>
-									</action>
-								</pluginexecution>
-							</pluginexecutions>
-						</lifecyclemappingmetadata>
--->
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
 								<pluginExecution>
@@ -148,7 +158,8 @@
 										<artifactId>javacc-maven-plugin</artifactId>
 										<versionRange>[2.6,)</versionRange>
 										<goals>
-											<goal>jjtree-javacc</goal>
+											<goal>jjtree</goal>
+											<goal>javacc</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -172,13 +183,12 @@
 				<artifactId>javacc-maven-plugin</artifactId>
 				<configuration>
 					<cssHref>http://www.w3.org/StyleSheets/TR/base.css</cssHref>
+					<sourceDirectories>
+						<file>${project.build.directory}/generated-sources/jjdoc</file>
+					</sourceDirectories>
 				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>
-	<properties>
-		<jjtree.output.path>${project.build.directory}/generated-sources/javacc/org/openrdf/query/parser/sparql/ast</jjtree.output.path>
-		<jjtree.sparql.ast.path>${project.basedir}/src/main/resources/org/openrdf/query/parser/sparql/ast</jjtree.sparql.ast.path>
-		<jjtree.bdpl.ast.path>${project.basedir}/src/main/resources/eu/play_project/platformservices/bdpl/parser/ast</jjtree.bdpl.ast.path>
-	</properties>
+	
 </project>

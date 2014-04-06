@@ -38,7 +38,8 @@ Development
 Other
 -----
 [Reports](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/project-reports.html) |
-[JavaDoc](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/apidocs/index.html) |
-[BDPL Grammar](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/play-platformservices-bdpl-etalis/jjdoc/index.html) |
+[JavaDoc](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/apidocs/) |
+[BDPL Grammar](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/play-platformservices-bdpl-etalis/jjdoc/) |
+[BDPL Grammar (Sesame)](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/play-platformservices-bdpl-esper/jjdoc/) |
 [DOAP](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/doap.rdf) |
 [License](LICENSE.txt)
