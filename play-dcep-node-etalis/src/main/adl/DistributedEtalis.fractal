@@ -3,9 +3,9 @@
   <definition name="DistributedEtalis">
 	 <interface name="DcepManagmentApi"  role="server" signature="eu.play_project.dcep.api.DcepManagmentApi"/>
 	 <interface name="DcepMonitoringApi"  role="server" signature="eu.play_project.dcep.api.DcepMonitoringApi"/>
-	 <interface name="DistributedEtalisTestApi"  role="server" signature="eu.play_project.dcep.tests.distributedetalis.api.DcepTestApi"/>
-	 <interface name="ConfigApi"  role="server" signature="eu.play_project.dcep.tests.distributedetalis.api.ConfigApi"/>
-     <content class="eu.play_project.dcep.tests.distributedetalis.DistributedEtalis"/>
+	 <interface name="DcepTestApi"  role="server" signature="eu.play_project.dcep.api.DcepTestApi"/>
+	 <interface name="ConfigApi"  role="server" signature="eu.play_project.dcep.api.ConfigApi"/>
+     <content class="eu.play_project.dcep.distributedetalis.DistributedEtalis"/>
      <controller desc="primitive"/>
      <virtual-node name="dEtalis-node"/>
 </definition>

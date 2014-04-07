@@ -1,0 +1,50 @@
+# 
+# Title: Telco Use Case: CEPAT-OrangeEvalV2 for M36
+#
+# TODO: -
+
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uctelco: <http://events.event-processing.org/uc/telco/>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX esr:     <http://imu.ntua.gr/play/esr/mcm/2#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX user:    <http://graph.facebook.com/schema/user#>
+PREFIX sioc:    <http://rdfs.org/sioc/ns#>
+PREFIX :        <http://events.event-processing.org/types/>
+
+CONSTRUCT {
+	:e rdf:type :UcTelcoEsrRecom .
+	:e :stream <http://streams.event-processing.org/ids/TaxiUCESRRecomDcep#stream> .
+	:e :message 
+	"Missed 3 calls, try to contact the callee in another way" .
+	:e :members ?e1, ?e2, ?e3 .
+	:e uctelco:callerPhoneNumber ?alice .
+	:e uctelco:calleePhoneNumber ?bob .
+	:e uctelco:direction ?direction .
+	:e uctelco:ackRequired "true"^^xsd:boolean .
+	:e uctelco:answerRequired "true"^^xsd:boolean .
+	:e uctelco:action <blank://action1> .
+	<blank://action1> rdf:type uctelco:OpenTwitter .
+} WHERE {
+	WINDOW {
+		EVENT ?id1 {
+			?e1 rdf:type :UcTelcoCall .
+			?e1 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
+			?e1 uctelco:callerPhoneNumber ?alice .
+			?e1 uctelco:calleePhoneNumber ?bob .
+			?e1 uctelco:direction ?direction .
+		} SEQ EVENT ?id2 {
+			?e2 rdf:type :UcTelcoCall .
+			?e2 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
+			?e2 uctelco:callerPhoneNumber ?alice .
+			?e2 uctelco:calleePhoneNumber ?bob .
+			?e2 uctelco:direction ?direction .
+		} SEQ EVENT ?id3 {
+			?e3 rdf:type :UcTelcoCall .
+			?e3 :stream <http://streams.event-processing.org/ids/TaxiUCCall#stream> .
+			?e3 uctelco:callerPhoneNumber ?alice .
+			?e3 uctelco:calleePhoneNumber ?bob .
+			?e3 uctelco:direction ?direction .
+		}
+	} ("PT3M"^^xsd:duration, sliding)
+}
