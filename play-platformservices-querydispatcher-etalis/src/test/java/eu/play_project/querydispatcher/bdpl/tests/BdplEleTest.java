@@ -129,11 +129,9 @@ public class BdplEleTest {
 
 		visitor1.generateQuery(query);
 		String ele = visitor1.getEle();
-		System.out.println(ele);
-		assertTrue(ele
-				.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD27, CEID10)"));
-		assertTrue(ele
-				.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',ViD28, CEID10)"));
+
+		assertTrue(ele.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',Ve1"));
+		assertTrue(ele.contains("generateConstructResult('http://events.event-processing.org/types/e','http://events.event-processing.org/types/members',Ve2"));
 	}
 
 	@Test
