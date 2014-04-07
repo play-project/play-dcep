@@ -23,7 +23,7 @@ import eu.play_project.play_platformservices.api.QueryDispatchException;
  * @author sobermeier
  *
  */
-public class EventIdVarTest extends ScenarioAbstractTest{
+public class EventIdVarTest extends ScenarioAbstractTest {
 	
 	boolean start = false;
 	static Component root;
