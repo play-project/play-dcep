@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="https://raw.github.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd"
+		>
+		
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-30(%d{HH:mm:ss.SSS} [%-5.5level %22.22logger{0}]) %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- For PLAY production setting: -->
+	<!--include file="/home/play/resources/syslogAppender.xml" / -->
+
+	<logger name="org.apache.cxf" level="ERROR" />
+	<logger name="org.eclipse.jetty" level="ERROR" />
+
+	<logger name="fr.inria" level="WARN" />
+	<logger name="org.objectweb.proactive.extensions.p2p" level="WARN" />
+
+	<logger	name="eu.play_project.play_platformservices_querydispatcher.bdpl.visitor" level="INFO" />
+	<logger name="eu.play_project" level="DEBUG" />
+	<logger name="org.ow2.play" level="DEBUG" />
+	<logger name="main" level="DEBUG" />
+
+	<root level="INFO">
+		<appender-ref ref="stdout" />
+		<!-- For PLAY production setting: -->
+		<!-- appender-ref ref="syslog" / -->
+	</root>
+</configuration>

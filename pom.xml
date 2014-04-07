@@ -7,11 +7,12 @@
 		<groupId>org.ow2.play</groupId>
 		<artifactId>play-parent</artifactId>
 		<version>1.2-SNAPSHOT</version>
+		<relativePath /> <!-- unset the default -->
 	</parent>
 
 	<groupId>org.ow2.play</groupId>
 	<artifactId>play-dcep</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>play-dcep</name>
@@ -23,17 +24,18 @@
 	</prerequisites>
 
 	<modules>
-		<module>play-platformservices-core</module>
 		<module>play-platformservices-api</module>
-		<module>play-platformservices-bdpl</module>
-		<module>play-platformservices-querydispatcher</module>
-		<module>play-platformservices-eventvalidation</module>
+		<module>play-platformservices-bdpl-etalis</module>
+		<module>play-platformservices-bdpl-esper</module>
+		<module>play-platformservices-querydispatcher-etalis</module>
+		<module>play-platformservices-querydispatcher-esper</module>
 		<module>play-dcep-api</module>
 		<module>play-dcep-core</module>
-		<module>play-dcep-distributedetalis</module>
-		<module>play-dcep-dcepmanager</module>
-		<module>play-dcep-distribution</module>
-		<module>play-dcep-utils</module>
+		<module>play-dcep-node-core</module>
+		<module>play-dcep-node-esper</module>
+		<module>play-dcep-node-etalis</module>
+		<module>play-dcep-distribution-etalis</module>
+		<module>play-dcep-distribution-esper</module>
 	</modules>
 
 	<scm>
@@ -59,6 +61,8 @@
 		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
 		<jetty.version>7.6.13.v20130916</jetty.version>
 		<eclipse.codeStyleBaseUrl>https://raw.github.com/play-project/play-dcep/develop/src/site/resources</eclipse.codeStyleBaseUrl>
+		<play.eventadapter.version>1.0-SNAPSHOT</play.eventadapter.version>
+		<sesame.version>2.7.9</sesame.version>
 	</properties>
 
 	<dependencyManagement>
@@ -124,17 +128,18 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>	
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+						<showDeprecation>true</showDeprecation>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<showDeprecation>true</showDeprecation>
-				</configuration>
-			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-doap-plugin</artifactId>

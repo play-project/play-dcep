@@ -25,7 +25,7 @@ events and there is no need to model mappings to binary formats.
 
 Installation
 ------------
-[Install Guide](https://github.com/play-project/play-dcep/tree/master/play-dcep-distribution)
+[Install Guide](play-dcep-distribution-etalis/)
 
 Development
 -----------
@@ -33,10 +33,13 @@ Development
 
 [Developing with Eclipse](README.eclipse.md)
 
+[Generating documentation](README.generate-doc.md)
+
 Other
 -----
-[Reports](http://play-project.github.com/play-dcep/site/1.0-SNAPSHOT/project-reports.html) |
-[JavaDoc](http://play-project.github.com/play-dcep/site/1.0-SNAPSHOT/apidocs/index.html) |
-[BDPL Grammar](http://play-project.github.com/play-dcep/site/1.0-SNAPSHOT/play-platformservices-bdpl/jjdoc/index.html) |
-[DOAP](http://play-project.github.com/play-dcep/site/1.0-SNAPSHOT/doap.rdf) |
+[Reports](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/project-reports.html) |
+[JavaDoc](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/apidocs/) |
+[BDPL Grammar](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/play-platformservices-bdpl-etalis/jjdoc/) |
+[BDPL Grammar (Sesame)](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/play-platformservices-bdpl-esper/jjdoc/) |
+[DOAP](http://play-project.github.com/play-dcep/site/2.0-SNAPSHOT/doap.rdf) |
 [License](LICENSE.txt)

@@ -1,9 +1,7 @@
 package eu.play_project.dcep;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.etsi.uri.gcm.util.GCM;
@@ -21,22 +19,15 @@ import org.objectweb.proactive.core.component.body.ComponentInitActive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
+import eu.play_project.dcep.api.DcepTestApi;
+import eu.play_project.dcep.api.SimplePublishApi;
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.DistributedEtalis;
-import eu.play_project.dcep.distributedetalis.api.ConfigApi;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisTestApi;
-import eu.play_project.dcep.distributedetalis.api.SimplePublishApi;
-import eu.play_project.dcep.distributedetalis.configurations.DetailsConfigLocalJena;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfig4store;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
-import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigVirtuoso;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
 
@@ -49,11 +40,11 @@ import fr.inria.eventcloud.api.CompoundEvent;
  * @author Roland Stühmer
  */
 public class Dcep implements DcepMonitoringApi, DcepManagmentApi,
-ComponentInitActive, ComponentEndActive, DistributedEtalisTestApi,
+ComponentInitActive, ComponentEndActive, DcepTestApi,
 Serializable {
 
 	private static final long serialVersionUID = 100L;
-	private DistributedEtalisTestApi dEtalisTest;
+	private DcepTestApi dEtalisTest;
 	private DcepMonitoringApi dEtalisMonitoring;
 	private DcepManager dcepManager;
 	private ConfigApi configApi;
@@ -154,12 +145,12 @@ Serializable {
 						"DistributedEtalis", context);
 				GCM.getGCMLifeCycleController(dEtalis).startFc();
 
-				dEtalisTest = ((DistributedEtalisTestApi) dEtalis
-						.getFcInterface(DistributedEtalisTestApi.class.getSimpleName()));
+				dEtalisTest = ((DcepTestApi) dEtalis
+						.getFcInterface(DcepTestApi.class.getSimpleName()));
 				dEtalisMonitoring = ((DcepMonitoringApi) dEtalis
 						.getFcInterface(DcepMonitoringApi.class.getSimpleName()));
 				configApi = ((ConfigApi)dEtalis.getFcInterface(ConfigApi.class.getSimpleName()));
-				configDEtalisInstance(configApi);
+				configNodeInstance(configApi);
 				
 				// Register apis
 				Fractive.registerByName(this.dEtalis, "dEtalis");
@@ -176,14 +167,13 @@ Serializable {
 				logger.error("Error initialising DCEP: {}", e.getMessage());
 				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
-			} catch (DistributedEtalisException e) {
-				logger.error("Error initialising DCEP: {}", e.getMessage());
-				logger.debug("Error initialising DCEP:", e);
-				//throw new DcepException("Error initialising DCEP: ", e);
 			} catch (ProActiveException e) {
 				logger.error("Error initialising DCEP: {}", e.getMessage());
 				logger.debug("Error initialising DCEP:", e);
 				//throw new DcepException("Error initialising DCEP: ", e);
+			} catch (DcepManagementException e) {
+				logger.error("Error initialising DCEP: {}", e.getMessage());
+				logger.debug("Error initialising DCEP:", e);
 			}
 			
 			dcepManager = new DcepManager();
@@ -193,38 +183,11 @@ Serializable {
 		return init;
 	}
 
-	public void configDEtalisInstance(ConfigApi configApi) throws DistributedEtalisException {
+	public void configNodeInstance(ConfigApi configApi) throws DcepManagementException {
 		// get property or set default:
 		String middleware = DcepConstants.getProperties().getProperty("dcep.middleware", "local");
 
-		if(middleware.equals("local")) {
-			//Read historic data filenames.
-			List<String> historicDataFileNames = new ArrayList<String>();
-			for (String historicDataFileName : DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig").split(",")) {
-				historicDataFileNames.add(historicDataFileName.trim());
-			}
-			configApi.setConfig(new DetalisConfigLocal(historicDataFileNames));
-		} 
-		else if(middleware.equals("local.jean")) {
-			//Read historic data filenames.
-			List<String> historicDataFileNames = new ArrayList<String>();
-			for (String historicDataFileName : DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig").split(",")) {
-				historicDataFileNames.add(historicDataFileName.trim());
-			}
-			configApi.setConfig(new DetailsConfigLocalJena(historicDataFileNames));
-		} 
-		else if(middleware.equals("eventcloud")) {
-			configApi.setConfig(new DetalisConfigNet());
-		}
-		else if(middleware.equals("virtuoso")) {
-			configApi.setConfig(new DetalisConfigVirtuoso());
-		}
-		else if(middleware.equals("4store")) {
-			configApi.setConfig(new DetalisConfig4store());
-		}
-		else {
-			logger.error("Specified middleware is not implemented: {}.", middleware);
-		}
+		configApi.setConfig(middleware);
 	}
 
 	@Override
