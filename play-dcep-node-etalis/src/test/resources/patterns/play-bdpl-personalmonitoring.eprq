@@ -1,0 +1,42 @@
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX uctelco: <http://events.event-processing.org/uc/telco/>
+PREFIX nissa:   <http://www.nissatech.rs/ns/types/>
+PREFIX geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>
+PREFIX :        <http://events.event-processing.org/types/>
+PREFIX sioc:    <http://rdfs.org/sioc/ns#>
+
+CONSTRUCT {
+	:e rdf:type :UcTelcoEsrRecom .
+	:e :stream <http://streams.event-processing.org/ids/TaxiUCESRRecomDcep#stream>.
+	:e uctelco:phoneNumber ?phone .
+	:e uctelco:callerPhoneNumber ?phone .
+	:e uctelco:calleePhoneNumber ?phone .
+	:e uctelco:ackRequired "false"^^xsd:boolean .
+	:e uctelco:answerRequired "false"^^xsd:boolean .
+	:e :message "Slow down, you created a high hearbeat alert."^^xsd:string .
+	:e uctelco:action <blank://action1> .
+	<blank://action1> rdf:type uctelco:OpenTwitter ;
+		sioc:content ?tweetContent ;
+		:screenName ?screenName .			
+	:e :location <blank://1> .
+	<blank://1> geo:lat ?Latitude1 ;
+		geo:long ?Longitude1 .
+	:e nissa:heartRate ?heartRate02 .	
+	:e :members ?e1 .
+}
+WHERE {
+	EVENT ?id1 {
+		?e1 rdf:type nissa:HeatbeatAlert .
+		?e1 :stream <http://streams.event-processing.org/ids/PersonalMonitoring#stream> .
+		?e1 uctelco:phoneNumber ?phone .
+		?e1 :location [ geo:lat ?Latitude1; geo:long ?Longitude1 ] .
+		?e1 nissa:heartRate ?heartRate02 .
+		?e1 :screenName ?screenName .			
+		}
+	GRAPH ?id2 {
+        ?e2 sioc:content ?tweetContent .
+		?e2 a :TwitterEvent .
+		?e2 :stream <http://streams.event-processing.org/ids/TwitterFeed#stream> .
+	}
+}

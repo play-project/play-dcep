@@ -29,6 +29,7 @@ import jpl.Term;
 
 import org.event_processing.events.types.AvgTempEvent;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
@@ -67,6 +68,7 @@ public class PrologJtalisTest {
 	 * Instantiate ETALIS
 	 * @throws InterruptedException
 	 */
+	@Before
 	public void instantiateJtalis() throws InterruptedException{
 
 		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -109,7 +111,6 @@ public class PrologJtalisTest {
 	/**
 	 * No event will be generated because b appears to late.
 	 */
-	@Ignore
 	@Test
 	public void registerEventpatternsWithWindow(){
 		//Result should not be overwritten by an complex event from etalis.
@@ -152,8 +153,6 @@ public class PrologJtalisTest {
 		delay();
 	}
 	
-	@Ignore
-	@Test
 	public void instantiatePrologSemWebLib() throws DistributedEtalisException{
 
 		prologSemWebLib = new PrologSemWebLib();
@@ -162,9 +161,8 @@ public class PrologJtalisTest {
 		delay();
 	}
 	
-	@Ignore
 	@Test
-	public void addEventsInTriplestore(){
+	public void addEventsInTriplestore() throws Exception{
 
 		// Create an event ID used in RDF context and RDF subject
 		String eventId = EventHelpers.createRandomEventId();
@@ -187,11 +185,11 @@ public class PrologJtalisTest {
 		// New event.
 		CompoundEvent event1 = EventCloudHelpers.toCompoundEvent(event);
 		
-		try {
-			prologSemWebLib.addEvent(event1);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (prologSemWebLib == null ) {
+			instantiatePrologSemWebLib();
 		}
+		prologSemWebLib.addEvent(event1);
+		
 		
 		delay();
 	}
@@ -560,19 +558,20 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
+	@Ignore
 	public void AverageTest3Values() throws InterruptedException, DistributedEtalisException{
-		if(ctx==null){
-			this.init();
-		}
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1, 1.0)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2, 2.0)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3, 3.0)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 4, 4.0)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 5, 5.0)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 6, 6.0)");
+		
+		this.init();
+		
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 1, 1.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 2, 2.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 3, 3.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 4, 4.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 5, 5.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 6, 6.0)");
 		//Value 1-6 will be out of window.
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7, 7.0)");
-		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8, 8.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 7, 7.0)");
+		((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("addAgregatValue(id_1, 8, 8.0)");
 
 		
 		
@@ -595,10 +594,15 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	public void AverageTestOutOfWindow() throws InterruptedException, DistributedEtalisException{
+	public void AverageTestOutOfWindow() throws InterruptedException, DistributedEtalisException, IOException{
 		if(ctx==null){
 			this.init();
 		}
+		
+		LoadPrologCode prologCodeLoader = new LoadPrologCode();
+		prologCodeLoader.loadCode("Aggregatfunktions.pl", ((PlayJplEngineWrapper)ctx.getEngineWrapper()));
+		prologCodeLoader.loadCode("Helpers.pl", ((PlayJplEngineWrapper)ctx.getEngineWrapper()));
+		
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1, 1.0)");
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2, 2.0)");
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3, 3.0)");
@@ -608,24 +612,19 @@ public class PrologJtalisTest {
 		// Wait. Value 1-6 will be out of window.
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 7, 7.0)");
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 8, 8.0)");
-
-		
 		
 		//Get variables and values
-		
-		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute(("calcAverage(id_1, 1, 200, Avg)"));
+		Hashtable<String, Object>[] result = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute(("calcAverage(id_1, 2, 9, Avg)"));
 
-		// Get all values of a variable
+		// Check if avg is correct.
 		for (Hashtable<String, Object> hashtable : result) {
-			assertTrue(hashtable.get("Avg").toString().startsWith("_"));
+			assertEquals(7.5, Double.parseDouble(hashtable.get("Avg").toString()), 0);
 		}
-		
+
 		//Check if all temp values are deleted.
 		Thread.sleep(400);
 		Hashtable<String, Object>[] values = ((PlayJplEngineWrapper)ctx.getEngineWrapper()).execute("aggregatDb(A, B)");
-		
-		assertTrue(values.length == 0);
-
+		assertTrue(values[0].get("B").toString().startsWith("_"));
 	}
 	
 	@Test

@@ -2,17 +2,17 @@
 <!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/proactive/core/component/adl/xml/proactive.dtd">
 <definition name="DcepPsTest">
   <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
-  <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.tests.distributedetalis.api.DcepTestApi" role="server"/>
+  <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.api.DcepTestApi" role="server"/>
   
   <component name="PlatformServices">
     <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
-    <interface name="DcepManagmentApi" signature="eu.play_project.dcep.tests.api.DcepManagmentApi" role="client"/>
+    <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="client"/>
     <content class="eu.play_project.play_platformservices.PlayPlatformservices"/>
   </component>
   
   <component name="Dcep">
-    <interface name="DcepManagmentApi" signature="eu.play_project.dcep.tests.api.DcepManagmentApi" role="server"/>
-    <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.tests.distributedetalis.api.DcepTestApi" role="server"/>
+    <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
+    <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.api.DcepTestApi" role="server"/>
     <content class="eu.play_project.dcep.tests.Dcep"/>
   </component>
   

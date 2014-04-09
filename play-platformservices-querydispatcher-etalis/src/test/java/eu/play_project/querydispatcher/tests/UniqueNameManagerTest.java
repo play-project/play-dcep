@@ -14,45 +14,44 @@ public class UniqueNameManagerTest {
 
 		// Simulate code generation for different patterns.
 		unm.newQuery(2);
-		assertEquals(unm.getCurrentSimpleEventNumber(), 1);
+		assertEquals(0, unm.getCurrentSimpleEventNumber());
 
+		unm.processNextEvent();
+		assertEquals(1, unm.getCurrentSimpleEventNumber());
 		unm.processNextEvent();
 		assertEquals(unm.getCurrentSimpleEventNumber(), 2);
-		unm.processNextEvent();
-		assertEquals(unm.getCurrentSimpleEventNumber(), 3);
 
 		unm.resetTriplestoreVariable();
-		assertEquals(unm.getCurrentSimpleEventNumber(), 1);
+		assertEquals(unm.getCurrentSimpleEventNumber(), 0);
 
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD2");
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD3");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD1");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD2");
 
 		// Process new query.
 		unm.newQuery(5);
-		assertEquals(unm.getCurrentSimpleEventNumber(), 4);
+		assertEquals(2, unm.getCurrentSimpleEventNumber());
 
 		unm.processNextEvent();
-		assertEquals(unm.getCurrentSimpleEventNumber(), 5);
+		assertEquals(3, unm.getCurrentSimpleEventNumber());
 
 		unm.processNextEvent();
-		assertEquals(unm.getCurrentSimpleEventNumber(), 6);
+		assertEquals(4, unm.getCurrentSimpleEventNumber());
 
 		unm.resetTriplestoreVariable();
-		assertEquals(unm.getCurrentSimpleEventNumber(), 4);
+		assertEquals(2, unm.getCurrentSimpleEventNumber());
 
 		unm.processNextEvent();
 		unm.processNextEvent();
 		unm.processNextEvent();
 
 		unm.resetTriplestoreVariable();
-		assertEquals(unm.getCurrentSimpleEventNumber(), 4);
+		assertEquals(2, unm.getCurrentSimpleEventNumber());
 
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD5");
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD6");
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(2), "ViD7");
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(3), "ViD8");
-		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(4), "ViD9");
-
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(0), "ViD3");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(1), "ViD4");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(2), "ViD5");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(3), "ViD6");
+		assertEquals(unm.getAllTripleStoreVariablesOfThisQuery().get(4), "ViD7");
 	}
 
 }

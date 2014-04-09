@@ -44,7 +44,7 @@ public class SingleDistributedEtalisInstanceRunner {
 		
 		
 		//Subscribe to print complex events to local console.
-//		testApi = ((eu.play_project.dcep.tests.distributedetalis.api.DcepTestApi) root.getFcInterface(DcepTestApi.class.getSimpleName()));
+//		testApi = ((eu.play_project.dcep.distributedetalis.api.DcepTestApi) root.getFcInterface(DcepTestApi.class.getSimpleName()));
 //		try {
 //			subscriber = PAActiveObject.newActive(ComplexEventSubscriber.class, new Object[] {});
 //		} catch (ActiveObjectCreationException e) {
