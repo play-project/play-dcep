@@ -8,9 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
-
 import org.openrdf.query.parser.sparql.ast.ASTA;
 import org.openrdf.query.parser.sparql.ast.ASTB;
 import org.openrdf.query.parser.sparql.ast.ASTC;
@@ -22,7 +19,7 @@ import org.openrdf.query.parser.sparql.ast.ASTTimeBasedEvent;
 import org.openrdf.query.parser.sparql.ast.Node;
 import org.openrdf.query.parser.sparql.ast.VisitorException;
 
-import eu.play_project.platformservices.querydispatcher.query.transform.util.AndClause;
+import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.querydispatcher.query.transform.util.BDPLTransformException;
 import eu.play_project.platformservices.querydispatcher.query.transform.util.Entry;
 import eu.play_project.platformservices.querydispatcher.query.transform.util.OrClause;
@@ -35,6 +32,11 @@ import eu.play_project.platformservices.querydispatcher.query.transform.util.Ter
 
 
 
+
+
+
+import eu.play_project.platformservices.querydispatcher.query.transform.util.TimeDelayEntry;
+import eu.play_project.platformservices.querydispatcher.query.transform.util.TimeDelayTable;
 
 import org.openrdf.query.MalformedQueryException;
 
@@ -50,34 +52,23 @@ public class EPLProcessor {
 			throws MalformedQueryException{
 		EPLTranslator translator = new EPLTranslator();
 		
-		Table table = new Table();
+		Table notTable = new Table();
 		
 		try {
-			qc.jjtAccept(translator, table);
+			qc.jjtAccept(translator, notTable);
 		} catch (VisitorException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static class EPLTranslator extends eu.play_project.platformservices.bdpl.parser.ASTVisitorBase {
+	private static class EPLTranslator extends ASTVisitorBase {
+		
+		private static int MAX_NUM_SEQ_CLAUSE = 24;
 		
 		@Override
 		public Object visit(ASTEventPattern node, Object data)
 			throws VisitorException
 		{
-			/*if(node.getTop()){
-				System.out.print("\ntree: pattern[ ");
-				super.visit(node, data);
-				System.out.print(" ]\n");
-			}
-			else{
-				System.out.print(" ( ");
-				super.visit(node, data);
-				System.out.print(" ) ");
-			}
-			
-			return data;
-			*/
 			
 			OrClause ret;
 			
@@ -124,10 +115,6 @@ public class EPLProcessor {
 		public Object visit(ASTC node, Object data)
 				throws VisitorException
 		{
-			/*System.out.print(" "+node.getOperator()+" ");
-			super.visit(node, data);
-			
-			return data;*/
 			
 			// C = B
 			if(node.jjtGetNumChildren() <= 1){
@@ -150,10 +137,6 @@ public class EPLProcessor {
 		public Object visit(ASTB node, Object data)
 				throws VisitorException
 		{
-			/*System.out.print(" "+node.getOperator()+" ");
-			super.visit(node, data);
-			
-			return data;*/
 			
 			// B = A
 			if(node.jjtGetNumChildren() <= 1){
@@ -180,11 +163,6 @@ public class EPLProcessor {
 		public Object visit(ASTA node, Object data)
 				throws VisitorException
 		{
-			/*System.out.print(" "+node.getOperator()+" ");
-			super.visit(node, data);
-			
-			return data;*/
-			
 			return super.visit(node, data);
 		}
 		
@@ -192,12 +170,6 @@ public class EPLProcessor {
 		public Object visit(ASTNotClause node, Object data)
 				throws VisitorException
 		{
-			/*System.out.print(" NOT: ");
-			
-			super.visit(node, data);
-			return data;*/
-			
-			//super.visit(node, data);
 			
 			Table notTable = (Table)data;
 			
@@ -208,13 +180,13 @@ public class EPLProcessor {
 			// NotClause must have 3 children. Pay attention to the jjtree file!
 			for(int i = 0; i < children.size(); i++){
 				expression = (OrClause) children.get(i).jjtAccept(this, data);
-				notTerms[i] = expression.getAndClauses().get(0).getSeqClauses().get(0).getTerms().get(0);
+				notTerms[i] = expression.getSeqClauses().get(0).getTerms().get(0);
 			}
 			
 			Entry entry = new Entry(notTerms[1], notTerms[2]);
 			notTable.put(notTerms[0], entry);
 			
-			List<Term> seq = expression.getAndClauses().get(0).getSeqClauses().get(0).getTerms();
+			List<Term> seq = expression.getSeqClauses().get(0).getTerms();
 			seq.clear();
 			seq.add(notTerms[0]);
 			seq.add(notTerms[2]);
@@ -236,13 +208,12 @@ public class EPLProcessor {
 			
 			super.visit(node, data);
 			
-			Term term = new Term("time", 1);
+			Term term = new Term(node.getEventName(), 1);
+			term.setDuration(node.getEventParam());
 			SeqClause seq = new SeqClause();
 			seq.addTerm(term);
-			AndClause and = new AndClause();
-			and.addSeqClause(seq);
 			OrClause expression = new OrClause();
-			expression.addAndClause(and);
+			expression.addSeqClause(seq);
 			
 			return expression;
 		}
@@ -263,10 +234,8 @@ public class EPLProcessor {
 			Term term = new Term(node.getEventName(), 1);
 			SeqClause seq = new SeqClause();
 			seq.addTerm(term);
-			AndClause and = new AndClause();
-			and.addSeqClause(seq);
 			OrClause expression = new OrClause();
-			expression.addAndClause(and);
+			expression.addSeqClause(seq);
 			
 			return expression;
 		}
@@ -278,11 +247,11 @@ public class EPLProcessor {
 			OrClause ret = expressions.get(0);
 			
 			for(int i = 1; i < expressions.size(); i++){
-				OrClause orts = expressions.get(i);
-				List<AndClause> arts = orts.getAndClauses();
+				OrClause expression = expressions.get(i);
+				List<SeqClause> seqcs = expression.getSeqClauses();
 				
-				for(int j = 0; j < arts.size(); j++){
-					ret.addAndClause(arts.get(j));
+				for(int j = 0; j < seqcs.size(); j++){
+					ret.addSeqClause(seqcs.get(j));
 				}
 			}
 			
@@ -290,7 +259,7 @@ public class EPLProcessor {
 		}
 		
 		/*
-		 * Exp = ((TERM (seq TERM)*:=SEQ CLAUSE) (and SEQ CLAUSE)*:= AND CLAUSE) (or AND CLAUSE)*:=OR CLAUSE)
+		 * Exp = ((TERM (seq TERM)*:=SEQ CLAUSE) or SEQ CLAUSE)*:=OR CLAUSE)
 		 */
 		
 		
@@ -303,7 +272,7 @@ public class EPLProcessor {
 		private OrClause unionSeqExpression(List<OrClause> expressions) throws BDPLTransformException{
 			
 			OrClause ret = new OrClause();
-			combineAndClause(new ArrayList<AndClause>(), expressions, 1, ret);
+			combineSeqClause(new ArrayList<SeqClause>(), expressions, 1, ret);
 			
 			return ret;
 		}
@@ -313,24 +282,24 @@ public class EPLProcessor {
 		 */
 		private OrClause unionAndExpression(List<OrClause> expansions) throws BDPLTransformException{
 			OrClause ret = new OrClause();
-			combineAndClause(new ArrayList<AndClause>(), expansions, 2, ret);
+			combineSeqClause(new ArrayList<SeqClause>(), expansions, 2, ret);
 			
 			return ret;
 		}
 		
 		/*
-		 * (AND CLAUSE (op AND CLAUSE)*):=combi (or (AND CLAUSE (op AND CLAUSE)*))* = ( AND CLAUSE (or AND CLAUSE)*):=exp (op (AND CLAUSE (or AND CLAUSE)*))*
+		 * (SEQ CLAUSE (op SEQ CLAUSE)*):=combi (or (SEQ CLAUSE (op SEQ CLAUSE)*))* = ( SEQ CLAUSE (or SEQ CLAUSE)*):=exp (op (SEQ CLAUSE (or SEQ CLAUSE)*))*
 		 * 
 		 * @param combi a combination of and terms from each exps
 		 * @param exps 
 		 */
-		private void combineAndClause(List<AndClause> combi, List<OrClause> exps, int type, OrClause result) throws BDPLTransformException{
+		private void combineSeqClause(List<SeqClause> combi, List<OrClause> exps, int type, OrClause result) throws BDPLTransformException{
 			int size = exps.size();
 			
 			if(size > 0){
-				// a stack of current AND CLAUSE of each expression
+				// a stack of the index of current SEQ CLAUSE of each expression
 				int [] stack = new int [size];
-				// a pointer to current expression from which a AND CLAUSE will be chosen
+				// a pointer to current expression from which a SEQ CLAUSE will be chosen
 				int pointer = 0;
 				stack[0] = 0;
 				
@@ -339,45 +308,40 @@ public class EPLProcessor {
 					if(pointer < 0){
 						break;
 					}
-					// an AND CLAUSE from the last expression is chosen, one combination is made
+					// an SEQ CLAUSE from the last expression is chosen, one combination is made
 					// pointer goes back to the previous expression
 					else if(pointer >= size){
 						switch(type){
 							case 1:{
-								// (AND CLAUSE (seq AND CLAUSE)*) (or (AND CLAUSE (seq AND CLAUSE)*)) = (AND CLAUSE (or AND CLAUSE)*)(seq (AND CLAUSE (or AND CLAUSE)*))*
+								// (SEQ CLAUSE (seq SEQ CLAUSE)*) (or (SEQ CLAUSE (seq SEQ CLAUSE)*)) = (SEQ CLAUSE (or SEQ CLAUSE)*)(seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
 								expand1(combi, result);
 								break;
 							}
 							case 2:{
-								// AND CLAUSE (or AND CLAUSE)* = (AND CLAUSE (or AND CLAUSE)*)(and (AND CLAUSE (or AND CLAUSE)*))*
+								// SEQ CLAUSE (or SEQ CLAUSE)* = (SEQ CLAUSE (or SEQ CLAUSE)*)(and (SEQ CLAUSE (or SEQ CLAUSE)*))*
 								expand2(combi, result);
-								break;
-							}
-							case 3:{
-								// (AND CLAUSE (seq AND CLAUSE)*) (or (AND CLAUSE (seq AND CLAUSE)*)) = (SEQ CLAUSE (or SEQ CLAUSE)*)(seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
-								expand3(combi, result);
 								break;
 							}
 						}
 						
-						// remove the last AND CLAUSE
+						// remove the last SEQ CLAUSE
 						combi.remove(combi.size()-1);
 						pointer --;
 					}
-					// a further AND CLAUSE will be chosen here
+					// a further SEQ CLAUSE will be chosen here
 					else{
 						int index = stack[pointer];
-						List<AndClause> ands = exps.get(pointer).getAndClauses();
+						List<SeqClause> seqcs = exps.get(pointer).getSeqClauses();
 						
-						// chose a AND CLAUSE from this expression
+						// chose a SEQ CLAUSE from this expression
 						// pointer goes to the next expression
-						if(index < ands.size()){
-							combi.add(ands.get(index));
+						if(index < seqcs.size()){
+							combi.add(seqcs.get(index));
 							stack[pointer] = index + 1;
 							pointer++;
 							
 						}
-						// all AND CLAUSE from this expression are chosen
+						// all SEQ CLAUSE from this expression are chosen
 						// pointer goes back to the previous expression
 						else{
 							if(pointer > 0){
@@ -399,19 +363,19 @@ public class EPLProcessor {
 		 * @param combi a combination of and terms from each exps
 		 * @param exps 
 		 */
-		private void combineAndClauseRecursive(List<AndClause> combi, List<OrClause> exps, int depth, int type, OrClause result) throws BDPLTransformException{
+		private void combineSeqClauseRecursive(List<SeqClause> combi, List<OrClause> exps, int depth, int type, OrClause result) throws BDPLTransformException{
 			
 			if(exps.size() > 0){
 				// make combination of and terms from every expansion
 				if(depth < exps.size()){
 					OrClause otrs = exps.get(depth);
 					
-					for(int i = 0; i < otrs.getAndClauses().size(); i++){
-						AndClause atrs = otrs.getAndClauses().get(i);
+					for(int i = 0; i < otrs.getSeqClauses().size(); i++){
+						SeqClause seqc = otrs.getSeqClauses().get(i);
 						// add the next and terms in this level
-						combi.add(atrs);
+						combi.add(seqc);
 						// go to the next depth
-						combineAndClauseRecursive(combi, exps, depth+1, type, result);
+						combineSeqClauseRecursive(combi, exps, depth+1, type, result);
 						// remove the old and terms in this level
 						combi.remove(combi.size()-1);
 					}
@@ -419,18 +383,13 @@ public class EPLProcessor {
 				else{
 					switch(type){
 						case 1:{
-							// (AND CLAUSE (seq AND CLAUSE)*) (or (AND CLAUSE (seq AND CLAUSE)*)) = (AND CLAUSE (or AND CLAUSE)*)(seq (AND CLAUSE (or AND CLAUSE)*))*
+							// (SEQ CLAUSE (seq SEQ CLAUSE)*) (or (SEQ CLAUSE (seq SEQ CLAUSE)*)) = (SEQ CLAUSE (or SEQ CLAUSE)*)(seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
 							expand1(combi, result);
 							break;
 						}
 						case 2:{
 							// AND CLAUSE (or AND CLAUSE)* = (AND CLAUSE (or AND CLAUSE)*)(and (AND CLAUSE (or AND CLAUSE)*))*
 							expand2(combi, result);
-							break;
-						}
-						case 3:{
-							// (AND CLAUSE (seq AND CLAUSE)*) (or (AND CLAUSE (seq AND CLAUSE)*)) = (SEQ CLAUSE (or SEQ CLAUSE)*)(seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
-							expand3(combi, result);
 							break;
 						}
 					}
@@ -441,126 +400,89 @@ public class EPLProcessor {
 		/*
 		 * SEQ CLAUSE = (SEQ CLAUSE (seq SEQ CLAUSE)*):= combi
 		 * 
-		 * @param combi only used for passing data
+		 * @param combi only used for passing data, must not be null
 		 */
-		private void expand3(List<AndClause> combi, OrClause result){
-			AndClause and = new AndClause();
+		private void expand1(List<SeqClause> combi, OrClause result) throws BDPLTransformException{
+			
 			SeqClause seq = new SeqClause();
 			List<Term> trs = seq.getTerms();
-			and.addSeqClause(seq);
+			TimeDelayTable tdTable = new TimeDelayTable();
+			seq.setTdTable(tdTable);
+			//List<TimeDelayEntry> entries = tdTable.getEntries();
 			
+			Term endEvent = null, startEvent = null;
 			for(int i = 0; i < combi.size(); i++){
-				AndClause and1 = combi.get(i);
-				List<Term> trs1 = and1.getSeqClauses().get(0).getTerms();
-				
-				for(int j = 0; j < trs1.size(); j++){
-					trs.add(trs1.get(j));
+				SeqClause current = combi.get(i);
+				if(current.getTdTable() == null){
+					initTimeDelayTable(current);
 				}
+				
+				int size = trs.size();
+				if(size > 0){
+					endEvent = trs.get(size - 1);
+				}
+				
+				List<Term> currentTerms = current.getTerms();
+				for(int j = 0; j < currentTerms.size(); j++){
+					Term temp = currentTerms.get(j);
+					if(temp.getType().contains("event")){
+						trs.add(temp);
+					}
+				}
+				
+				if(size < trs.size()){
+					startEvent = trs.get(size);
+				}
+				else{
+					startEvent = null;
+				}
+				
+				joinTimeDelayTable(endEvent, startEvent, tdTable, current.getTdTable());
 			}
 			
 			// write one OR CLAUSE in result
-			result.addAndClause(and);
+			result.addSeqClause(seq);
 		}
 		
 		/*
-		 *  Exp = (AND CLAUSE (and AND CLAUSE)*):= combi
+		 *  Exp = (SEQ CLAUSE (and SEQ CLAUSE)*):= combi
 		 */
-		private void expand2(List<AndClause> combi, OrClause result) throws BDPLTransformException{
+		private void expand2(List<SeqClause> combi, OrClause result) throws BDPLTransformException{
 			
 			OrClause or;
 			// statistic data for expanding AND CLAUSE
-			List<Term> singleTerms = new ArrayList<Term>();
+			/*List<Term> singleTerms = new ArrayList<Term>();
 			List<Term> timeTerms = new ArrayList<Term>();
 			List<SeqClause> seqTerms = new ArrayList<SeqClause>();
 			
-			// every AND CLAUSE in this combination
+			
 			for(int i = 0; i < combi.size(); i++){
-				AndClause and = combi.get(i);
+				SeqClause seq = combi.get(i);
 				List<SeqClause> ls = and.getSeqClauses();
 				
 				prepareExpandAndClause(ls, singleTerms, timeTerms, seqTerms);
 	
-			}
+			}*/
+			
+			/*prepareExpandAndClause(combi, singleTerms, timeTerms, seqTerms);
+			// (SEQ CLAUSE (or SEQ CLAUSE)*) = AND CLAUSE
+			or = transformAndClause(singleTerms, timeTerms, seqTerms);*/
 			
 			// (SEQ CLAUSE (or SEQ CLAUSE)*) = AND CLAUSE
-			or = expandAndClause(singleTerms, timeTerms, seqTerms);
-			List<AndClause> ands = or.getAndClauses();
-			for(int j = 0; j < ands.size(); j++){
-				result.addAndClause(ands.get(j));
-			}	
+			or = transformAndClause(combi);
 			
-			//test output
-			
-				/*AndClause first = combi.get(0);
-				System.out.print("\n( ");
-				List<SeqClause> lstrs = first.getSeqClauses();
-				
-				System.out.print("( ");
-				SeqClause strs = lstrs.get(0);
-				List<Term> ltrs = strs.getTerms();
-				Term term = ltrs.get(0);
-				System.out.print(term.getType()+" ");
-				for(int j = 1; j < ltrs.size(); j++){
-					term = ltrs.get(j);
-					System.out.print("->"+term.getType()+" ");
-				}
-				System.out.print(") ");
-			
-				for(int i = 1; i < lstrs.size(); i++){
-					System.out.print("and ( ");
-					strs = lstrs.get(i);
-					ltrs = strs.getTerms();
-					
-					term = ltrs.get(0);
-						System.out.print(term.getType()+" ");
-					for(int j = 1; j < ltrs.size(); j++){
-						term = ltrs.get(j);
-						System.out.print("->"+term.getType()+" ");
-					}
-					System.out.print(") ");
-				}
-				System.out.print(") ");
-				
-				for(int i = 1; i < combi.size(); i++){
-					System.out.print("and ( ");
-					first = combi.get(i);
-					lstrs = first.getSeqClauses();
-					
-					System.out.print("( ");
-					strs = lstrs.get(0);
-					ltrs = strs.getTerms();
-					term = ltrs.get(0);
-					System.out.print(term.getType()+" ");
-					for(int l = 1; l < ltrs.size(); l++){
-						term = ltrs.get(l);
-						System.out.print("->"+term.getType()+" ");
-					}
-					System.out.print(") ");
-					
-					for(int k = 1; k < lstrs.size(); k++){
-						System.out.print("and ( ");
-						strs = lstrs.get(k);
-						ltrs = strs.getTerms();
-						
-						term = ltrs.get(0);
-							System.out.print(term.getType()+" ");
-						for(int j = 1; j < ltrs.size(); j++){
-							term = ltrs.get(j);
-							System.out.print("->"+term.getType()+" ");
-						}
-						System.out.print(") ");
-					}
-					System.out.print(") ");
-				}*/
-			
+			List<SeqClause> seqcs = or.getSeqClauses();
+			for(int j = 0; j < seqcs.size(); j++){
+				result.addSeqClause(seqcs.get(j));
+			}			
 		}
 		
 		/*
-		 *  Exp = (AND CLAUSE (seq AND CLAUSE)*):=combi
+		 *  Exp = (SEQ CLAUSE (seq SEQ CLAUSE)*):=combi
 		 *  
 		 *  @param combi only used for passing data
 		 */
-		private void expand1(List<AndClause> combi, OrClause result) throws BDPLTransformException{
+		/*private void expand1(List<SeqClause> combi, OrClause result) throws BDPLParseException{
 			
 			
 			List<OrClause> seqs = new ArrayList<OrClause>();
@@ -590,80 +512,17 @@ public class EPLProcessor {
 			// (SEQ CLAUSE (seq SEQ CLAUSE)*) (or SEQ CLAUSE (seq SEQ CLAUSE)*)* = (SEQ CLAUSE (or SEQ CLAUSE)*) (seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
 			combineAndClause(new ArrayList<AndClause>(), seqs, 3, result);
 			
-			
-			/*AndTerms first = combi.get(0);
-			System.out.print("\n( ");
-			List<SeqTerms> lstrs = first.getTerms();
-			
-			System.out.print("( ");
-			SeqTerms strs = lstrs.get(0);
-			List<Term> ltrs = strs.getTerms();
-			Term term = ltrs.get(0);
-			System.out.print(term.getType()+" ");
-			for(int j = 1; j < ltrs.size(); j++){
-				term = ltrs.get(j);
-				System.out.print("->"+term.getType()+" ");
-			}
-			System.out.print(") ");
-		
-			for(int i = 1; i < lstrs.size(); i++){
-				System.out.print("and ( ");
-				strs = lstrs.get(i);
-				ltrs = strs.getTerms();
-				
-				term = ltrs.get(0);
-					System.out.print(term.getType()+" ");
-				for(int j = 1; j < ltrs.size(); j++){
-					term = ltrs.get(j);
-					System.out.print("->"+term.getType()+" ");
-				}
-				System.out.print(") ");
-			}
-			System.out.print(") ");
-			
-			for(int i = 1; i < combi.size(); i++){
-				System.out.print("-> ( ");
-				first = combi.get(i);
-				lstrs = first.getTerms();
-				
-				System.out.print("( ");
-				strs = lstrs.get(0);
-				ltrs = strs.getTerms();
-				term = ltrs.get(0);
-				System.out.print(term.getType()+" ");
-				for(int l = 1; l < ltrs.size(); l++){
-					term = ltrs.get(l);
-					System.out.print("->"+term.getType()+" ");
-				}
-				System.out.print(") ");
-				
-				for(int k = 1; k < lstrs.size(); k++){
-					System.out.print("and ( ");
-					strs = lstrs.get(k);
-					ltrs = strs.getTerms();
-					
-					term = ltrs.get(0);
-						System.out.print(term.getType()+" ");
-					for(int j = 1; j < ltrs.size(); j++){
-						term = ltrs.get(j);
-						System.out.print("->"+term.getType()+" ");
-					}
-					System.out.print(") ");
-				}
-				System.out.print(") ");
-			}*/
-		}
+		}*/
 		
 		
 		/*
-		 * Gather statics information in AND CLAUSE
+		 * Gather statics information in all SEQ CLAUSE
 		 */
-		private void prepareExpandAndClause(List<SeqClause> ls, List<Term> singleTerms, List<Term> timeTerms, List<SeqClause> seqTerms) throws BDPLTransformException{
-			// every SEQ CLAUSE in this AND CLAUSE 
-			Term maxTime = null;
+		private void prepareExpandAndClause(List<SeqClause> seqcs, List<Term> singleTerms, List<Term> timeTerms, List<SeqClause> seqTerms) throws BDPLTransformException{
 			
-			for(int j = 0; j < ls.size(); j++){
-				SeqClause st = ls.get(j);
+			// every SEQ CLAUSE in this AND CLAUSE 
+			for(int j = 0; j < seqcs.size(); j++){
+				SeqClause st = seqcs.get(j);
 				
 				// sequence terms
 				if(st.getSize() > 1){
@@ -677,41 +536,430 @@ public class EPLProcessor {
 					if(t.getType().contains("event")){
 						singleTerms.add(t);
 						
-						if(t.getDuration() != null){
-							if(Integer.valueOf(t.getDuration()) > Integer.valueOf(maxTime.getDuration())){
-								maxTime = t;
-							}
-						}
 					}
 					// time term
-					else if(t.getType().contains("time")){
-						// chose the maximal time
-						if(maxTime != null){
-							if(Integer.valueOf(t.getDuration()) > Integer.valueOf(maxTime.getDuration())){
-								maxTime = t;
-							}
-						}
+					else if(t.getType().contains("interval")){
+						timeTerms.add(t);
 					}
 					else{
 						throw new BDPLTransformException("Invalid term type");
 					}
 				}
 			}
+		}
+		
+		/*
+		 * 
+		 * @param seqcs must not be null
+		 */
+		private OrClause transformAndClause(List<SeqClause> seqcs) throws BDPLTransformException{
+			OrClause ret = new OrClause();
 			
-			if(maxTime != null){
-				timeTerms.add(maxTime);
+			if(seqcs.size() > 0){
+				TimeDelayTable tdTable;
+				List<TimeDelayEntry> entries = new ArrayList<TimeDelayEntry>();
+			
+				// every SEQ CLAUSE in this AND CLAUSE 
+				for(int j = 0; j < seqcs.size(); j++){
+					SeqClause st = seqcs.get(j);
+					TimeDelayTable temp = st.getTdTable();
+					
+					if(temp == null){
+						throw new BDPLTransformException("No time delay table.");
+					}
+					
+					// SEQ CLAUSE with many terms
+					if(st.getSize() > 1){
+						// SEQ CLAUSE with time delay must do not have time delay table
+						/*if(st.getTdTable() == null){
+							makeTimeDelayTable(st);
+						}*/
+						
+						// make the time delay table of the result
+						for(TimeDelayEntry entry : temp.getEntries()){
+							entries.add(entry);
+						}
+					}
+					// SEQ CLAUSE with only one term
+					else{
+						Term t = st.getTerms().get(0);
+						
+						if(t.getType().contains("event")){
+							
+							// make the time delay table of the result
+							for(TimeDelayEntry entry : temp.getEntries()){
+								entries.add(entry);
+							}
+							
+						}
+						else if(t.getType().contains("interval")){
+							throw new BDPLTransformException("Time delay should not be an operant of an AND operator");
+						}
+						else{
+							throw new BDPLTransformException("Invalid term type");
+						}
+					}
+				}
+			
+			
+				List<SeqTerms> seqs = new ArrayList<SeqTerms>();
+				SeqClause copy = new SeqClause();
+				List<Term> init = seqcs.get(0).getTerms();
+				for(int i = 0; i < init.size(); i++){
+					copy.addTerm(init.get(i));
+				}
+				
+				seqs.add(new SeqTerms(0, copy));
+				
+					/*System.out.println("START AND ELE:");
+					SeqClause s = seqcs.get(0);
+					for(Term ter : s.getTerms()){
+						System.out.println(ter.getType());
+					}*/
+				
+				// insert seq terms in AND CLAUSE
+				for(int i = 1; i < seqcs.size(); i++){
+					SeqClause iseq = seqcs.get(i);
+						
+						/*System.out.println("AND ELE:");
+						s = seqcs.get(i);
+						for(Term ter : s.getTerms()){
+							System.out.println(ter.getType());
+						}*/
+					seqs = insertSeq(seqs, iseq);
+				}
+				
+				// create result
+				for(int i = 0; i < seqs.size(); i++){
+					SeqClause seqc = seqs.get(i).getSequence();
+					tdTable = new TimeDelayTable();
+					List<TimeDelayEntry> temp = tdTable.getEntries();
+					// copy time delay table
+					for(int j = 0; j < entries.size(); j++){
+						TimeDelayEntry entry = entries.get(j);
+						temp.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+					}
+					
+					seqc.setTdTable(tdTable);
+					ret.addSeqClause(seqc);
+				}
+			}
+			
+			return ret;
+		}
+		
+		
+		private void initTimeDelayTable(SeqClause seqc) throws BDPLTransformException{
+			List<Term> terms = seqc.getTerms();
+			
+			if(terms.size() != 1){
+				throw new BDPLTransformException("Time delay table can not be initiated");
+			}
+			
+			Term term = terms.get(0);
+			
+			// create a new time delay table and set it to the SEQ CLAUSE
+			TimeDelayTable tdTable = new TimeDelayTable();
+			seqc.setTdTable(tdTable);
+			
+			if(term.getType().contains("interval")){
+				List<TimeDelayEntry> entries = tdTable.getEntries();
+				entries.add(new TimeDelayEntry(null, null, term.getDuration()));
 			}
 		}
 		
 		/*
-		 * (SEQ CLAUSE (or SEQ CLAUSE)*) = ( AND CLAUSE )
+		 * 
+		 * @param endEvent 
+		 * @param startEvent
+		 * @param result the result of joined table
+		 * @param table the table which should be joined into the result. The content of this table should not be changed.
+		 */
+		private void joinTimeDelayTable(Term endEvent, Term startEvent, TimeDelayTable result, TimeDelayTable table) throws BDPLTransformException{
+			List<TimeDelayEntry> endDelays = result.getEntriesByEnd(null);
+			List<TimeDelayEntry> startDelays = table.getEntriesByStart(null);
+				
+				System.out.println();
+				if(endEvent != null){
+					System.out.println("EndEvent: "+endEvent.getType());
+				}
+				else{
+					System.out.println("EndEvent: null");
+				}
+				if(startEvent != null){
+					System.out.println("StartEvent: "+startEvent.getType());
+				}
+				else{
+					System.out.println("StartEvent: null");
+				}
+				
+			// result has end delays
+			if(endDelays.size() > 0){
+				// table has start delays
+				if(startDelays.size() > 0){
+					for(int i = 0; i < endDelays.size(); i++){
+						TimeDelayEntry endDelay = endDelays.get(i);
+						
+						TimeDelayEntry startDelay;
+						int j = 0;
+						for( ; j < startDelays.size()-1; j++){
+							startDelay = startDelays.get(j);
+							TimeDelayEntry temp = new TimeDelayEntry(endDelay.getStart(), startDelay.getEnd(), String.valueOf(Integer.valueOf(endDelay.getDuration())+Integer.valueOf(startDelay.getDuration())));
+							result.getEntries().add(temp);
+								
+								String s = "null", e = "null";
+								if(temp.getStart() != null){
+									s = temp.getStart().getType();
+								}
+								if(temp.getEnd() != null){
+									e = temp.getEnd().getType();
+								}
+								System.out.println("Add Entry: "+s+" "+temp.getDuration()+" "+e);
+						}
+						startDelay = startDelays.get(j);
+						endDelay.setEnd(startDelay.getEnd());
+						endDelay.setDuration(String.valueOf(Integer.valueOf(endDelay.getDuration())+Integer.valueOf(startDelay.getDuration())));
+						
+							String s = "null", e = "null";
+							if(endDelay.getStart() != null){
+								s = endDelay.getStart().getType();
+							}
+							if(endDelay.getEnd() != null){
+								e = endDelay.getEnd().getType();
+							}
+							System.out.println("Add Entry: "+s+" "+endDelay.getDuration()+" "+e);
+					}
+				}
+				// table has start event
+				else{
+					if(startEvent == null){
+						throw new BDPLTransformException("Time delay table could not be joined");
+					}
+					else{
+						
+						for(int i = 0; i < endDelays.size(); i++){
+							TimeDelayEntry endDelay = endDelays.get(i);
+							endDelay.setEnd(startEvent);
+								
+								String s = "null", e = "null";
+								if(endDelay.getStart() != null){
+									s = endDelay.getStart().getType();
+								}
+								if(endDelay.getEnd() != null){
+									e = endDelay.getEnd().getType();
+								}
+								System.out.println("Change Entry: "+s+" "+endDelay.getDuration()+" "+e);
+						}
+						
+					}
+				}
+			}
+			// result has end event 
+			else{
+				
+				// table has start delays
+				if(startDelays.size() > 0){
+					for(int i = 0; i < startDelays.size(); i++){
+						TimeDelayEntry startDelay = startDelays.get(i);
+						TimeDelayEntry temp = new TimeDelayEntry(endEvent, startDelay.getEnd(), startDelay.getDuration());
+						result.getEntries().add(temp);
+								
+							String s = "null", e = "null";
+							if(temp.getStart() != null){
+								s = temp.getStart().getType();
+							}
+							if(temp.getEnd() != null){
+								e = temp.getEnd().getType();
+							}
+							System.out.println("Add Entry: "+s+" "+temp.getDuration()+" "+e);
+					}
+				}
+				// table has start event
+				// do nothing
+				
+			}
+			
+			// copy other entries in table into result
+			List<TimeDelayEntry> copys = table.getEntriesWithStartEvent();
+			for(int i = 0; i < copys.size(); i++){
+				TimeDelayEntry copy = copys.get(i);
+				TimeDelayEntry temp = new TimeDelayEntry(copy.getStart(), copy.getEnd(), copy.getDuration());
+				result.getEntries().add(temp);
+					
+					String s = "null", e = "null";
+					if(temp.getStart() != null){
+						s = temp.getStart().getType();
+					}
+					if(temp.getEnd() != null){
+						e = temp.getEnd().getType();
+					}
+					System.out.println("Copy Entry: "+s+" "+temp.getDuration()+" "+e);
+			}
+		}
+		
+		/*
+		 * Make a time delay table for a SEQ CLAUSE
+		 */
+		private void makeTimeDelayTable(SeqClause seqc){
+			// create a new time delay table and set it to the SEQ CLAUSE
+			TimeDelayTable tdTable = new TimeDelayTable();
+			seqc.setTdTable(tdTable);
+			
+			List<TimeDelayEntry> entries = tdTable.getEntries();
+			List<Term> terms = seqc.getTerms();
+			
+			Term pre = null;
+			int delay = 0;
+			List<Integer> indexDelay = new ArrayList<Integer>();
+			int state = 0;
+			// every term in the SEQ CLAUSE
+			for(int i = 0; i < terms.size(); i++){
+				Term term = terms.get(i);
+				
+				if(term.getType().contains("interval")){
+					indexDelay.add(i);
+					delay += Integer.valueOf(term.getDuration());
+					
+					state = 1;
+				}
+				else if(term.getType().contains("event")){
+					switch(state){
+					// previous term is null
+					case 0:{
+						
+						// set pre to this event term
+						pre = term;
+							
+						state = 2;
+						
+						break;
+					}
+					// previous term is a time delay
+					case 1:{
+						System.out.println("go");
+						// create a time delay entry, reset pre to this event term
+						
+						TimeDelayEntry entry = new TimeDelayEntry(pre, term, String.valueOf(delay));
+						entries.add(entry);
+							
+								if(pre != null){
+									System.out.println("Time delay entry: "+pre.getType()+" "+term.getType()+" "+delay);
+								}
+								else{
+									System.out.println("Time delay entry: null "+term.getType()+" "+delay);
+								}
+								
+						delay = 0;
+						pre = term;
+							
+						state = 2;
+						
+						break;
+					}
+					// previous term is an event
+					case 2:{
+						
+						// reset pre to this event term
+						pre = term;
+							
+						state = 2;
+						
+						break;
+					}
+					}
+				}
+				
+				/*switch(state){
+					// previous term is null
+					case 0:{
+						// record this time delay
+						if(term.getType().contains("interval")){
+							indexDelay.add(i);
+							delay += Integer.valueOf(term.getDuration());
+							
+							state = 1;
+						}
+						// set pre to this event term
+						else if(term.getType().contains("event")){
+							pre = term;
+							
+							state = 2;
+						}
+						break;
+					}
+					// previous term is a time delay
+					case 1:{
+						// accumulate this time delay
+						if(term.getType().contains("interval")){
+							indexDelay.add(i);
+							delay += Integer.valueOf(term.getDuration());
+							
+							state = 1;
+						}
+						// create a time delay entry, reset pre to this event term
+						else if(term.getType().contains("event")){
+							TimeDelayEntry entry = new TimeDelayEntry(pre, term, String.valueOf(delay));
+							entries.add(entry);
+							
+								if(pre != null){
+									System.out.println("Time delay entry: "+pre.getType()+" "+term.getType()+" "+delay);
+								}
+								else{
+									System.out.println("Time delay entry: null "+term.getType()+" "+delay);
+								}
+								
+							delay = 0;
+							pre = term;
+							
+							state = 2;
+						}
+						break;
+					}
+					// previous term is an event
+					case 2:{
+						// record this time delay
+						if(term.getType().contains("interval")){
+							indexDelay.add(i);
+							delay += Integer.valueOf(term.getDuration());
+							
+							state = 1;
+						}
+						// reset pre to this event term
+						else if(term.getType().contains("event")){
+							pre = term;
+							
+							state = 2;
+						}
+						break;
+					}
+				}*/
+			}
+			
+			// the last term in SEQ CLAUSE is time delay, create a time delay entry
+			if(state == 1){
+				TimeDelayEntry entry = new TimeDelayEntry(pre, null, String.valueOf(delay));
+				entries.add(entry);
+					System.out.println("Time delay entry: "+pre.getType()+" null "+delay);
+				
+			}
+			
+			// remove all time delays in the SEQ CLAUSE
+			int index;
+			for(int i = 0; i < indexDelay.size(); i++){
+				index = indexDelay.get(i);
+				terms.remove(index-i);
+			}
+		}
+		
+		/*
+		 * (SEQ CLAUSE (or SEQ CLAUSE)*) = ( SEQ CLAUSE (and SEQ CLAUSE)+ )
 		 * 
 		 * 
 		 * @param singleTerms only used for passing data
 		 * @param timeTerms only used for passing data
 		 * @param seqTerms only used for passing data
 		 */
-		private OrClause expandAndClause(List<Term> singleTerms, List<Term> timeTerms, List<SeqClause> seqTerms){
+		/*private OrClause transformAndClause(List<Term> singleTerms, List<Term> timeTerms, List<SeqClause> seqTerms){
 			
 			OrClause ret = new OrClause();
 			// the sequence into which new terms are inserted
@@ -752,12 +1000,12 @@ public class EPLProcessor {
 			for(int i = 0; i < seqs.size(); i++){
 				AndClause atrs = new AndClause();
 				atrs.addSeqClause(seqs.get(i).getSequence());
-				ret.addAndClause(atrs);
+				ret.addSeqClause(seqs.get(i).getSequence());
 			}
 			
 			//test output
 			
-			/*List<AndTerms> lat = ret.getTerms();
+			List<AndTerms> lat = ret.getTerms();
 			for(int i = 0; i < lat.size(); i++){
 				AndTerms at = lat.get(i);
 				
@@ -770,7 +1018,7 @@ public class EPLProcessor {
 					System.out.print(t.getType()+" ");
 				}
 			}
-			System.out.println("\nsize: "+lat.size());*/
+			System.out.println("\nsize: "+lat.size());
 			
 			return ret;
 		}
@@ -810,7 +1058,7 @@ public class EPLProcessor {
 			c = a[i];
 			a[i] = a[j];
 			a[j] = c;
-		}
+		}*/
 		
 		/*
 		 * Insert the terms in iseq into the seq.
@@ -818,7 +1066,7 @@ public class EPLProcessor {
 		 * @param seq the original sequence into which iseq is inserted
 		 * @param iseq the sequence to be inserted
 		 */
-		private List<SeqTerms> insertSeq(List<SeqTerms> seqs, SeqClause iseq){
+		private List<SeqTerms> insertSeq(List<SeqTerms> seqs, SeqClause iseq) throws BDPLTransformException{
 			List<SeqTerms> ret = new ArrayList<SeqTerms>();
 			
 			List<SeqTerms> temp = new ArrayList<SeqTerms>();
@@ -840,6 +1088,11 @@ public class EPLProcessor {
 					
 					// add new sequences in result
 					for(int j = 0; j < temp.size(); j++){
+						
+						if(ret.size() > MAX_NUM_SEQ_CLAUSE){
+							throw new BDPLTransformException("The number of SEQ Clause is larger than "+MAX_NUM_SEQ_CLAUSE);
+						}
+						
 						ret.add(temp.get(j));
 					}
 					temp.clear();
@@ -912,17 +1165,19 @@ public class EPLProcessor {
 		}
 		
 		private void printExpression(OrClause result, Table table){
-			List<AndClause> la = result.getAndClauses();
+			//List<AndClause> la = result.getAndClauses();
+			
+			List<SeqClause> seqcs = result.getSeqClauses();
 			
 			Map<Term, Term> notList = new HashMap<Term, Term>();
 			
-			if(la.size() > 0){
-				AndClause first = la.get(0);
-				System.out.print("\n( ");
-				List<SeqClause> lstrs = first.getSeqClauses();
+			if(seqcs.size() > 0){
+				//AndClause first = la.get(0);
+				System.out.print(seqcs.size()+"   \n( ");
+				//List<SeqClause> lstrs = first.getSeqClauses();
 				
-				System.out.print("( ");
-				SeqClause strs = lstrs.get(0);
+				//System.out.print("( ");
+				SeqClause strs = seqcs.get(0);
 				List<Term> ltrs = strs.getTerms();
 				Term term = ltrs.get(0);
 				
@@ -955,10 +1210,10 @@ public class EPLProcessor {
 				}
 				System.out.print(") ");
 			
-				for(int i = 1; i < lstrs.size(); i++){
-					System.out.print("and ( ");
+				for(int i = 1; i < seqcs.size(); i++){
+					System.out.print("or ( ");
 					
-					strs = lstrs.get(i);
+					strs = seqcs.get(i);
 					ltrs = strs.getTerms();
 					
 					term = ltrs.get(0);
@@ -990,84 +1245,23 @@ public class EPLProcessor {
 					}
 					System.out.print(") ");
 				}
-				System.out.print(") ");
 				
-				for(int i = 1; i < la.size(); i++){
-					System.out.print("or ( ");
-					first = la.get(i);
-					lstrs = first.getSeqClauses();
+				System.out.println();
+				for(int i = 0; i < seqcs.size(); i++){
+					System.out.println("TimeDelayTable "+i);
+					TimeDelayTable tdTable = seqcs.get(i).getTdTable();
+					List<TimeDelayEntry> entries = tdTable.getEntries();
 					
-					System.out.print("( ");
-					strs = lstrs.get(0);
-					ltrs = strs.getTerms();
-					term = ltrs.get(0);
-					
-					entry = table.get(term);
-					if(entry != null){
-						notList.put(entry.getNotEnd(), entry.getNot());
+					for(int j = 0; j < entries.size(); j++){
+						TimeDelayEntry en = entries.get(j);
+						String s = "null", e = "null";
+						if(en.getStart() != null)
+							s = en.getStart().getType();
+						if(en.getEnd() != null)
+							e = en.getEnd().getType();
+						System.out.println(s+" "+en.getDuration()+" "+e);
 					}
-					
-					System.out.print(term.getType()+" ");
-					for(int l = 1; l < ltrs.size(); l++){
-						term = ltrs.get(l);
-						
-						System.out.print("-> "+term.getType()+" ");
-						
-						for(Term not : notList.values()){
-							System.out.print("and not "+not.getType()+" ");
-						}
-						
-						if(notList.get(term) != null){
-							notList.remove(term);
-						}
-						
-						//XXX else?
-						entry = table.get(term);
-						if(entry != null){
-							notList.put(entry.getNotEnd(), entry.getNot());
-						}
-						
-					}
-					System.out.print(") ");
-					
-					for(int k = 1; k < lstrs.size(); k++){
-						System.out.print("and ( ");
-						strs = lstrs.get(k);
-						ltrs = strs.getTerms();
-						
-						term = ltrs.get(0);
-						
-						entry = table.get(term);
-						if(entry != null){
-							notList.put(entry.getNotEnd(), entry.getNot());
-						}
-						
-						System.out.print(term.getType()+" ");
-						for(int j = 1; j < ltrs.size(); j++){
-							term = ltrs.get(j);
-							
-							System.out.print("-> "+term.getType()+" ");
-							
-							for(Term not : notList.values()){
-								System.out.print("and not "+not.getType()+" ");
-							}
-							
-							if(notList.get(term) != null){
-								notList.remove(term);
-							}
-							
-							//XXX else?
-							entry = table.get(term);
-							if(entry != null){
-								notList.put(entry.getNotEnd(), entry.getNot());
-							}
-							
-						}
-						System.out.print(") ");
-					}
-					System.out.print(") ");
-				}
-				
+				}			
 			}
 		}
 		

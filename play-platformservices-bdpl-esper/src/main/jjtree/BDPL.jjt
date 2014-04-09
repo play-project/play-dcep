@@ -1924,14 +1924,14 @@ void RealTimeEventQuery():
 {
 	WindowClause()
 	|
-	({System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ] ");})
+	({System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]\n");})
 }
 
 void WindowClause():
 {}
 {
 	<WINDOW>
-	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ] ");} <RBRACE>
+	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]\n");} <RBRACE>
 	WindowDecl()
 	(FilterOrBind())*
 }
