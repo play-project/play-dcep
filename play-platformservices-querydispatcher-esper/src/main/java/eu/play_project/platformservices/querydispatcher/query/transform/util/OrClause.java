@@ -6,19 +6,20 @@ package eu.play_project.platformservices.querydispatcher.query.transform.util;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * @author ningyuan
  *
  */
 public class OrClause {
 	
-	private List<AndClause> clauses = new ArrayList<AndClause>();
+	private List<SeqClause> clauses = new ArrayList<SeqClause>();
 	
-	public List<AndClause> getAndClauses(){
+	public List<SeqClause> getSeqClauses(){
 		return clauses;
 	}
 	
-	public boolean addAndClause(AndClause clause){
+	public boolean addSeqClause(SeqClause clause){
 		return clauses.add(clause);
 	}
 }
