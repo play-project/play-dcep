@@ -11,7 +11,7 @@ package eu.play_project.platformservices.querydispatcher.query.transform.util;
  * Apr 7, 2014
  *
  */
-public class TimeDelayEntry {
+public class TimeDelayEntry implements IEntry{
 	
 	private Term start;
 	

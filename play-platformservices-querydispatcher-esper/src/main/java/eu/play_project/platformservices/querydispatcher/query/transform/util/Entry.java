@@ -9,14 +9,24 @@ package eu.play_project.platformservices.querydispatcher.query.transform.util;
  * Apr 4, 2014
  *
  */
-public class Entry {
+public class Entry implements IEntry{
 	
+	private Term notStart;
 	private Term not;
 	private Term notEnd;
 	
-	public Entry(Term not, Term notEnd){
+	public Entry(Term notStart, Term not, Term notEnd){
+		this.notStart = notStart;
 		this.not = not;
 		this.notEnd = notEnd;
+	}
+	
+	public Term getNotStart() {
+		return this.notStart;
+	}
+
+	public void setNotStart(Term notStart) {
+		this.notStart = notStart;
 	}
 	
 	public Term getNot() {
