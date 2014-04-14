@@ -3,7 +3,6 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.transform.util;
 
-import java.util.List;
 
 /**
  * @author ningyuan
@@ -19,34 +18,37 @@ import java.util.List;
 public class Term {
 	
 	
-	private final String type;
+	private final String name;
 	
 	// id in event table
 	private int eventIDs = -1;
 	
-	private String duration = null;
-
-	public String getDuration() {
+	private long duration = -1l;
+	
+	public long getDuration() {
 		return duration;
 	}
 
 
-	public void setDuration(String duration) {
+	public void setDuration(long duration) {
 		this.duration = duration;
 	}
 
-
+	public Term(String n){
+		name = n;
+	}
+	
 	/*
 	 * Constructor simple event
 	 */
-	public Term(String t, int eids){
-		type = t;
+	public Term(String n, int eids){
+		name = n;
 		eventIDs = eids;
 	}
 	
 	
-	public String getType(){
-		return type;
+	public String getName(){
+		return name;
 	}
 	
 }

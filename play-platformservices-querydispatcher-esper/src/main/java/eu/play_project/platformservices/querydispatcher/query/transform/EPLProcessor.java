@@ -180,31 +180,92 @@ public class EPLProcessor {
 		public Object visit(ASTNotClause node, Object data)
 				throws VisitorException
 		{
+			// A -> C and not B
+			OrClause expression = null;
 			
 			Table notTable = (Table)data;
 			
+			// get 3 child terms of the not clause
 			Term [] notTerms = new Term [3];
 			List<Node> children = node.jjtGetChildren();
-			OrClause expression = null;
-			
 			// NotClause must have 3 children. Pay attention to the jjtree file!
 			for(int i = 0; i < children.size(); i++){
 				expression = (OrClause) children.get(i).jjtAccept(this, data);
 				notTerms[i] = expression.getSeqClauses().get(0).getTerms().get(0);
 			}
 			
-			Entry entry = new Entry(notTerms[1], notTerms[2]);
-			notTable.put(notTerms[0], entry);
-			
-			// TODO create time delay table
-			expression.getSeqClauses().get(0).setTdTable(new TimeDelayTable());
-			
-			List<Term> seq = expression.getSeqClauses().get(0).getTerms();
-			seq.clear();
-			seq.add(notTerms[0]);
-			seq.add(notTerms[2]);
-			
-			return expression;
+			// B is time delay
+			if(BDPLTransformerUtil.getTermType(notTerms[1]) == BDPLTransformerUtil.TERM_TIME){
+				// C is time delay
+				if(BDPLTransformerUtil.getTermType(notTerms[2]) == BDPLTransformerUtil.TERM_TIME){
+					// B is longer than C
+					if(notTerms[1].getDuration() > notTerms[2].getDuration()){
+						// A is time delay
+						// T -> T
+						if(BDPLTransformerUtil.getTermType(notTerms[0]) == BDPLTransformerUtil.TERM_TIME){
+							notTerms[0].setDuration(notTerms[0].getDuration()+notTerms[2].getDuration());
+							
+							List<Term> seq = expression.getSeqClauses().get(0).getTerms();
+							seq.clear();
+							seq.add(notTerms[0]);
+							
+							return expression;
+						}
+						// A is event
+						// A -> T
+						else{
+							TimeDelayTable tdTable = new TimeDelayTable();
+							List<TimeDelayEntry> entries = tdTable.getEntries();
+							entries.add(new TimeDelayEntry(notTerms[0], null, notTerms[2].getDuration()));
+							
+							expression.getSeqClauses().get(0).setTdTable(tdTable);
+							
+							List<Term> seq = expression.getSeqClauses().get(0).getTerms();
+							seq.clear();
+							seq.add(notTerms[0]);
+							
+							return expression;
+						}
+					}
+					// B is not longer than C
+					else{
+						throw new VisitorException("Not time delay is not longer than waiting time delay");
+					}
+				}
+				// C is event
+				else{
+					// TODO A is time delay not join
+					Entry entry = new Entry(notTerms[1], notTerms[2]);
+					notTable.put(notTerms[0], entry);
+					
+					// time delay table
+					expression.getSeqClauses().get(0).setTdTable(new TimeDelayTable());
+					
+					List<Term> seq = expression.getSeqClauses().get(0).getTerms();
+					seq.clear();
+					seq.add(notTerms[0]);
+					seq.add(notTerms[2]);
+					
+					return expression;
+				}
+			}
+			// B is event
+			// A, C could be time delay and are kept in SEQ CLAUSE, so that no AND transformation is carried out
+			else{
+				// TODO A is time delay not join
+				Entry entry = new Entry(notTerms[1], notTerms[2]);
+				notTable.put(notTerms[0], entry);
+				
+				// time delay table
+				expression.getSeqClauses().get(0).setTdTable(new TimeDelayTable());
+				
+				List<Term> seq = expression.getSeqClauses().get(0).getTerms();
+				seq.clear();
+				seq.add(notTerms[0]);
+				seq.add(notTerms[2]);
+				
+				return expression;
+			}
 		}
 		
 		@Override
@@ -222,9 +283,16 @@ public class EPLProcessor {
 			super.visit(node, data);
 			
 			Term term = new Term(node.getEventName(), 1);
-			term.setDuration(node.getEventParam());
+			
+			try {
+				term.setDuration(BDPLTransformerUtil.getDurationInSec(node.getDuration()));
+			} catch (BDPLTransformException e) {
+				throw new VisitorException("Time delay format exception: "+node.getDuration());
+			}
+			
 			SeqClause seq = new SeqClause();
 			seq.addTerm(term);
+			
 			OrClause expression = new OrClause();
 			expression.addSeqClause(seq);
 			
@@ -247,6 +315,7 @@ public class EPLProcessor {
 			Term term = new Term(node.getEventName(), 1);
 			SeqClause seq = new SeqClause();
 			seq.addTerm(term);
+			
 			OrClause expression = new OrClause();
 			expression.addSeqClause(seq);
 			
@@ -410,6 +479,7 @@ public class EPLProcessor {
 			}
 		}
 		
+
 		/*
 		 * SEQ CLAUSE = (SEQ CLAUSE (seq SEQ CLAUSE)*):= combi
 		 * 
@@ -417,41 +487,40 @@ public class EPLProcessor {
 		 */
 		private void expand1(List<SeqClause> combi, OrClause result) throws BDPLTransformException{
 			
+			// create new result SEQ CLAUSE and its time delay table
 			SeqClause seq = new SeqClause();
 			List<Term> trs = seq.getTerms();
 			TimeDelayTable tdTable = new TimeDelayTable();
 			seq.setTdTable(tdTable);
-			//List<TimeDelayEntry> entries = tdTable.getEntries();
 			
-			Term endEvent = null, startEvent = null;
+			Term endEvent = null;
 			for(int i = 0; i < combi.size(); i++){
+				
+				// set the end event from last SEQ CLAUSE
+				if(trs.size() > 0){
+					endEvent = trs.get(trs.size()-1);
+				}
+				
 				SeqClause current = combi.get(i);
+				// initiate SEQ CLAUSE with only one term
 				if(current.getTdTable() == null){
 					initTimeDelayTable(current);
 				}
 				
-				int size = trs.size();
-				if(size > 0){
-					endEvent = trs.get(size - 1);
-				}
 				
-				List<Term> currentTerms = current.getTerms();
-				for(int j = 0; j < currentTerms.size(); j++){
-					Term temp = currentTerms.get(j);
-					if(temp.getType().contains("event")){
-						trs.add(temp);
-					}
-				}
-				
-				if(size < trs.size()){
-					startEvent = trs.get(size);
-				}
-				else{
-					startEvent = null;
-				}
-				
-				joinTimeDelayTable(endEvent, startEvent, tdTable, current.getTdTable());
+				connectSeqClauses(endEvent, seq, tdTable, current, current.getTdTable());
 			}
+				List<TimeDelayEntry> temp = tdTable.getEntries();
+				System.out.println("\nConnected");
+				for(int j = 0; j < temp.size(); j++){
+					TimeDelayEntry en = temp.get(j);
+					String s = "null", e = "null";
+					if(en.getStart() != null)
+						s = en.getStart().getName();
+					if(en.getEnd() != null)
+						e = en.getEnd().getName();
+					System.out.println(s+" "+en.getDuration()+" "+e);
+				}
 			
 			// write one OR CLAUSE in result
 			result.addSeqClause(seq);
@@ -463,23 +532,6 @@ public class EPLProcessor {
 		private void expand2(List<SeqClause> combi, OrClause result) throws BDPLTransformException{
 			
 			OrClause or;
-			// statistic data for expanding AND CLAUSE
-			/*List<Term> singleTerms = new ArrayList<Term>();
-			List<Term> timeTerms = new ArrayList<Term>();
-			List<SeqClause> seqTerms = new ArrayList<SeqClause>();
-			
-			
-			for(int i = 0; i < combi.size(); i++){
-				SeqClause seq = combi.get(i);
-				List<SeqClause> ls = and.getSeqClauses();
-				
-				prepareExpandAndClause(ls, singleTerms, timeTerms, seqTerms);
-	
-			}*/
-			
-			/*prepareExpandAndClause(combi, singleTerms, timeTerms, seqTerms);
-			// (SEQ CLAUSE (or SEQ CLAUSE)*) = AND CLAUSE
-			or = transformAndClause(singleTerms, timeTerms, seqTerms);*/
 			
 			// (SEQ CLAUSE (or SEQ CLAUSE)*) = AND CLAUSE
 			or = transformAndClause(combi);
@@ -546,12 +598,12 @@ public class EPLProcessor {
 					
 					//TODO change contain
 					// event term
-					if(t.getType().contains("event")){
+					if(BDPLTransformerUtil.getTermType(t) == BDPLTransformerUtil.TERM_EVENT){
 						singleTerms.add(t);
 						
 					}
 					// time term
-					else if(t.getType().contains("interval")){
+					else if(BDPLTransformerUtil.getTermType(t) == BDPLTransformerUtil.TERM_TIME){
 						timeTerms.add(t);
 					}
 					else{
@@ -569,51 +621,38 @@ public class EPLProcessor {
 			OrClause ret = new OrClause();
 			
 			if(seqcs.size() > 0){
-				TimeDelayTable tdTable;
+				
 				List<TimeDelayEntry> entries = new ArrayList<TimeDelayEntry>();
 			
 				// every SEQ CLAUSE in this AND CLAUSE 
-				for(int j = 0; j < seqcs.size(); j++){
-					SeqClause st = seqcs.get(j);
+				for(int i = 0; i < seqcs.size(); i++){
+					SeqClause st = seqcs.get(i);
+					
+					if(st.getTdTable() == null){
+						initTimeDelayTable(st);
+					}
 					TimeDelayTable temp = st.getTdTable();
 					
-					if(temp == null){
-						throw new BDPLTransformException("No time delay table.");
+					List<Term> terms = st.getTerms();
+					if(terms.size() < 1){
+						throw new BDPLTransformException("Time delay should not be an operant of an AND operator");
 					}
-					
-					// SEQ CLAUSE with many terms
-					if(st.getSize() > 1){
-						// SEQ CLAUSE with time delay must do not have time delay table
-						/*if(st.getTdTable() == null){
-							makeTimeDelayTable(st);
-						}*/
+					else{
+						for(int j = 0; j < terms.size(); j++){
+							if(BDPLTransformerUtil.getTermType(terms.get(j)) == BDPLTransformerUtil.TERM_TIME){
+								throw new BDPLTransformException("Time delays connected with AND could not be expanded any more");
+							}
+						}
 						
 						// make the time delay table of the result
 						for(TimeDelayEntry entry : temp.getEntries()){
 							entries.add(entry);
 						}
 					}
-					// SEQ CLAUSE with only one term
-					else{
-						Term t = st.getTerms().get(0);
-						
-						if(t.getType().contains("event")){
-							
-							// make the time delay table of the result
-							for(TimeDelayEntry entry : temp.getEntries()){
-								entries.add(entry);
-							}
-							
-						}
-						else if(t.getType().contains("interval")){
-							throw new BDPLTransformException("Time delay should not be an operant of an AND operator");
-						}
-						else{
-							throw new BDPLTransformException("Invalid term type");
-						}
-					}
 				}
-			
+				
+				
+				
 			
 				List<SeqTerms> seqs = new ArrayList<SeqTerms>();
 				SeqClause copy = new SeqClause();
@@ -645,12 +684,52 @@ public class EPLProcessor {
 				// create result
 				for(int i = 0; i < seqs.size(); i++){
 					SeqClause seqc = seqs.get(i).getSequence();
-					tdTable = new TimeDelayTable();
+					TimeDelayTable tdTable = new TimeDelayTable();
 					List<TimeDelayEntry> temp = tdTable.getEntries();
 					// copy time delay table
 					for(int j = 0; j < entries.size(); j++){
 						TimeDelayEntry entry = entries.get(j);
 						temp.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+					}
+					
+					// fix time delay at start
+					List<TimeDelayEntry> left = tdTable.getEntriesByStart(null);
+					BDPLTransformerUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
+					/*
+					 * ([T] -> A -> *) -> * to (T -> A -> *)
+					 */
+					if(left.size() > 1){
+						List<Term> terms = seqc.getTerms();
+						if(left.get(0).getEnd() != terms.get(0)){
+							throw new BDPLTransformException("Fixed Time delay error at start");
+						}
+						else{
+							Term term = new Term("interval");
+							term.setDuration(left.get(0).getDuration());
+							terms.add(0, term);
+							
+							tdTable.getEntries().remove(left.get(0));
+						}
+					}
+					
+					// fix time delay at end
+					List<TimeDelayEntry> right = tdTable.getEntriesByEnd(null);
+					BDPLTransformerUtil.reduceEndDelayEntry(right, seqc, true, tdTable);
+					/*
+					 * * -> (* -> A -> [T]) to * -> (* -> A -> T)
+					 */
+					if(right.size() > 1){
+						List<Term> terms = seqc.getTerms();
+						if(right.get(right.size()-1).getStart() != terms.get(terms.size()-1)){
+							throw new BDPLTransformException("Fixed Time delay error at end");
+						}
+						else{
+							Term term = new Term("interval");
+							term.setDuration(right.get(right.size()-1).getDuration());
+							terms.add(term);
+							
+							tdTable.getEntries().remove(right.get(right.size()-1));
+						}
 					}
 					
 					seqc.setTdTable(tdTable);
@@ -661,7 +740,9 @@ public class EPLProcessor {
 			return ret;
 		}
 		
-		
+		/*
+		 * Create new time delay table and time delay entries for a SEQ CLAUSE containing only one term.
+		 */
 		private void initTimeDelayTable(SeqClause seqc) throws BDPLTransformException{
 			List<Term> terms = seqc.getTerms();
 			
@@ -675,9 +756,479 @@ public class EPLProcessor {
 			TimeDelayTable tdTable = new TimeDelayTable();
 			seqc.setTdTable(tdTable);
 			
-			if(term.getType().contains("interval")){
+			// term is time delay: create one time delay entry, remove time delay term
+			if(BDPLTransformerUtil.getTermType(term) == BDPLTransformerUtil.TERM_TIME){
 				List<TimeDelayEntry> entries = tdTable.getEntries();
 				entries.add(new TimeDelayEntry(null, null, term.getDuration()));
+				terms.remove(0);
+			}
+			
+			// term is event: empty table
+		}
+		
+		private void connectSeqClauses(Term endEvent, SeqClause resultSeqC, TimeDelayTable resultTable, SeqClause currentSeqC, TimeDelayTable currentTable){
+			
+			List<Term> rt = resultSeqC.getTerms();
+			List<Term> ct = currentSeqC.getTerms();
+			
+			Term startEvent = null; 
+			if(ct.size() > 0){
+				startEvent = ct.get(0);
+			}
+			
+			List<TimeDelayEntry> end = resultTable.getEntriesByEnd(null);
+			
+			List<TimeDelayEntry> left = currentTable.getEntriesByStart(null);
+			//BDPLTransformerUtil.reduceStartDelayEntry(left, currentSeqC, true, currentTable);
+			
+			
+			
+			/*
+			 * null
+			 * * -> A
+			 * * -> A -> T
+			 */
+			if(end.size() == 0){
+				/*
+				 * * -> A
+				 * * -> A -> T 
+				 */
+				if(endEvent != null){
+					/*
+					 * * -> A -> T
+					 */
+					if(BDPLTransformerUtil.getTermType(endEvent) == BDPLTransformerUtil.TERM_TIME){
+						/*
+						 * A -> *
+						 * T -> A -> *
+						 */
+						if(left.size() == 0){
+							
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+							
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+							
+							//endEvent = rt.get(rt.size()-1);
+							
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+						}
+						/*
+						 * [T] -> *
+						 * (T -> A -> *) -> *
+						 * 
+						 */
+						else if(left.size() == 1){
+							
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+							
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+							
+							//endEvent = rt.get(rt.size()-1);
+							
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+						}
+						/*
+						 * \\([T] -> A -> *) -> *
+						 * ((T -> A -> *) -> B -> *) -> *
+						 */
+						else{
+							
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+							
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+							
+							//endEvent = rt.get(rt.size()-1);
+							
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+						}
+					}
+					/*
+					 * * -> A
+					 */
+					else{
+						/*
+						 * A -> *
+						 * T -> A -> *
+						 */
+						if(left.size() == 0){
+							
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+							
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+							
+							//endEvent = rt.get(rt.size()-1);
+							
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+						}
+						/*
+						 * [T] -> *
+						 * (T -> A -> *) -> *
+						 * 
+						 */
+						else if(left.size() == 1){
+							
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+							
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+							
+							//endEvent = rt.get(rt.size()-1);
+							
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+						}
+						/*
+						 * \\([T] -> A -> *) -> *
+						 * ((T -> A -> *) -> B -> *) -> *
+						 */
+						else{
+							
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+							
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+							
+							//endEvent = rt.get(rt.size()-1);
+							
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+						}
+					}
+				}
+				// the first SEQ CLAUSE
+				/*
+				 * null
+				 */
+				else{
+					
+					for(int j = 0; j < ct.size(); j++){
+						rt.add(ct.get(j));
+					}
+					
+					for(int j = 0; j < end.size(); j++){
+						end.get(j).setEnd(startEvent);
+					}
+					
+					for(int j = 0; j < left.size(); j++){
+						left.get(j).setStart(endEvent);
+					}
+					
+					//endEvent = rt.get(rt.size()-1);
+					
+					List<TimeDelayEntry> entries = resultTable.getEntries();
+					for(TimeDelayEntry entry : currentTable.getEntries()){
+						entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+					}
+				}
+			}
+			/*
+			 * * -> [T] 
+			 * * -> (* -> A -> T)  
+			 */
+			else if(end.size() == 1){
+				/*
+				 * null -> [T]
+				 */
+				if(endEvent == null){
+					
+					/*
+					 * [T] -> *
+					 * (T -> A -> *) -> *
+					 */
+					if(left.size() == 1){
+						/*
+						 * [T] -> null
+						 */
+						if(startEvent == null){
+							
+							end.get(0).setDuration(end.get(0).getDuration()+left.get(0).getDuration());
+							currentTable.getEntries().remove(left.get(0));
+							
+						}
+						/*
+						 * [T] -> event*
+						 * (T -> A -> *) -> *
+						 */
+						else{
+						
+							if(BDPLTransformerUtil.getTermType(startEvent) == BDPLTransformerUtil.TERM_EVENT){
+								end.get(0).setDuration(end.get(0).getDuration()+left.get(0).getDuration());
+								currentTable.getEntries().remove(left.get(0));
+							}
+							
+						}
+					}
+					
+					// common part
+					/*
+					 * A -> *
+					 * T -> A -> * 
+					 * 
+					 * [T] -> *
+					 * (T -> A -> *) -> * 
+					 * 
+					 * \\([T] -> A -> *) -> *
+					 * ((T -> A -> *) -> B -> *) -> *
+					 */
+					for(int j = 0; j < ct.size(); j++){
+						rt.add(ct.get(j));
+					}
+						
+					for(int j = 0; j < end.size(); j++){
+						end.get(j).setEnd(startEvent);
+					}
+					
+					for(int j = 0; j < left.size(); j++){
+						left.get(j).setStart(endEvent);
+					}
+						
+					//endEvent = rt.get(rt.size()-1);
+						
+					List<TimeDelayEntry> entries = resultTable.getEntries();
+					for(TimeDelayEntry entry : currentTable.getEntries()){
+						entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+					}
+				}
+				/*
+				 * event* -> [T] 
+				 * * -> (* -> A -> T)  
+				 */
+				else{
+					/*
+					 * * -> (* -> A -> T)
+					 */
+					if(BDPLTransformerUtil.getTermType(endEvent) == BDPLTransformerUtil.TERM_TIME){
+					
+						for(int j = 0; j < ct.size(); j++){
+							rt.add(ct.get(j));
+						}
+							
+						for(int j = 0; j < end.size(); j++){
+							end.get(j).setEnd(startEvent);
+						}
+						
+						for(int j = 0; j < left.size(); j++){
+							left.get(j).setStart(endEvent);
+						}
+							
+						//endEvent = rt.get(rt.size()-1);
+							
+						List<TimeDelayEntry> entries = resultTable.getEntries();
+						for(TimeDelayEntry entry : currentTable.getEntries()){
+							entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+						}
+					
+					}
+					/*
+					 * event* -> [T]
+					 */
+					else{
+						/*
+						 * A -> *
+						 * T -> A -> *
+						 */
+						if(left.size() == 0){
+							
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+								
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+								
+							//endEvent = rt.get(rt.size()-1);
+								
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+							
+						}
+						/*
+						 * [T] -> *
+						 * (T -> A -> *) -> *
+						 */
+						else if(left.size() == 1){
+							
+							/*
+							 * [T] -> null
+							 */
+							if(startEvent == null){
+								
+								end.get(0).setDuration(end.get(0).getDuration()+left.get(0).getDuration());
+								currentTable.getEntries().remove(left.get(0));
+								
+								for(int j = 0; j < ct.size(); j++){
+									rt.add(ct.get(j));
+								}
+									
+								for(int j = 0; j < end.size(); j++){
+									end.get(j).setEnd(startEvent);
+								}
+								
+								for(int j = 0; j < left.size(); j++){
+									left.get(j).setStart(endEvent);
+								}
+									
+								//endEvent = rt.get(rt.size()-1);
+									
+								List<TimeDelayEntry> entries = resultTable.getEntries();
+								for(TimeDelayEntry entry : currentTable.getEntries()){
+									entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+								}
+							}
+							/*
+							 * [T] -> event*
+							 * (T -> A -> *) -> *
+							 */
+							else{
+							
+								if(BDPLTransformerUtil.getTermType(startEvent) == BDPLTransformerUtil.TERM_EVENT){
+									end.get(0).setDuration(end.get(0).getDuration()+left.get(0).getDuration());
+									currentTable.getEntries().remove(left.get(0));
+								}
+								
+								for(int j = 0; j < ct.size(); j++){
+									rt.add(ct.get(j));
+								}
+									
+								for(int j = 0; j < end.size(); j++){
+									end.get(j).setEnd(startEvent);
+								}
+								
+								for(int j = 0; j < left.size(); j++){
+									left.get(j).setStart(endEvent);
+								}
+									
+								//endEvent = rt.get(rt.size()-1);
+									
+								List<TimeDelayEntry> entries = resultTable.getEntries();
+								for(TimeDelayEntry entry : currentTable.getEntries()){
+									entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+								}
+							}
+						}
+						/*
+						 * \\([T] -> A -> *) -> *
+						 * ((T -> A -> *) -> B -> *) -> *
+						 */
+						else{
+							for(int j = 0; j < ct.size(); j++){
+								rt.add(ct.get(j));
+							}
+								
+							for(int j = 0; j < end.size(); j++){
+								end.get(j).setEnd(startEvent);
+							}
+							
+							for(int j = 0; j < left.size(); j++){
+								left.get(j).setStart(endEvent);
+							}
+								
+							//endEvent = rt.get(rt.size()-1);
+								
+							List<TimeDelayEntry> entries = resultTable.getEntries();
+							for(TimeDelayEntry entry : currentTable.getEntries()){
+								entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+							}
+						}
+					}
+				}
+			}
+			/*
+			 * \\* -> (* -> A -> [T])  
+			 * * -> (* -> B -> ( * -> A -> T))
+			 */
+			else{
+				
+				/*
+				 * * -> *
+				 */
+				for(int j = 0; j < ct.size(); j++){
+					rt.add(ct.get(j));
+				}
+					
+				for(int j = 0; j < end.size(); j++){
+					end.get(j).setEnd(startEvent);
+				}
+				
+				for(int j = 0; j < left.size(); j++){
+					left.get(j).setStart(endEvent);
+				}
+					
+				//endEvent = rt.get(rt.size()-1);
+					
+				List<TimeDelayEntry> entries = resultTable.getEntries();
+				for(TimeDelayEntry entry : currentTable.getEntries()){
+					entries.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+				}
 			}
 		}
 		
@@ -717,7 +1268,7 @@ public class EPLProcessor {
 						int j = 0;
 						for( ; j < startDelays.size()-1; j++){
 							startDelay = startDelays.get(j);
-							TimeDelayEntry temp = new TimeDelayEntry(endDelay.getStart(), startDelay.getEnd(), String.valueOf(Integer.valueOf(endDelay.getDuration())+Integer.valueOf(startDelay.getDuration())));
+							TimeDelayEntry temp = new TimeDelayEntry(endDelay.getStart(), startDelay.getEnd(), endDelay.getDuration()+startDelay.getDuration());
 							result.getEntries().add(temp);
 								
 								/*String s = "null", e = "null";
@@ -731,7 +1282,7 @@ public class EPLProcessor {
 						}
 						startDelay = startDelays.get(j);
 						endDelay.setEnd(startDelay.getEnd());
-						endDelay.setDuration(String.valueOf(Integer.valueOf(endDelay.getDuration())+Integer.valueOf(startDelay.getDuration())));
+						endDelay.setDuration(endDelay.getDuration()+startDelay.getDuration());
 						
 							/*String s = "null", e = "null";
 							if(endDelay.getStart() != null){
@@ -822,20 +1373,20 @@ public class EPLProcessor {
 			List<Term> terms = seqc.getTerms();
 			
 			Term pre = null;
-			int delay = 0;
+			long delay = 0;
 			List<Integer> indexDelay = new ArrayList<Integer>();
 			int state = 0;
 			// every term in the SEQ CLAUSE
 			for(int i = 0; i < terms.size(); i++){
 				Term term = terms.get(i);
 				
-				if(term.getType().contains("interval")){
+				if(BDPLTransformerUtil.getTermType(term) == BDPLTransformerUtil.TERM_TIME){
 					indexDelay.add(i);
-					delay += Integer.valueOf(term.getDuration());
+					delay += term.getDuration();
 					
 					state = 1;
 				}
-				else if(term.getType().contains("event")){
+				else if(BDPLTransformerUtil.getTermType(term) == BDPLTransformerUtil.TERM_EVENT){
 					switch(state){
 					// previous term is null
 					case 0:{
@@ -852,14 +1403,14 @@ public class EPLProcessor {
 						System.out.println("go");
 						// create a time delay entry, reset pre to this event term
 						
-						TimeDelayEntry entry = new TimeDelayEntry(pre, term, String.valueOf(delay));
+						TimeDelayEntry entry = new TimeDelayEntry(pre, term, delay);
 						entries.add(entry);
 							
 								if(pre != null){
-									System.out.println("Time delay entry: "+pre.getType()+" "+term.getType()+" "+delay);
+									System.out.println("Time delay entry: "+pre.getName()+" "+term.getName()+" "+delay);
 								}
 								else{
-									System.out.println("Time delay entry: null "+term.getType()+" "+delay);
+									System.out.println("Time delay entry: null "+term.getName()+" "+delay);
 								}
 								
 						delay = 0;
@@ -950,9 +1501,9 @@ public class EPLProcessor {
 			
 			// the last term in SEQ CLAUSE is time delay, create a time delay entry
 			if(state == 1){
-				TimeDelayEntry entry = new TimeDelayEntry(pre, null, String.valueOf(delay));
+				TimeDelayEntry entry = new TimeDelayEntry(pre, null, delay);
 				entries.add(entry);
-					System.out.println("Time delay entry: "+pre.getType()+" null "+delay);
+					System.out.println("Time delay entry: "+pre.getName()+" null "+delay);
 				
 			}
 			
@@ -1188,16 +1739,18 @@ public class EPLProcessor {
 				for(int i = 0; i < seqcs.size(); i++){
 					System.out.println("TimeDelayTable "+i);
 					TimeDelayTable tdTable = seqcs.get(i).getTdTable();
-					List<TimeDelayEntry> entries = tdTable.getEntries();
-					
-					for(int j = 0; j < entries.size(); j++){
-						TimeDelayEntry en = entries.get(j);
-						String s = "null", e = "null";
-						if(en.getStart() != null)
-							s = en.getStart().getType();
-						if(en.getEnd() != null)
-							e = en.getEnd().getType();
-						System.out.println(s+" "+en.getDuration()+" "+e);
+					if(tdTable != null){
+						List<TimeDelayEntry> entries = tdTable.getEntries();
+						
+						for(int j = 0; j < entries.size(); j++){
+							TimeDelayEntry en = entries.get(j);
+							String s = "null", e = "null";
+							if(en.getStart() != null)
+								s = en.getStart().getName();
+							if(en.getEnd() != null)
+								e = en.getEnd().getName();
+							System.out.println(s+" "+en.getDuration()+" "+e);
+						}
 					}
 				}
 				System.out.println();
@@ -1212,8 +1765,6 @@ public class EPLProcessor {
 					
 				}
 				
-				
-							
 			}
 		}
 		
@@ -1221,206 +1772,245 @@ public class EPLProcessor {
 			List<Term> ltrs = seqc.getTerms();
 			Map<Term, Term> notList = new HashMap<Term, Term>();
 			TimeDelayTable tdTable = seqc.getTdTable();
-			Stack<TimeDelayEntry> endStack = new Stack<TimeDelayEntry>();
+			Stack<TimeDelayEntry> openParaStack = new Stack<TimeDelayEntry>();
 			TimeDelayEntry stackTop = null;
-			//boolean endDirect = false;
 			
 			System.out.print("( ");
 			
-			// time delay entries staring from null
-			List<TimeDelayEntry> left = tdTable.getEntriesByStart(null);
-			BDPLTransformerUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
-			
-			for(int i = left.size()-1; i > -1 ; i--){
-				System.out.print("( ");
-				endStack.push(left.get(i));
-				stackTop = endStack.peek();
-				//endDirect = true;
-			}
-			
-			// term
-			Term term = ltrs.get(0);
-			
-			// time delay entries ending at term
-			List<TimeDelayEntry> right = tdTable.getEntriesByEnd(term);
-			BDPLTransformerUtil.sortTimeDelayEntryByStart(right, seqc);
-			
-			if(right.size() <= 1){
-				if(right.size() == 1){
-					if(right.get(0) == stackTop){
-						System.out.print("interval "+stackTop.getDuration()+" ) -> ");
-						endStack.pop();
-						if(endStack.size() > 0){
-							stackTop = endStack.peek();
-						}
-						else{
-							stackTop = null;
-						}
+			if(ltrs.size() > 0){
+				// only one term without being unioned by seq
+				if(tdTable == null){
+					if(ltrs.size() > 1){
+						// TODO not clause
+						throw new BDPLTransformException("Sequence clause has no time delay table");
 					}
 					else{
-						throw new BDPLTransformException("Time delays are overlapping");
-					}
-				}
-			}
-			else{
-				throw new BDPLTransformException("Time delays are duplicated at begin");
-			}
-			
-			/*for(int i = 0; i < right.size(); i++){
-				TimeDelayEntry temp = right.get(i);
-				if(temp == stackTop){
-					if(endDirect){
-						System.out.print("interval "+stackTop.getDuration()+" ) -> ");
-						endStack.pop();
-						if(endStack.size() > 0){
-							stackTop = endStack.peek();
-						}
-						else{
-							stackTop = null;
-						}
-						endDirect = false;
-					}
-					else{
-						throw new BDPLTransformException("Time delays are duplicated");
-						System.out.print(") and interval "+stackTop.getDuration()+" ");
-						endStack.pop();
-						if(endStack.size() > 0){
-							stackTop = endStack.peek();
-						}
-						else{
-							stackTop = null;
-						}
-					}
-				}
-				else{
-					throw new BDPLTransformException("Time delays are overlapping");
-				}
-			}*/
-			
-			System.out.print(term.getType()+" ");
-			
-			
-			// register not list
-			Entry entry = table.get(term);
-			if(entry != null){
-				notList.put(entry.getNotEnd(), entry.getNot());
-			}
-			
-			
-			for(int i = 1; i < ltrs.size(); i++){
-				//System.out.print("-> ");
-				// last term
-				Term lTerm = term;
-				
-				// time delay entries starting from last term
-				left = tdTable.getEntriesByStart(lTerm);
-				BDPLTransformerUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
-					
-					/*for(int j = left.size()-1; j >-1; j--){
-						TimeDelayEntry temp = left.get(j);
-						String s = "null", e = "null";
-						if(temp.getStart() != null){
-							s = temp.getStart().getType();
-						}
-						if(temp.getEnd() != null){
-							e = temp.getEnd().getType();
-						}
-						System.out.println("Left Entry: "+s+" "+temp.getDuration()+" "+e);
-					}*/
-				
-				// term
-				term = ltrs.get(i);
-				
-				// time delay entries ending at this term
-				right = tdTable.getEntriesByEnd(term);
-				BDPLTransformerUtil.sortTimeDelayEntryByStart(right, seqc);
-				
-				if(right.size() == 1){
-					if(left.size() == 1 && right.get(0) == left.get(0)){
-						System.out.print("-> ( interval "+right.get(0).getDuration()+" ) ");
-						left.remove(0);
-						right.remove(0);
-					}
-				}
-				
-				for(int j = 0; j < right.size(); j++){
-					TimeDelayEntry temp = right.get(j);
-					if(temp == stackTop){
+						Term t = ltrs.get(0);
+						if(BDPLTransformerUtil.getTermType(t) == BDPLTransformerUtil.TERM_TIME){
+							System.out.print("interval "+t.getDuration()+" ");
 							
-						System.out.print(") and interval "+stackTop.getDuration()+" ");
-						endStack.pop();
-						if(endStack.size() > 0){
-							stackTop = endStack.peek();
 						}
 						else{
-							stackTop = null;
+							System.out.print(t.getName()+" ");
 						}
-					}
-					else{
-						throw new BDPLTransformException("Time delays are overlapping");
-					}
-				}
-				
-				System.out.print("-> ");
-				
-				for(int j = left.size()-1; j > -1 ; j--){
-					System.out.print("( ");
-					endStack.push(left.get(j));
-					stackTop = endStack.peek();
-				}
-				System.out.print(term.getType()+" ");
-				
-				for(Term not : notList.values()){
-					System.out.print("and not "+not.getType()+" ");
-				}
-				
-				if(notList.get(term) != null){
-					// not list should be empty, after processing every term!
-					notList.remove(term);
-				}
-				
-				//XXX else?
-				entry = table.get(term);
-				if(entry != null){
-					notList.put(entry.getNotEnd(), entry.getNot());
-				}
-			}
-			// time delay entries ending at end
-			right = tdTable.getEntriesByEnd(null);
-			BDPLTransformerUtil.sortTimeDelayEntryByStart(right, seqc);
-			
-			// time delay entries starting from the last term
-			left = tdTable.getEntriesByStart(term);
-			BDPLTransformerUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
-			
-			if(left.size() <= 1){
-				if(left.size() == 1){
-					if(right.size() > 0 && right.get(0) == left.get(0)){
-						System.out.print("-> ( interval "+left.get(0).getDuration()+" ) ");
-						right.remove(0);
-					}
-				}
-			}
-			else{
-				throw new BDPLTransformException("Time delays are duplicated at end");
-			}
-			
-			
-			for(int i = 0; i < right.size(); i++){
-				TimeDelayEntry temp = right.get(i);
-				if(temp == stackTop){
-						
-					System.out.print(") and interval "+stackTop.getDuration()+" ");
-					endStack.pop();
-					if(endStack.size() > 0){
-						stackTop = endStack.peek();
-					}
-					else{
-						stackTop = null;
 					}
 				}
 				else{
-					throw new BDPLTransformException("Time delays are overlapping");
+					// ( : time delay entries staring from null
+					List<TimeDelayEntry> left = tdTable.getEntriesByStart(null);
+					BDPLTransformerUtil.sortTimeDelayEntryByEnd(left, seqc);
+					//BDPLTransformerUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
+					
+					for(int i = left.size()-1; i > -1 ; i--){
+						System.out.print("( ");
+						openParaStack.push(left.get(i));
+						stackTop = openParaStack.peek();
+					}
+					
+					// the first term
+					Term term = ltrs.get(0);
+					
+					// ) -> term : time delay entries ending at term
+					List<TimeDelayEntry> right = tdTable.getEntriesByEnd(term);
+					BDPLTransformerUtil.sortTimeDelayEntryByStart(right, seqc);
+					
+					if(right.size() <= 1){
+						if(right.size() == 1){
+							if(right.get(0) == stackTop){
+								System.out.print("interval "+stackTop.getDuration()+" ) -> ");
+								openParaStack.pop();
+								if(openParaStack.size() > 0){
+									stackTop = openParaStack.peek();
+								}
+								else{
+									stackTop = null;
+								}
+							}
+							else{
+								throw new BDPLTransformException("Time delays are overlapping");
+							}
+						}
+					}
+					else{
+						throw new BDPLTransformException("Time delays are duplicated at begin");
+					}
+					
+					boolean lastTermTime = false;
+					if(BDPLTransformerUtil.getTermType(term) == BDPLTransformerUtil.TERM_TIME){
+						System.out.print("interval "+term.getDuration()+" ");
+						lastTermTime = true;
+					}
+					else{
+						System.out.print(term.getName()+" ");
+					}
+					
+					
+					// register not list
+					Entry entry = table.get(term);
+					if(entry != null){
+						notList.put(entry.getNotEnd(), entry.getNot());
+					}
+					
+					boolean thisTermTime = false;
+					for(int i = 1; i < ltrs.size(); i++){
+						
+						// last term
+						Term lTerm = term;
+						
+						// last term -> ( term : time delay entries starting from last term
+						left = tdTable.getEntriesByStart(lTerm);
+						BDPLTransformerUtil.sortTimeDelayEntryByEnd(left, seqc);
+						//BDPLTransformerUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
+							
+							/*for(int j = left.size()-1; j >-1; j--){
+								TimeDelayEntry temp = left.get(j);
+								String s = "null", e = "null";
+								if(temp.getStart() != null){
+									s = temp.getStart().getType();
+								}
+								if(temp.getEnd() != null){
+									e = temp.getEnd().getType();
+								}
+								System.out.println("Left Entry: "+s+" "+temp.getDuration()+" "+e);
+							}*/
+						
+						// term
+						term = ltrs.get(i);
+						
+						// last term ) -> term : time delay entries ending at this term
+						right = tdTable.getEntriesByEnd(term);
+						BDPLTransformerUtil.sortTimeDelayEntryByStart(right, seqc);
+							
+							/*for(int j = 0; j < right.size(); j++){
+								System.out.println(term.getName()+" end "+right.get(j).getStart().getName());
+							}*/
+						
+						String interval = null;
+						if(left.size() > 0){
+							if(right.size() > 0 && right.get(right.size()-1) == left.get(0)){
+								interval = "-> interval "+right.get(0).getDuration()+" ";
+								right.remove(right.size()-1);
+								left.remove(0);
+							}
+						}
+						
+						boolean flag1 = false;
+						for(int j = 0; j < right.size(); j++){
+							TimeDelayEntry temp = right.get(j);
+							if(temp == stackTop){
+								flag1 = true;
+								System.out.print(") and interval "+stackTop.getDuration()+" ");
+								openParaStack.pop();
+								if(openParaStack.size() > 0){
+									stackTop = openParaStack.peek();
+								}
+								else{
+									stackTop = null;
+								}
+							}
+							else{
+								throw new BDPLTransformException("Time delays are overlapping");
+							}
+						}
+						
+						if(interval != null){
+							System.out.print(interval);
+						}
+						
+						System.out.print("-> ");
+						
+						boolean flag2 = false;
+						for(int j = left.size()-1; j > -1 ; j--){
+							flag2 = true;
+							System.out.print("( ");
+							openParaStack.push(left.get(j));
+							stackTop = openParaStack.peek();
+						}
+						
+						if(BDPLTransformerUtil.getTermType(term) == BDPLTransformerUtil.TERM_TIME){
+							System.out.print("interval "+term.getDuration()+" ");
+							thisTermTime = true;
+						}
+						else{
+							System.out.print(term.getName()+" ");
+						}
+						
+						//XXX check
+						if(!lastTermTime && !thisTermTime){
+							if(flag1 && flag2){
+								throw new BDPLTransformException("Time delays are overlapping");
+							}
+						}
+						
+						for(Term not : notList.values()){
+							System.out.print("and not "+not.getName()+" ");
+						}
+						
+						if(notList.get(term) != null){
+							// not list should be empty, after processing every term!
+							notList.remove(term);
+						}
+						
+						//XXX else?
+						entry = table.get(term);
+						if(entry != null){
+							notList.put(entry.getNotEnd(), entry.getNot());
+						}
+					}
+					
+					
+					// time delay entries ending at end
+					right = tdTable.getEntriesByEnd(null);
+					BDPLTransformerUtil.sortTimeDelayEntryByStart(right, seqc);
+						/*for(int i = 0; i < right.size(); i++){
+							System.out.println("null end "+right.get(i).getStart().getName());
+						}*/
+					// time delay entries starting from the last term
+					left = tdTable.getEntriesByStart(term);
+					BDPLTransformerUtil.sortTimeDelayEntryByEnd(left, seqc);
+					//BDPLTransformerUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
+						
+						//System.out.println(term.getName()+" start "+left.size());
+					if(left.size() <= 1){
+						if(left.size() == 1){
+							if(right.size() > 0 && right.get(right.size()-1) == left.get(0)){
+								System.out.print("-> ( interval "+left.get(0).getDuration()+" ) ");
+								right.remove(right.size()-1);
+							}
+						}
+					}
+					else{
+						throw new BDPLTransformException("Time delays are duplicated at end");
+					}
+					
+					
+					for(int i = 0; i < right.size(); i++){
+						TimeDelayEntry temp = right.get(i);
+						if(temp == stackTop){
+								
+							System.out.print(") and interval "+stackTop.getDuration()+" ");
+							openParaStack.pop();
+							if(openParaStack.size() > 0){
+								stackTop = openParaStack.peek();
+							}
+							else{
+								stackTop = null;
+							}
+						}
+						else{
+							throw new BDPLTransformException("Time delays are overlapping");
+						}
+					}
+				}
+			}
+			// only connected time delay
+			else{
+				if(tdTable == null){
+					throw new BDPLTransformException("Null Expession");
+				}
+				else{
+					TimeDelayEntry temp = tdTable.getEntries().get(0);
+					System.out.print("interval "+temp.getDuration()+" ");
 				}
 			}
 			
