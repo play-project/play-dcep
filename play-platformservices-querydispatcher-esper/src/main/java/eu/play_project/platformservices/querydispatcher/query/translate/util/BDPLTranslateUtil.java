@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.transform.util;
+package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,11 +13,11 @@ import java.util.List;
  * Apr 10, 2014
  *
  */
-public class BDPLTransformerUtil {
+public class BDPLTranslateUtil {
 	
 	public static final int TERM_EVENT = 0, TERM_TIME = 1;
 	
-	public static long getDurationInSec(String duration) throws BDPLTransformException{
+	public static long getDurationInSec(String duration) throws BDPLTranslateException{
 		return Long.valueOf(duration);
 	}
 	

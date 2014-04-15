@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.transform.util;
+package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 
 /**

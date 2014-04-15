@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.transform.util;
+package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 /**
  * @author ningyuan 
@@ -9,13 +9,13 @@ package eu.play_project.platformservices.querydispatcher.query.transform.util;
  * Apr 4, 2014
  *
  */
-public class Entry implements IEntry{
+public class NotEntry implements IEntry{
 	
 	private Term notStart;
 	private Term not;
 	private Term notEnd;
 	
-	public Entry(Term notStart, Term not, Term notEnd){
+	public NotEntry(Term notStart, Term not, Term notEnd){
 		this.notStart = notStart;
 		this.not = not;
 		this.notEnd = notEnd;
