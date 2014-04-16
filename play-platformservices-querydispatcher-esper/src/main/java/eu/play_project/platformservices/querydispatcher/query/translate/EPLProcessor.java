@@ -294,7 +294,7 @@ public class EPLProcessor {
 			
 			super.visit(node, data);
 			
-			Term term = new Term(node.getEventName(), 1);
+			Term term = new Term(node.getEventName());
 			
 			try {
 				term.setDuration(BDPLTranslateUtil.getDurationInSec(node.getDuration()));
@@ -324,7 +324,7 @@ public class EPLProcessor {
 			
 			super.visit(node, data);
 			
-			Term term = new Term(node.getEventName(), 1);
+			Term term = new Term(node.getEventName());
 			SeqClause seq = new SeqClause();
 			seq.addTerm(term);
 			
@@ -665,7 +665,7 @@ public class EPLProcessor {
 							throw new BDPLTranslateException("Fixed Time delay error at start");
 						}
 						else{
-							Term term = new Term("interval");
+							Term term = new Term(EPLConstants.TIMER_INTERVAL);
 							term.setDuration(left.get(0).getDuration());
 							terms.add(0, term);
 								
@@ -685,7 +685,7 @@ public class EPLProcessor {
 							throw new BDPLTranslateException("Fixed Time delay error at end");
 						}
 						else{
-							Term term = new Term("interval");
+							Term term = new Term(EPLConstants.TIMER_INTERVAL);
 							term.setDuration(right.get(right.size()-1).getDuration());
 							terms.add(term);
 								
@@ -1311,7 +1311,7 @@ public class EPLProcessor {
 			return ret;
 		}
 		
-		private void printExpression(OrClause result, NotTable table) throws BDPLTranslateException{
+		private void printExpression(OrClause result, NotTable notTable) throws BDPLTranslateException{
 			
 			List<SeqClause> seqcs = result.getSeqClauses();
 			
@@ -1338,29 +1338,58 @@ public class EPLProcessor {
 				}
 				System.out.println();
 				
+				/*
+				 * eIndex[i]: the last event tag number of the ith SEQ CLAUSE
+				 * nIndex[i]: the last not event tag number of the ith SEQ CLASE
+				 */
+				int eIndexs [] = new int [seqcs.size()];
+				int nIndexs [] = new int [seqcs.size()];
 				
-				printSeqClause(seqcs.get(0), table);
+				printSeqClause(seqcs.get(0), notTable, 0, eIndexs, nIndexs);
 			
 				for(int i = 1; i < seqcs.size(); i++){
-					System.out.print("or ");
+					System.out.print(EPLConstants.OPERATOR_OR+" ");
 					
-					printSeqClause(seqcs.get(i), table);
+					printSeqClause(seqcs.get(i), notTable, i, eIndexs, nIndexs);
 					
 				}
 				
 			}
 		}
 		
-		private void printSeqClause(SeqClause seqc, NotTable notTable) throws BDPLTranslateException{
+		private void printSeqClause(SeqClause seqc, NotTable notTable, int sIndex, int [] eIndexs, int [] nIndexs) throws BDPLTranslateException{
 			List<Term> ltrs = seqc.getTerms();
 			Map<Term, Term> notList = new HashMap<Term, Term>();
 			TimeDelayTable tdTable = seqc.getTdTable();
 			Stack<IEntry> openParaStack = new Stack<IEntry>();
 			IEntry stackTop = null;
+			int eStart = 1, eIndex = 1, nStart = 1, nIndex = 1;
+			
+			int i1 = sIndex-1;
+			while(i1 > -1){
+				if(eIndexs[i1] != 0){
+					eStart = eIndexs[i1]+1;
+					eIndex = eStart;
+					break;
+				}
+				i1--;
+			}
+			
+			i1 = sIndex-1;
+			while(i1 > -1){
+				if(nIndexs[i1] != 0){
+					nStart = nIndexs[i1]+1;
+					nIndex = nStart;
+					break;
+				}
+				i1--;
+			}
 			
 			System.out.print("( ");
 			
 			if(ltrs.size() > 0){
+				StringBuffer eParams = new StringBuffer();
+				
 				// only one term without being unioned by seq
 				if(tdTable == null){
 					if(ltrs.size() > 1){
@@ -1374,7 +1403,17 @@ public class EPLProcessor {
 							System.out.print(EPLConstants.TIMER_INTERVAL+"("+t.getDuration()+") ");
 						}
 						else{
-							System.out.print(t.getName()+" ");
+							System.out.print(EPLConstants.EVENTTAG+eIndex+"=");
+							eIndexs[sIndex] = eIndex;
+							eIndex++;
+							
+							for(int i = eStart; i < eIndex; i++){
+								eParams.append(","+EPLConstants.EVENTTAG+i);
+							}
+							
+							System.out.print(t.getName()+"("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString())+") ");
+							
+							eParams.delete(0, eParams.length());
 						}
 					}
 				}
@@ -1441,7 +1480,17 @@ public class EPLProcessor {
 						lastTermTime = true;
 					}
 					else{
-						System.out.print(term.getName()+" ");
+						System.out.print(EPLConstants.EVENTTAG+eIndex+"=");
+						eIndexs[sIndex] = eIndex;
+						eIndex++;
+						
+						for(int i = eStart; i < eIndex; i++){
+							eParams.append(","+EPLConstants.EVENTTAG+i);
+						}
+						
+						System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString())+") ");
+						
+						eParams.delete(0, eParams.length());
 					}
 					
 					
@@ -1455,13 +1504,15 @@ public class EPLProcessor {
 							notOpenPara = true;
 						}
 						else{
+							// put only not event in list
 							notList.put(entry.getNotEnd(), entry.getNot());
 						}
 					}
 					
+					
+					
 					boolean thisTermTime = false;
 					for(int i = 1; i < ltrs.size(); i++){
-						
 						// last term
 						Term lTerm = term;
 						// term
@@ -1498,11 +1549,26 @@ public class EPLProcessor {
 						String interval = null;
 						if(left.size() > 0){
 							if(right.size() > 0 && right.get(right.size()-1) == left.get(0)){
+								lastTermTime = true;
+								
 								interval = EPLConstants.OPERATOR_SEQ+" "+EPLConstants.TIMER_INTERVAL+"("+left.get(0).getDuration()+") ";
 								//interval = "-> interval "+left.get(0).getDuration()+" ";
 								
 								for(Term not : notList.values()){
-									interval += EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+not.getName()+" ";
+									interval += EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+EPLConstants.NOTEVENTTAG+nIndex+"="+not.getName();
+									
+									
+									for(int j = eStart; j < eIndex; j++){
+										eParams.append(","+EPLConstants.EVENTTAG+j);
+									}
+									
+									
+									interval += ("("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
+									
+									nIndexs[sIndex] = nIndex;
+									nIndex++;
+									
+									eParams.delete(0, eParams.length());
 									//interval += "and not "+not.getName()+" ";
 								}
 								
@@ -1511,7 +1577,9 @@ public class EPLProcessor {
 							}
 						}
 						
-						// close parenthesis after last term
+						/*
+						 *  Close parenthesis after last term
+						 */
 						boolean flag1 = false;
 						for(int j = 0; j < right.size(); j++){
 							TimeDelayEntry temp = right.get(j);
@@ -1536,12 +1604,18 @@ public class EPLProcessor {
 							}
 						}
 						
+						/*
+						 * Time Delay between last and this term
+						 */
 						if(interval != null){
 							System.out.print(interval);
 						}
 						
 						System.out.print(EPLConstants.OPERATOR_SEQ+" ");
 						
+						/*
+						 * Open paras on the right of this term ( Time delay starting from last term )
+						 */
 						boolean flag2 = false;
 						for(int j = left.size()-1; j > -1 ; j--){
 							flag2 = true;
@@ -1550,18 +1624,34 @@ public class EPLProcessor {
 							stackTop = openParaStack.peek();
 						}
 						
+						/*
+						 * Open paras on the right of this term ( Not time starting from this term)
+						 */
 						if(notOpenPara){
 							System.out.print("( ");
 						}
 						
-						// print this term
+						/*
+						 *  This Term
+						 */
 						if(BDPLTranslateUtil.getTermType(term) == BDPLTranslateUtil.TERM_TIME){
 							System.out.print(EPLConstants.TIMER_INTERVAL+"("+term.getDuration()+") ");
 							//System.out.print("interval "+term.getDuration()+" ");
 							thisTermTime = true;
 						}
 						else{
-							System.out.print(term.getName()+" ");
+							System.out.print(EPLConstants.EVENTTAG+eIndex+"=");
+							eIndexs[sIndex] = eIndex;
+							eIndex++;
+							
+							
+							for(int j = eStart; j < eIndex; j++){
+								eParams.append(","+EPLConstants.EVENTTAG+j);
+							}
+							
+							System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString())+") ");
+							
+							eParams.delete(0, eParams.length());
 						}
 						
 						//XXX check
@@ -1570,9 +1660,33 @@ public class EPLProcessor {
 								throw new BDPLTranslateException("Time delays are overlapping");
 							}
 						}
+						lastTermTime = thisTermTime;
 						
+						
+						/*
+						 * Not Event of this term
+						 */
 						for(Term not : notList.values()){
-							System.out.print(EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+not.getName()+" ");
+							System.out.print(EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+EPLConstants.NOTEVENTTAG+nIndex+"="+not.getName());
+							
+							if(thisTermTime){
+								for(int j = eStart; j < eIndex; j++){
+									eParams.append(","+EPLConstants.EVENTTAG+j);
+								}
+							}
+							else{
+								for(int j = eStart; j < eIndex-1; j++){
+									eParams.append(","+EPLConstants.EVENTTAG+j);
+								}
+							}
+							
+							System.out.print("("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
+							
+							nIndexs[sIndex] = nIndex;
+							nIndex++;
+							
+							eParams.delete(0, eParams.length());
+							
 							//System.out.print("and not "+not.getName()+" ");
 						}
 						
@@ -1581,11 +1695,14 @@ public class EPLProcessor {
 							notList.remove(term);
 						}
 						
+						/*
+						 * Not Time of this event
+						 */
 						NotEntry notTime = notTable.getEntryByNotEnd(term);
 						if(notTime != null){
 							if(BDPLTranslateUtil.getTermType(notTime.getNot()) == BDPLTranslateUtil.TERM_TIME){
 								if(notTime == stackTop){
-									System.out.print(") "+EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+notTime.getNot().getName()+" "+notTime.getNot().getDuration()+" ");
+									System.out.print(") "+EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+EPLConstants.TIMER_INTERVAL+"("+notTime.getNot().getDuration()+") ");
 									//System.out.print(") and not "+notTime.getNot().getName()+" "+notTime.getNot().getDuration()+" ");
 									openParaStack.pop();
 									if(openParaStack.size() > 0){
@@ -1610,6 +1727,7 @@ public class EPLProcessor {
 								notOpenPara = true;
 							}
 							else{
+								// put only not event in list
 								notList.put(entry.getNotEnd(), entry.getNot());
 							}
 						}

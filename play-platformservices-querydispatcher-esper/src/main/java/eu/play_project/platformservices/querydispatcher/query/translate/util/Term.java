@@ -12,16 +12,12 @@ package eu.play_project.platformservices.querydispatcher.query.translate.util;
 /*
  * event
  * time interval
- * sequence events
  * 
  */
 public class Term {
 	
 	
 	private final String name;
-	
-	// id in event table
-	private int eventIDs = -1;
 	
 	private long duration = -1l;
 	
@@ -34,16 +30,11 @@ public class Term {
 		this.duration = duration;
 	}
 
-	public Term(String n){
-		name = n;
-	}
-	
 	/*
 	 * Constructor simple event
 	 */
-	public Term(String n, int eids){
+	public Term(String n){
 		name = n;
-		eventIDs = eids;
 	}
 	
 	
