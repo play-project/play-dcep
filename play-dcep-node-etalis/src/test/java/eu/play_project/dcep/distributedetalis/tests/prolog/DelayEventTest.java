@@ -2,6 +2,7 @@ package eu.play_project.dcep.distributedetalis.tests.prolog;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,17 +15,24 @@ import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-public class TimeTriggerTest {
+import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
+import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
+
+public class DelayEventTest {
 	
 	/**
-	 *  Fire event with delay of one second. (With basic prolog methods)
+	 *  Fire event with delay of one second.
+	 * @throws DistributedEtalisException 
+	 * @throws IOException 
 	 */
 	@Test
-	public void testTimeTrigger() throws InterruptedException {
+	public void testTimeTrigger() throws InterruptedException, IOException, DistributedEtalisException {
 			long delay = 3000;
 			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
 
-			PrologEngineWrapper<?> engine = new JPLEngineWrapper();
+			// Init ETALIS
+			PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 			JtalisContext context = new JtalisContextImpl(engine);
 			context.addEventTrigger("c");
 
@@ -35,11 +43,15 @@ public class TimeTriggerTest {
 				}
 			});
 
+			LoadPrologCode loadPrologCode = new LoadPrologCode();
+			loadPrologCode.loadCode("TimeTrigger.pl", engine);
+			
+
 			context.addDynamicRule("c <- a");
 			
-			engine.executeGoal("alarm(1 , event(a), _ID, [])");
-			engine.executeGoal("alarm(1 , event(a), _ID, [])");
-			engine.executeGoal("alarm(1 , event(a), _ID, [])");
+			engine.executeGoal("triggerEventWithDelay(a)");
+			engine.executeGoal("triggerEventWithDelay(a)");
+			engine.executeGoal("triggerEventWithDelay(a)");
 			engine.executeGoal("event(a)");
 		    		    
 			Thread.sleep(delay); // wait a little bit for the events to be processed

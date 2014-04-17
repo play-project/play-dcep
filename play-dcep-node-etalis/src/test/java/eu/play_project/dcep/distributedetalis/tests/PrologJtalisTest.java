@@ -81,7 +81,7 @@ public class PrologJtalisTest {
 	
 	
 	/**
-	 * Instantiate ETALIS and register eventpatterns.
+	 * Instantiate ETALIS and register event patterns.
 	 */
 	@Ignore
 	@Test
