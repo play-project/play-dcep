@@ -97,7 +97,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 		return eventQuery;
 	}
 
-	public void seteventQuery(Element element){
+	public void setEventQuery(Element element){
     	eventQuery = element;
     }
 

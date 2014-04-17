@@ -8,6 +8,10 @@ import org.apache.xerces.impl.dv.xs.DurationDV;
 import org.apache.xerces.xs.datatypes.XSDateTime;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+
 import eu.play_platform.platformservices.bdpl.syntax.windows.Window;
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 
@@ -44,5 +48,22 @@ public class SlidingWindow extends Window{
 			logger.error("It is not possible to pars window values. This is a bug in the parser implementation. {}", e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void visit(ElementVisitor v) {
+		v.visit(this);
+	}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

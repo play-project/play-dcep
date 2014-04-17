@@ -269,22 +269,46 @@ void WhereClauseBDPL() : {Element el; Token th; Token t; Update up; Expr testExp
 	   		<LBRACE>
 	   			el = EventClause()
 			<RBRACE>
-		t = < WINDOWSIZE >
-				(
-		  			< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(t.image);}
-				|   < WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(t.image);}
-				)
-			<RPAREN> {getQuery().setWindow(win);}
+			win = WindowSize()
+		 {getQuery().setWindow(win);}
 		)  
 	|
 		//Real time query without window.
 	    el = EventClause()
 	)
-	{getQuery().seteventQuery(el);}
+	{getQuery().setEventQuery(el);}
 	
 	// Historical query is optional.
 	WhereClauseH(th)
   <RBRACE>
+}
+
+Window WindowSize() : {Token t; Window win;}
+{
+	t = < WINDOWSIZE >
+		(
+		  	< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(t.image);}
+			|
+			< WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(t.image);}
+		)
+		<RPAREN>
+		
+	{return win;}
+}
+
+
+Element NotClause() : {Element start = null; Element end = null; Element not = null;}
+{
+   < NOT >
+   <LPAREN>
+		start = EventClause()
+  	 < COMMA >
+		not = EventClause()
+     < COMMA >
+     	end = EventClause() | end = WindowSize()
+
+   <RPAREN>	
+   {return new ElementNotOperator(start, not, end);}
 }
 
 void WhereClause() : { Element el ; }
@@ -1959,9 +1983,18 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
 }
 
 Element EventClause() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
-{    eventClause = NestedEvents()
+{
+  	NotClause()
+  	(
+	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents() | eventClauseR = NotClause())
+	  {
+	    op.setChilds(eventClause, eventClauseR);
+	    eventClause = op;
+	  }
+	)*
+ |     eventClause = NestedEvents()
     (
-	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
+	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents() | eventClauseR = NotClause())
 	  {
 	    op.setChilds(eventClause, eventClauseR);
 	    eventClause = op;
@@ -1971,7 +2004,7 @@ Element EventClause() : {Element eventClause = null; Element eventClauseR = null
 	{return eventClause;}|
 	eventClause = Event()
 	(
-	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
+	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents() | eventClauseR = NotClause())
 	  {
 	    op.setChilds(eventClause, eventClauseR);
 	    eventClause = op;

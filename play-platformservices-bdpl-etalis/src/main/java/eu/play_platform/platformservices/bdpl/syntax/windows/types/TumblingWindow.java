@@ -7,6 +7,10 @@ import org.apache.xerces.impl.dv.xs.DurationDV;
 import org.apache.xerces.xs.datatypes.XSDateTime;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+
 import eu.play_platform.platformservices.bdpl.syntax.windows.Window;
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
 /**
@@ -42,6 +46,23 @@ public class TumblingWindow extends Window{
 	@Override
 	public void accept(ElementWindowVisitor v) {
 		v.visit(this);
+	}
+
+	@Override
+	public void visit(ElementVisitor v) {
+		v.visit(this);
+	}
+
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
