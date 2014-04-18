@@ -296,21 +296,6 @@ Window WindowSize() : {Token t; Window win;}
 	{return win;}
 }
 
-
-Element NotClause() : {Element start = null; Element end = null; Element not = null;}
-{
-   < NOT >
-   <LPAREN>
-		start = EventClause()
-  	 < COMMA >
-		not = EventClause()
-     < COMMA >
-     	end = EventClause() | end = WindowSize()
-
-   <RPAREN>	
-   {return new ElementNotOperator(start, not, end);}
-}
-
 void WhereClause() : { Element el ; }
 {
    (<WHERE>)?
@@ -338,6 +323,7 @@ void GroupClause() : { }
 {
   <GROUP> <BY> ( GroupCondition() )+
 }
+
 void GroupCondition() : { Var v = null ; Expr expr = null ; }
 {
   ( expr = BuiltInCall() { getQuery().addGroupBy((Var)null, expr) ; }
@@ -352,6 +338,7 @@ void GroupCondition() : { Var v = null ; Expr expr = null ; }
     { getQuery().addGroupBy(v) ; }
   )
 }
+
 void HavingClause() : { }
 {
     { allowAggregatesInExpressions = true ; }
@@ -1984,63 +1971,57 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
 
 Element EventClause() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
 {
-  	NotClause()
-  	(
-	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents() | eventClauseR = NotClause())
-	  {
-	    op.setChilds(eventClause, eventClauseR);
-	    eventClause = op;
-	  }
-	)*
- |     eventClause = NestedEvents()
-    (
-	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents() | eventClauseR = NotClause())
-	  {
-	    op.setChilds(eventClause, eventClauseR);
-	    eventClause = op;
-	  }
-	)*
+(   	eventClause = NotClause() (eventClause = MoreEvents(eventClause))?
+ |     eventClause = NestedEvents() (eventClause = MoreEvents(eventClause))? |	eventClause = Events()
+)
+  {return eventClause;}
+}
 
-	{return eventClause;}|
-	eventClause = Event()
-	(
-	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents() | eventClauseR = NotClause())
-	  {
-	    op.setChilds(eventClause, eventClauseR);
-	    eventClause = op;
-	  }
-	)* 
-
-	{return eventClause;}
+Element NotClause() : {Element start = null; Element end = null; Element not = null;}
+{
+   < NOT >
+   <LPAREN>
+		start = EventClause()
+  	 < COMMA >
+		not = EventClause()
+     < COMMA >
+     	end = EventClause() | end = WindowSize()
+   <RPAREN>
+   
+   {return new ElementNotOperator(start, not, end);}
 }
 
 Element NestedEvents() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
 {
-    
-	<LBRACE> eventClause = Events() <RBRACE>
-	{return eventClause;}
+	<LBRACE> eventClause = EventClause() <RBRACE>
+	{return new ElementBraceOperator(eventClause);}
 }
 
-Element Events() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
+Element Events() : {Element el;}
 {
-	eventClause = Event()
-	(	  op = BdplBinOperators() eventClauseR = Event()	  {	    op.setChilds(eventClause, eventClauseR);	    eventClause = op;	  }	)*
-	{return eventClause;}
+	el = Event()
+	(
+	   el = MoreEvents(el)
+	)?
+	
+	{ return el;}
 }
 
-ElementEventGraph Event() :{ ElementEventGraph e; Element filter =  null;}
-{	e = EventGraphPattern() (filter = BdplFilter())?
+ElementEventGraph Event() : { ElementEventGraph e; Element filter =  null;}
+{	e = EventGraphPattern() //(filter = BdplFilter())?
 	{
 	  e.setFilterExp(filter);
 	  return e;	}
 }
 
-ElementEventBinOperator MoreEvents() : {ElementEventBinOperator op; ElementEventGraph e2;}
-{	op = BdplBinOperators() e2 = Event()
-	{
-	  op.setRight(e2);
-	  return op;
-	}
+ElementEventBinOperator MoreEvents(Element leftElement) : {ElementEventBinOperator op; ElementEventGraph rightEvent;}
+{	(
+		op = BdplBinOperators() rightEvent = EventClause()
+		{
+	  		op.setChilds(leftElement, rightEvent);
+	  		return op;
+		}
+	)+
 }
 
 // Binary operators for BDPL.

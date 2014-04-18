@@ -15,7 +15,6 @@ public class ElementEventFilter extends Element{
 
 
 	ElementEventFilter exp1;
-	BooleanOperator op;
 	ElementEventFilter exp2;
 	
 	public ElementEventFilter(){}
