@@ -47,7 +47,7 @@ public class StringEscapesProcessor {
 		{
 			String value = stringNode.getValue();
 			try {
-				value = BDPLUtil.decodeString(value);
+				value =  BDPLUtil.decodeString(value);
 				stringNode.setValue(value);
 			}
 			catch (IllegalArgumentException e) {

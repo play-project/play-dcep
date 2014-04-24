@@ -21,6 +21,26 @@ public class Term {
 	
 	private long duration = -1l;
 	
+	private String sparqlText;
+	
+	private String var;
+	
+	public String getVar() {
+		return this.var;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+	public String getSparqlText(){
+		return sparqlText;
+	}
+	
+	public void setSparqlText(String s){
+		sparqlText = s;
+	}
+	
 	public long getDuration() {
 		return duration;
 	}

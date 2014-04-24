@@ -12,24 +12,19 @@ import java.util.Stack;
 import org.openrdf.query.parser.sparql.ast.ASTA;
 import org.openrdf.query.parser.sparql.ast.ASTB;
 import org.openrdf.query.parser.sparql.ast.ASTC;
+import org.openrdf.query.parser.sparql.ast.ASTEventClause;
 import org.openrdf.query.parser.sparql.ast.ASTEventGraphPattern;
 import org.openrdf.query.parser.sparql.ast.ASTEventPattern;
 import org.openrdf.query.parser.sparql.ast.ASTNotClause;
 import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
 import org.openrdf.query.parser.sparql.ast.ASTTimeBasedEvent;
 import org.openrdf.query.parser.sparql.ast.Node;
+import org.openrdf.query.parser.sparql.ast.SimpleNode;
+import org.openrdf.query.parser.sparql.ast.Token;
 import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.MalformedQueryException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
-
-
-
-
-
-
-
-
-
 import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLTranslateException;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLTranslateUtil;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
@@ -42,7 +37,7 @@ import eu.play_project.platformservices.querydispatcher.query.translate.util.Ter
 import eu.play_project.platformservices.querydispatcher.query.translate.util.TimeDelayEntry;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.TimeDelayTable;
 
-import org.openrdf.query.MalformedQueryException;
+
 
 /**
  * Processes the part of real time query, and translates it into a EPL for Esper.
@@ -56,12 +51,27 @@ public class EPLProcessor {
 			throws MalformedQueryException{
 		EPLTranslator translator = new EPLTranslator();
 		
-		NotTable notTable = new NotTable();
+		EPLTranslatorData data = new EPLTranslatorData();
 		
 		try {
-			qc.jjtAccept(translator, notTable);
+			qc.jjtAccept(translator, data);
 		} catch (VisitorException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	private static class EPLTranslatorData{
+		
+		private NotTable notTable = new NotTable();
+		
+		private StringBuffer sparqlText = new StringBuffer();
+		
+		public NotTable getNotTable(){
+			return notTable;
+		}
+		
+		public StringBuffer getSparqlText(){
+			return sparqlText;
 		}
 	}
 	
@@ -84,7 +94,7 @@ public class EPLProcessor {
 				if(node.getTop())
 				{
 					try{
-						printExpression(ret, (NotTable)data);
+						printExpression(ret, (EPLTranslatorData)data);
 					}catch (BDPLTranslateException e) {
 						throw new VisitorException(e.getMessage());
 					}
@@ -111,7 +121,7 @@ public class EPLProcessor {
 				if(node.getTop())
 				{
 					try{
-						printExpression(ret, (NotTable)data);
+						printExpression(ret, (EPLTranslatorData)data);
 					}catch (BDPLTranslateException e) {
 						throw new VisitorException(e.getMessage());
 					}
@@ -185,7 +195,8 @@ public class EPLProcessor {
 			// A -> C and not B
 			OrClause expression = null;
 			
-			NotTable notTable = (NotTable)data;
+			EPLTranslatorData etd = (EPLTranslatorData) data;
+			NotTable notTable = etd.getNotTable();
 			
 			// get 3 child terms of the not clause
 			
@@ -312,26 +323,104 @@ public class EPLProcessor {
 		}
 		
 		@Override
+		public Object visit(ASTEventClause node, Object data)
+				throws VisitorException
+		{
+			
+			/*
+			 * visit child nodes
+			 */
+			super.visit(node, data);
+			
+			/*
+			 * Get the sparql text of this event 
+			 */
+			StringBuffer sparqlText = ((EPLTranslatorData)data).getSparqlText();
+			Token token = node.jjtGetFirstToken();
+			for(int i = 0; i < 3; i++){
+				token = token.next;
+			}
+			for(; token != node.jjtGetLastToken(); token = token.next){
+				sparqlText.append(token.image+" ");
+			}
+			// last token must be }
+				System.out.println("\nSparql Text: "+sparqlText.toString());
+			
+			/*
+			 * Create the term of this event
+			 */
+			OrClause expression;
+			try{
+				String [] info = processSparql(sparqlText.toString());
+			
+				Term term = new Term(info[0]);
+				term.setSparqlText(sparqlText.toString());
+				term.setVar(info[1]);
+				sparqlText.delete(0, sparqlText.length());
+				
+				SeqClause seq = new SeqClause();
+				seq.addTerm(term);
+				
+				expression = new OrClause();
+				expression.addSeqClause(seq);
+			}
+			catch(BDPLTranslateException e){
+				throw new VisitorException(e.getMessage());
+			}
+			
+			return expression;
+		}
+		
+		@Override
 		public Object visit(ASTEventGraphPattern node, Object data)
 				throws VisitorException
 		{
-			/*System.out.print(" "+node.getOperator()+" ");
-			System.out.print(" "+node.getEventName()+" ");
+			Object ret = super.visit(node, data);
 			
-			super.visit(node, data);
+			//TODO get event type
 			
-			return data;*/
+			return ret;
+		}
+		
+		//TODO 
+		private String[] processSparql(String sparql) throws BDPLTranslateException{
+			// ret[0]: event rdf:type
+			// ret[1]: the first variable
+			String [] ret = new String [2];
 			
-			super.visit(node, data);
+			int i1 = -1, i2 = -1;
 			
-			Term term = new Term(node.getEventName());
-			SeqClause seq = new SeqClause();
-			seq.addTerm(term);
+			i1 = sparql.indexOf("rdf:type");
+			if(i1 == -1){
+				throw new BDPLTranslateException("An Event dose not have property rdf:type");
+			}
+			else{
+				i2 = sparql.indexOf(".");
+				
+				if(i2 > i1){
+					ret[0] = sparql.substring(i1+8, i2).trim();
+				}
+				else{
+					throw new BDPLTranslateException("Could not determine the end of property rdf:type");
+				}
+			}
 			
-			OrClause expression = new OrClause();
-			expression.addSeqClause(seq);
+			i1 = sparql.indexOf("?");
+			if(i1 == -1){
+				i1 = sparql.indexOf("$");
+				if(i1 == -1){
+					throw new BDPLTranslateException("Could not determine a variable in an event");
+				}
+			}
 			
-			return expression;
+			i2 = i1;
+			char c = sparql.charAt(i2);
+			while(i2 < sparql.length() && c != ' ' && c != '\r' && c != '\n'){
+				c = sparql.charAt(i2++);
+			}
+			ret[1] = sparql.substring(i1, i2);
+			
+			return ret;
 		}
 		
 		/*
@@ -1311,7 +1400,9 @@ public class EPLProcessor {
 			return ret;
 		}
 		
-		private void printExpression(OrClause result, NotTable notTable) throws BDPLTranslateException{
+		private void printExpression(OrClause result, EPLTranslatorData data) throws BDPLTranslateException{
+			
+			NotTable notTable = data.getNotTable();
 			
 			List<SeqClause> seqcs = result.getSeqClauses();
 			
@@ -1363,6 +1454,8 @@ public class EPLProcessor {
 			TimeDelayTable tdTable = seqc.getTdTable();
 			Stack<IEntry> openParaStack = new Stack<IEntry>();
 			IEntry stackTop = null;
+			StringBuffer sparqlText = new StringBuffer();
+			// event tag and not tag
 			int eStart = 1, eIndex = 1, nStart = 1, nIndex = 1;
 			
 			int i1 = sIndex-1;
@@ -1396,11 +1489,11 @@ public class EPLProcessor {
 						throw new BDPLTranslateException("Sequence clause has no time delay table");
 					}
 					else{
-						Term t = ltrs.get(0);
+						Term term = ltrs.get(0);
 						System.out.print(EPLConstants.EVERY+" ");
 						
-						if(BDPLTranslateUtil.getTermType(t) == BDPLTranslateUtil.TERM_TIME){
-							System.out.print(EPLConstants.TIMER_INTERVAL+"("+t.getDuration()+") ");
+						if(BDPLTranslateUtil.getTermType(term) == BDPLTranslateUtil.TERM_TIME){
+							System.out.print(EPLConstants.TIMER_INTERVAL+"("+term.getDuration()+") ");
 						}
 						else{
 							System.out.print(EPLConstants.EVENTTAG+eIndex+"=");
@@ -1411,7 +1504,9 @@ public class EPLProcessor {
 								eParams.append(","+EPLConstants.EVENTTAG+i);
 							}
 							
-							System.out.print(t.getName()+"("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString())+") ");
+							sparqlText.append(term.getSparqlText());
+							
+							System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, String.format(EPLConstants.SPARQL_QUERY, term.getVar(), sparqlText), eParams.toString())+") ");
 							
 							eParams.delete(0, eParams.length());
 						}
@@ -1488,7 +1583,8 @@ public class EPLProcessor {
 							eParams.append(","+EPLConstants.EVENTTAG+i);
 						}
 						
-						System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString())+") ");
+						sparqlText.append(term.getSparqlText());
+						System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, String.format(EPLConstants.SPARQL_QUERY, term.getVar(), sparqlText), eParams.toString())+") ");
 						
 						eParams.delete(0, eParams.length());
 					}
@@ -1562,8 +1658,10 @@ public class EPLProcessor {
 										eParams.append(","+EPLConstants.EVENTTAG+j);
 									}
 									
-									
-									interval += ("("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
+									int se = sparqlText.length();
+									sparqlText.append(not.getSparqlText());
+									interval += ("("+String.format(EPLConstants.FILTER_RDF, String.format(EPLConstants.SPARQL_QUERY, not.getVar(), sparqlText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
+									sparqlText.delete(se, sparqlText.length());
 									
 									nIndexs[sIndex] = nIndex;
 									nIndex++;
@@ -1649,7 +1747,8 @@ public class EPLProcessor {
 								eParams.append(","+EPLConstants.EVENTTAG+j);
 							}
 							
-							System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString())+") ");
+							sparqlText.append(term.getSparqlText());
+							System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, String.format(EPLConstants.SPARQL_QUERY, term.getVar(), sparqlText), eParams.toString())+") ");
 							
 							eParams.delete(0, eParams.length());
 						}
@@ -1680,7 +1779,10 @@ public class EPLProcessor {
 								}
 							}
 							
-							System.out.print("("+String.format(EPLConstants.FILTER_RDF, "query", eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
+							int se = sparqlText.length();
+							sparqlText.append(not.getSparqlText());
+							System.out.print("("+String.format(EPLConstants.FILTER_RDF, String.format(EPLConstants.SPARQL_QUERY, not.getVar(), sparqlText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
+							sparqlText.delete(se, sparqlText.length());
 							
 							nIndexs[sIndex] = nIndex;
 							nIndex++;

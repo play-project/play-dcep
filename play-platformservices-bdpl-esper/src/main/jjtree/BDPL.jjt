@@ -26,6 +26,8 @@ options {
 	MULTI=true;
 	VISITOR=true;
 	VISITOR_EXCEPTION="VisitorException";
+	TRACK_TOKENS = true;
+	NODE_SCOPE_HOOK = true;
 	STATIC=false;
 	UNICODE_INPUT=true;
 	JAVA_UNICODE_ESCAPE=true; // pre-process unicode escapes, see section A.2 of spec
@@ -92,6 +94,16 @@ public class SyntaxTreeBuilder {
 			s = s.substring(n, s.length() - n);
 		}
 		return s;
+	}
+	
+	void jjtreeOpenNodeScope( Node node )
+	{
+		((SimpleNode)node).jjtSetFirstToken(getToken(1));
+	}
+
+	void jjtreeCloseNodeScope( Node node )
+	{
+		((SimpleNode)node).jjtSetLastToken(getToken(0));
 	}
 }
 PARSER_END(SyntaxTreeBuilder)
@@ -1973,7 +1985,7 @@ void A(String op):
 	|
 	TimeBasedEvent("")
 	|
-	EventGraphPattern("")
+	EventClause("")
 	|
 	(<LBRACE> {System.out.print(" ( ");} EventPattern(false) <RBRACE> {System.out.print(" ) ");})
 	)
@@ -1985,27 +1997,39 @@ void NotClause():
 
 	<EVENT_UN_OP_1> 
 	<LBRACE> {System.out.print("( ");}
-	(EventGraphPattern("") | TimeBasedEvent(""))
+	(EventClause("") | TimeBasedEvent(""))
 	{System.out.print(" -> ( not ");}
-	(EventGraphPattern("") | TimeBasedEvent(""))
+	(EventClause("") | TimeBasedEvent(""))
 	{System.out.print(" and ");}
-	(EventGraphPattern("") | TimeBasedEvent(""))
+	(EventClause("") | TimeBasedEvent(""))
 	{System.out.print(" ) ");}
 	<RBRACE> {System.out.print(") ");}
 }
 
-void EventGraphPattern(String op):
-{ Token t;}
+void EventClause(String op):
+{ 
+	Token t;
+}
 {
 	t=<EVENT> VarOrIRIref() 
-	{ jjtThis.setOperator(op); 
+	{ 
+	  jjtThis.setOperator(op); 
 	  jjtThis.setEventName(t.image); 
 	  System.out.print(t.image);
 	}
 	<LBRACE> 
-	//( [TriplesBlock()] ((OptionalGraphPattern() | GroupOrUnionGraphPattern() | Filter()) [<DOT>] [TriplesBlock()])* ) 
+	EventGraphPattern()
 	<RBRACE>
 	[Filter() {System.out.print("( ) ");}]
+}
+
+
+void EventGraphPattern():
+{}	
+{
+	( [TriplesBlock()] 
+	  ((OptionalGraphPattern() | GroupOrUnionGraphPattern() | Filter()) [<DOT>] [TriplesBlock()])* 
+	) 
 }
 
 void TimeBasedEvent(String op):

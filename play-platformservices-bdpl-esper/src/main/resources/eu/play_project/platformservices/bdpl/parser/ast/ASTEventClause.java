@@ -3,10 +3,11 @@
 package org.openrdf.query.parser.sparql.ast;
 
 public
-class ASTEventGraphPattern extends SimpleNode {
+class ASTEventClause extends SimpleNode {
 	private String operator;
 	
 	private String name;
+	
 	
 	public void setOperator(String op){
 	    operator = op;
@@ -23,12 +24,13 @@ class ASTEventGraphPattern extends SimpleNode {
 	public String getEventName(){
 		return name;
 	}
+
 	
-  public ASTEventGraphPattern(int id) {
+  public ASTEventClause(int id) {
     super(id);
   }
 
-  public ASTEventGraphPattern(SyntaxTreeBuilder p, int id) {
+  public ASTEventClause(SyntaxTreeBuilder p, int id) {
     super(p, id);
   }
 
