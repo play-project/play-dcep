@@ -82,6 +82,13 @@
 				<artifactId>play-commons-eventtypes</artifactId>
 				<version>${play.commons.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.semweb4j</groupId>
+				<artifactId>bom</artifactId>
+				<version>${semweb4j.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
