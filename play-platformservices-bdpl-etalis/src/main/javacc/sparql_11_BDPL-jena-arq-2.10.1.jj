@@ -1980,13 +1980,8 @@ Element EventClause() : {Element eventClause = null; Element eventClauseR = null
 Element NotClause() : {Element start = null; Element end = null; Element not = null;}
 {
    < NOT >
-   <LPAREN>
-		start = EventClause()
-  	 < COMMA >
-		not = EventClause()
-     < COMMA >
-     	end = EventClause() | end = WindowSize()
-   <RPAREN>
+	< LPAREN >		start = EventClause()  	 < COMMA >		not = EventClause()     < COMMA >     	(     	  end = EventClause() | end = WindowSize()
+     	)   < RPAREN >
    
    {return new ElementNotOperator(start, not, end);}
 }
@@ -2008,13 +2003,13 @@ Element Events() : {Element el;}
 }
 
 ElementEventGraph Event() : { ElementEventGraph e; Element filter =  null;}
-{	e = EventGraphPattern() //(filter = BdplFilter())?
+{	e = EventGraphPattern() (filter = BdplFilter())?
 	{
 	  e.setFilterExp(filter);
 	  return e;	}
 }
 
-ElementEventBinOperator MoreEvents(Element leftElement) : {ElementEventBinOperator op; ElementEventGraph rightEvent;}
+ElementEventBinOperator MoreEvents(Element leftElement) : {ElementEventBinOperator op; Element rightEvent;}
 {	(
 		op = BdplBinOperators() rightEvent = EventClause()
 		{
