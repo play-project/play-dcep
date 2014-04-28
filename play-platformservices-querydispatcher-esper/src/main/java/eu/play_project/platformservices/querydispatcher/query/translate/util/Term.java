@@ -23,15 +23,6 @@ public class Term {
 	
 	private String sparqlText;
 	
-	private String var;
-	
-	public String getVar() {
-		return this.var;
-	}
-
-	public void setVar(String var) {
-		this.var = var;
-	}
 
 	public String getSparqlText(){
 		return sparqlText;

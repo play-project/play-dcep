@@ -5,8 +5,11 @@ package eu.play_project.platformservices.querydispatcher.query.translate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 
+
+import java.util.Set;
 
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.Dataset;
@@ -29,6 +32,7 @@ import org.openrdf.query.parser.sparql.WildcardProjectionProcessor;
 import org.openrdf.query.parser.sparql.ast.ASTAskQuery;
 import org.openrdf.query.parser.sparql.ast.ASTConstructQuery;
 import org.openrdf.query.parser.sparql.ast.ASTDescribeQuery;
+import org.openrdf.query.parser.sparql.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.sparql.ast.ASTQuery;
 import org.openrdf.query.parser.sparql.ast.ASTQueryContainer;
 import org.openrdf.query.parser.sparql.ast.ASTSelectQuery;
@@ -74,11 +78,12 @@ public class BDPLTranslator implements QueryParser{
 				// handle query operation
 
 				TupleExpr tupleExpr = buildQueryModel(qc);
-
+				
 				ParsedQuery query;
-
+			
 				ASTQuery queryNode = qc.getQuery();
 				if (queryNode instanceof ASTSelectQuery) {
+						
 					query = new ParsedTupleQuery(queryStr, tupleExpr);
 				}
 				else if (queryNode instanceof ASTConstructQuery) {
@@ -86,9 +91,11 @@ public class BDPLTranslator implements QueryParser{
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
 				}
 				else if (queryNode instanceof ASTAskQuery) {
+					
 					query = new ParsedBooleanQuery(queryStr, tupleExpr);
 				}
 				else if (queryNode instanceof ASTDescribeQuery) {
+					
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
 				}
 				else {
@@ -102,6 +109,9 @@ public class BDPLTranslator implements QueryParser{
 				}
 				
 				EPLProcessor.process(qc);
+				
+				//System.out.println("\nDataset "+query.getDataset().toString());
+				//System.out.println("\nTuple "+query.getTupleExpr().toString());
 				
 				return query;
 			}
@@ -132,7 +142,7 @@ public class BDPLTranslator implements QueryParser{
 	public static void main(String[] args)
 			throws java.io.IOException
 		{
-			
+		
 		    BDPLTranslator trans = new BDPLTranslator();
 		
 			System.out.println("Your BDPL query:");

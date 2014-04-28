@@ -293,8 +293,7 @@ TOKEN [IGNORE_CASE] :	// BDPL tokens
 {
 	<ARRAY: "array">
 |	<WINDOW: "window">
-// for test add integer
-|	<EVENT: "event" <INTEGER>>
+|	<EVENT: "event">
 |	<INTERVAL: "interval">
 |	<AT: "at">
 |	<EVENT_UN_OP_1: <EVENT_OP_NOT>>
@@ -402,7 +401,8 @@ ASTQueryContainer QueryContainer():
 	{ return jjtThis; }
 }
 
-void Prolog() #void :
+// ningyuan changed: 1. remove #void  2. change ASTOperationContainer.getBaseDecl() and getPrefixDeclList() 
+void Prolog():
 {}
 {
 	( PrefixDecl() | BaseDecl() )*
@@ -479,7 +479,7 @@ void ProjectionElem() :
     <LPAREN> Expression() <AS> Var() <RPAREN>
 }
 
-// ningyuan made changes
+// ningyuan changed: replace WhereClause with BDPLWhereClause
 
 void ConstructQuery() :
 {}
@@ -2020,7 +2020,6 @@ void EventClause(String op):
 	<LBRACE> 
 	EventGraphPattern()
 	<RBRACE>
-	[Filter() {System.out.print("( ) ");}]
 }
 
 

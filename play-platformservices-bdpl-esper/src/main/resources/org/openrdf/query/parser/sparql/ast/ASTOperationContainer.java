@@ -22,7 +22,7 @@ import java.util.List;
  * Abstract supertype of {@link ASTQueryContainer} and
  * {@link ASTUpdateContainer}
  * 
- * @author Jeen Broekstra
+ * @author Jeen Broekstra, Ningyuan Pan
  */
 public abstract class ASTOperationContainer extends SimpleNode {
 
@@ -36,17 +36,21 @@ public abstract class ASTOperationContainer extends SimpleNode {
 	public ASTOperationContainer(SyntaxTreeBuilder p, int id) {
 		super(p, id);
 	}
-
+	
+	// Ninyuan changed
 	public ASTBaseDecl getBaseDecl() {
-		return super.jjtGetChild(ASTBaseDecl.class);
+		//return super.jjtGetChild(ASTBaseDecl.class);
+		return (super.jjtGetChild(ASTProlog.class)).jjtGetChild(ASTBaseDecl.class);
 	}
-
+	
 	public ASTOperation getOperation() {
 		return super.jjtGetChild(ASTOperation.class);
 	}
-
+	
+	// Ninyuan changed
 	public List<ASTPrefixDecl> getPrefixDeclList() {
-		return super.jjtGetChildren(ASTPrefixDecl.class);
+		//return super.jjtGetChildren(ASTPrefixDecl.class);
+		return (super.jjtGetChild(ASTProlog.class)).jjtGetChildren(ASTPrefixDecl.class);
 	}
 	
 	public abstract void setSourceString(String source);
