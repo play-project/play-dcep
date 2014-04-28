@@ -21,6 +21,7 @@
 // ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
 options
 {
+  FORCE_LA_CHECK = true;
       // \ u processed in the input stream
       // SPARQL 1.0
     JAVA_UNICODE_ESCAPE = true ;
@@ -1971,11 +1972,25 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
 
 Element EventClause() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
 {
-(   	eventClause = NotClause() (eventClause = MoreEvents(eventClause))?
- |     eventClause = NestedEvents() (eventClause = MoreEvents(eventClause))? |	eventClause = Events()
-)
+ (
+   	eventClause = NotClause() (eventClause = MoreEvents(eventClause))? |     eventClause = NestedEvents() (eventClause = MoreEvents(eventClause))? |	eventClause = Event() (eventClause = MoreEvents(eventClause))?
+ )
   {return eventClause;}
 }
+
+
+Element EventClauseSingleEvent() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
+{
+ (
+   	eventClause = NotClause()
+ | 
+    eventClause = NestedEvents()
+ |
+	eventClause = Event()
+ )
+  {return eventClause;}
+}
+
 
 Element NotClause() : {Element start = null; Element end = null; Element not = null;}
 {
@@ -1992,15 +2007,6 @@ Element NestedEvents() : {Element e; ElementEventBinOperator subElements = null;
 	{return new ElementBraceOperator(eventClause);}
 }
 
-Element Events() : {Element el;}
-{
-	el = Event()
-	(
-	   el = MoreEvents(el)
-	)?
-	
-	{ return el;}
-}
 
 ElementEventGraph Event() : { ElementEventGraph e; Element filter =  null;}
 {	e = EventGraphPattern() (filter = BdplFilter())?
@@ -2011,7 +2017,8 @@ ElementEventGraph Event() : { ElementEventGraph e; Element filter =  null;}
 
 ElementEventBinOperator MoreEvents(Element leftElement) : {ElementEventBinOperator op; Element rightEvent;}
 {	(
-		op = BdplBinOperators() rightEvent = EventClause()
+		op = BdplBinOperators()
+		rightEvent = EventClauseSingleEvent()
 		{
 	  		op.setChilds(leftElement, rightEvent);
 	  		return op;
