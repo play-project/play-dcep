@@ -137,10 +137,6 @@
 			<artifactId>eventcloud-webservices-core</artifactId>
 			<exclusions>
 				<exclusion>
-					<artifactId>play-commons-constants</artifactId>
-					<groupId>eu.play-project</groupId>
-				</exclusion>
-				<exclusion>
 					<artifactId>spring-context</artifactId>
 					<groupId>org.springframework</groupId>
 				</exclusion>
@@ -151,6 +147,30 @@
 				<exclusion>
 					<artifactId>commons-logging-api</artifactId>
 					<groupId>commons-logging</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>ws-binding-rawreport</artifactId>
+					<groupId>com.ebmwebsourcing.easyesb</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jena-arq</artifactId>
+					<groupId>org.apache.jena</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>play-commons-eventformat</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>play-commons-constants</artifactId>
+					<groupId>eu.play-project</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>cxf-bundle</artifactId>
+					<groupId>org.apache.cxf</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>

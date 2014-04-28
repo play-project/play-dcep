@@ -147,40 +147,6 @@
 			<artifactId>play-dcep-node-esper</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>fr.inria.eventcloud</groupId>
-			<artifactId>eventcloud-core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jena-arq</artifactId>
-					<groupId>org.apache.jena</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>play-commons-eventformat</artifactId>
-					<groupId>eu.play-project</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>play-commons-constants</artifactId>
-					<groupId>eu.play-project</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>cxf-bundle</artifactId>
-					<groupId>org.apache.cxf</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jena-tdb</artifactId>
-					<groupId>org.apache.jena</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 
 		<!-- in order to be able to use filters in the logback configuration side: -->
 		<dependency>

@@ -80,7 +80,6 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -110,6 +109,10 @@
 				<exclusion>
 					<artifactId>jena-core</artifactId>
 					<groupId>org.apache.jena</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>social-filter</artifactId>
+					<groupId>com.ebmwebsourcing.projects.soceda.wp2-federated-middleware-layer.social-components</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
