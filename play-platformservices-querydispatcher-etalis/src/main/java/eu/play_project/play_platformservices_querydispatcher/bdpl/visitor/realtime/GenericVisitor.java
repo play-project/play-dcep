@@ -31,9 +31,9 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
-import com.hp.hpl.jena.sparql.syntax.BooleanOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementAssign;
 import com.hp.hpl.jena.sparql.syntax.ElementBind;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementData;
 import com.hp.hpl.jena.sparql.syntax.ElementDataset;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
@@ -45,6 +45,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementMinus;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementNotExists;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementOptional;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
@@ -53,6 +54,11 @@ import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementUnion;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
+
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
 
 
 
@@ -169,11 +175,6 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 	
 	@Override
 	public void visit(RelationalOperator arg0) {
-		logger.debug("Visit " + arg0.getClass().getName());
-		
-	}
-	@Override
-	public void visit(BooleanOperator arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		
 	}
@@ -299,6 +300,32 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 	@Override
 	public void visit(NodeValueDuration nodeValueDuration) {
 		logger.debug("Visit " + nodeValueDuration.getClass().getName());
+	}
+	@Override
+	public void visit(ElementNotOperator elementNotOperator) {
+		logger.debug("Visit " + elementNotOperator.getClass().getName());	
+	}
+	
+	@Override
+	public void visit(CountWindow countWindow) {
+		logger.debug("Visit " + countWindow.getClass().getName());	
+	}
+	@Override
+	public void visit(SlidingWindow slidingWindow) {
+		logger.debug("Visit " + slidingWindow.getClass().getName());	
+	}
+	@Override
+	public void visit(TumblingWindow tumblingWindow) {
+		logger.debug("Visit " + tumblingWindow.getClass().getName());	
+		
+	}
+	@Override
+	public void visit(DummyWindow dummyWindow) {
+		logger.debug("Visit " + dummyWindow.getClass().getName());	
+	}
+	@Override
+	public void visit(ElementBraceOperator elementBraceOperator) {
+		logger.debug("Visit " + elementBraceOperator.getClass().getName());	
 	}
 
 }
