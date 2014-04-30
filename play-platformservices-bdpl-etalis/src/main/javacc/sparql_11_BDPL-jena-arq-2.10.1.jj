@@ -1962,8 +1962,17 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
   < LBRACE >
   	{startTriplesBlock();}
   	el = TriplesBlock(null)
-  	{endTriplesBlock();
-  	elg.addElement(el);}
+
+  	{
+  	  endTriplesBlock();
+  	  elg.addElement(el);
+  	}
+
+	(	  el = Filter()
+		{
+		  elg.addElement(el);		}
+	)?
+  	
   < RBRACE >
   
   {endGroup(elg);}
