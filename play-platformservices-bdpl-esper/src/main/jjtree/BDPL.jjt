@@ -2012,9 +2012,9 @@ void TimeBasedEvent(String op):
 {Token t;}
 {
 	{ jjtThis.setOperator(op); }
-	(t=<INTERVAL> { jjtThis.setEventName(t.image); } <LPAREN> t=<INTEGER> { jjtThis.setEventParam(t.image); System.out.print(" timer:interval("+t.image+")");} <RPAREN>)
+	(t=<INTERVAL> { jjtThis.setEventName(t.image); } <LPAREN> t=<INTEGER> { jjtThis.setDuration(t.image); System.out.print(" timer:interval("+t.image+")");} <RPAREN>)
 	|
-	(t=<AT> { jjtThis.setEventName(t.image); } <LPAREN> t=<INTEGER> { jjtThis.setEventParam(t.image); System.out.print(" timer:at("+t.image+")");} <RPAREN>)
+	(t=<AT> { jjtThis.setEventName(t.image); } <LPAREN> t=<INTEGER> { jjtThis.setDuration(t.image); System.out.print(" timer:at("+t.image+")");} <RPAREN>)
 }
 
 void HistoricalEventQuery():

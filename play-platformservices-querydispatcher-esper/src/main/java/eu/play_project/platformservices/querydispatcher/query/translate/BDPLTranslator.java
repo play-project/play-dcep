@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.transform;
+package eu.play_project.platformservices.querydispatcher.query.translate;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -45,7 +45,7 @@ import eu.play_project.platformservices.bdpl.parser.BDPLParserFactory;
  * @author ningyuan
  *
  */
-public class BDPLTransformer implements QueryParser{
+public class BDPLTranslator implements QueryParser{
 	
 	/* (non-Javadoc)
 	 * @see org.openrdf.query.parser.QueryParser#parseUpdate(java.lang.String, java.lang.String)
@@ -135,7 +135,7 @@ public class BDPLTransformer implements QueryParser{
 			throws java.io.IOException
 		{
 			
-		    BDPLTransformer trans = new BDPLTransformer();
+		    BDPLTranslator trans = new BDPLTranslator();
 		
 			System.out.println("Your BDPL query:");
 

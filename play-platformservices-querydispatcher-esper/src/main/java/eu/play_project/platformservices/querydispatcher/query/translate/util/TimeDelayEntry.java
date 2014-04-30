@@ -1,23 +1,25 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.transform.util;
+package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 /**
+ * The Data structure for describing time delays: START -> TIME DELAY -> END
+ * 
  * @author ningyuan 
  * 
  * Apr 7, 2014
  *
  */
-public class TimeDelayEntry {
+public class TimeDelayEntry implements IEntry{
 	
 	private Term start;
 	
-	private String duration;
+	private long duration = -1;
 	
 	private Term end;
 	
-	public TimeDelayEntry(Term start, Term end, String duration){
+	public TimeDelayEntry(Term start, Term end, long duration){
 		this.start = start;
 		this.end = end;
 		this.duration = duration;
@@ -31,11 +33,11 @@ public class TimeDelayEntry {
 		this.start = start;
 	}
 
-	public String getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(long duration) {
 		this.duration = duration;
 	}
 

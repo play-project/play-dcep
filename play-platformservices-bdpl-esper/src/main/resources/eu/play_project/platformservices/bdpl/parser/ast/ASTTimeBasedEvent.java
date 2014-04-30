@@ -8,7 +8,7 @@ class ASTTimeBasedEvent extends SimpleNode {
 	
 	private String name;
 	
-	private String param;
+	private String duration;
 	
 	public void setOperator(String op){
 	    operator = op;
@@ -26,12 +26,12 @@ class ASTTimeBasedEvent extends SimpleNode {
 		return name;
 	}
 	
-	public void setEventParam(String p){
-	    param = p;
+	public void setDuration(String d){
+	    duration = d;
 	}
 	  
-	public String getEventParam(){
-		return param;
+	public String getDuration(){
+		return duration;
 	}
 	
   public ASTTimeBasedEvent(int id) {
