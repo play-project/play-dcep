@@ -15,7 +15,7 @@
     <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
     <interface name="DcepTestApi" signature="eu.play_project.dcep.api.DcepTestApi" role="server"/>
 	<interface name="DcepMonitoringApi" signature="eu.play_project.dcep.api.DcepMonitoringApi" role="server"/>
-    <content class="eu.play_project.dcep.tests.Dcep"/>
+    <content class="eu.play_project.dcep.Dcep"/>
   </component>
   
   <binding client="this.DcepMonitoringApi" server="Dcep.DcepMonitoringApi"/>
