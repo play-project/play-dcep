@@ -40,7 +40,6 @@ import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementData;
 import com.hp.hpl.jena.sparql.syntax.ElementDataset;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
-import com.hp.hpl.jena.sparql.syntax.ElementEventFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
@@ -682,12 +681,6 @@ public class FormatterElement extends FormatterBase
 
 	@Override
 	public void visit(ElementEventBinOperator el) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(ElementEventFilter el) {
 		// TODO Auto-generated method stub
 		
 	}

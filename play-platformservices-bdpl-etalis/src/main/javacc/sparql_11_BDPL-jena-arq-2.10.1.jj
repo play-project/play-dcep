@@ -2009,9 +2009,8 @@ Element NestedEvents() : {Element e; ElementEventBinOperator subElements = null;
 
 
 ElementEventGraph Event() : { ElementEventGraph e; Element filter =  null;}
-{	e = EventGraphPattern() (filter = BdplFilter())?
+{	e = EventGraphPattern()
 	{
-	  e.setFilterExp(filter);
 	  return e;	}
 }
 
@@ -2056,16 +2055,6 @@ void BdplFilterOperators() :
   | < getENDTIME >
   )
 }
-
-Element BdplFilter() :
-{
-	Element filter = null;
-}
-{
-  filter = Filter()
-  {return filter;}
-}
-
 
 // http://research.petalslink.org/display/play/SPARQL+Expressivity
 

@@ -342,7 +342,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		EventPatternOperatorCollector v = new EventPatternOperatorCollector();
 		v.collectValues(q.getEventQuery());
-		
+		// FIXME find Filter in triples.
 		for (Element currentElement : v.getEventPatterns()) {
 			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
 			if(filterExpressionVisitor.getEle().length() > 1) {
