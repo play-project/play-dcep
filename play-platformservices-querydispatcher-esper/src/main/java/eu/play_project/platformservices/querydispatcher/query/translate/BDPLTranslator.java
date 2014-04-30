@@ -89,6 +89,8 @@ public class BDPLTranslator implements QueryParser{
 				else if (queryNode instanceof ASTConstructQuery) {
 					
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
+					EPLTranslationProcessor.process(qc);
+					EPLListenerProcessor.process(qc);
 				}
 				else if (queryNode instanceof ASTAskQuery) {
 					
@@ -107,11 +109,6 @@ public class BDPLTranslator implements QueryParser{
 				if (dataset != null) {
 					query.setDataset(dataset);
 				}
-				
-				EPLProcessor.process(qc);
-				
-				//System.out.println("\nDataset "+query.getDataset().toString());
-				//System.out.println("\nTuple "+query.getTupleExpr().toString());
 				
 				return query;
 			}

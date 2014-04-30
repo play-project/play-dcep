@@ -11,6 +11,10 @@ package eu.play_project.platformservices.querydispatcher.query.translate.util;
  */
 public class EPLConstants {
 	
+	public static final String SELECT = "select %s";
+	
+	public static final String FROM_PATTERN = "from %s pattern [ %s ]";
+	
 	public static final String EVERY = "every";
 	
 	public static final String TIMER_INTERVAL = "timer:interval";
@@ -23,6 +27,8 @@ public class EPLConstants {
 	
 	public static final String OPERATOR_NOT = "not";
 	
+	public static final String TRIPLEEND = ".";
+	
 	public static final String EVENTTAG = "e";
 	
 	public static final String NOTEVENTTAG = "n";
@@ -30,4 +36,12 @@ public class EPLConstants {
 	public static final String FILTER_RDF = "eu.play_project.platformservices.querydispatcher.query.filter.SesameRDFGraphFilter.evaluate(\"%s\"%s)";
 
 	public static final String SPARQL_ASK_QUERY = "ASK { %s }";
+	
+	public static final String SPARQL_OPTIONAL_CLAUSE = "OPTIONAL { %s }";
+	
+	public static final String SPARQL_WHERE_CLAUSE = "WHERE { %s }";
+	
+	public static final String SPARQL_CLAUSE = "{ %s }";
+	
+	public static final String SPARQL_UNION = "UNION";
 }
