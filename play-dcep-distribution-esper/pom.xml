@@ -13,7 +13,7 @@
 	<artifactId>play-dcep-distribution-esper</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Distributed Complex Event Processing (DCEP) using Esper</name>
+	<name>Distributed Complex Event Processing (DCEP) Esper</name>
 	<description>The DCEP distribution: a complete executable package of DCEP and Platformservices with all dependencies.</description>
 
 	<properties>

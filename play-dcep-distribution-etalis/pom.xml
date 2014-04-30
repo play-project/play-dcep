@@ -13,7 +13,7 @@
 	<artifactId>play-dcep-distribution-etalis</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Distributed Complex Event Processing (DCEP) using ETALIS</name>
+	<name>Distributed Complex Event Processing (DCEP) ETALIS</name>
 	<description>The DCEP distribution: a complete executable package of DCEP and Platformservices with all dependencies.</description>
 
 	<properties>
