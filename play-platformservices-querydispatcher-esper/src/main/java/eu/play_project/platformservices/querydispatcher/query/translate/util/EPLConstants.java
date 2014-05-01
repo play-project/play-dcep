@@ -34,8 +34,8 @@ public class EPLConstants {
 	public static final String NOTEVENTTAG = "n";
 	
 	public static final String FILTER_RDF = "eu.play_project.platformservices.querydispatcher.query.filter.SesameRDFGraphFilter.evaluate(\"%s\"%s)";
-
-	public static final String SPARQL_ASK_QUERY = "ASK { %s }";
+	
+	public static final String SPARQL_ASK_QUERY = "ASK WHERE { %s }";
 	
 	public static final String SPARQL_OPTIONAL_CLAUSE = "OPTIONAL { %s }";
 	

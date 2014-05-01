@@ -58,7 +58,7 @@ public class SesameEventModel extends EventModel<Model> {
 	@Override
 	public boolean isPropertyEquals(String property, String value, int level) {
 			System.out.println("Thread: "+Thread.currentThread().getId()+ " Level: "+level);
-		Model r = super.model.filter(null, new URIImpl(":id"), null);
+		Model r = super.model.filter(null, new URIImpl("<http://ningyuan.com/>"), null);
 		if(r.size() > 0){
 			System.out.print("RDFModel.id: "+r.objectValue().toString()+"   ");
 		}
@@ -95,7 +95,7 @@ public class SesameEventModel extends EventModel<Model> {
 
 	@Override
 	public boolean isPropertyEquals(String property, String value) {
-		Model r = super.model.filter(null, new URIImpl(":id"), null);
+		Model r = super.model.filter(null, new URIImpl("<http://ningyuan.com/>"), null);
 		if(r.size() > 0){
 			System.out.print("RDFModel.id: "+r.objectValue().toString()+"   ");
 		}

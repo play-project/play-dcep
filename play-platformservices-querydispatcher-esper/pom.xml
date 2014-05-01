@@ -20,6 +20,12 @@
 			<groupId>org.ow2.play</groupId>
 			<artifactId>play-platformservices-bdpl-esper</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.openrdf.sesame</groupId>
+					<artifactId>sesame-queryparser-sparql</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
@@ -49,8 +55,23 @@
 			<groupId>org.semweb4j</groupId>
 			<artifactId>rdf2go.impl.sesame</artifactId>
 		</dependency>
+		
+		<!--  esper -->
+		<dependency>
+  			<groupId>com.espertech</groupId>
+  			<artifactId>esper</artifactId>
+  			<version>5.0.0</version>
+  		</dependency>
 	</dependencies>
-
+	
+	<repositories>
+    	<repository>
+      		<id>codehause maven repository</id>
+      		<name>codehause maven repository</name>
+     		<url>http://repository.codehaus.org/</url>
+    	</repository>
+  	</repositories>
+  
 	<!-- Attention -->
 	<build>
 		<plugins>

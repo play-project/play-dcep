@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.parser.sparql.ast.ASTA;
-import org.openrdf.query.parser.sparql.ast.ASTB;
-import org.openrdf.query.parser.sparql.ast.ASTC;
-import org.openrdf.query.parser.sparql.ast.ASTConstruct;
-import org.openrdf.query.parser.sparql.ast.ASTEventClause;
-import org.openrdf.query.parser.sparql.ast.ASTEventPattern;
-import org.openrdf.query.parser.sparql.ast.ASTNotClause;
-import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
-import org.openrdf.query.parser.sparql.ast.ASTProlog;
-import org.openrdf.query.parser.sparql.ast.ASTTimeBasedEvent;
-import org.openrdf.query.parser.sparql.ast.Node;
-import org.openrdf.query.parser.sparql.ast.Token;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.ast.ASTA;
+import org.openrdf.query.parser.bdpl.ast.ASTB;
+import org.openrdf.query.parser.bdpl.ast.ASTC;
+import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
+import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
+import org.openrdf.query.parser.bdpl.ast.ASTEventPattern;
+import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
+import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTProlog;
+import org.openrdf.query.parser.bdpl.ast.ASTTimeBasedEvent;
+import org.openrdf.query.parser.bdpl.ast.Node;
+import org.openrdf.query.parser.bdpl.ast.Token;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
@@ -38,15 +38,15 @@ import eu.play_project.platformservices.querydispatcher.query.translate.util.EPL
 
 public class EPLListenerProcessor {
 	
-	public static void process(ASTOperationContainer qc)
+	public static String process(ASTOperationContainer qc)
 			throws MalformedQueryException{
 		ConstructQueryCreator queryCreator = new ConstructQueryCreator();
 		
 		try {
 			qc.jjtAccept(queryCreator, null);
-			System.out.println(queryCreator.constructQuery);
+			return queryCreator.constructQuery;
 		} catch (VisitorException e) {
-			e.printStackTrace();
+			throw new MalformedQueryException(e.getMessage());
 		}
 	}
 	
