@@ -37,20 +37,16 @@ public abstract class ASTOperationContainer extends SimpleNode {
 		super(p, id);
 	}
 	
-	// Ninyuan changed
 	public ASTBaseDecl getBaseDecl() {
-		//return super.jjtGetChild(ASTBaseDecl.class);
-		return (super.jjtGetChild(ASTProlog.class)).jjtGetChild(ASTBaseDecl.class);
+		return super.jjtGetChild(ASTBaseDecl.class);
 	}
 	
 	public ASTOperation getOperation() {
 		return super.jjtGetChild(ASTOperation.class);
 	}
 	
-	// Ninyuan changed
 	public List<ASTPrefixDecl> getPrefixDeclList() {
-		//return super.jjtGetChildren(ASTPrefixDecl.class);
-		return (super.jjtGetChild(ASTProlog.class)).jjtGetChildren(ASTPrefixDecl.class);
+		return super.jjtGetChildren(ASTPrefixDecl.class);
 	}
 	
 	public abstract void setSourceString(String source);

@@ -296,7 +296,6 @@ TOKEN [IGNORE_CASE] :	// BDPL tokens
 |	<WINDOW: "window">
 |	<EVENT: "event">
 |	<INTERVAL: "interval">
-|	<AT: "at">
 |	<EVENT_UN_OP_1: <EVENT_OP_NOT>>
 |	<EVENT_UN_OP_2: <EVENT_OP_REPEAT>>
 |	<EVENT_BIN_OP_3: <EVENT_OP_AND>>
@@ -402,8 +401,7 @@ ASTQueryContainer QueryContainer():
 	{ return jjtThis; }
 }
 
-// ningyuan changed: 1. remove #void  2. change ASTOperationContainer.getBaseDecl() and getPrefixDeclList() 
-void Prolog():
+void Prolog() #void:
 {}
 {
 	( PrefixDecl() | BaseDecl() )*
@@ -2033,12 +2031,10 @@ void EventGraphPattern():
 }
 
 void TimeBasedEvent(String op):
-{Token t;}
+{}
 {
 	{ jjtThis.setOperator(op); }
-	(t=<INTERVAL> { jjtThis.setEventName(t.image); } <LPAREN> t=<INTEGER> { jjtThis.setDuration(t.image); System.out.print(" timer:interval("+t.image+")");} <RPAREN>)
-	|
-	(t=<AT> { jjtThis.setEventName(t.image); } <LPAREN> t=<INTEGER> { jjtThis.setDuration(t.image); System.out.print(" timer:at("+t.image+")");} <RPAREN>)
+	(<INTERVAL> <LPAREN> String() <DT_PREFIX> PrefixedName() <RPAREN>{System.out.print(" timer:interval()");} )
 }
 
 void HistoricalEventQuery():

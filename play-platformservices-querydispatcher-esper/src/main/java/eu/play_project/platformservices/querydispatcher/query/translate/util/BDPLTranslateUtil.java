@@ -5,7 +5,10 @@ package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+
+import javax.xml.datatype.DatatypeFactory;
 
 /**
  * @author ningyuan 
@@ -18,7 +21,14 @@ public class BDPLTranslateUtil {
 	public static final int TERM_EVENT = 0, TERM_TIME = 1;
 	
 	public static long getDurationInSec(String duration) throws BDPLTranslateException{
-		return Long.valueOf(duration);
+		try{
+			DatatypeFactory dtf = DatatypeFactory.newInstance();
+			long msec = dtf.newDuration(duration).getTimeInMillis(new Date());
+			return msec/1000;
+		}
+		catch(Exception e){
+			throw new BDPLTranslateException("Duration data type "+duration+" could not be parsed");
+		}
 	}
 	
 	public static int getTermType(Term term){

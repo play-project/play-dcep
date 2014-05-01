@@ -17,7 +17,9 @@ public class EPLConstants {
 	
 	public static final String EVERY = "every";
 	
-	public static final String TIMER_INTERVAL = "timer:interval";
+	public static final String TIMER_INTERVAL_NAME = "timer:interval";
+			
+	public static final String TIMER_INTERVAL = TIMER_INTERVAL_NAME+"(%s sec)";
 	
 	public static final String OPERATOR_SEQ = "->";
 	

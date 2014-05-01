@@ -9,13 +9,14 @@ import java.util.List;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTA;
 import org.openrdf.query.parser.bdpl.ast.ASTB;
+import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
 import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
-import org.openrdf.query.parser.bdpl.ast.ASTProlog;
+import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTTimeBasedEvent;
 import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.Token;
@@ -23,9 +24,6 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
-
-
-
 
 /**
  * 
@@ -59,7 +57,7 @@ public class EPLListenerProcessor {
 		private StringBuffer constructText = new StringBuffer();
 		
 		@Override
-		public Object visit(ASTProlog node, Object data)
+		public Object visit(ASTPrefixDecl node, Object data)
 				throws VisitorException
 		{
 			Object ret = super.visit(node, data);
@@ -68,10 +66,50 @@ public class EPLListenerProcessor {
 			 * Get the prolog  
 			 */
 			Token token = node.jjtGetFirstToken();
-			for(; token != node.jjtGetLastToken(); token = token.next){
+			
+			boolean nullToken = false; 
+			for(; token != node.jjtGetLastToken(); ){
+				if(token != null){
+					prologText.append(token.image+" ");
+					token = token.next;
+				}
+				else{
+					nullToken = true;
+					break;
+				}
+			}
+			if(!nullToken && token != null){
 				prologText.append(token.image+" ");
 			}
-			prologText.append(token.image+" ");
+				
+			return ret;
+		}
+		
+		@Override
+		public Object visit(ASTBaseDecl node, Object data)
+				throws VisitorException
+		{
+			Object ret = super.visit(node, data);
+			
+			/*
+			 * Get the prolog  
+			 */
+			Token token = node.jjtGetFirstToken();
+			
+			boolean nullToken = false; 
+			for(; token != node.jjtGetLastToken(); ){
+				if(token != null){
+					prologText.append(token.image+" ");
+					token = token.next;
+				}
+				else{
+					nullToken = true;
+					break;
+				}
+			}
+			if(!nullToken && token != null){
+				prologText.append(token.image+" ");
+			}
 				
 			return ret;
 		}
@@ -86,10 +124,21 @@ public class EPLListenerProcessor {
 			 * Get the prolog  
 			 */
 			Token token = node.jjtGetFirstToken();
-			for(; token != node.jjtGetLastToken(); token = token.next){
+			
+			boolean nullToken = false; 
+			for(; token != node.jjtGetLastToken(); ){
+				if(token != null){
+					constructText.append(token.image+" ");
+					token = token.next;
+				}
+				else{
+					nullToken = true;
+					break;
+				}
+			}
+			if(!nullToken && token != null){
 				constructText.append(token.image+" ");
 			}
-			constructText.append(token.image+" ");
 				
 			return ret;
 		}

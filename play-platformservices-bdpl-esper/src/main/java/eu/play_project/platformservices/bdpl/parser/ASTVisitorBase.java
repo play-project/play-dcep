@@ -873,11 +873,6 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		 *  Added from Ningyuan 
 		 *
 		 */
-		@Override
-		public Object visit(ASTProlog node, Object data)
-				throws VisitorException {
-			return node.childrenAccept(this, data);
-		}
 		
 		@Override
 		public Object visit(ASTArrayClause node, Object data)
