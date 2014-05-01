@@ -1,20 +1,20 @@
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.openrdf.query.parser.sparql.ast.ASTDescribe;
-import org.openrdf.query.parser.sparql.ast.ASTDescribeQuery;
-import org.openrdf.query.parser.sparql.ast.ASTProjectionElem;
-import org.openrdf.query.parser.sparql.ast.ASTQuery;
-import org.openrdf.query.parser.sparql.ast.ASTQueryContainer;
-import org.openrdf.query.parser.sparql.ast.ASTSelect;
-import org.openrdf.query.parser.sparql.ast.ASTSelectQuery;
-import org.openrdf.query.parser.sparql.ast.ASTVar;
-import org.openrdf.query.parser.sparql.ast.ASTWhereClause;
-import org.openrdf.query.parser.sparql.ast.Node;
-import org.openrdf.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstants;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.ast.ASTDescribe;
+import org.openrdf.query.parser.bdpl.ast.ASTDescribeQuery;
+import org.openrdf.query.parser.bdpl.ast.ASTProjectionElem;
+import org.openrdf.query.parser.bdpl.ast.ASTQuery;
+import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTSelect;
+import org.openrdf.query.parser.bdpl.ast.ASTSelectQuery;
+import org.openrdf.query.parser.bdpl.ast.ASTVar;
+import org.openrdf.query.parser.bdpl.ast.ASTWhereClause;
+import org.openrdf.query.parser.bdpl.ast.Node;
+import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderTreeConstants;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import org.openrdf.query.MalformedQueryException;
 

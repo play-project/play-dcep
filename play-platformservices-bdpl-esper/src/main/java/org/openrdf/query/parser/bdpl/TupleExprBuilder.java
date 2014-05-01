@@ -1,4 +1,4 @@
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +10,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.openrdf.query.parser.sparql.ast.*;
-
+import org.openrdf.query.parser.sparql.ConstructorBuilder;
+import org.openrdf.query.parser.sparql.GraphPattern;
+import org.openrdf.query.parser.sparql.NegatedPropertySet;
+import org.openrdf.query.parser.sparql.PropertySetElem;
+import org.openrdf.query.parser.bdpl.ast.*;
 import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.URI;

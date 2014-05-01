@@ -14,14 +14,14 @@
  * implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package org.openrdf.query.parser.sparql.ast;
+package org.openrdf.query.parser.bdpl.ast;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openrdf.query.parser.sparql.ast.Token;
+import org.openrdf.query.parser.bdpl.ast.Token;
 
 public class SimpleNode implements Node{
 

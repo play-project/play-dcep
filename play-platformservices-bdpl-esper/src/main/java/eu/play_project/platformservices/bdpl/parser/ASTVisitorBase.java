@@ -1,6 +1,6 @@
 package eu.play_project.platformservices.bdpl.parser;
 
-import org.openrdf.query.parser.sparql.ast.*;
+import org.openrdf.query.parser.bdpl.ast.*;
 
 
 

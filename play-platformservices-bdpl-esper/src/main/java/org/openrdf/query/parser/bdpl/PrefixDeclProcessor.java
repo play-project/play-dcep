@@ -1,4 +1,4 @@
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -6,13 +6,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openrdf.query.parser.sparql.ast.ASTIRI;
-import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
-import org.openrdf.query.parser.sparql.ast.ASTPrefixDecl;
-import org.openrdf.query.parser.sparql.ast.ASTQName;
-import org.openrdf.query.parser.sparql.ast.ASTServiceGraphPattern;
-import org.openrdf.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstants;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.ast.ASTIRI;
+import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
+import org.openrdf.query.parser.bdpl.ast.ASTQName;
+import org.openrdf.query.parser.bdpl.ast.ASTServiceGraphPattern;
+import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderTreeConstants;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import org.openrdf.model.vocabulary.FN;
 import org.openrdf.model.vocabulary.OWL;

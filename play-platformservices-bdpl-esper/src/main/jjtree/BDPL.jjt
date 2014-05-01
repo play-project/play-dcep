@@ -35,7 +35,8 @@ options {
 
 PARSER_BEGIN(SyntaxTreeBuilder)
 
-package org.openrdf.query.parser.sparql.ast;
+// ningyuan changed: package name
+package org.openrdf.query.parser.bdpl.ast;
 
 import java.io.StringReader;
 

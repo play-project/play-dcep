@@ -7,24 +7,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Map;
 
-import org.openrdf.query.parser.sparql.BaseDeclProcessor;
-import org.openrdf.query.parser.sparql.BlankNodeVarProcessor;
-import org.openrdf.query.parser.sparql.DatasetDeclProcessor;
-import org.openrdf.query.parser.sparql.PrefixDeclProcessor;
-import org.openrdf.query.parser.sparql.StringEscapesProcessor;
-import org.openrdf.query.parser.sparql.TupleExprBuilder;
-import org.openrdf.query.parser.sparql.WildcardProjectionProcessor;
-import org.openrdf.query.parser.sparql.ast.ASTAskQuery;
-import org.openrdf.query.parser.sparql.ast.ASTConstructQuery;
-import org.openrdf.query.parser.sparql.ast.ASTDescribeQuery;
-import org.openrdf.query.parser.sparql.ast.ASTQuery;
-import org.openrdf.query.parser.sparql.ast.ASTQueryContainer;
-import org.openrdf.query.parser.sparql.ast.ASTSelectQuery;
-import org.openrdf.query.parser.sparql.ast.Node;
-import org.openrdf.query.parser.sparql.ast.ParseException;
-import org.openrdf.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.openrdf.query.parser.sparql.ast.TokenMgrError;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.ast.*;
+import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
+import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
+import org.openrdf.query.parser.bdpl.DatasetDeclProcessor;
+import org.openrdf.query.parser.bdpl.PrefixDeclProcessor;
+import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
+import org.openrdf.query.parser.bdpl.TupleExprBuilder;
+import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.IncompatibleOperationException;
@@ -156,7 +146,6 @@ public class BDPLParser implements QueryParser {
 					String queryStr = buf.toString().trim();
 					if (queryStr.length() > 0) {
 						try {
-							/*ParsedQuery parsedQuery = QueryParserUtil.parseQuery(QueryLanguage.SPARQL, queryStr, null);*/
 							
 							QueryParserFactory factory = new BDPLParserFactory();
 							ParsedQuery parsedQuery = factory.getParser().parseQuery(queryStr, null);
