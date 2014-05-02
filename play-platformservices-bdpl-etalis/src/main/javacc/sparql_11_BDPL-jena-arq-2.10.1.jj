@@ -2027,11 +2027,12 @@ ElementEventBinOperator MoreEvents(Element leftElement) : {ElementEventBinOperat
 {	(
 		op = BdplBinOperators()
 		rightEvent = EventClauseSingleEvent()
+	)+
+
 		{
 	  		op.setChilds(leftElement, rightEvent);
 	  		return op;
 		}
-	)+
 }
 
 // Binary operators for BDPL.
