@@ -10,14 +10,17 @@ PREFIX : <http://play-project.eu/M12/>
 		WHERE{
 			WINDOW{
 				EVENT ?id1{ :source :is :myFackebookAccountID.
-							?friend1 :talksAbout ?topic}
+							?friend1 :talksAbout ?topic
 							FILTER contains(?topic, "Jeans")
-                             SEQ
+			}
+            SEQ
 				EVENT ?id2{ :source :is :myFackebookAccountID.
-							?friend2 :talksAbout ?topic}
+							?friend2 :talksAbout ?topic.
 							FILTER contains(?topic, "Jeans")
-                             SEQ
+				}
+            SEQ
 				EVENT ?id3{ :source :is :myFackebookAccountID.
-							?friend3 :talksAbout ?topic}
+							?friend3 :talksAbout ?topic
+				}
          } ("PT30M"^^xsd:duration, sliding)
      }
