@@ -81,7 +81,7 @@ public class BdplTest {
 			
 			logger.info(("Testing queryfile: " + fileName));
 			try {
-				logger.info("Fiele \"{}\" content {}",fileName, (getQuery(fileName)[0]));
+				logger.debug("Fiele \"{}\" content {}",fileName, (getQuery(fileName)[0]));
 				QueryFactory.create(getQuery(fileName)[0], Syntax.syntaxBDPL);
 			} catch (IOException e) {
 				fail("Could not read query file: " + fileName);
@@ -99,7 +99,7 @@ public class BdplTest {
 		String[] query;
 		
 		for (String fileName : getFilenames(new File("src/test/resources/"), TestType.BDPL_BROKEN_QUERY)) {
-			System.out.println("Testing queryfile: " + fileName);
+			logger.info(("Testing queryfile: " + fileName));
 			try {
 				query = getQuery(fileName);
 				// Test if expeted exeption is given.
@@ -148,7 +148,6 @@ public class BdplTest {
 				sb.append("\n");
 			}
 		}
-		// System.out.println(sb.toString());
 		br.close();
 		isr.close();
 		is.close();

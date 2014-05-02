@@ -2017,7 +2017,7 @@ Element NestedEvents() : {Element e; ElementEventBinOperator subElements = null;
 }
 
 
-ElementEventGraph Event() : { ElementEventGraph e; Element filter =  null;}
+ElementEventGraph Event() : { ElementEventGraph e;}
 {	e = EventGraphPattern()
 	{
 	  return e;	}
@@ -2027,10 +2027,13 @@ ElementEventBinOperator MoreEvents(Element leftElement) : {ElementEventBinOperat
 {	(
 		op = BdplBinOperators()
 		rightEvent = EventClauseSingleEvent()
+		{
+		  op.setChilds(leftElement, rightEvent);
+		  leftElement = op;
+		}
 	)+
 
 		{
-	  		op.setChilds(leftElement, rightEvent);
 	  		return op;
 		}
 }
