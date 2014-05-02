@@ -16,8 +16,8 @@ WHERE{
                 ?e1 rdf:type :FacebookStatusFeedEvent.
                 ?e1 :status ?about1.
                 ?e1 :name ?friend1.
-				?e1 :temperature ?t1
+				?e1 :temperature ?t1.
+				FILTER contains(?about1, "JEANS")
                 }
-                FILTER contains(?about1, "JEANS")
         } ("PT30M"^^xsd:duration, sliding)
 } HAVING(AVG(?t1) >= "30"^^xsd:float)

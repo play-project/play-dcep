@@ -37,4 +37,16 @@ public class ElementNotOperator extends Element { // extends ElementNamedGraph{ 
 	public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
 		return false;
 	}
+	
+	public Element getStart() {
+		return this.start;
+	}
+
+	public Element getNot() {
+		return this.not;
+	}
+
+	public Element getEnd() {
+		return this.end;
+	}
 }

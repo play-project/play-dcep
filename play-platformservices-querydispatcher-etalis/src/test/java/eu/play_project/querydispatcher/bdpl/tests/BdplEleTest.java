@@ -278,7 +278,7 @@ public class BdplEleTest {
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
-
+System.out.println(query);
 		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 
 		visitor1.generateQuery(query);
@@ -328,8 +328,8 @@ public class BdplEleTest {
 
 		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
 		visitor1.collectValues(query.getEventQuery());
-
-		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
+		
+		Assert.assertEquals(3, visitor1.getEventPatterns().size());
 
 		String[] expectedOperator = { "'SEQ'(", "'OR'", ")" };
 		Assert.assertArrayEquals(expectedOperator, visitor1.getOperators().toArray());
@@ -348,11 +348,30 @@ public class BdplEleTest {
 
 		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
 		visitor1.collectValues(query.getEventQuery());
-
-		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
+		
+		Assert.assertEquals(3, visitor1.getEventPatterns().size());
 
 		String[] expectedOperator = { "'SEQ'", "'OR'" };
-		System.out.println(visitor1.getOperators());
+		Assert.assertArrayEquals(expectedOperator, visitor1.getOperators().toArray());
+	}
+	
+	@Test
+	public void testNotOperatorCodeGeneration() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/BDPL-Query-NotOperator.eprq");
+
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
+		visitor1.collectValues(query.getEventQuery());
+		
+		Assert.assertEquals(3, visitor1.getEventPatterns().size());
+
+		String[] expectedOperator = { "'SEQ'", "'OR'" };
 		Assert.assertArrayEquals(expectedOperator, visitor1.getOperators().toArray());
 	}
 
