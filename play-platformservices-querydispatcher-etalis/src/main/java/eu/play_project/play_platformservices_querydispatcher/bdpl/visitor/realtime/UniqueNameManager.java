@@ -118,8 +118,6 @@ public class UniqueNameManager {
 		return "ViD" + eventNumber;
 	}
 	
-	
-	
 	public String getNextAbsVariable(){
 		absVariable++;
 		return "AbsVar" + absVariable;

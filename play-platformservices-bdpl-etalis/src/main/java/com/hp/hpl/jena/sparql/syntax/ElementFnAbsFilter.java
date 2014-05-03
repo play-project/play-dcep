@@ -3,7 +3,7 @@ package com.hp.hpl.jena.sparql.syntax;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementFnAbsFilter extends Element{
+public class ElementFnAbsFilter extends ElementCep {
 	Expr exp;
 	
 	public ElementFnAbsFilter(Expr mExp){

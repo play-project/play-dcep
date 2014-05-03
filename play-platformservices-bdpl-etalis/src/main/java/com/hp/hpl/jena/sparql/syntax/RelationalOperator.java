@@ -2,7 +2,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class RelationalOperator extends Element {
+public class RelationalOperator extends ElementCep {
 
 	@Override
 	public void visit(ElementVisitor v) {

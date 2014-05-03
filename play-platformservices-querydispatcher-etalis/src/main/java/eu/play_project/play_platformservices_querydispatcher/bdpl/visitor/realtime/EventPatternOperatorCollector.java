@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
+import com.hp.hpl.jena.sparql.syntax.ElementCep;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
@@ -17,7 +18,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
  */
 
 public class EventPatternOperatorCollector extends GenericVisitor {
-	private List<ElementEventGraph> eventPatterns;
+	private List<ElementCep> eventPatterns;
 	private List<String> operators;
 	StringBuffer opTmp;
 	
@@ -27,7 +28,7 @@ public class EventPatternOperatorCollector extends GenericVisitor {
 	 * @param root Root node of syntax tree.
 	 */
 	public void collectValues(Element root) {
-		eventPatterns = new LinkedList<ElementEventGraph>();
+		eventPatterns = new LinkedList<ElementCep>();
 		operators = new LinkedList<String>();
 		opTmp = new StringBuffer();
 		
@@ -58,18 +59,13 @@ public class EventPatternOperatorCollector extends GenericVisitor {
 	
 
 
-	public List<ElementEventGraph> getEventPatterns() {
+	public List<ElementCep> getEventPatterns() {
 		return this.eventPatterns;
 	}
 	
 	@Override
 	public void visit(ElementNotOperator el) {
-		
-		el.getStart();
-		el.getNot();
-		el.getStart();
-		
-		//eventPatterns.add(el);
+		eventPatterns.add(el);
 	}
 
 	public List<String> getOperators() {

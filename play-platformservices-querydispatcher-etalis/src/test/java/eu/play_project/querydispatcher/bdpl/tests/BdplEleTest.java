@@ -35,6 +35,8 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.NotOperatorEleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
 
@@ -361,18 +363,24 @@ System.out.println(query);
 		String queryString;
 
 		// Get query.
-		queryString = getSparqlQuery("queries/BDPL-Query-NotOperator.eprq");
+		queryString = getSparqlQuery("queries/BDPL-Query-NotOperatorEvent.eprq");
 
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
+		// Get not pattern.
 		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
 		visitor1.collectValues(query.getEventQuery());
-		
-		Assert.assertEquals(3, visitor1.getEventPatterns().size());
+		System.out.println(visitor1.getEventPatterns());
 
-		String[] expectedOperator = { "'SEQ'", "'OR'" };
-		Assert.assertArrayEquals(expectedOperator, visitor1.getOperators().toArray());
+		Assert.assertEquals(1, visitor1.getEventPatterns().size());
+
+		// Generate ELE.
+		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator();
+		
+		visitor1.getEventPatterns().get(0).visit(eleGenerator);
+		System.out.println(eleGenerator.getEle());
+		
 	}
 
 	@Test
@@ -453,20 +461,6 @@ System.out.println(query);
 		System.out.println(visitor.getEle());
 
 	}
-
-	// @Test
-	// public void dispatchQuery(){
-	// String queryString =
-	// "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
-	// Query query = QueryFactory.create(queryString,
-	// com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-	//
-	// VariableTypeVisitor visitor = new VariableTypeVisitor();
-	//
-	// Map<String, List<Variable>> variables = visitor.getVariables(query,
-	// VariableTypes.historicType);
-	// System.out.println(variables.values());
-	// }
 
 	/**
 	 * Return the query from given file. If given it returns the message of the

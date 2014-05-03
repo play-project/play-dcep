@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
  * @author sobermeier
  *
  */
-public class ElementNotOperator extends Element { // extends ElementNamedGraph{ // extends Element
+public class ElementNotOperator extends ElementCep { // extends ElementNamedGraph{ // extends Element
 	
 	private Element start;
 	private Element not;

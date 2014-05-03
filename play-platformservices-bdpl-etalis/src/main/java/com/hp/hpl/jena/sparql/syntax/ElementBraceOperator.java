@@ -2,7 +2,7 @@ package com.hp.hpl.jena.sparql.syntax;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementBraceOperator extends Element {
+public class ElementBraceOperator extends ElementCep {
 
 	Element subElements;
 	
