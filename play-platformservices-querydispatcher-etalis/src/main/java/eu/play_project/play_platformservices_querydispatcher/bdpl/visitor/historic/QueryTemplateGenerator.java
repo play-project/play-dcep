@@ -25,7 +25,6 @@ public class QueryTemplateGenerator {
 		queryTemplate = new QueryTemplateImpl();
 		
 		VariableTypeManager variableTypeManager = new VariableTypeManager(inputQuery);
-		variableTypeManager.collectVars();
 		
 		for (Triple triple : inputQuery.getConstructTemplate().getTriples()) {
 			boolean tripleContainsHistoricalAndConstructVars = false;

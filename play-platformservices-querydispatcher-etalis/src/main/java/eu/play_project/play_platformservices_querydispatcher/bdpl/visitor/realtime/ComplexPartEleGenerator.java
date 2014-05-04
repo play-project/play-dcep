@@ -24,28 +24,26 @@ import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.unquote
  * @author sobermeier
  *
  */
-public class ComplexEventEleGenerator implements CepCodeGenerator{
+public class ComplexPartEleGenerator {
 	
-	@Override
-	public String generateCode(Query query, String patternId) {
+	public String generateCode(Query query) {
 		String ele = "";
 		
-		ele += Complex(query, patternId);
-		
-		
+		ele += Complex(query);
+
 		return ele;
 	}
 	
-	private String Complex(Query inputQuery, String patternId) {
+	private String Complex(Query inputQuery) {
 		UniqueNameManager uniqueNameManager = getVarNameManager();
 		String elePattern = "";
 		
 		// Detect complex type;
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
-		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + patternId + ") do (";
+		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + inputQuery.getQueryId() + ") do (";
 		
 		// Collect complex event data.
-		elePattern += GenerateConstructResult(inputQuery, patternId);
+		elePattern += GenerateConstructResult(inputQuery, inputQuery.getQueryId());
 		elePattern += Having(inputQuery);
 
 		elePattern += DecrementReferenceCounter();

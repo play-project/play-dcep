@@ -81,9 +81,9 @@ public class QueryTemplateImplTest {
 		
 		// Parse query
 		Query q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
+		q.setQueryId(Namespace.PATTERN.getUri() + "123");
 
 		// Generate CEP-language
-		eleGenerator.setPatternId(Namespace.PATTERN.getUri() + "123");
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails

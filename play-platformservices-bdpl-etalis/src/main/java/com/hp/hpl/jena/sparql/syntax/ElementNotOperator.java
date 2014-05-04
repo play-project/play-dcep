@@ -1,6 +1,5 @@
 package com.hp.hpl.jena.sparql.syntax;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /**

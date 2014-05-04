@@ -45,7 +45,6 @@ public class PlaySerializer extends Serializer{
 
 		// Find shared variables for select query
 		VariableTypeManager vtm = new VariableTypeManager(query);
-		vtm.collectVars();
 		Set<String> vars = vtm.getSelectSharedVariables(VariableTypes.REALTIME_TYPE, VariableTypes.CONSTRUCT_TYPE, VariableTypes.HISTORIC_TYPE);
 
 		String selectString = null;
@@ -73,7 +72,6 @@ public class PlaySerializer extends Serializer{
 			hq.setCloudId(key);
 			
 			VariableTypeManager vm = new VariableTypeManager(query);
-			vm.collectVars();
 			if(vm.getIntersection(VariableTypes.HISTORIC_TYPE, VariableTypes.REALTIME_TYPE).size() > 0) {
 				hq.setHasSharedVariablesWithRealtimePart(true);
 			}

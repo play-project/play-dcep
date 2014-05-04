@@ -171,12 +171,12 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		Query q;
 		try {
 			q = QueryFactory.create(query, Syntax.syntaxBDPL);
+			q.setQueryId(queryId);
 		} catch (com.hp.hpl.jena.query.QueryException e) {
 			throw new QueryDispatchException(e.getMessage());
 		}
 
 		// Generate CEP-language
-		eleGenerator.setPatternId(queryId);
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails

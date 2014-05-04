@@ -21,7 +21,7 @@ import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexEventEleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexPartEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
@@ -44,10 +44,8 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
  *
  */
 public class EleGeneratorForConstructQuery implements EleGenerator {
-	private String patternId;
 	// Returns one triple after the other.
 	private Iterator<ElementCep> eventQueryIter;
-	private Element currentElement;
 	private Iterator<String> binOperatorIter;
 	private LinkedList<String> rdfDbQueries;
 	QueryTemplate queryTemplate;
@@ -70,10 +68,11 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		
 		// Start code generation.
-		//ElePattern(elePattern, inputQuery);
+		ele = ElePattern(inQuery);
 	}
 	
-	private void ElePattern(String elePattern, Query inputQuery){
+	private String ElePattern(Query inputQuery){
+		String elePattern = "";
 		
 		// Separate operators from patterns.
 		EventPatternOperatorCollector eventPatternOperatorCollector =  new EventPatternOperatorCollector();
@@ -81,73 +80,25 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		binOperatorIter = eventPatternOperatorCollector.getOperators().iterator();
 		eventQueryIter = eventPatternOperatorCollector.getEventPatterns().iterator();
 		
+		// Sub code generators.
 		EventPatternEleGenerator eventPatternEleGenerator = new EventPatternEleGenerator();
+		ComplexPartEleGenerator complexPartEleGenerator = new ComplexPartEleGenerator();
+		VariableTypeManager vtm = new VariableTypeManager(inputQuery);
 		
-		Complex(elePattern, patternId, inputQuery);
+		// Generate complex part.
+		elePattern += complexPartEleGenerator.generateCode(inputQuery);
+
 		elePattern += "<-";
-		currentElement = eventQueryIter.next();
-		SimpleEventPattern(elePattern, currentElement);
+		
+		// Generate simple part.
+		elePattern += eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
 
 		while(binOperatorIter.hasNext()){
 			elePattern += binOperatorIter.next();
-			currentElement = eventQueryIter.next();
-			SimpleEventPattern(elePattern, currentElement);
+			elePattern += eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
 		}
-	}
-	
-	//Call prolog methods which echos statistics data to the console.
-	private void PrintStatisticsData(String elePattern){
-		elePattern += ", printRdfStat, printRefCountN";
-	}
-	
-//	public void SimpleEventPattern(String elePattern, Element element) {
-//		EventTypeVisitor eventTypeVisitor = new EventTypeVisitor();
-//		UniqueNameManager uniqueNameManager = getVarNameManager();
-//	
-//		elePattern += "(";
-//		element.visit(eventTypeVisitor);
-//		elePattern += eventTypeVisitor.getEventType();
-//		elePattern += "(";
-//		elePattern += uniqueNameManager.getTriplestoreVariable();
-//		elePattern += ") 'WHERE' (";
-//		AdditionalConditions(elePattern, binOperatorIter);
-//		elePattern += "))";
-//	}
-	
-//	private void AdditionalConditions(String elePattern, Iterator<String> binOperatorIter){
-//		LinkedList<String> rdfDbQueries = TriplestoreQuery(elePattern, currentElement);
-//		EventIdVarIsSynonymousWithTriplestoreId(elePattern, currentElement);
-//		ReferenceCounter(elePattern);
-////		elePattern += ", ";
-////		PerformanceMeasurement();
-//		
-//		if(!binOperatorIter.hasNext()){
-//			elePattern += ",";
-//			GenerateCEID(elePattern);
-//		}
-//	}
-
-	private void PerformanceMeasurement(String elePattern){
-		elePattern += "measure(" +  patternId + ")";
-	}
-	
-	
-	
-
-
 		
-	private void GenerateCEID(String elePattern){
-		elePattern += "random(1000000, 9000000, " + getVarNameManager().getCeid() + ")";
-	}
-
-	@Override
-	public ArrayList<String[]> getEventProperties() {
-		return null;
-	}
-	
-	@Override
-	public void setPatternId(String patternId) {
-		this.patternId = quoteForProlog(patternId);
+		return elePattern;
 	}
 	
 	@Override
@@ -164,4 +115,5 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	public String getEle() {
 		return ele;
 	}
+
 }

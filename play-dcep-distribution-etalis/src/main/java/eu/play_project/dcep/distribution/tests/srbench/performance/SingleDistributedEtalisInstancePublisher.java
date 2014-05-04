@@ -92,13 +92,13 @@ public class SingleDistributedEtalisInstancePublisher {
 		Query q;
 		try {
 			q = QueryFactory.create(query, Syntax.syntaxBDPL);
+			q.setQueryId(queryId);
 		} catch (com.hp.hpl.jena.query.QueryException e) {
 			throw new QueryDispatchException(e.getMessage());
 		}
 		EleGenerator eleGenerator = new EleGeneratorForConstructQuery();
 		
 		// Generate CEP-language
-		eleGenerator.setPatternId(queryId);
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails

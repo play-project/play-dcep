@@ -73,11 +73,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
@@ -119,11 +119,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
@@ -148,11 +148,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
@@ -179,10 +179,10 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		query.setQueryId(patternId);
 
 		try {
 			visitor1.generateQuery(query);
@@ -215,11 +215,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
@@ -244,11 +244,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
@@ -273,11 +273,12 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
+		
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
@@ -379,7 +380,7 @@ System.out.println(query);
 		VariableTypeManager vtm = new VariableTypeManager(query);
 
 		// Generate ELE.
-		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm);
+		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm, "p1");
 		
 		visitor1.getEventPatterns().get(0).visit(eleGenerator);
 		System.out.println(eleGenerator.getEle());
@@ -398,7 +399,7 @@ System.out.println(query);
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
+		query.setQueryId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
@@ -417,7 +418,7 @@ System.out.println(query);
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
+		query.setQueryId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
@@ -436,7 +437,7 @@ System.out.println(query);
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
+		query.setQueryId(Namespace.PATTERN.getUri() + 42);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 		assertTrue(etalisPattern.contains("'screenName02',VscreenName02)))")
