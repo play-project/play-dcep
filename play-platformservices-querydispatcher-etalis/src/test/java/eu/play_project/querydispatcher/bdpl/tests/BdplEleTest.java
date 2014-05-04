@@ -39,6 +39,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 public class BdplEleTest {
 
@@ -374,9 +375,11 @@ System.out.println(query);
 		System.out.println(visitor1.getEventPatterns());
 
 		Assert.assertEquals(1, visitor1.getEventPatterns().size());
+		
+		VariableTypeManager vtm = new VariableTypeManager(query);
 
 		// Generate ELE.
-		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator();
+		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm);
 		
 		visitor1.getEventPatterns().get(0).visit(eleGenerator);
 		System.out.println(eleGenerator.getEle());

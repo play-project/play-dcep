@@ -44,8 +44,6 @@ public class UniqueNameManager {
 		aggrDbId = 0;
 		filterVars = new Stack<Long>();
 		aggrVars = new HashMap<String, Boolean>();
-		vtm = new VariableTypeManager(null);
-		
 	}
 	
 	public static UniqueNameManager getVarNameManager(){
@@ -53,18 +51,6 @@ public class UniqueNameManager {
 			uniqueNameManger = new UniqueNameManager();
 		}
 		return uniqueNameManger;
-	}
-	
-	public static void initVariableTypeManager(Query q){
-		vtm = new VariableTypeManager(q);
-	}
-	
-	public static VariableTypeManager getVariableTypeManage(){
-		if(vtm==null){
-			throw new RuntimeException("Init VariableTypeManager first");
-		}else{
-			return vtm;
-		}
 	}
 	
 	/**

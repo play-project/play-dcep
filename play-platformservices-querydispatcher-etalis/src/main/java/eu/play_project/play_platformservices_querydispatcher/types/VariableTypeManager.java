@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.internal.runners.InitializationError;
+
 import com.hp.hpl.jena.query.Query;
 
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general.VariableTypeVisitor;
@@ -23,11 +25,16 @@ public class VariableTypeManager {
 	Query query;
 	
 	public VariableTypeManager(Query q){
-		variables = new HashMap<String, Integer>();
-		this.query = q;
+		if (q != null) {
+			variables = new HashMap<String, Integer>();
+			this.query = q;
+			this.collectVars();
+		} else {
+			throw new RuntimeException("Param shuld not be null");
+		}
 	}
 	
-	public void collectVars(){
+	private void collectVars(){
 		VariableTypeVisitor vv = new VariableTypeVisitor(this);
 		
 		vv.collectVariables(query);

@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
 import com.hp.hpl.jena.sparql.syntax.ElementSubQuery;
@@ -136,7 +137,7 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 			state = VariableTypes.AVG_TYPE;
 			(arg0.getAggregator()).getExpr().visit(this);
 		}else if(arg0.getAggregator() instanceof AggSample){
-			state = VariableTypes.SAMPLE_TYPE;
+			state = VariableTypes.SIMPLE_TYPE;
 			(arg0.getAggregator()).getExpr().visit(this);
 		}		
 	}
@@ -239,6 +240,13 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 	@Override
 	public void visit(ExprFunctionOp funcOp) {
 		funcOp.visit(this);
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getNot().visit(this);
+		el.getEnd().visit(this);
 	}
 
 	@Override
