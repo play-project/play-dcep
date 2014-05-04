@@ -11,6 +11,8 @@ public class UniqueNameManagerTest {
 	@Test
 	public void TestResetMethod() {
 		UniqueNameManager unm = UniqueNameManager.getVarNameManager();
+		unm = unm.reset();
+
 
 		// Simulate code generation for different patterns.
 		unm.newQuery(2);

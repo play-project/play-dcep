@@ -67,6 +67,11 @@ public class EventPatternOperatorCollector extends GenericVisitor {
 	public void visit(ElementNotOperator el) {
 		eventPatterns.add(el);
 	}
+	
+	@Override
+	public void visit(ElementEventGraph el) {
+		eventPatterns.add(el);
+	}
 
 	public List<String> getOperators() {
 		return this.operators;

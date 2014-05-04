@@ -20,7 +20,7 @@ public class EventPatternEleGenerator {
 	
 	Element eventGraph;
 	String patternId;
-	LinkedList<String> rdfDbQueries;
+	String rdfDbQuerie;
 	VariableTypeManager varTypeManger;
 	
 	
@@ -34,7 +34,7 @@ public class EventPatternEleGenerator {
 		ele += SimpleEventPattern(eventGraph);
 		
 		pattern.setMethodName(ele);
-		pattern.setMethodImpl(rdfDbQueries);
+		pattern.setMethodImpl(rdfDbQuerie);
 		return pattern;
 	}
 	
@@ -87,7 +87,7 @@ public class EventPatternEleGenerator {
 	private String TriplestoreQuery(Element currentElement) {
 		UniqueNameManager uniqueNameManager = getVarNameManager();
 		TriplestoreQueryVisitor triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager, varTypeManger);
-		LinkedList<String> rdfDbQueries = new LinkedList<String>();
+		String rdfDbQueries = "";
 		String flatDbQueries;
 		String ele = "";
 		
@@ -108,7 +108,7 @@ public class EventPatternEleGenerator {
 		
 		// Combine decl and impel.
 		dbQueryMethod.append(dbQueryDecl + ":-(" + ignoreQueryIfEvntIdIsNotGiven + "(" + flatDbQueries + "))");
-		rdfDbQueries.add(dbQueryMethod.toString());
+		rdfDbQueries = dbQueryMethod.toString();
 		
 		//Generate call for query.
 		int i = 0;
@@ -122,7 +122,7 @@ public class EventPatternEleGenerator {
 				ele += ",";
 			}
 		}
-		this.rdfDbQueries = rdfDbQueries;
+		this.rdfDbQuerie = rdfDbQueries;
 		return ele;
 	}
 	

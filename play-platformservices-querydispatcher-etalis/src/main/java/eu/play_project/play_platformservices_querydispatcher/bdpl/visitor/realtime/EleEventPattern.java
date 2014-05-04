@@ -10,7 +10,7 @@ import java.util.List;
 public class EleEventPattern {
 	
 	private String methodName;
-	private List<String> methodImpl;
+	private String methodImpl;
 	
 	public String getMethodName() {
 		return methodName;
@@ -18,10 +18,10 @@ public class EleEventPattern {
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
 	}
-	public List<String> getMethodImpl() {
+	public String getMethodImpl() {
 		return methodImpl;
 	}
-	public void setMethodImpl(List<String> methodImpel) {
+	public void setMethodImpl(String methodImpel) {
 		this.methodImpl = methodImpel;
 	}
 }

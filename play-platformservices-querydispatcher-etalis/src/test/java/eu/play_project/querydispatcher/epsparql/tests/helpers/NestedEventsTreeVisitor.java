@@ -2,6 +2,7 @@ package eu.play_project.querydispatcher.epsparql.tests.helpers;
 
 import org.junit.Assert;
 
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
@@ -28,16 +29,15 @@ public class NestedEventsTreeVisitor extends GenericVisitor {
 	@Override
 	public void visit(ElementEventBinOperator el) {
 		el.getLeft().visit(this);
-		
-		if(el.getRight() instanceof ElementEventGraph) {
-			Assert.assertEquals(el.getTyp(), expctedResults[index++]);
-			el.getRight().visit(this);
-		} else {
-			Assert.assertEquals(el.getTyp(), expctedResults[index++]);
-			Assert.assertEquals("(", expctedResults[index++]);
-			el.getRight().visit(this);
-			Assert.assertEquals(")", expctedResults[index++]);
-		}
+		Assert.assertEquals(expctedResults[index++], el.getTyp());
+		el.getRight().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementBraceOperator el) {
+		Assert.assertEquals("(", expctedResults[index++]);
+		el.getSubElements().visit(this);
+		Assert.assertEquals(")", expctedResults[index++]);
 	}
 	
 	@Override

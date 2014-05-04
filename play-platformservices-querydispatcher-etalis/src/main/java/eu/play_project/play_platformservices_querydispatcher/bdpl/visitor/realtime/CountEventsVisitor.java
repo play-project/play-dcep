@@ -1,6 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 
@@ -21,6 +22,11 @@ public class CountEventsVisitor extends GenericVisitor {
 	@Override
 	public void visit(ElementEventGraph el) {
 		numberOfEvents++;
+	}
+	
+	@Override
+	public void visit(ElementBraceOperator el) {
+		el.getSubElements().visit(this);
 	}
 	
 	@Override

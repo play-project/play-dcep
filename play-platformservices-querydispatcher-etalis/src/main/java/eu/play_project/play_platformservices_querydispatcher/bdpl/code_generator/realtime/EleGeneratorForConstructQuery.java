@@ -21,16 +21,15 @@ import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexPartEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenerateConstructResultVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
@@ -66,7 +65,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		this.queryTemplate = new QueryTemplateImpl();
 		this.rdfDbQueries = new LinkedList<String>();
 		
-		
 		// Start code generation.
 		ele = ElePattern(inQuery);
 	}
@@ -91,11 +89,15 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += "<-";
 		
 		// Generate simple part.
-		elePattern += eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
+		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
+		elePattern += dbQuery.getMethodName();
+		rdfDbQueries.add(dbQuery.getMethodImpl());
 
 		while(binOperatorIter.hasNext()){
+			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
 			elePattern += binOperatorIter.next();
-			elePattern += eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
+			elePattern += dbQuery.getMethodName();
+			rdfDbQueries.add(dbQuery.getMethodImpl());
 		}
 		
 		return elePattern;

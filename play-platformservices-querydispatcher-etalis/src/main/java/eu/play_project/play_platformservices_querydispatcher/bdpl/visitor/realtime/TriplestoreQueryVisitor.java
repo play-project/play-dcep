@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
@@ -33,8 +34,14 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	private final UniqueNameManager uniqueNameManager;
 	private String aggregateValuesCode;
 	VariableTypeManager vtm;
+
+	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager, VariableTypeManager vtm){
+		triplestoreQuery = "";
+		aggregateValuesCode = "";
+		this.uniqueNameManager = uniqueNameManager;
+		this.vtm = vtm;
+	}
 	
-	// Start
 	@Override
 	public void visit(ElementEventGraph el) {
 		// Visit triples
@@ -51,13 +58,6 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		}
 	}
 	
-	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager, VariableTypeManager vtm){
-		triplestoreQuery = "";
-		aggregateValuesCode = "";
-		this.uniqueNameManager = uniqueNameManager;
-		this.vtm = vtm;
-	}
-
 	
 	public String getTriplestoreQueryGraphTerms() {
 		return triplestoreQuery;
@@ -154,6 +154,10 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		el.getLeft().visit(this);
 		triplestoreQuery = "'" + el.getTyp() + "'";
 		el.getRight().visit(this);
-		
+	}
+	
+	@Override
+	public void visit(ElementBraceOperator el) {
+		el.getSubElements().visit(this);
 	}
 }

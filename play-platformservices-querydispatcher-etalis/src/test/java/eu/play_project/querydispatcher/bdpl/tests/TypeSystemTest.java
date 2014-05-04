@@ -49,8 +49,8 @@ public class TypeSystemTest {
 	
 	@Test
 	public void testGetAllVariablesOfOneType(){
-		VariableTypeManager vm = new VariableTypeManager(null);
-		
+		 VariableTypeManager	vm = new VariableTypeManager(null);
+				
 		// Set types.
 		vm.addVariable("a", VariableTypes.CONSTRUCT_TYPE);
 		vm.addVariable("a", VariableTypes.REALTIME_TYPE);
