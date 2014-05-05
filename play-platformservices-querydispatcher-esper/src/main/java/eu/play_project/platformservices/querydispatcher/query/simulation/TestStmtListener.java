@@ -22,7 +22,8 @@ public class TestStmtListener implements UpdateListener{
 		/*for(int i = 0; i < newEvents.length; i++){
 			RDFEvent e = (RDFEvent)newEvents[i].getUnderlying();
 		}*/
-		System.out.println("TestStmtListener: ");
+		System.out.println("New Events[" + newEvents.length + "]");
+		
 		for(int i = 0; i < newEvents.length; i++){
 			System.out.println("Result "+i+": ");
 			EventBean eb = newEvents[i];
@@ -31,19 +32,18 @@ public class TestStmtListener implements UpdateListener{
 			
 			for(String n : enames){
 				System.out.print(n+":   ");
-				/*MapEvent map = (MapEvent)eb.get(n);
+				MapEvent map = (MapEvent)eb.get(n);
 				if(map != null){
 					EventModel e = (EventModel)map.get(MapEvent.EVENT_MODEL);
-					e.getProperties("<http://ningyuan.com/id>");
+					e.getProperties("http://ningyuan.com/id");
 				}
 				else{
 					System.out.println();
-				}*/
-				System.out.println();
+				}
 			}
 			
 		}
-		System.out.println("new Events[" + newEvents.length + "]");
+		
 	}
 
 }

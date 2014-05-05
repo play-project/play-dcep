@@ -1942,15 +1942,15 @@ void WindowClause():
 {}
 {
 	<WINDOW>
-	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]\n");} <RBRACE>
+	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]");} <RBRACE>
 	WindowDecl()
-	(FilterOrBind())*
+    (FilterOrBind())*
 }
 
 void WindowDecl():
-{}
+{ Token t;}
 {
-	<LPAREN> <STRING_LITERAL2> {System.out.print(".win:time( )");} <DT_PREFIX> IRIref() <COMMA> <WINDOW_TYPE> <RPAREN>
+	<LPAREN> String() <DT_PREFIX> PrefixedName() <COMMA> t=<WINDOW_TYPE> {jjtThis.setType(t.image);} <RPAREN> {System.out.print(".window( )\n");}
 }
 
 void EventPattern(boolean top):

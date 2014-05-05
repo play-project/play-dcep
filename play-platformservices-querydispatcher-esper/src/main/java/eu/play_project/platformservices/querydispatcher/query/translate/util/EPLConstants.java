@@ -15,6 +15,10 @@ public class EPLConstants {
 	
 	public static final String FROM_PATTERN = "from %s pattern [ %s ]";
 	
+	public static final String WINDOW_SLIDING = ".win:time(%s sec)";
+	
+	public static final String WINDOW_TUMBLING = ".win:time_batch(%s sec)";
+	
 	public static final String EVERY = "every";
 	
 	public static final String TIMER_INTERVAL_NAME = "timer:interval";

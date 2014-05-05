@@ -31,8 +31,11 @@ import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTRealTimeEventQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTString;
 import org.openrdf.query.parser.bdpl.ast.ASTTimeBasedEvent;
+import org.openrdf.query.parser.bdpl.ast.ASTWindowClause;
+import org.openrdf.query.parser.bdpl.ast.ASTWindowDecl;
 import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.ParseException;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
@@ -86,6 +89,23 @@ public class EPLTranslationProcessor {
 		private StringBuffer prologText = new StringBuffer();
 		
 		private StringBuffer eventClauseText = new StringBuffer();
+		
+		private long windowDuration = -1l;
+		
+		private String windowType = null;
+		
+		public void setWindowParam(long d, String t){
+			windowDuration = d;
+			windowType = t;
+		}
+		
+		public long getWindowDuration(){
+			return windowDuration;
+		}
+		
+		public String getWindowType(){
+			return windowType;
+		}
 		
 		public NotTable getNotTable(){
 			return notTable;
@@ -167,6 +187,63 @@ public class EPLTranslationProcessor {
 		}
 		
 		@Override
+		public Object visit(ASTRealTimeEventQuery node, Object data)
+				throws VisitorException
+		{
+			OrClause ret = (OrClause)super.visit(node, data);
+			
+			try{
+				epl = getEPL(ret, (EPLTranslatorData)data);
+			}catch (BDPLTranslateException e) {
+				throw new VisitorException(e.getMessage());
+			}
+			
+			return ret;
+		}
+		
+		@Override
+		public Object visit(ASTWindowClause node, Object data)
+				throws VisitorException
+		{
+			OrClause ret = null;
+			
+			for(Node child : node.jjtGetChildren()){
+				if(child instanceof ASTEventPattern){
+					ret = (OrClause)child.jjtAccept(this, data);
+				}
+				//TODO filter
+				else{
+					child.jjtAccept(this, data);
+				}
+			}
+			if(ret == null){
+				throw new VisitorException("WindowClause dose not have an EventPattern");
+			}
+			
+			return ret;
+		}
+		
+		@Override
+		public Object visit(ASTWindowDecl node, Object data)
+				throws VisitorException
+		{
+			Object ret = super.visit(node, data);
+			
+			ASTString duration = node.jjtGetChild(ASTString.class);
+			if(duration == null){
+				throw new VisitorException("WindowDecl dose not have a duration string");
+			}
+			
+			try {
+				((EPLTranslatorData)data).setWindowParam(BDPLTranslateUtil.getDurationInSec(duration.getValue()), node.getType());
+			} catch (BDPLTranslateException e) {
+				throw new VisitorException("Time delay format exception: "+duration.getValue());
+			}
+			
+			return ret;
+		}
+		
+		@Override
 		public Object visit(ASTEventPattern node, Object data)
 			throws VisitorException
 		{
@@ -177,14 +254,14 @@ public class EPLTranslationProcessor {
 			if(node.jjtGetNumChildren() <= 1){
 				ret = (OrClause) super.visit(node, data);
 				
-				if(node.getTop())
+				/*if(node.getTop())
 				{
 					try{
 						epl = getEPL(ret, (EPLTranslatorData)data);
 					}catch (BDPLTranslateException e) {
 						throw new VisitorException(e.getMessage());
 					}
-				}
+				}*/
 				
 				return ret;
 			}
@@ -203,14 +280,14 @@ public class EPLTranslationProcessor {
 					throw new VisitorException(e.getMessage());
 				}
 				
-				if(node.getTop())
+				/*if(node.getTop())
 				{
 					try{
 						epl = getEPL(ret, (EPLTranslatorData)data);
 					}catch (BDPLTranslateException e) {
 						throw new VisitorException(e.getMessage());
 					}
-				}
+				}*/
 				
 				return ret;
 			}
@@ -393,11 +470,14 @@ public class EPLTranslationProcessor {
 			Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
 			// ASTTimeBasedEvent must have one ASTString node. !!! Pay attension to grammar file
 			ASTString duration = node.jjtGetChild(ASTString.class);
+			if(duration == null){
+				throw new VisitorException("Time delay dose not have a duration string");
+			}
 			
 			try {
 				term.setDuration(BDPLTranslateUtil.getDurationInSec(duration.getValue()));
 			} catch (BDPLTranslateException e) {
-				throw new VisitorException("Time delay format exception: "+node.getDuration());
+				throw new VisitorException("Time delay format exception: "+duration.getValue());
 			}
 			
 			SeqClause seq = new SeqClause();
@@ -1494,6 +1574,20 @@ public class EPLTranslationProcessor {
 			
 			epl.append(String.format(EPLConstants.SELECT, "*")+" \n");
 			epl.append(String.format(EPLConstants.FROM_PATTERN, "", getPatternExpression(result, data))+" ");
+			
+			long wDuration = data.getWindowDuration();
+			if(wDuration > 0){
+				String wType = data.getWindowType();
+				if(wType.equalsIgnoreCase("sliding")){
+					epl.append(String.format(EPLConstants.WINDOW_SLIDING, wDuration));
+				}
+				else if(wType.equalsIgnoreCase("tumbling")){
+					epl.append(String.format(EPLConstants.WINDOW_TUMBLING, wDuration));
+				}
+				else{
+					throw new BDPLTranslateException("Unsupported window type "+wType);
+				}
+			}
 			
 			return epl.toString();
 		}
