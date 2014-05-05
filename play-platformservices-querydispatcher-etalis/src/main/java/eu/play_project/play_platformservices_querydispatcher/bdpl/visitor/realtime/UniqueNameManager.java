@@ -72,7 +72,7 @@ public class UniqueNameManager {
 	
 
 	public long processNextEvent(){
-
+		System.out.println("\n LL processNextEvent()");
 		if (++triplestoreVariable >  triplestoreVariableEnd) {
 			throw new RuntimeException("No event left. This query schould contains " + (triplestoreVariableEnd - triplestoreVariableStart));
 		}
@@ -80,10 +80,12 @@ public class UniqueNameManager {
 	}
 	
 	public void resetTriplestoreVariable(){
-		triplestoreVariable = triplestoreVariableStart;
+		System.out.println("\n\n Reset");
+		triplestoreVariable = ++triplestoreVariableStart;
 	}
 	
 	public long getCurrentSimpleEventNumber() {
+		System.out.println("F\n\n " + triplestoreVariable);
 		return triplestoreVariable;
 	}
 	

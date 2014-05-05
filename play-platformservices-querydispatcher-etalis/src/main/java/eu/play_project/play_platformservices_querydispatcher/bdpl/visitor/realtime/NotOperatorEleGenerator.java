@@ -4,6 +4,7 @@ import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor
 
 import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EventPatternEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 /**

@@ -26,7 +26,6 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
@@ -105,6 +104,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	@Override
 	public List<String> getRdfDbQueries() {
+		System.out.println("\n\n\n" + rdfDbQueries + "\n\n\n");
 		return rdfDbQueries;
 	}
 	
