@@ -173,7 +173,7 @@ public class ComplexPartEleGenerator {
 		v.collectValues(q.getEventQuery());
 		// FIXME find Filter in triples.
 		for (Element currentElement : v.getEventPatterns()) {
-			filterExpressionVisitor.startVisit(((ElementEventGraph)currentElement).getFilterExp());
+			filterExpressionVisitor.startVisit(currentElement);
 			if(filterExpressionVisitor.getEle().length() > 1) {
 				if(filterExp.length() > 1) {
 					filterExp += ", " + filterExpressionVisitor.getEle();

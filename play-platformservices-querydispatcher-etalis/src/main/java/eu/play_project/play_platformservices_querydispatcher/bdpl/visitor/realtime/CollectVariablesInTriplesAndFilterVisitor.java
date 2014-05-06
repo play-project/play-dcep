@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
@@ -58,6 +59,13 @@ public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 	@Override
 	public void visit(ElementFilter el) {
 		el.getExpr().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getEnd().visit(this);
+		el.getNot().visit(this);
 	}
 	
 	

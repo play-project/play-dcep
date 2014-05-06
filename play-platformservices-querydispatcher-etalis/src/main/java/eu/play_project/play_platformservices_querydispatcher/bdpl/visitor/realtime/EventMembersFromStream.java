@@ -15,6 +15,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 
@@ -60,6 +61,13 @@ public class EventMembersFromStream {
 			@Override
 			public void visit(ElementNamedGraph el){
 				el.getElement().visit(this);
+			}
+			
+			@Override
+			public void visit(ElementNotOperator el){
+				el.getStart().visit(this);
+				el.getEnd().visit(this);
+				el.getNot().visit(this);
 			}
 			
 			@Override

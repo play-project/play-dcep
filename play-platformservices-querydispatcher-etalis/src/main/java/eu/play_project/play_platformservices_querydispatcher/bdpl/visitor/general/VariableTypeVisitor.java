@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general;
 
+import javax.management.RuntimeErrorException;
+
 import com.hp.hpl.jena.graph.Node_ANY;
 import com.hp.hpl.jena.graph.Node_Blank;
 import com.hp.hpl.jena.graph.Node_Literal;
@@ -28,6 +30,7 @@ import com.hp.hpl.jena.sparql.expr.aggregate.AggMin;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSample;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSum;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
@@ -247,6 +250,10 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 		el.getStart().visit(this);
 		el.getNot().visit(this);
 		el.getEnd().visit(this);
+	}
+	
+	public void visit(ElementBraceOperator elementBraceOperator) {
+		elementBraceOperator.getSubElements().visit(this);
 	}
 
 	@Override

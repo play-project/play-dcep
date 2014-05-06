@@ -12,7 +12,11 @@ import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
+import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
 
 public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
@@ -35,7 +39,7 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 	 * Use this method to start visiting filter elements.
 	 * @param el Element to visit.
 	 */
-	public void startVisit(com.hp.hpl.jena.sparql.syntax.Element el){
+	public void startVisit(Element el){
 		getStringFirstTime = true;
 		ele = new StringBuffer();
 		ele.append(" (");
@@ -43,6 +47,23 @@ public class FilterExpressionCodeGenerator extends GenereicFilterExprVisitor {
 			el.visit(this);
 		}
 	}
+	
+	@Override
+	public void visit(ElementEventGraph el) {
+		el.getFilterExp();
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getEnd().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementBraceOperator el) {
+		el.getSubElements().visit(this);
+	}
+	
 	@Override
 	public void visit(ElementFilter el) {
 		el.getExpr().visit(this);

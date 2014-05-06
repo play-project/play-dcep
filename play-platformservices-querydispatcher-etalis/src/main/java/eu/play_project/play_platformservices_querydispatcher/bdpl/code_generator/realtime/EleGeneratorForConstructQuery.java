@@ -23,7 +23,6 @@ import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventMembersFromStream;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
@@ -88,11 +87,13 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		elePattern += "<-";
 		
 		// Generate simple part.
+		getVarNameManager().processNextEvent();
 		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
 		elePattern += dbQuery.getMethodName();
 		rdfDbQueries.add(dbQuery.getMethodImpl());
 
 		while(binOperatorIter.hasNext()){
+			getVarNameManager().processNextEvent();
 			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
 			elePattern += binOperatorIter.next();
 			elePattern += dbQuery.getMethodName();
@@ -104,7 +105,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	
 	@Override
 	public List<String> getRdfDbQueries() {
-		System.out.println("\n\n\n" + rdfDbQueries + "\n\n\n");
 		return rdfDbQueries;
 	}
 	

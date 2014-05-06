@@ -2,6 +2,7 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realt
 
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
 /**
  * In some queries the event id is a variable. Event data are identified by the event id, in the triple store.
@@ -35,6 +36,13 @@ public class EqualizeEventIdVariableWithTriplestoreId extends GenericVisitor {
 		return equalizeCode = " V" + name;
 	}
 
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getEnd().visit(this);
+		el.getNot().visit(this);
+	}
+	
 	public String getEqualizeCode() {
 		return this.equalizeCode;
 	}

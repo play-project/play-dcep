@@ -1,6 +1,7 @@
 package eu.play_project.dcep.scenarios;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -17,17 +18,16 @@ import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.dcep.tests.SimplePublishApiSubscriber;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
-public class NestedEventsTest extends ScenarioAbstractTest {
-	private final Logger logger = LoggerFactory.getLogger(NestedEventsTest.class);
+public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
+	private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
 	
 	@Test
 	public void runTest() throws IOException, QueryDispatchException {
-
 		String queryString;
 
 		// Get query.
-		queryString = loadSparqlQuery("patterns/play-bdpl-nested-events.eprq");
-System.out.println(queryString);
+		queryString = loadSparqlQuery("patterns/BDPL-Query-NotOperatorEvent.eprq");
+
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
 
@@ -48,10 +48,8 @@ System.out.println(queryString);
 
 		// Wait
 		delay();
-
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
-		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(6).getObject().toString(), "http://events.event-processing.org/ids/MatlabEvent1");
-		assertEquals(subscriber.getComplexEvents().get(0).getTriples().get(7).getObject().toString(), "http://events.event-processing.org/ids/MyGreenServicesSensors-MGSS-341385414530246");
+		assertTrue(subscriber.getComplexEvents().get(0).getTriples().get(6).getObject().toString().equals("\"1\""));
 	}
 	
 	private void delay(){
@@ -65,4 +63,6 @@ System.out.println(queryString);
 	public static void main(String[] args) throws ModelRuntimeException, IOException {
 		System.out.println(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Matlab.trig", Syntax.Trig)));
 	}
+
 }
+

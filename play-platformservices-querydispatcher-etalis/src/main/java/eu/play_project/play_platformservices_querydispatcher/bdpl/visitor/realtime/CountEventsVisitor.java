@@ -4,6 +4,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
 /**
  * Count the number of events in a query.
@@ -27,6 +28,13 @@ public class CountEventsVisitor extends GenericVisitor {
 	@Override
 	public void visit(ElementBraceOperator el) {
 		el.getSubElements().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getEnd().visit(this);
+		el.getNot().visit(this);
 	}
 	
 	@Override

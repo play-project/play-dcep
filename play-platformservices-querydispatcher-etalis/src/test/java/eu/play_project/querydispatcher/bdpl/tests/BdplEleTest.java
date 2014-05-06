@@ -16,6 +16,8 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -42,6 +44,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 public class BdplEleTest {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Test
 	public void testManualParserUsage() throws IOException {
@@ -282,7 +285,7 @@ public class BdplEleTest {
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
-System.out.println(query);
+
 		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
 
 		visitor1.generateQuery(query);
@@ -385,6 +388,40 @@ System.out.println(query);
 		visitor1.getEventPatterns().get(0).visit(eleGenerator);
 		System.out.println(eleGenerator.getEle());
 		
+	}
+	
+	@Test
+	public void testNotOperatorCodeGenerationWholePattern() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/BDPL-Query-NotOperatorEvent.eprq");
+		logger.debug("BDPL query: \n{}", queryString);
+		
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+				
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+
+		System.out.println(visitor1.getEle());
 	}
 
 	@Test
@@ -513,9 +550,9 @@ System.out.println(query);
 	}
 
 	/**
-	 * Returns the filenaes of the testfiles depending on the type of the
-	 * testfile. The filename of a file with contains a broken query (a query
-	 * which the parser do not acceapt) must start with "BDPL-BrokenQuery". The
+	 * Returns the filenaes of the test files depending on the type of the
+	 * test file. The filename of a file with contains a broken query (a query
+	 * which the parser do not accept) must start with "BDPL-BrokenQuery". The
 	 * filename of a file with a regular query must start with "BDPL-Query".
 	 * 
 	 * @param dir

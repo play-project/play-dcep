@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
+import javax.management.RuntimeErrorException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,8 +141,6 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 		
 	}
 
-
-
 	@Override
 	public void visit(ElementService el) {
 		logger.debug("Visit " + el.getClass().getName());
@@ -182,139 +182,171 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 		logger.debug("Visit " + arg0.getClass().getName());
 		return null;
 	}
+	
 	@Override
 	public Object visitBlank(Node_Blank arg0, AnonId id) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		return null;
 	}
+	
 	@Override
 	public Object visitLiteral(Node_Literal arg0, LiteralLabel lit) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		return null;
 	}
+	
 	@Override
 	public Object visitURI(Node_URI it, String uri) {
 		// logger.debug("Visit " + it.getClass().getName());
 		return null;
 	}
+	
 	@Override
 	public Object visitVariable(Node_Variable it, String name) {
 		logger.debug("Visit " + it.getClass().getName());
 		return null;
 	}
+	
 	@Override
 	public void startVisit() {
 		logger.debug("startVisit");
 	}
+	
 	@Override
 	public void visit(ExprFunction0 arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		
 	}
+	
 	@Override
 	public void visit(ExprFunction1 arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void visit(ExprFunction2 arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void visit(ExprFunction3 arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void visit(ExprFunctionN arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void visit(ExprFunctionOp arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValue arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void visit(ExprVar arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void visit(ExprAggregator arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 	}
+	
 	@Override
 	public void finishVisit() {
 		logger.debug("finishVisit()");
 	}
+	
 	@Override
 	public void visit(ElementData arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		
 	}
+	
 	@Override
 	public void visit(ElementMinus arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		
 	}
+	
 	@Override
 	public void visit(NodeValueBoolean nv) {
 		logger.debug("Visit " + nv.getClass().getName());		
 	}
+	
 	@Override
 	public void visit(NodeValueDecimal nv) {
 		logger.debug("Visit " + nv.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValueDouble nv) {
 		logger.debug("Visit " + nv.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValueFloat nv) {
 		logger.debug("Visit " + nv.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValueInteger nv) {
 		logger.debug("Visit " + nv.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValueNode nv) {
 		logger.debug("Visit " + nv.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValueString nv) {
 		logger.debug("Visit " + nv.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValueDT nv) {
 		logger.debug("Visit " + nv.getClass().getName());
 	}
+	
 	@Override
 	public void visit(NodeValueDuration nodeValueDuration) {
 		logger.debug("Visit " + nodeValueDuration.getClass().getName());
 	}
+	
 	@Override
 	public void visit(ElementNotOperator elementNotOperator) {
-		logger.debug("Visit " + elementNotOperator.getClass().getName());	
+		throw new RuntimeException();
+		//logger.debug("Visit " + elementNotOperator.getClass().getName());	
 	}
 	
 	@Override
 	public void visit(CountWindow countWindow) {
 		logger.debug("Visit " + countWindow.getClass().getName());	
 	}
+	
 	@Override
 	public void visit(SlidingWindow slidingWindow) {
 		logger.debug("Visit " + slidingWindow.getClass().getName());	
 	}
+	
 	@Override
 	public void visit(TumblingWindow tumblingWindow) {
 		logger.debug("Visit " + tumblingWindow.getClass().getName());	
 		
 	}
+	
 	@Override
 	public void visit(DummyWindow dummyWindow) {
 		logger.debug("Visit " + dummyWindow.getClass().getName());	
 	}
+	
 	@Override
 	public void visit(ElementBraceOperator elementBraceOperator) {
 		logger.debug("Visit " + elementBraceOperator.getClass().getName());	

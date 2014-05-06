@@ -10,7 +10,6 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.syntax.Element;
 
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
-import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
@@ -37,7 +36,7 @@ public class EventPatternEleGenerator {
 		this.patternId = patternId;
 		this.eventGraph = eventGraph;
 		this.varTypeManger = varTypeManger;
-		
+
 		ele += SimpleEventPattern(eventGraph);
 		
 		pattern.setMethodName(ele);
@@ -93,7 +92,7 @@ public class EventPatternEleGenerator {
 	
 	private String TriplestoreQuery(Element currentElement) {
 		UniqueNameManager uniqueNameManager = getVarNameManager();
-		TriplestoreQueryVisitor triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager, varTypeManger);
+		TriplestoreQueryVisitor triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager, varTypeManger, patternId);
 		String rdfDbQueries = "";
 		String flatDbQueries;
 		String ele = "";

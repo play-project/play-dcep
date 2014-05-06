@@ -17,6 +17,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
@@ -33,12 +34,14 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	private String triplestoreQuery;
 	private final UniqueNameManager uniqueNameManager;
 	private String aggregateValuesCode;
+	private String queryId;
 	VariableTypeManager vtm;
 
-	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager, VariableTypeManager vtm){
+	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager, VariableTypeManager vtm, String queryId){
 		triplestoreQuery = "";
 		aggregateValuesCode = "";
 		this.uniqueNameManager = uniqueNameManager;
+		this.queryId = queryId;
 		this.vtm = vtm;
 	}
 	
@@ -89,7 +92,7 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public Object visitVariable(Node_Variable it, String name) {
 		
 		//Add code to save values.
-		if(vtm.isType(name, VariableTypes.SIMPLE_TYPE)){
+		if(vtm.isType(name, VariableTypes.SIMPLE_TYPE)) {
 			logger.error("VariableTypes.SAMPLE_TYPE is not implemented in dETALIS");
 		}else if(vtm.isType(name, VariableTypes.COUNT_TYPE)){
 			logger.error("VariableTypes.COUNT_TYPE is not implemented in dETALIS");
@@ -155,6 +158,15 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		triplestoreQuery = "'" + el.getTyp() + "'";
 		el.getRight().visit(this);
 	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm, queryId);
+		el.visit(eleGenerator);
+		triplestoreQuery += eleGenerator.getEle();
+	}
+	
+
 	
 	@Override
 	public void visit(ElementBraceOperator el) {
