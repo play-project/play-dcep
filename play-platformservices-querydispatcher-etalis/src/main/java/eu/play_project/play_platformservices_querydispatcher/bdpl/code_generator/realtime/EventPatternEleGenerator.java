@@ -5,13 +5,16 @@ import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.NotOperatorEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
@@ -37,10 +40,21 @@ public class EventPatternEleGenerator {
 		this.eventGraph = eventGraph;
 		this.varTypeManger = varTypeManger;
 
-		ele += SimpleEventPattern(eventGraph);
+		if (eventGraph instanceof ElementNotOperator) {
+			NotOperatorEleGenerator notOperatorEleGenerator = new NotOperatorEleGenerator(varTypeManger, patternId);
+			eventGraph.visit(notOperatorEleGenerator);
+			pattern = new EleEventPattern();
+			String a = notOperatorEleGenerator.getEle() + ", "+ GenerateCEID();
+			pattern.setMethodName(a);
+			pattern.setMethodImpl(notOperatorEleGenerator.getMethodImpl());
+		} else {
+			ele += SimpleEventPattern(eventGraph);
 		
-		pattern.setMethodName(ele);
-		pattern.setMethodImpl(rdfDbQuerie);
+			pattern.setMethodName(ele);
+			List<String> tmp = new LinkedList<String>();
+			tmp.add(rdfDbQuerie);
+			pattern.setMethodImpl(tmp);
+		}
 		return pattern;
 	}
 	
@@ -56,7 +70,7 @@ public class EventPatternEleGenerator {
 		elePattern += uniqueNameManager.getTriplestoreVariable();
 		elePattern += ") 'WHERE' (";
 		elePattern += AdditionalConditions(element);
-		
+		// FIXME sobermeier
 //		if(!binOperatorIter.hasNext()){
 //			elePattern += ",";
 //			GenerateCEID(elePattern);
@@ -162,6 +176,8 @@ public class EventPatternEleGenerator {
 		return dbQueryDecl;
 	}
 	
-	
+	private String GenerateCEID(){
+		return "random(1000000, 9000000, " + getVarNameManager().getCeid() + ")";
+	}
 
 }

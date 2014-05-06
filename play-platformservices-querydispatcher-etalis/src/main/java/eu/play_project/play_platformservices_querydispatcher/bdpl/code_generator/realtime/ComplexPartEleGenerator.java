@@ -51,8 +51,8 @@ public class ComplexPartEleGenerator {
 		// Collect complex event data.
 		elePattern += GenerateConstructResult(inputQuery, inputQuery.getQueryId());
 		elePattern += Having(inputQuery);
-
-		elePattern += DecrementReferenceCounter();
+		//FIXME sobermeier
+		//elePattern += DecrementReferenceCounter();
 		elePattern += ", constructResultIsNotEmpty(" + getVarNameManager().getCeid() + ")";
 		getVarNameManager().resetTriplestoreVariable();
 		elePattern += ")";
@@ -109,7 +109,7 @@ public class ComplexPartEleGenerator {
 												}
 											}
 										}
-										constructResult += MemberEvents(inputQuery);
+										//constructResult += MemberEvents(inputQuery); FIXME sobermeier
 										constructResult += SaveSharedVariableValues(inputQuery);
 				constructResult += ")";
 		constructResult += ")";

@@ -90,14 +90,14 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		getVarNameManager().processNextEvent();
 		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
 		elePattern += dbQuery.getMethodName();
-		rdfDbQueries.add(dbQuery.getMethodImpl());
+		rdfDbQueries.addAll(dbQuery.getMethodImpl());
 
 		while(binOperatorIter.hasNext()){
 			getVarNameManager().processNextEvent();
 			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
 			elePattern += binOperatorIter.next();
 			elePattern += dbQuery.getMethodName();
-			rdfDbQueries.add(dbQuery.getMethodImpl());
+			rdfDbQueries.addAll(dbQuery.getMethodImpl());
 		}
 		
 		return elePattern;

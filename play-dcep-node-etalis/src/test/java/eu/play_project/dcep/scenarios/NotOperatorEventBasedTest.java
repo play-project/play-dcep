@@ -27,7 +27,7 @@ public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
 
 		// Get query.
 		queryString = loadSparqlQuery("patterns/BDPL-Query-NotOperatorEvent.eprq");
-
+		logger.debug("BDPL query: \n{}", queryString);
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
 
@@ -43,8 +43,11 @@ public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
 
 		testApi.attach(subscriber);
 		logger.info("Publish events");
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioIntelligentTransportTest_Matlab.trig", Syntax.Trig)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/ScenarioMyGreenServicesTest_Sensors.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
+		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
+		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
+
 
 		// Wait
 		delay();

@@ -322,8 +322,7 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 	
 	@Override
 	public void visit(ElementNotOperator elementNotOperator) {
-		throw new RuntimeException();
-		//logger.debug("Visit " + elementNotOperator.getClass().getName());	
+		logger.debug("Visit " + elementNotOperator.getClass().getName());	
 	}
 	
 	@Override

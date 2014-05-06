@@ -2,8 +2,12 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realt
 
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EventPatternEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
@@ -13,11 +17,13 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
  *
  */
 public class NotOperatorEleGenerator extends GenericVisitor {
+	List<String> methodImpl;
 	VariableTypeManager vtm;
 	String patternId;
 	String ele;
 	
 	public NotOperatorEleGenerator(VariableTypeManager vtm, String patternId) {
+		this.methodImpl = new LinkedList<String>();
 		this.patternId = patternId;
 		this.vtm = vtm;
 		ele = "";
@@ -30,13 +36,20 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 	public void visit(ElementNotOperator elementNotOperator) {
 		StringBuffer code = new StringBuffer();
 		EventPatternEleGenerator codeGenerator =  new EventPatternEleGenerator();
-
+		EleEventPattern pattern;
+		
 		code.append("(") ;
-		code.append(codeGenerator.generateEle(elementNotOperator.getStart(), patternId, vtm).getMethodName());
+		pattern = codeGenerator.generateEle(elementNotOperator.getStart(), patternId, vtm);
+		methodImpl.addAll(pattern.getMethodImpl());
+		code.append(pattern.getMethodName());
 		code.append("'SEQ'");
-		code.append(codeGenerator.generateEle(elementNotOperator.getEnd(), patternId, vtm).getMethodName());
+		pattern = codeGenerator.generateEle(elementNotOperator.getEnd(), patternId, vtm);
+		methodImpl.addAll(pattern.getMethodImpl());
+		code.append(pattern.getMethodName());
 		code.append(") 'cnot' (");
-		code.append(codeGenerator.generateEle(elementNotOperator.getNot(), patternId, vtm).getMethodName());
+		pattern = codeGenerator.generateEle(elementNotOperator.getNot(), patternId, vtm);
+		methodImpl.addAll(pattern.getMethodImpl());
+		code.append(pattern.getMethodName());
 		code.append(")");
 		
 		ele = code.toString();
@@ -46,5 +59,8 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 		return this.ele;
 	}
 	
+	public List<String> getMethodImpl() {
+		return methodImpl;
+	}
 
 }

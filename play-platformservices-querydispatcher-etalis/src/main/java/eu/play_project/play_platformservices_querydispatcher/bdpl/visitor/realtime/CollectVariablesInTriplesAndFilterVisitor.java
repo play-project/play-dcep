@@ -65,7 +65,6 @@ public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 	public void visit(ElementNotOperator el) {
 		el.getStart().visit(this);
 		el.getEnd().visit(this);
-		el.getNot().visit(this);
 	}
 	
 	

@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
 
@@ -172,6 +173,13 @@ public class StreamIdCollector {
 		}
 		
 		@Override
+		public void visit(ElementNotOperator el) {
+			el.getStart().visit(this);
+			el.getEnd().visit(this);
+			el.getNot().visit(this);
+		}
+		
+		@Override
 		public void visit(ElementService el) {
 			if(el.getServiceNode().isURI()) {
 				streamURIs.add(el.getServiceNode().toString());
@@ -180,7 +188,8 @@ public class StreamIdCollector {
 			}
 		}
 	}
-
+	
+	
 	// Test if the type is http://events.event-processing.org/types/stream
 	private class TypeCheckVisitor extends GenericVisitor {
 

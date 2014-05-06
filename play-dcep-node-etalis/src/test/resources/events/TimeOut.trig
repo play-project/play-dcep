@@ -1,0 +1,10 @@
+@prefix :	<http://events.event-processing.org/types/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://events.event-processing.org/ids/deliveryBid/1> {
+	<http://events.event-processing.org/ids/deliveryRequestEvent/1#event> rdf:type :TimeOut;                                                               
+	:startTime "2014-03-15T12:42:01.011Z"^^xsd:dateTime ;
+	:endTime "2014-03-15T12:42:01.012Z"^^xsd:dateTime ;
+	:stream <http://streams.event-processing.org/ids/ffd#stream>
+}                                                             

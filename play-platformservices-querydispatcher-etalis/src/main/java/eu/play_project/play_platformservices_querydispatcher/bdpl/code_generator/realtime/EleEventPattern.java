@@ -10,18 +10,22 @@ import java.util.List;
 public class EleEventPattern {
 	
 	private String methodName;
-	private String methodImpl;
+	private List<String> methodImpl;
 	
 	public String getMethodName() {
 		return methodName;
 	}
+	
 	public void setMethodName(String methodName) {
 		this.methodName = methodName;
 	}
-	public String getMethodImpl() {
-		return methodImpl;
+	
+	public List<String> getMethodImpl() {
+		return this.methodImpl;
 	}
-	public void setMethodImpl(String methodImpel) {
-		this.methodImpl = methodImpel;
+	
+	public void setMethodImpl(List<String> methodImpl) {
+		this.methodImpl = methodImpl;
 	}
+
 }

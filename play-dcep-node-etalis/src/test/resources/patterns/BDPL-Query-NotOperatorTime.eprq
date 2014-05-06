@@ -7,19 +7,19 @@ PREFIX :        <http://events.event-processing.org/types/>
 
 CONSTRUCT {
 	:e rdf:type :NoBiddersAlert .
-	:e :stream <http://streams.event-processing.org/ids/fds#stream> .
+	:e :stream <http://streams.event-processing.org/ids/ffd#stream> .
 	:e :requestId ?requestId .
 	}
 WHERE {
 	NOT(
 		EVENT ?id1 {
 			?e1 rdf:type :BidRequest .
-			?e1 :stream <http://streams.event-processing.org/ids/fds#stream> .
+			?e1 :stream <http://streams.event-processing.org/ids/ffd#stream> .
 			?e1 :driver ?drivers .
 		},
 		EVENT ?id2 {
 			?e2 rdf:type :DeliveryBid .
-			?e2 :stream <http://streams.event-processing.org/ids/fds#stream> .
+			?e2 :stream <http://streams.event-processing.org/ids/ffd#stream> .
 			?e2 :requestId ?requestId . 
 			?e2 :store	?store . 
 			?e2 :driver ?bider .
