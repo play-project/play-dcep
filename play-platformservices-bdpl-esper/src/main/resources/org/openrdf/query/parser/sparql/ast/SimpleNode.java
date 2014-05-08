@@ -14,12 +14,14 @@
  * implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package org.openrdf.query.parser.sparql.ast;
+package org.openrdf.query.parser.bdpl.ast;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.openrdf.query.parser.bdpl.ast.Token;
 
 public class SimpleNode implements Node{
 
@@ -32,7 +34,11 @@ public class SimpleNode implements Node{
 	protected int id;
 
 	protected SyntaxTreeBuilder parser;
-
+	
+	protected Token firstToken;
+	
+	protected Token lastToken;
+	  
 	public SimpleNode(int id) {
 		this.id = id;
 		children = new ArrayList<Node>();
@@ -44,11 +50,29 @@ public class SimpleNode implements Node{
 	}
 
 	public void jjtOpen() {
+
 	}
 
 	public void jjtClose() {
+		
 	}
-
+	  
+	public Token jjtGetFirstToken() { 
+		return firstToken; 
+	}
+	  
+	public void jjtSetFirstToken(Token token) { 
+		this.firstToken = token; 
+	}
+	 
+	public Token jjtGetLastToken() { 
+		return lastToken; 
+	}
+	  
+	public void jjtSetLastToken(Token token) { 
+		this.lastToken = token; 
+	}
+	  
 	public void jjtSetParent(Node n) {
 		parent = n;
 	}

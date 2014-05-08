@@ -1,4 +1,4 @@
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -6,14 +6,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.openrdf.query.parser.sparql.ast.ASTBasicGraphPattern;
-import org.openrdf.query.parser.sparql.ast.ASTBlankNode;
-import org.openrdf.query.parser.sparql.ast.ASTBlankNodePropertyList;
-import org.openrdf.query.parser.sparql.ast.ASTCollection;
-import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
-import org.openrdf.query.parser.sparql.ast.ASTVar;
-import org.openrdf.query.parser.sparql.ast.SyntaxTreeBuilderTreeConstants;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.ast.ASTBasicGraphPattern;
+import org.openrdf.query.parser.bdpl.ast.ASTBlankNode;
+import org.openrdf.query.parser.bdpl.ast.ASTBlankNodePropertyList;
+import org.openrdf.query.parser.bdpl.ast.ASTCollection;
+import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTVar;
+import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderTreeConstants;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import org.openrdf.query.MalformedQueryException;
 

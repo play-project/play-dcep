@@ -11,7 +11,7 @@
   </component>
   <component name="Dcep">
     <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
-    <content class="eu.play_project.dcep.tests.Dcep"/>
+    <content class="eu.play_project.dcep.Dcep"/>
     <virtual-node name="VN"/>
   </component>
   <binding client="this.QueryDispatchApi" server="PlatformServices.QueryDispatchApi"/>

@@ -2,7 +2,7 @@
 <!DOCTYPE definition PUBLIC "-//objectweb.org//DTD Fractal ADL 2.0//EN" "classpath://org/objectweb/proactive/core/component/adl/xml/proactive.dtd">
 <definition name="DcepPsTest">
   <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
-  <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.api.DcepTestApi" role="server"/>
+  <interface name="DcepTestApi" signature="eu.play_project.dcep.api.DcepTestApi" role="server"/>
   
   <component name="PlatformServices">
     <interface name="QueryDispatchApi" signature="eu.play_project.play_platformservices.api.QueryDispatchApi" role="server"/>
@@ -12,12 +12,12 @@
   
   <component name="Dcep">
     <interface name="DcepManagmentApi" signature="eu.play_project.dcep.api.DcepManagmentApi" role="server"/>
-    <interface name="DistributedEtalisTestApi" signature="eu.play_project.dcep.api.DcepTestApi" role="server"/>
-    <content class="eu.play_project.dcep.tests.Dcep"/>
+    <interface name="DcepTestApi" signature="eu.play_project.dcep.api.DcepTestApi" role="server"/>
+    <content class="eu.play_project.dcep.Dcep"/>
   </component>
   
   <binding client="this.QueryDispatchApi" server="PlatformServices.QueryDispatchApi"/>
-  <binding client="this.DistributedEtalisTestApi" server="Dcep.DistributedEtalisTestApi"/>
+  <binding client="this.DcepTestApi" server="Dcep.DcepTestApi"/>
   <binding client="PlatformServices.DcepManagmentApi" server="Dcep.DcepManagmentApi"/>
   <controller desc="composite"/>
 </definition>

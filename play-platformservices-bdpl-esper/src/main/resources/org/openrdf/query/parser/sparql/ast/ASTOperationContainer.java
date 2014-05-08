@@ -14,7 +14,7 @@
  * implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package org.openrdf.query.parser.sparql.ast;
+package org.openrdf.query.parser.bdpl.ast;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * Abstract supertype of {@link ASTQueryContainer} and
  * {@link ASTUpdateContainer}
  * 
- * @author Jeen Broekstra
+ * @author Jeen Broekstra, Ningyuan Pan
  */
 public abstract class ASTOperationContainer extends SimpleNode {
 
@@ -36,15 +36,15 @@ public abstract class ASTOperationContainer extends SimpleNode {
 	public ASTOperationContainer(SyntaxTreeBuilder p, int id) {
 		super(p, id);
 	}
-
+	
 	public ASTBaseDecl getBaseDecl() {
 		return super.jjtGetChild(ASTBaseDecl.class);
 	}
-
+	
 	public ASTOperation getOperation() {
 		return super.jjtGetChild(ASTOperation.class);
 	}
-
+	
 	public List<ASTPrefixDecl> getPrefixDeclList() {
 		return super.jjtGetChildren(ASTPrefixDecl.class);
 	}

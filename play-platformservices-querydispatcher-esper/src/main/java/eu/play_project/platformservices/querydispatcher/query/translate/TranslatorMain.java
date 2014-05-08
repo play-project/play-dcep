@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Map;
 
-
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.Dataset;
 import org.openrdf.query.IncompatibleOperationException;
@@ -19,33 +18,31 @@ import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.ParsedTupleQuery;
 import org.openrdf.query.parser.ParsedUpdate;
 import org.openrdf.query.parser.QueryParser;
-import org.openrdf.query.parser.QueryParserFactory;
-import org.openrdf.query.parser.sparql.BaseDeclProcessor;
-import org.openrdf.query.parser.sparql.BlankNodeVarProcessor;
-import org.openrdf.query.parser.sparql.DatasetDeclProcessor;
-import org.openrdf.query.parser.sparql.PrefixDeclProcessor;
-import org.openrdf.query.parser.sparql.StringEscapesProcessor;
-import org.openrdf.query.parser.sparql.TupleExprBuilder;
-import org.openrdf.query.parser.sparql.WildcardProjectionProcessor;
-import org.openrdf.query.parser.sparql.ast.ASTAskQuery;
-import org.openrdf.query.parser.sparql.ast.ASTConstructQuery;
-import org.openrdf.query.parser.sparql.ast.ASTDescribeQuery;
-import org.openrdf.query.parser.sparql.ast.ASTQuery;
-import org.openrdf.query.parser.sparql.ast.ASTQueryContainer;
-import org.openrdf.query.parser.sparql.ast.ASTSelectQuery;
-import org.openrdf.query.parser.sparql.ast.Node;
-import org.openrdf.query.parser.sparql.ast.ParseException;
-import org.openrdf.query.parser.sparql.ast.SyntaxTreeBuilder;
-import org.openrdf.query.parser.sparql.ast.TokenMgrError;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
+import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
+import org.openrdf.query.parser.bdpl.DatasetDeclProcessor;
+import org.openrdf.query.parser.bdpl.PrefixDeclProcessor;
+import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
+import org.openrdf.query.parser.bdpl.TupleExprBuilder;
+import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
+import org.openrdf.query.parser.bdpl.ast.ASTAskQuery;
+import org.openrdf.query.parser.bdpl.ast.ASTConstructQuery;
+import org.openrdf.query.parser.bdpl.ast.ASTDescribeQuery;
+import org.openrdf.query.parser.bdpl.ast.ASTQuery;
+import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTSelectQuery;
+import org.openrdf.query.parser.bdpl.ast.Node;
+import org.openrdf.query.parser.bdpl.ast.ParseException;
+import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
+import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
-import eu.play_project.platformservices.bdpl.parser.BDPLParserFactory;
 
 /**
  * @author ningyuan
  *
  */
-public class BDPLTranslator implements QueryParser{
+public class TranslatorMain implements QueryParser{
 	
 	/* (non-Javadoc)
 	 * @see org.openrdf.query.parser.QueryParser#parseUpdate(java.lang.String, java.lang.String)
@@ -76,21 +73,26 @@ public class BDPLTranslator implements QueryParser{
 				// handle query operation
 
 				TupleExpr tupleExpr = buildQueryModel(qc);
-
+				
 				ParsedQuery query;
-
+			
 				ASTQuery queryNode = qc.getQuery();
 				if (queryNode instanceof ASTSelectQuery) {
+						
 					query = new ParsedTupleQuery(queryStr, tupleExpr);
 				}
 				else if (queryNode instanceof ASTConstructQuery) {
 					
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
+					System.out.println(EPLTranslationProcessor.process(qc)+"\n");
+					System.out.println(EPLListenerProcessor.process(qc)+"\n");
 				}
 				else if (queryNode instanceof ASTAskQuery) {
+					
 					query = new ParsedBooleanQuery(queryStr, tupleExpr);
 				}
 				else if (queryNode instanceof ASTDescribeQuery) {
+					
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
 				}
 				else {
@@ -102,8 +104,6 @@ public class BDPLTranslator implements QueryParser{
 				if (dataset != null) {
 					query.setDataset(dataset);
 				}
-				
-				EPLProcessor.process(qc);
 				
 				return query;
 			}
@@ -134,8 +134,8 @@ public class BDPLTranslator implements QueryParser{
 	public static void main(String[] args)
 			throws java.io.IOException
 		{
-			
-		    BDPLTranslator trans = new BDPLTranslator();
+		
+		    TranslatorMain trans = new TranslatorMain();
 		
 			System.out.println("Your BDPL query:");
 

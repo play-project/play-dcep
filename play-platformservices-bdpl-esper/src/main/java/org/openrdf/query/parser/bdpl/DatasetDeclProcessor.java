@@ -1,11 +1,11 @@
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
 import java.util.List;
 
-import org.openrdf.query.parser.sparql.ast.ASTDatasetClause;
-import org.openrdf.query.parser.sparql.ast.ASTIRI;
-import org.openrdf.query.parser.sparql.ast.ASTOperation;
-import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
+import org.openrdf.query.parser.bdpl.ast.ASTIRI;
+import org.openrdf.query.parser.bdpl.ast.ASTOperation;
+import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 
 import org.openrdf.model.URI;
 import org.openrdf.model.impl.URIImpl;

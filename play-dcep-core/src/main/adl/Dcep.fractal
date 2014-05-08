@@ -3,7 +3,7 @@
   <definition name="Dcep">
 	 <interface name="DcepManagmentApi"  role="server" signature="eu.play_project.dcep.api.DcepManagmentApi"/>
 	 <interface name="DcepMonitoringApi"  role="server" signature="eu.play_project.dcep.api.DcepMonitoringApi"/>
-     <content class="eu.play_project.dcep.tests.Dcep"/>
+     <content class="eu.play_project.dcep.Dcep"/>
      <controller desc="primitive"/>
      <virtual-node name="VN"/>
 </definition>

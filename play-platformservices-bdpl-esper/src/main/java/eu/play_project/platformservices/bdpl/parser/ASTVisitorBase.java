@@ -1,6 +1,6 @@
 package eu.play_project.platformservices.bdpl.parser;
 
-import org.openrdf.query.parser.sparql.ast.*;
+import org.openrdf.query.parser.bdpl.ast.*;
 
 
 
@@ -886,16 +886,19 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 			return node.childrenAccept(this, data);
 		}
 		
+		@Override
 		public Object visit(ASTBDPLWhereClause node, Object data) 
 				throws VisitorException {
 			return node.childrenAccept(this, data);
 		}
 		
+		@Override
 		public Object visit(ASTRealTimeEventQuery node, Object data) 
 				  throws VisitorException{
 			return node.childrenAccept(this, data);
 		}
-		  
+		
+		@Override
 		public Object visit(ASTWindowClause node, Object data) 
 				throws VisitorException{
 			return node.childrenAccept(this, data);
@@ -914,7 +917,6 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 			return node.childrenAccept(this, data);
 		}
 		
-
 		@Override
 		public Object visit(ASTC node, Object data) throws VisitorException {
 			// TODO Auto-generated method stub
@@ -939,9 +941,16 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 			// TODO Auto-generated method stub
 			return node.childrenAccept(this, data);
 		}
-		
+
 		@Override
 		public Object visit(ASTNotClause node, Object data)
+				throws VisitorException {
+			// TODO Auto-generated method stub
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTEventClause node, Object data)
 				throws VisitorException {
 			// TODO Auto-generated method stub
 			return node.childrenAccept(this, data);
@@ -951,7 +960,7 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		public Object visit(ASTEventGraphPattern node, Object data)
 				throws VisitorException {
 			// TODO Auto-generated method stub
-			return null;
+			return node.childrenAccept(this, data);
 		}
 		
 		@Override

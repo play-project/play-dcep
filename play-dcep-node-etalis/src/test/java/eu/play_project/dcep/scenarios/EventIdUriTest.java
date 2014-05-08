@@ -26,7 +26,7 @@ public class EventIdUriTest extends ScenarioAbstractTest {
 	private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
 	
 	@Test
-	public void testEentIdAsUri() throws QueryDispatchException, IOException {
+	public void testEventIdAsUri() throws QueryDispatchException, IOException {
 		
 		String queryString;
 

@@ -1,8 +1,8 @@
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
-import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
-import org.openrdf.query.parser.sparql.ast.ASTString;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTString;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import org.openrdf.query.MalformedQueryException;
 
@@ -47,7 +47,7 @@ public class StringEscapesProcessor {
 		{
 			String value = stringNode.getValue();
 			try {
-				value = BDPLUtil.decodeString(value);
+				value =  BDPLUtil.decodeString(value);
 				stringNode.setValue(value);
 			}
 			catch (IllegalArgumentException e) {

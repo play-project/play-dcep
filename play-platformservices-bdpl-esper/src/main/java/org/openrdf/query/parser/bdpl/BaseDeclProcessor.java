@@ -14,17 +14,17 @@
  * implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
 import info.aduna.net.ParsedURI;
 
 import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.parser.sparql.ast.ASTBaseDecl;
-import org.openrdf.query.parser.sparql.ast.ASTIRI;
-import org.openrdf.query.parser.sparql.ast.ASTIRIFunc;
-import org.openrdf.query.parser.sparql.ast.ASTOperationContainer;
-import org.openrdf.query.parser.sparql.ast.ASTServiceGraphPattern;
-import org.openrdf.query.parser.sparql.ast.VisitorException;
+import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
+import org.openrdf.query.parser.bdpl.ast.ASTIRI;
+import org.openrdf.query.parser.bdpl.ast.ASTIRIFunc;
+import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTServiceGraphPattern;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 /**
  * Resolves relative URIs in a query model using either an external base URI or

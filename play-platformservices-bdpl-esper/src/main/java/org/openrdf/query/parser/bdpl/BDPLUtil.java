@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openrdf.query.parser.sparql;
+package org.openrdf.query.parser.bdpl;
 
 import info.aduna.text.StringUtil;
 
