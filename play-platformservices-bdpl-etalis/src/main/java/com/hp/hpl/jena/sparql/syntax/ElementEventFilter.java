@@ -54,11 +54,10 @@ public class ElementEventFilter extends Element{
 	public String[] getData(){
 		return data;
 	}
-
-
 	@Override
 	public void visit(ElementVisitor v) {
-		v.visit(this);
+		// TODO Auto-generated method stub
+		
 	}
 
 }
