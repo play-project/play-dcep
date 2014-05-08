@@ -23,13 +23,11 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
-import com.hp.hpl.jena.sparql.syntax.BooleanOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementAssign;
 import com.hp.hpl.jena.sparql.syntax.ElementBind;
 import com.hp.hpl.jena.sparql.syntax.ElementData;
 import com.hp.hpl.jena.sparql.syntax.ElementDataset;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
-import com.hp.hpl.jena.sparql.syntax.ElementEventFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
@@ -239,11 +237,7 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 		logger.info("GenericVisitor visit: " + el.getClass().getName());
 		
 	}
-	@Override
-	public void visit(ElementEventFilter el) {
-		logger.info("GenericVisitor visit: " + el.getClass().getName());
-		
-	}
+
 	@Override
 	public void visit(ElementNamedGraph el) {
 		logger.info("GenericVisitor visit: " + el.getClass().getName());
@@ -253,12 +247,6 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 	@Override
 	public void visit(ElementFnAbsFilter elementFnAbsFilter) {
 		logger.info("GenericVisitor visit: " + elementFnAbsFilter.getClass().getName());
-	}
-
-	@Override
-	public void visit(BooleanOperator booleanOperator) {
-		logger.info("GenericVisitor visit: " + booleanOperator.getClass().getName());
-		
 	}
 
 
