@@ -41,6 +41,7 @@ public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
 			e.printStackTrace();
 		}
 
+		// No DeliveryBid appeared.
 		testApi.attach(subscriber);
 		logger.info("Publish events");
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
@@ -52,11 +53,24 @@ public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
 		// Wait
 		delay();
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
+		
+		//DeliveryBid appeared before transaction ends.
+		logger.info("Publish events");
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
+		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
+		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
+		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
+		
+		// Wait
+		delay();
+		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
 	}
 	
 	private void delay(){
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
