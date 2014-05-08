@@ -31,6 +31,8 @@ public interface ElementVisitor
     public void visit(RelationalOperator relationalOperator) ;
     public void visit(ElementEventGraph el) ;
 	public void visit(ElementEventBinOperator el);
+	public void visit(ElementEventFilter el);
+	public void visit(BooleanOperator booleanOperator);
 	public void visit(ElementFnAbsFilter elementFnAbsFilter);
 }
 

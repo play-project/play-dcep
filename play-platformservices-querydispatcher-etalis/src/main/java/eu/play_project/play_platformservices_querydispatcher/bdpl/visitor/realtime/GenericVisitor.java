@@ -31,11 +31,13 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
+import com.hp.hpl.jena.sparql.syntax.BooleanOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementAssign;
 import com.hp.hpl.jena.sparql.syntax.ElementBind;
 import com.hp.hpl.jena.sparql.syntax.ElementData;
 import com.hp.hpl.jena.sparql.syntax.ElementDataset;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
+import com.hp.hpl.jena.sparql.syntax.ElementEventFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
@@ -158,10 +160,20 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 		
 	}
 
+	@Override
+	public void visit(ElementEventFilter el) {
+		logger.debug("Visit " + el.getClass().getName());
+		
+	}
 
 	
 	@Override
 	public void visit(RelationalOperator arg0) {
+		logger.debug("Visit " + arg0.getClass().getName());
+		
+	}
+	@Override
+	public void visit(BooleanOperator arg0) {
 		logger.debug("Visit " + arg0.getClass().getName());
 		
 	}
