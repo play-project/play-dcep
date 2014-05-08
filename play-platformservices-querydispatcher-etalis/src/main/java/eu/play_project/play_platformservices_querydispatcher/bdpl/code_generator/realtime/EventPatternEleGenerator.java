@@ -31,24 +31,26 @@ public class EventPatternEleGenerator {
 	String patternId;
 	String rdfDbQuerie;
 	VariableTypeManager varTypeManger;
+	String executeCode; // Code will be executed in where clause.
 	
 	
-	public EleEventPattern generateEle(Element eventGraph, String patternId, VariableTypeManager varTypeManger) {
+	public EleEventPattern generateEle(Element eventGraph, String patternId, VariableTypeManager varTypeManger, String executeCode) {
 		EleEventPattern pattern = new EleEventPattern();
 		String ele = "";
 		this.patternId = patternId;
 		this.eventGraph = eventGraph;
 		this.varTypeManger = varTypeManger;
+		this.executeCode = executeCode;
 
 		if (eventGraph instanceof ElementNotOperator) {
-			NotOperatorEleGenerator notOperatorEleGenerator = new NotOperatorEleGenerator(varTypeManger, patternId);
+			NotOperatorEleGenerator notOperatorEleGenerator = new NotOperatorEleGenerator(varTypeManger, patternId, executeCode);
 			eventGraph.visit(notOperatorEleGenerator);
 			pattern = new EleEventPattern();
-			String a = notOperatorEleGenerator.getEle() + ", "+ GenerateCEID();
-			pattern.setMethodName(a);
+			String code = notOperatorEleGenerator.getEle();
+			pattern.setMethodName(code);
 			pattern.setMethodImpl(notOperatorEleGenerator.getMethodImpl());
 		} else {
-			ele += SimpleEventPattern(eventGraph);
+			ele += SimpleEventPattern(eventGraph, executeCode);
 		
 			pattern.setMethodName(ele);
 			List<String> tmp = new LinkedList<String>();
@@ -58,7 +60,7 @@ public class EventPatternEleGenerator {
 		return pattern;
 	}
 	
-	public String SimpleEventPattern(Element element) {
+	public String SimpleEventPattern(Element element, String executeCode) {
 		String elePattern = "";
 		EventTypeVisitor eventTypeVisitor = new EventTypeVisitor();
 		UniqueNameManager uniqueNameManager = getVarNameManager();
@@ -70,12 +72,7 @@ public class EventPatternEleGenerator {
 		elePattern += uniqueNameManager.getTriplestoreVariable();
 		elePattern += ") 'WHERE' (";
 		elePattern += AdditionalConditions(element);
-		// FIXME sobermeier
-//		if(!binOperatorIter.hasNext()){
-//			elePattern += ",";
-//			GenerateCEID(elePattern);
-//		}
-		elePattern += "))";
+		elePattern += executeCode + "))";
 		
 		return elePattern;
 	}
@@ -175,9 +172,4 @@ public class EventPatternEleGenerator {
 
 		return dbQueryDecl;
 	}
-	
-	private String GenerateCEID(){
-		return "random(1000000, 9000000, " + getVarNameManager().getCeid() + ")";
-	}
-
 }

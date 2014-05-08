@@ -32,7 +32,7 @@ public class NotOperatorTest {
 				}
 			});
 		    	 
-			context.addDynamicRule("c <- a seq b 'cnot' (d seq e)");
+			context.addDynamicRule("c <- (a 'SEQ' b) 'cnot' (d seq e)");
 			
 			// Event d appears after seq.
 			context.pushEvent(new EtalisEvent("a"));

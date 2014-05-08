@@ -160,15 +160,6 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	}
 	
 	@Override
-	public void visit(ElementNotOperator el) {
-		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm, queryId);
-		el.visit(eleGenerator);
-		triplestoreQuery += eleGenerator.getEle();
-	}
-	
-
-	
-	@Override
 	public void visit(ElementBraceOperator el) {
 		el.getSubElements().visit(this);
 	}

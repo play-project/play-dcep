@@ -36,7 +36,7 @@ public class ComplexPartEleGenerator {
 		String ele = "";
 		
 		ele += Complex(query);
-
+		//ele += "'http://events.event-processing.org/types/NoBiddersAlert'(abc, cba)";
 		return ele;
 	}
 	
@@ -51,8 +51,7 @@ public class ComplexPartEleGenerator {
 		// Collect complex event data.
 		elePattern += GenerateConstructResult(inputQuery, inputQuery.getQueryId());
 		elePattern += Having(inputQuery);
-		//FIXME sobermeier
-		//elePattern += DecrementReferenceCounter();
+		elePattern += DecrementReferenceCounter();
 		elePattern += ", constructResultIsNotEmpty(" + getVarNameManager().getCeid() + ")";
 		getVarNameManager().resetTriplestoreVariable();
 		elePattern += ")";
@@ -109,7 +108,7 @@ public class ComplexPartEleGenerator {
 												}
 											}
 										}
-										//constructResult += MemberEvents(inputQuery); FIXME sobermeier
+										constructResult += MemberEvents(inputQuery);
 										constructResult += SaveSharedVariableValues(inputQuery);
 				constructResult += ")";
 		constructResult += ")";

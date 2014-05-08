@@ -383,7 +383,7 @@ public class BdplEleTest {
 		VariableTypeManager vtm = new VariableTypeManager(query);
 
 		// Generate ELE.
-		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm, "p1");
+		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm, "p1", "");
 		
 		visitor1.getEventPatterns().get(0).visit(eleGenerator);
 		System.out.println(eleGenerator.getEle());

@@ -45,14 +45,13 @@ public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
 		logger.info("Publish events");
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
 		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
-		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
+		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
+		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
 
 
 		// Wait
 		delay();
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
-		assertTrue(subscriber.getComplexEvents().get(0).getTriples().get(6).getObject().toString().equals("\"1\""));
 	}
 	
 	private void delay(){

@@ -88,20 +88,41 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		// Generate simple part.
 		getVarNameManager().processNextEvent();
-		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
+		
+		// Complex event id will be generated if last simple event appeared.
+		String complexEventIdCode = "";
+		if(!binOperatorIter.hasNext()){
+			complexEventIdCode += ",";
+			complexEventIdCode += GenerateCEID();
+		}
+		
+		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
 		elePattern += dbQuery.getMethodName();
 		rdfDbQueries.addAll(dbQuery.getMethodImpl());
+		// FIXME sobermeier
 
 		while(binOperatorIter.hasNext()){
 			getVarNameManager().processNextEvent();
-			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm);
-			elePattern += binOperatorIter.next();
+			String operator = binOperatorIter.next();
+			
+			if(!binOperatorIter.hasNext()){
+				complexEventIdCode += ",";
+				complexEventIdCode += GenerateCEID();
+			}
+			
+			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
+			elePattern += operator;
 			elePattern += dbQuery.getMethodName();
 			rdfDbQueries.addAll(dbQuery.getMethodImpl());
 		}
 		
 		return elePattern;
 	}
+	
+	private String GenerateCEID(){
+		return "random(1000000, 9000000, " + getVarNameManager().getCeid() + ")";
+	}
+
 	
 	@Override
 	public List<String> getRdfDbQueries() {

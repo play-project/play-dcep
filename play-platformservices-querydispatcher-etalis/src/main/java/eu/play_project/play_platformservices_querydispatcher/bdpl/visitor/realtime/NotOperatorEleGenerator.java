@@ -17,12 +17,14 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
  *
  */
 public class NotOperatorEleGenerator extends GenericVisitor {
+	String executeCode; // Code will be executed after end event appeared. E.g. to generate complex event id.
 	List<String> methodImpl;
 	VariableTypeManager vtm;
 	String patternId;
 	String ele;
 	
-	public NotOperatorEleGenerator(VariableTypeManager vtm, String patternId) {
+	public NotOperatorEleGenerator(VariableTypeManager vtm, String patternId, String executeCode) {
+		this.executeCode = executeCode;
 		this.methodImpl = new LinkedList<String>();
 		this.patternId = patternId;
 		this.vtm = vtm;
@@ -39,15 +41,17 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 		EleEventPattern pattern;
 		
 		code.append("(") ;
-		pattern = codeGenerator.generateEle(elementNotOperator.getStart(), patternId, vtm);
+		pattern = codeGenerator.generateEle(elementNotOperator.getStart(), patternId, vtm, "");
 		methodImpl.addAll(pattern.getMethodImpl());
 		code.append(pattern.getMethodName());
 		code.append("'SEQ'");
-		pattern = codeGenerator.generateEle(elementNotOperator.getEnd(), patternId, vtm);
+		getVarNameManager().processNextEvent();
+		pattern = codeGenerator.generateEle(elementNotOperator.getEnd(), patternId, vtm, executeCode);
 		methodImpl.addAll(pattern.getMethodImpl());
 		code.append(pattern.getMethodName());
 		code.append(") 'cnot' (");
-		pattern = codeGenerator.generateEle(elementNotOperator.getNot(), patternId, vtm);
+		getVarNameManager().processNextEvent();
+		pattern = codeGenerator.generateEle(elementNotOperator.getNot(), patternId, vtm, "");
 		methodImpl.addAll(pattern.getMethodImpl());
 		code.append(pattern.getMethodName());
 		code.append(")");
