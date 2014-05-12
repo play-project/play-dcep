@@ -1,5 +1,6 @@
 eu.play_platform.platformservices.bdpl.tests
 eu.play_project.dcep.api.tests
+eu.play_project.dcep.core
 eu.play_project.dcep.distributedetalis.join.tests
 eu.play_project.dcep.distributedetalis.tests
 eu.play_project.dcep.distribution.tests

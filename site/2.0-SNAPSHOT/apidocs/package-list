@@ -1,3 +1,5 @@
+com.espertech.esper.example.transaction
+com.espertech.esper.example.transaction.sim
 com.hp.hpl.jena.query
 com.hp.hpl.jena.sparql.lang
 com.hp.hpl.jena.sparql.lang.BDPL
@@ -28,8 +30,12 @@ eu.play_project.dcep.distribution.examples
 eu.play_project.dcep.distribution.tests.single_pattern
 eu.play_project.dcep.distribution.tests.srbench.performance
 eu.play_project.platformservices.bdpl.parser
-eu.play_project.platformservices.querydispatcher.query.transform
-eu.play_project.platformservices.querydispatcher.query.transform.util
+eu.play_project.platformservices.querydispatcher.query.event
+eu.play_project.platformservices.querydispatcher.query.eventImpl.rdf.sesame
+eu.play_project.platformservices.querydispatcher.query.filter
+eu.play_project.platformservices.querydispatcher.query.simulation
+eu.play_project.platformservices.querydispatcher.query.translate
+eu.play_project.platformservices.querydispatcher.query.translate.util
 eu.play_project.play_platformservices
 eu.play_project.play_platformservices.api
 eu.play_project.play_platformservices.jaxb
@@ -42,5 +48,5 @@ eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime
 eu.play_project.play_platformservices_querydispatcher.historicalQuery
 eu.play_project.play_platformservices_querydispatcher.playEleParser
 eu.play_project.play_platformservices_querydispatcher.types
-org.openrdf.query.parser.sparql
-org.openrdf.query.parser.sparql.ast
+org.openrdf.query.parser.bdpl
+org.openrdf.query.parser.bdpl.ast
