@@ -25,6 +25,6 @@ WHERE {
 			?e2 :driver ?bider .
 			?e2 :committedPickupTime ?time .
 		},
-		("PT2M"^^xsd:duration, sliding)
+		("PT2M"^^xsd:duration)
 	)
 }

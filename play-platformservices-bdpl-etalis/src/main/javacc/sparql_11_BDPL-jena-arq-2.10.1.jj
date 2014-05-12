@@ -286,6 +286,7 @@ void WhereClauseBDPL() : {Element el; Token th; Token t; Update up; Expr testExp
 
 Window WindowSize() : {Token t; Window win;}
 {
+ 	<LPAREN>
 	t = < WINDOWSIZE >
 		(
 		  	< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(new Duration(t.image));}
@@ -1765,9 +1766,9 @@ TOKEN [IGNORE_CASE] :
 | < EVENT : "event" >
 | < SEQ : ("seq"){1} >
 | < OR : ("or"){1} >
-| < WINDOW_TYPE_SLIDING: "sliding" >
-| < WINDOW_TYPE_TUMBLING: "tumbling" >
-| < WINDOWSIZE : "(\"PT" (["0"-"9","H","M","S"])+ "\"^^xsd:duration, " >
+| < WINDOW_TYPE_SLIDING: ", sliding" >
+| < WINDOW_TYPE_TUMBLING: ", tumbling" >
+| < WINDOWSIZE : "\"PT" (["0"-"9","H","M","S"])+ "\"^^xsd:duration" >
 | < BEGIN_WINDOW : ("WINDOW"){1} >
 // | < DURATION : ("M^^xsd:duration"){1} >
 | < EQUALS : ("equals"){1} >
@@ -2004,7 +2005,9 @@ Element EventClauseSingleEvent() : {Element eventClause = null; Element eventCla
 Element NotClause() : {Element start = null; Element end = null; Element not = null; Token t;}
 {
    < NOT >
-	< LPAREN >		start = EventClause()  	 < COMMA >		not = EventClause()     < COMMA >     	(     	  t = < WINDOWSIZE > {not = new Duration(t.image);}
+	< LPAREN >		start = EventClause()  	 < COMMA >		not = EventClause()     < COMMA >     	(     	  <LPAREN>
+     	  	t = < WINDOWSIZE > {not = new Duration(t.image);}
+     	  <RPAREN>
      	)   < RPAREN >
    
    {return new ElementNotOperator(start, not, end);}
