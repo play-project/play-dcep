@@ -256,9 +256,8 @@
 &lt;DEFAULT&gt; TOKEN [IGNORE_CASE] : {
 &lt;ARRAY: "array"&gt;
 | &lt;WINDOW: "window"&gt;
-| &lt;EVENT: "event" &lt;INTEGER&gt;&gt;
+| &lt;EVENT: "event"&gt;
 | &lt;INTERVAL: "interval"&gt;
-| &lt;AT: "at"&gt;
 | &lt;EVENT_UN_OP_1: &lt;EVENT_OP_NOT&gt;&gt;
 | &lt;EVENT_UN_OP_2: &lt;EVENT_OP_REPEAT&gt;&gt;
 | &lt;EVENT_BIN_OP_3: &lt;EVENT_OP_AND&gt;&gt;
@@ -422,7 +421,7 @@
  <TR>
   <TD>
 <PRE>
-// ningyuan made changes
+// ningyuan changed: replace WhereClause with BDPLWhereClause
 </PRE>
   </TD>
  </TR>
@@ -1925,7 +1924,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod205">WindowDecl</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LPAREN&gt; &lt;STRING_LITERAL2&gt; &lt;DT_PREFIX&gt; <A HREF="#prod30">IRIref</A> &lt;COMMA&gt; &lt;WINDOW_TYPE&gt; &lt;RPAREN&gt;</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LPAREN&gt; <A HREF="#prod177">String</A> &lt;DT_PREFIX&gt; <A HREF="#prod179">PrefixedName</A> &lt;COMMA&gt; &lt;WINDOW_TYPE&gt; &lt;RPAREN&gt;</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod204">EventPattern</A></TD>
@@ -1945,22 +1944,27 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod208">A</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod209">NotClause</A> | <A HREF="#prod210">TimeBasedEvent</A> | <A HREF="#prod211">EventGraphPattern</A> | ( &lt;LBRACE&gt; <A HREF="#prod204">EventPattern</A> &lt;RBRACE&gt; ) )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod209">NotClause</A> | <A HREF="#prod210">TimeBasedEvent</A> | <A HREF="#prod211">EventClause</A> | ( &lt;LBRACE&gt; <A HREF="#prod204">EventPattern</A> &lt;RBRACE&gt; ) )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod209">NotClause</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EVENT_UN_OP_1&gt; &lt;LBRACE&gt; ( <A HREF="#prod211">EventGraphPattern</A> | <A HREF="#prod210">TimeBasedEvent</A> ) ( <A HREF="#prod211">EventGraphPattern</A> | <A HREF="#prod210">TimeBasedEvent</A> ) ( <A HREF="#prod211">EventGraphPattern</A> | <A HREF="#prod210">TimeBasedEvent</A> ) &lt;RBRACE&gt;</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EVENT_UN_OP_1&gt; &lt;LBRACE&gt; ( <A HREF="#prod211">EventClause</A> | <A HREF="#prod210">TimeBasedEvent</A> ) ( <A HREF="#prod211">EventClause</A> | <A HREF="#prod210">TimeBasedEvent</A> ) ( <A HREF="#prod211">EventClause</A> | <A HREF="#prod210">TimeBasedEvent</A> ) &lt;RBRACE&gt;</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod211">EventGraphPattern</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod211">EventClause</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EVENT&gt; <A HREF="#prod29">VarOrIRIref</A> &lt;LBRACE&gt; &lt;RBRACE&gt; ( <A HREF="#prod58">Filter</A> )?</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;EVENT&gt; <A HREF="#prod29">VarOrIRIref</A> &lt;LBRACE&gt; <A HREF="#prod212">EventGraphPattern</A> &lt;RBRACE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod212">EventGraphPattern</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod27">TriplesBlock</A> )? ( ( <A HREF="#prod63">OptionalGraphPattern</A> | <A HREF="#prod64">GroupOrUnionGraphPattern</A> | <A HREF="#prod58">Filter</A> ) ( &lt;DOT&gt; )? ( <A HREF="#prod27">TriplesBlock</A> )? )* )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod210">TimeBasedEvent</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;INTERVAL&gt; &lt;LPAREN&gt; &lt;INTEGER&gt; &lt;RPAREN&gt; ) | ( &lt;AT&gt; &lt;LPAREN&gt; &lt;INTEGER&gt; &lt;RPAREN&gt; ) )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;INTERVAL&gt; &lt;LPAREN&gt; <A HREF="#prod177">String</A> &lt;DT_PREFIX&gt; <A HREF="#prod179">PrefixedName</A> &lt;RPAREN&gt; )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod202">HistoricalEventQuery</A></TD>
