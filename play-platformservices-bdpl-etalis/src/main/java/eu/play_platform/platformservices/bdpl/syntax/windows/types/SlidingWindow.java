@@ -27,43 +27,15 @@ public class SlidingWindow extends Window{
 		v.visit(this);
 	}
 
-	public SlidingWindow(String value) {
+	public SlidingWindow(Duration duration) {
 		
 		logger = LoggerFactory.getLogger(SlidingWindow.class);
+		this.value = duration.getTimeInSeconds();
 
-		// Pars and store value.
-		final String PREFIX = "(\"";
-		final String POSTFIX = "\"^^xsd:duration";
-		try {
-			String tmp = value.substring(
-					value.indexOf(PREFIX) + PREFIX.length(),
-					value.lastIndexOf(POSTFIX));
-			DurationDV dv = new DurationDV();
-			XSDateTime dt = (XSDateTime) dv.getActualValue(tmp, null);
-			long durationInMillis = dt.getDuration().getTimeInMillis(
-					Calendar.getInstance());
-
-			this.value = durationInMillis / 1000 + "";
-		} catch (InvalidDatatypeValueException e) {
-			logger.error("It is not possible to pars window values. This is a bug in the parser implementation. {}", e.getMessage());
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public void visit(ElementVisitor v) {
 		v.visit(this);
-	}
-
-	@Override
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

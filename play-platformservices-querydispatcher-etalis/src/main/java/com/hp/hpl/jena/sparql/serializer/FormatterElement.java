@@ -60,6 +60,7 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.Duration;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
 
@@ -670,7 +671,7 @@ public class FormatterElement extends FormatterBase
 
 	@Override
 	public void visit(RelationalOperator relationalOperator) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -681,55 +682,61 @@ public class FormatterElement extends FormatterBase
 
 	@Override
 	public void visit(ElementEventBinOperator el) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(ElementFnAbsFilter elementFnAbsFilter) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(ElementData el) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(ElementNotOperator elementNotOperator) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(CountWindow countWindow) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(SlidingWindow slidingWindow) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(TumblingWindow tumblingWindow) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(DummyWindow dummyWindow) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(ElementBraceOperator elementBraceOperator) {
-		// TODO Auto-generated method stub
+		
+		
+	}
+
+	@Override
+	public void visit(Duration duration) {
+		
 		
 	}
     

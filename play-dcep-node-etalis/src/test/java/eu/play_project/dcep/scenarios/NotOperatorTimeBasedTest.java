@@ -19,7 +19,7 @@ import eu.play_project.dcep.tests.SimplePublishApiSubscriber;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 
 
-public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
+public class NotOperatorTimeBasedTest extends ScenarioAbstractTest {
 	private final Logger logger = LoggerFactory.getLogger(ScenarioIntelligentTransportTest.class);
 	
 	@Test
@@ -27,7 +27,7 @@ public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
 		String queryString;
 
 		// Get query.
-		queryString = loadSparqlQuery("patterns/BDPL-Query-NotOperatorEvent.eprq");
+		queryString = loadSparqlQuery("patterns/BDPL-Query-NotOperatorTime.eprq");
 		logger.debug("BDPL query: \n{}", queryString);
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
@@ -47,8 +47,8 @@ public class NotOperatorEventBasedTest extends ScenarioAbstractTest {
 		logger.info("Publish events");
 		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
 		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
-		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
+
+		delay();
 
 
 		// Wait

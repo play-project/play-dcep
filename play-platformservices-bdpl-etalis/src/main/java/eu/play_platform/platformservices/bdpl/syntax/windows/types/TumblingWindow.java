@@ -20,27 +20,9 @@ import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWind
  */
 public class TumblingWindow extends Window{
 	
-	public TumblingWindow(String value) {
-		
+	public TumblingWindow(Duration duration) {
 		logger = LoggerFactory.getLogger(TumblingWindow.class);
-		
-		// Pars and store value.
-		final String PREFIX = "(\"";
-		final String POSTFIX = "\"^^xsd:duration";
-		try {
-			String tmp = value.substring(
-					value.indexOf(PREFIX) + PREFIX.length(),
-					value.lastIndexOf(POSTFIX));
-			DurationDV dv = new DurationDV();
-			XSDateTime dt = (XSDateTime) dv.getActualValue(tmp, null);
-			long durationInMillis = dt.getDuration().getTimeInMillis(
-					Calendar.getInstance());
-
-			this.value = durationInMillis / 1000 + "";
-		} catch (InvalidDatatypeValueException e) {
-			logger.error("It is not possible to pars window values. This is a bug in the parser implementation. {}", e.getMessage());
-			e.printStackTrace();
-		}
+		this.value = duration.getTimeInSeconds();
 	}
 
 	@Override
@@ -52,17 +34,4 @@ public class TumblingWindow extends Window{
 	public void visit(ElementVisitor v) {
 		v.visit(this);
 	}
-
-	@Override
-	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean equalTo(Element el2, NodeIsomorphismMap isoMap) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

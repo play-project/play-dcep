@@ -49,6 +49,7 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.Duration;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
 
@@ -58,7 +59,7 @@ import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindo
  * @author sobermeier
  *
  */
-public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,  NodeValueVisitor {
+public class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,  NodeValueVisitor {
 	Logger logger;
 	StringBuffer ele;
 	// Test rdf('0.01','0.01',_L1,l1),rdf('0.1','0.1',_L2,l2),rdf('0.01','0.01',_B1,b1),rdf('0.1','0.1',_B2,b2),minus(_L2,_L1, _FilterVar1), abs(_FilterVar1, _FilterVar2), less(_FilterVar2, 0.1), minus(_B2,_B1, _FilterVar4), abs(_FilterVar4, _FilterVar5), less(_FilterVar5, 0.5)
@@ -282,33 +283,31 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 	}
 	@Override
 	public void visit(ElementNotOperator elementNotOperator) {
-		// TODO Auto-generated method stub
-		
+		logger.info("GenericVisitor visit: " + elementNotOperator.getClass().getName());
 	}
 	@Override
 	public void visit(CountWindow countWindow) {
-		// TODO Auto-generated method stub
-		
+		logger.info("GenericVisitor visit: " + countWindow.getClass().getName());
 	}
 	@Override
 	public void visit(SlidingWindow slidingWindow) {
-		// TODO Auto-generated method stub
-		
+		logger.info("GenericVisitor visit: " + slidingWindow.getClass().getName());
 	}
 	@Override
 	public void visit(TumblingWindow tumblingWindow) {
-		// TODO Auto-generated method stub
-		
+		logger.info("GenericVisitor visit: " + tumblingWindow.getClass().getName());
 	}
 	@Override
 	public void visit(DummyWindow dummyWindow) {
-		// TODO Auto-generated method stub
-		
+		logger.info("GenericVisitor visit: " + dummyWindow.getClass().getName());
 	}
 	@Override
 	public void visit(ElementBraceOperator elementBraceOperator) {
-		// TODO Auto-generated method stub
-		
+		logger.info("GenericVisitor visit: " + elementBraceOperator.getClass().getName());
+	}
+	@Override
+	public void visit(Duration duration) {
+		logger.info("GenericVisitor visit: " + duration.getClass().getName());
 	}
 	
 }

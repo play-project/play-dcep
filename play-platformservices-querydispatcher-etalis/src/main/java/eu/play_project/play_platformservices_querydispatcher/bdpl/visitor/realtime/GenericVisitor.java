@@ -58,6 +58,7 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.Duration;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
 
@@ -349,6 +350,10 @@ public class GenericVisitor implements ElementVisitor, NodeVisitor, ExprVisitor,
 	@Override
 	public void visit(ElementBraceOperator elementBraceOperator) {
 		logger.debug("Visit " + elementBraceOperator.getClass().getName());	
+	}
+	@Override
+	public void visit(Duration duration) {
+		logger.debug("Visit " + duration.getClass().getName());	
 	}
 
 }
