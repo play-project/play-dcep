@@ -1,2 +1,8 @@
-eu.play_project.platformservices.querydispatcher.query.transform
-eu.play_project.platformservices.querydispatcher.query.transform.util
+com.espertech.esper.example.transaction
+com.espertech.esper.example.transaction.sim
+eu.play_project.platformservices.querydispatcher.query.event
+eu.play_project.platformservices.querydispatcher.query.eventImpl.rdf.sesame
+eu.play_project.platformservices.querydispatcher.query.filter
+eu.play_project.platformservices.querydispatcher.query.simulation
+eu.play_project.platformservices.querydispatcher.query.translate
+eu.play_project.platformservices.querydispatcher.query.translate.util
