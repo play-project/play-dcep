@@ -289,11 +289,11 @@ Window WindowSize() : {Token t; Window win;}
  	<LPAREN>
 	t = < WINDOWSIZE >
 		(
-		  	< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(new Duration(t.image));}
+		  	< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(new ElementDuration(t.image));}
 			|
-			< WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(new Duration(t.image));}
+			< WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(new ElementDuration(t.image));}
 		)
-		<RPAREN>
+	<RPAREN>
 		
 	{return win;}
 }
@@ -2005,10 +2005,12 @@ Element EventClauseSingleEvent() : {Element eventClause = null; Element eventCla
 Element NotClause() : {Element start = null; Element end = null; Element not = null; Token t;}
 {
    < NOT >
-	< LPAREN >		start = EventClause()  	 < COMMA >		not = EventClause()     < COMMA >     	(     	  <LPAREN>
-     	  	t = < WINDOWSIZE > {not = new Duration(t.image);}
-     	  <RPAREN>
-     	)   < RPAREN >
+	< LPAREN >		start = EventClause()  	 < COMMA >		not = EventClause()     < COMMA >   	  	(
+   	  	  <LPAREN>   	  	  	t = < WINDOWSIZE > {end = new ElementDuration(t.image);}
+   	  	  <RPAREN>
+		| 
+   	  	  end = EventClause()
+  	 	)   < RPAREN >
    
    {return new ElementNotOperator(start, not, end);}
 }

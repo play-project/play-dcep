@@ -1,5 +1,6 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -11,7 +12,12 @@ public class EleEventPattern {
 	
 	private String methodName;
 	private List<String> methodImpl;
+	private String triggerCode;
 	
+	public EleEventPattern() {
+		methodName = "";
+		methodImpl = new LinkedList<String>();
+	}
 	public String getMethodName() {
 		return methodName;
 	}
@@ -26,6 +32,14 @@ public class EleEventPattern {
 	
 	public void setMethodImpl(List<String> methodImpl) {
 		this.methodImpl = methodImpl;
+	}
+
+	public String getTriggerCode() {
+		return triggerCode;
+	}
+
+	public void setTriggerCode(String triggerCode) {
+		this.triggerCode = triggerCode;
 	}
 
 }

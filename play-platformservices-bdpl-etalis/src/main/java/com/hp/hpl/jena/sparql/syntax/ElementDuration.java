@@ -1,4 +1,4 @@
-package eu.play_platform.platformservices.bdpl.syntax.windows.types;
+package com.hp.hpl.jena.sparql.syntax;
 
 import java.util.Calendar;
 
@@ -9,20 +9,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
+
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
 
 /**
  * Represents a "xsd:duration element."
  * @author sobermeier
  *
  */
-public class Duration extends Element {
+public class ElementDuration extends Element {
 	
 	private Logger logger;
 	private String timeInSeconds;
 	
-	public Duration(String value) {
+	public ElementDuration(String value) {
 		
 		logger = LoggerFactory.getLogger(SlidingWindow.class);
 

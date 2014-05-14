@@ -9,6 +9,7 @@ import org.apache.xerces.xs.datatypes.XSDateTime;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
@@ -27,7 +28,7 @@ public class SlidingWindow extends Window{
 		v.visit(this);
 	}
 
-	public SlidingWindow(Duration duration) {
+	public SlidingWindow(ElementDuration duration) {
 		
 		logger = LoggerFactory.getLogger(SlidingWindow.class);
 		this.value = duration.getTimeInSeconds();

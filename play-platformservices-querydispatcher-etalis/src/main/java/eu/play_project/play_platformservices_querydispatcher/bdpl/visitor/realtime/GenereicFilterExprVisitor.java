@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementBind;
 import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementData;
 import com.hp.hpl.jena.sparql.syntax.ElementDataset;
+import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
@@ -49,7 +50,6 @@ import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
-import eu.play_platform.platformservices.bdpl.syntax.windows.types.Duration;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
 
@@ -306,7 +306,7 @@ public class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,  
 		logger.info("GenericVisitor visit: " + elementBraceOperator.getClass().getName());
 	}
 	@Override
-	public void visit(Duration duration) {
+	public void visit(ElementDuration duration) {
 		logger.info("GenericVisitor visit: " + duration.getClass().getName());
 	}
 	

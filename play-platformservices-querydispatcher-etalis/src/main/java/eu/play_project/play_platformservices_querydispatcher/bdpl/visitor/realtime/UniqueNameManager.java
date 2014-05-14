@@ -171,6 +171,14 @@ public class UniqueNameManager {
 		return "CEID" + ceid;
 	}
 	
+	/**
+	 * This event can be produced by the engine and is related to the current triple store.
+	 * @return Event name for a virtual event.
+	 */
+	public String getVirtualEvent() {
+		return "virtualEvent" + triplestoreVariable;
+	}
+	
 	public UniqueNameManager reset() {
 		uniqueNameManger = new UniqueNameManager();
 		return uniqueNameManger;

@@ -45,13 +45,14 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private Iterator<ElementCep> eventQueryIter;
 	private Iterator<String> binOperatorIter;
 	private LinkedList<String> rdfDbQueries;
+	private LinkedList<String> triggerCode;
 	QueryTemplate queryTemplate;
 	private String ele;
 
 	@Override
 	public void generateQuery(Query inQuery) {
+		triggerCode = new LinkedList<String>();
 		UniqueNameManager uniqueNameManager = getVarNameManager();
-		
 		uniqueNameManager.setWindowTime(inQuery.getWindow().getValue());
 		
 		// Instantiate visitors.
@@ -98,8 +99,10 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		
 		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
 		elePattern += dbQuery.getMethodName();
+		if (dbQuery.getTriggerCode() != null) {
+			triggerCode.add(dbQuery.getTriggerCode());
+		}
 		rdfDbQueries.addAll(dbQuery.getMethodImpl());
-		// FIXME sobermeier
 
 		while(binOperatorIter.hasNext()){
 			getVarNameManager().processNextEvent();
@@ -113,6 +116,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
 			elePattern += operator;
 			elePattern += dbQuery.getMethodName();
+			triggerCode.add(dbQuery.getTriggerCode());
 			rdfDbQueries.addAll(dbQuery.getMethodImpl());
 		}
 		
@@ -137,6 +141,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	@Override
 	public String getEle() {
 		return ele;
+	}
+
+	@Override
+	public List<String> getTriggerCode() {
+		
+		return triggerCode;
 	}
 
 }
