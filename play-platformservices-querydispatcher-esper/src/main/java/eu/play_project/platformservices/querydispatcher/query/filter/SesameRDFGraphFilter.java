@@ -48,13 +48,14 @@ public class SesameRDFGraphFilter {
 					SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
 					Model model = eventModel.getModel();
 					if(model != null){
-						Iterator<Statement> itr = model.iterator();
+						con.add(model, new Resource [0]);
+						/*Iterator<Statement> itr = model.iterator();
 						while(itr.hasNext()){
 							Statement st = itr.next();
 							//XXX deep copy statement, so that events are not effected???
 							con.add(st, new Resource [0]);
 								System.out.println("A: "+st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
-						}
+						}*/
 						
 					}
 				}

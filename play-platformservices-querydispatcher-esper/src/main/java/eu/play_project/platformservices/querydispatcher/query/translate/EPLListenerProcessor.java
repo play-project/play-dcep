@@ -23,6 +23,7 @@ import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
+import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
 
 /**
@@ -315,9 +316,9 @@ public class EPLListenerProcessor {
 		
 		private String unionGraphs(List<String> graphs){
 			StringBuffer ret = new StringBuffer();
-			ret.append(String.format(EPLConstants.SPARQL_CLAUSE, graphs.get(0)));
+			ret.append(String.format(BDPLConstants.SPARQL_CLAUSE, graphs.get(0)));
 			for(int i = 1; i < graphs.size(); i++){
-				ret.append(" "+EPLConstants.SPARQL_UNION+" "+String.format(EPLConstants.SPARQL_CLAUSE, graphs.get(i)+" "));
+				ret.append(" "+EPLConstants.SPARQL_UNION+" "+String.format(BDPLConstants.SPARQL_CLAUSE, graphs.get(i)+" "));
 			}
 			
 			return ret.toString();
@@ -327,7 +328,7 @@ public class EPLListenerProcessor {
 			StringBuffer query = new StringBuffer();
 			query.append(prolog+" \n");
 			query.append(construct+" \n");
-			query.append(String.format(EPLConstants.SPARQL_WHERE_CLAUSE, graph));
+			query.append(String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, graph));
 			return query.toString();
 		}
 	}

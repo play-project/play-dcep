@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.Dataset;
+import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.algebra.TupleExpr;
 import org.openrdf.query.parser.ParsedBooleanQuery;
 import org.openrdf.query.parser.ParsedGraphQuery;
@@ -32,6 +33,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTSelectQuery;
 import org.openrdf.query.parser.bdpl.ast.ParseException;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
+import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPException;
@@ -42,7 +44,7 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 import eu.play_project.platformservices.querydispatcher.query.translate.EPLTranslationProcessor;
-import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
+
 
 /**
  * @author ningyuan 
@@ -74,48 +76,110 @@ public class SimMain {
 				System.out.print("> ");
 				cmd = bin.readLine().trim();
 				
-				if(cmd.equals("start")){
-					synchronized(lock){
-						if(plugin == null){
-							String engineURI = "TestEspEngine";
-							
-							 // Configure engine with event names to make the statements more readable.
-					        // This could also be done in a configuration file.
-					        Configuration configuration = new Configuration();
-					        //configuration.addPlugInPatternGuard("bdpl", "andguard", "ningyuan.pan.query.parser.bdpl.guard.AndGuardFactory");
-					        //configuration.addPlugInPatternObserver("bdpl", "andobs", "ningyuan.pan.query.parser.bdpl.guard.AndObserverFactory");
-					        
-					        /*configuration.addEventType("RDFEvent1", Event1.class.getName());
-					        configuration.addEventType("RDFEvent2", Event2.class.getName());
-					        configuration.addEventType("RDFEvent3", Event3.class.getName());*/
-					        
-					        epService = EPServiceProviderManager.getProvider(engineURI, configuration);
-					        System.out.println("[Engine is started]");
-							plugin = new TransactionSamplePlugin();
-							plugin.postInitialize(engineURI, epService);
-							System.out.println("[Event Feeding is started]");
-						}
-						else{
-							System.out.println("[Engine is already started]");
+				if(cmd.startsWith("start")){
+					String [] as = cmd.split("\\s+");
+					
+					if(as.length > 1){
+						synchronized(lock){
+							if(epService != null){
+								try{
+									int i = Integer.valueOf(as[1]);
+									EPStatementEntry entry = stmts.get(i);
+									if(entry != null){
+										entry.getStatement().start();
+										System.out.println("[Statement "+as[1]+" is started]");
+										
+									}
+									else{
+										System.out.println("[No statement with name "+as[1]+"]");
+										
+									}
+								}
+								catch(NumberFormatException e){
+									System.out.println("[No statement with name "+as[1]+"]");
+									continue;
+								}
+							}
+							else{
+								System.out.println("[Engine is not started]");
+								
+							}
 						}
 					}
-						
-				}
-				else if (cmd.equals("stop")){
-					synchronized(lock){
-						if(plugin != null){
-							stmts.clear();
-							plugin.destroy();
-							plugin = null;
-							epService = null;
+					else{
+						synchronized(lock){
+							if(epService == null){
+								String engineURI = "TestEspEngine";
+								
+								 // Configure engine with event names to make the statements more readable.
+						        // This could also be done in a configuration file.
+						        Configuration configuration = new Configuration();
+						        //configuration.addPlugInPatternGuard("bdpl", "andguard", "ningyuan.pan.query.parser.bdpl.guard.AndGuardFactory");
+						        //configuration.addPlugInPatternObserver("bdpl", "andobs", "ningyuan.pan.query.parser.bdpl.guard.AndObserverFactory");
+						        
+						        /*configuration.addEventType("RDFEvent1", Event1.class.getName());
+						        configuration.addEventType("RDFEvent2", Event2.class.getName());
+						        configuration.addEventType("RDFEvent3", Event3.class.getName());*/
+						        
+						        epService = EPServiceProviderManager.getProvider(engineURI, configuration);
+						        System.out.println("[Engine is started]");
+								plugin = new TransactionSamplePlugin();
+								plugin.postInitialize(engineURI, epService);
+								System.out.println("[Event Feeding is started]");
+							}
+							else{
+								System.out.println("[Engine is already started]");
+							}
 						}
-						else{
-							System.out.println("[Engine is not started]");
+					}
+				}
+				else if (cmd.startsWith("stop")){
+					String [] as = cmd.split("\\s+");
+					
+					if(as.length > 1){
+						synchronized(lock){
+							if(epService != null){
+								try{
+									int i = Integer.valueOf(as[1]);
+									EPStatementEntry entry = stmts.get(i);
+									if(entry != null){
+										entry.getStatement().stop();
+										System.out.println("[Statement "+as[1]+" is stopped]");
+										
+									}
+									else{
+										System.out.println("[No statement with name "+as[1]+"]");
+										
+									}
+								}
+								catch(NumberFormatException e){
+									System.out.println("[No statement with name "+as[1]+"]");
+									continue;
+								}
+							}
+							else{
+								System.out.println("[Engine is not started]");
+								
+							}
+						} 
+					}
+					else{
+						synchronized(lock){
+							if(epService != null){
+								stmts.clear();
+								plugin.destroy();
+								plugin = null;
+								epService = null;
+								System.out.println("[Engine is stopped]");
+							}
+							else{
+								System.out.println("[Engine is not started]");
+							}
 						}
 					}
 				}
 				else if(cmd.equals("add")){
-					System.out.println("[Please input a BDPL with an EOF ending]");
+					System.out.println("[Please input a BDPL ending with 2 enters]");
 					System.out.print("> ");
 					
 					String query="";
@@ -195,12 +259,19 @@ public class SimMain {
 								System.out.println("\n[Supplied string is not a query operation]");
 							}
 						}
-						catch (ParseException e) {
+						catch (ParseException e){
 							System.out.println("\n["+e.getMessage()+"]");
+							continue;	
 						}
-						catch (TokenMgrError e) {
+						catch (VisitorException e) {
 							System.out.println("\n["+e.getMessage()+"]");
+							continue;
 						}
+						catch (MalformedQueryException e) {
+							System.out.println("\n["+e.getMessage()+"]");
+							continue;
+						}
+						
 						
 						synchronized(lock){
 							if(epService != null){
@@ -217,10 +288,27 @@ public class SimMain {
 						}
 					}
 				}
+				else if(cmd.startsWith("rem")){
+					String [] as = cmd.split("\\s+");
+					
+					if(as.length > 1){
+						try{
+							int i = Integer.valueOf(as[1]);
+							stmts.remove(i);
+						}
+						catch(NumberFormatException e){
+							System.out.println("[No statement with name "+as[1]+"]");
+							continue;
+						}
+					}
+					else{
+						System.out.println("[No statement name]");
+					}
+				}
 				else if(cmd.equals("exit")){
 					
 					synchronized(lock){
-						if(plugin != null){
+						if(epService != null){
 							stmts.clear();
 							plugin.destroy();
 							plugin = null;
@@ -235,36 +323,32 @@ public class SimMain {
 					
 					if(as.length > 1){
 						if(as[1].equals("-s")){
-							if(epService != null){
+							
 								if(as.length > 2){
-									if(as[2].equals("*")){
-										Set<Integer> keys = stmts.keySet();
-										for(Integer key : keys){
-											EPStatementEntry entry = stmts.get(key);
-											System.out.println("\nStatement "+key+"\n"+entry.getEpl());
+									try{
+										int i = Integer.valueOf(as[2]);
+										EPStatementEntry entry = stmts.get(i);
+										if(entry != null){
+											System.out.println(i+":\n"+entry.getEpl());
 										}
-									}
-									else{
-										try{
-											int i = Integer.valueOf(as[2]);
-											EPStatementEntry entry = stmts.get(i);
-											if(entry != null){
-												System.out.println("\nStatement "+i+"\n"+entry.getEpl());
-											}
-											else{
-												System.out.println("[No statement with name "+as[2]+"]");
-											}
-										}
-										catch(NumberFormatException e){
+										else{
 											System.out.println("[No statement with name "+as[2]+"]");
 										}
 									}
+									catch(NumberFormatException e){
+										System.out.println("[No statement with name "+as[2]+"]");
+										continue;
+									}
 								}
-							}
-							else{
-								System.out.println("[Engine is not started]");
-							}
+								else{
+									Set<Integer> keys = stmts.keySet();
+									for(Integer key : keys){
+										EPStatementEntry entry = stmts.get(key);
+										System.out.println(key+":\n"+entry.getEpl());
+									}
+								}
 						}
+							
 						else if(as[1].equals("-e")){
 							if(epService != null){
 								EventType etypes[] = epService.getEPAdministrator().getConfiguration().getEventTypes();
@@ -277,9 +361,9 @@ public class SimMain {
 							}
 						}
 					}
-					
-					System.out.println("[:D]");
-					
+					else{
+						System.out.println("[:D]");
+					}
 				}
 			}
 			catch(EPException epx){

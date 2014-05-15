@@ -41,13 +41,5 @@ public class EPLConstants {
 	
 	public static final String FILTER_RDF = "eu.play_project.platformservices.querydispatcher.query.filter.SesameRDFGraphFilter.evaluate(\"%s\"%s)";
 	
-	public static final String SPARQL_ASK_QUERY = "ASK WHERE { %s }";
-	
-	public static final String SPARQL_OPTIONAL_CLAUSE = "OPTIONAL { %s }";
-	
-	public static final String SPARQL_WHERE_CLAUSE = "WHERE { %s }";
-	
-	public static final String SPARQL_CLAUSE = "{ %s }";
-	
 	public static final String SPARQL_UNION = "UNION";
 }

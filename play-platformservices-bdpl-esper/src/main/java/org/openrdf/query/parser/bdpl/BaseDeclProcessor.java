@@ -122,5 +122,6 @@ public class BaseDeclProcessor {
 			node.setBaseURI(parsedBaseURI.toString());
 			return super.visit(node, data);
 		}
+
 	}
 }

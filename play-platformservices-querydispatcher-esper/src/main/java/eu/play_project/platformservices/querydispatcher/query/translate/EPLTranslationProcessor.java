@@ -45,6 +45,7 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
+import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLTranslateException;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLTranslateUtil;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
@@ -185,6 +186,8 @@ public class EPLTranslationProcessor {
 				
 			return ret;
 		}
+		
+		
 		
 		@Override
 		public Object visit(ASTRealTimeEventQuery node, Object data)
@@ -551,7 +554,9 @@ public class EPLTranslationProcessor {
 		private String getEventType(String prolog, String sparql) throws BDPLTranslateException{
 			
 			try{
-				ASTQueryContainer qc = SyntaxTreeBuilder.parseQuery(prolog+String.format(EPLConstants.SPARQL_ASK_QUERY, sparql));
+				String ret = null;
+				
+				ASTQueryContainer qc = SyntaxTreeBuilder.parseQuery(prolog+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparql));
 				StringEscapesProcessor.process(qc);
 				BaseDeclProcessor.process(qc, null);
 				PrefixDeclProcessor.process(qc);
@@ -561,21 +566,37 @@ public class EPLTranslationProcessor {
 				TupleExpr tupleExpr = (TupleExpr)qc.jjtAccept(tupleExprBuilder, null);
 				
 				List<StatementPattern> statementPatterns = StatementPatternCollector.process(tupleExpr);
+				boolean hasType = false, hasStream = false;
 				for(StatementPattern sp : statementPatterns){
-					if(sp.getPredicateVar().getValue().equals(RDF.TYPE)){
-						Value val = sp.getObjectVar().getValue();
-						if(val != null){
-							String ret = val.stringValue();
-							ret = ret.replaceAll("[^a-zA-Z0-9]", "");
-							return ret;
+					if(!hasType){
+						if(sp.getPredicateVar().getValue().equals(RDF.TYPE)){
+							Value val = sp.getObjectVar().getValue();
+							if(val != null){
+								ret = val.stringValue();
+								ret = ret.replaceAll("[^a-zA-Z0-9]", "");
+								hasType = true;
+							}
+							else{
+								throw new BDPLTranslateException("Object of rdf:type has no value");
+							}
 						}
-						else{
-							throw new BDPLTranslateException("Object of rdf:type has no value");
+					}
+					if(!hasStream){
+						if(sp.getPredicateVar().getValue().stringValue().equals(BDPLConstants.URI_STREAM)){
+							hasStream = true;
 						}
 					}
 				}
 				
-				throw new BDPLTranslateException("Event clause contains no rdf:type");
+				if(!hasType){
+					throw new BDPLTranslateException("Event clause contains no rdf:type");
+				}
+				else if(!hasStream){
+					throw new BDPLTranslateException("Event clause contains no "+BDPLConstants.URI_STREAM);
+				}
+				else{
+					return ret;
+				}
 			}
 			catch (VisitorException e){
 				throw new BDPLTranslateException(e.getMessage());
@@ -1709,7 +1730,7 @@ public class EPLTranslationProcessor {
 							sparqlText.append(term.getSparqlText());
 							
 							//System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
+							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							
 							eParams.delete(0, eParams.length());
 						}
@@ -1805,7 +1826,7 @@ public class EPLTranslationProcessor {
 						
 						sparqlText.append(term.getSparqlText());
 						//System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-						ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
+						ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 						
 						eParams.delete(0, eParams.length());
 					}
@@ -1888,7 +1909,7 @@ public class EPLTranslationProcessor {
 									
 									int se = sparqlText.length();
 									sparqlText.append(not.getSparqlText());
-									interval += ("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+"}) ");
+									interval += ("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+"}) ");
 									sparqlText.delete(se, sparqlText.length());
 									
 									nIndexs[sIndex] = nIndex;
@@ -2005,11 +2026,11 @@ public class EPLTranslationProcessor {
 							}
 							
 							sparqlOptText = new StringBuffer(sparqlText);
-							sparqlOptText.append(String.format(EPLConstants.SPARQL_OPTIONAL_CLAUSE, term.getSparqlText()));
+							sparqlOptText.append(String.format(BDPLConstants.SPARQL_OPTIONAL_CLAUSE, term.getSparqlText()));
 							
 							sparqlText.append(term.getSparqlText());
 							//System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
+							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							
 							eParams.delete(0, eParams.length());
 						}
@@ -2060,7 +2081,7 @@ public class EPLTranslationProcessor {
 							int se = sparqlOptText.length();
 							sparqlOptText.append(not.getSparqlText());
 							//System.out.print("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
-							ret.append("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlOptText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+"}) ");
+							ret.append("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlOptText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+"}) ");
 							sparqlOptText.delete(se, sparqlOptText.length());
 							
 							nIndexs[sIndex] = nIndex;

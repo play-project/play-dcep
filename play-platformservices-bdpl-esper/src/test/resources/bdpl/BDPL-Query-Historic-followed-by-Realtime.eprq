@@ -1,0 +1,22 @@
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd:       <http://events.event-processing.org/types/>
+PREFIX :       <http://events.event-processing.org/types/>
+ CONSTRUCT{
+    :e rdf:type :Temperature .
+    :e :stream <http://streams.event-processing.org/ids/Temperatures#stream>.
+    :e :current    ?temperature.
+    :e :date ?pub_date 
+ }
+ WHERE{
+ 	EVENT ?id1 {
+   		?e1 rdf:type :Temperature .
+   		?e1 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+   		?e1 :current ?temperature .
+ 	}
+ 	GRAPH ?id {
+   		?e1 rdf:type :Temperature .
+   		?e1 :current ?temperature .
+   		?e2 :date ?pub_date 
+  	}
+ }
+  

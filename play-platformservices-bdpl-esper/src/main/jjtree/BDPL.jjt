@@ -478,7 +478,8 @@ void ProjectionElem() :
     <LPAREN> Expression() <AS> Var() <RPAREN>
 }
 
-// ningyuan changed: replace WhereClause with BDPLWhereClause
+
+// ningyuan changed: 1. add ArrayClause() 2. replace WhereClause() with BDPLWhereClause()
 
 void ConstructQuery() :
 {}
@@ -495,7 +496,6 @@ void Construct() :
 {}
 {	
 	<CONSTRUCT> [ LOOKAHEAD(2) ConstructClause() ]
-	
 }
 
 void ConstructClause() #void :
