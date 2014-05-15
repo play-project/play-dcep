@@ -144,7 +144,7 @@ public class ComplexPartEleGenerator {
 
 		// Schema "dbQuery" + patternId + idForEvent
 		dbQueryDecl.append("'dbQuery_" + unquoteFromProlog(patternId) + "_e" + l + "'(");
-		dbQueryDecl.append(getVarNameManager().getTriplestoreVariable() + ", "); // Mapping
+		dbQueryDecl.append(getVarNameManager().getTriplestoreVariable()); // Mapping
 																			     // between
 																			     // event
 																			     // and
@@ -152,11 +152,9 @@ public class ComplexPartEleGenerator {
 																			     // data.
 		Iterator<String> iter = v.getVariables().iterator();
 		while (iter.hasNext()) {
-			dbQueryDecl.append(iter.next());
+			dbQueryDecl.append(", " + iter.next());
 			// Decide if it is the last variable or end of decl.
-			if (iter.hasNext()) {
-				dbQueryDecl.append(", ");
-			} else {
+			if (!iter.hasNext()) {
 				dbQueryDecl.append(")");
 			}
 		}

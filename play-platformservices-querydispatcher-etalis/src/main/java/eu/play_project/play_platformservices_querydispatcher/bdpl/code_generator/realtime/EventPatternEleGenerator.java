@@ -3,6 +3,7 @@ package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generato
 import static eu.play_project.dcep.distributedetalis.utils.PrologHelpers.unquoteFromProlog;
 import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +22,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 /**
- * Generate ele representation of BDPL event pattern.
+ * Generate ELE representation of BDPL event pattern.
  * @author sobermeier
  *
  */
@@ -32,10 +33,12 @@ public class EventPatternEleGenerator {
 	String rdfDbQuerie;
 	VariableTypeManager varTypeManger;
 	String executeCode; // Code will be executed in where clause.
+	List<String> virtualPatterns;
 	
 	
 	public EleEventPattern generateEle(Element eventGraph, String patternId, VariableTypeManager varTypeManger, String executeCode) {
 		EleEventPattern pattern = new EleEventPattern();
+		virtualPatterns = new ArrayList<String>();
 		String ele = "";
 		this.patternId = patternId;
 		this.eventGraph = eventGraph;

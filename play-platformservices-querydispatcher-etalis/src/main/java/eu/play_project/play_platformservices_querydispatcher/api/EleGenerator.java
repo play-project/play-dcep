@@ -10,5 +10,6 @@ public interface EleGenerator {
 	public void generateQuery(Query inQuery); 
 	public String getEle();
 	public QueryTemplate getQueryTemplate();
-	public List<String> getRdfDbQueries();	
+	public List<String> getRdfDbQueries();
+	public List<String> getTriggerCode();
 }

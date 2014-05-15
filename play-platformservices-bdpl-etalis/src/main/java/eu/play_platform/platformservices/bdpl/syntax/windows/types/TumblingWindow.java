@@ -8,6 +8,7 @@ import org.apache.xerces.xs.datatypes.XSDateTime;
 import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
@@ -20,7 +21,7 @@ import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWind
  */
 public class TumblingWindow extends Window{
 	
-	public TumblingWindow(Duration duration) {
+	public TumblingWindow(ElementDuration duration) {
 		logger = LoggerFactory.getLogger(TumblingWindow.class);
 		this.value = duration.getTimeInSeconds();
 	}

@@ -41,7 +41,8 @@ public class BdplTest {
 				
 		for (String fileName : new String[] {
 				"BDPL-Query-miltiple-bin-operators.eprq",
-				"BDPL-Query-NotOperator.eprq",
+				"BDPL-Query-NotOperatorEvent.eprq",
+				"BDPL-Query-NotOperatorTime.eprq",
 				"BDPL-Query-HistoricSyntax.eprq",
 				"BDPL-Query-nested-events-2.eprq",
 				"BDPL-Query-nested-events.eprq",

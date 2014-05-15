@@ -182,6 +182,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);
 		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
+		qd.setTriggerCode(eleGenerator.getTriggerCode());
 		
 		BdplQuery bdpl = BdplQuery.builder()
 				.details(qd)
@@ -238,7 +239,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);
 		query.getWindow().accept(windowVisitor);
 		
-		// Check if id is alredy used.
+		// Check if id is already used.
 		if (dcepManagmentApi != null && dcepManagmentApi.getRegisteredEventPatterns().containsKey(queryId)) {
 			throw new QueryDispatchException("Query ID is already used: " + queryId);
 		}

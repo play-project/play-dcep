@@ -9,6 +9,7 @@ import com.hp.hpl.jena.sparql.expr.ExprFunction1;
 import com.hp.hpl.jena.sparql.expr.ExprFunction2;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
@@ -54,6 +55,11 @@ public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 			tp.getPredicate().visitWith(this);
 			tp.getObject().visitWith(this);
 		}
+	}
+	
+	@Override
+	public void visit(ElementDuration el) {
+		vars = new HashSet<String>();
 	}
 	
 	@Override
