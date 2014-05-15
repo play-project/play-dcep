@@ -20,6 +20,7 @@ import eu.play_platform.platformservices.bdpl.VariableTypes;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.data_structure.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CountEventsVisitor;
@@ -96,10 +97,12 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			complexEventIdCode += ",";
 			complexEventIdCode += GenerateCEID();
 		}
-		
+
 		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
 		elePattern += dbQuery.getMethodName();
+		System.out.println("\n\n\n\n FFFFFFFFFFFFFFFF" + dbQuery.getTriggerCode());
 		if (dbQuery.getTriggerCode() != null) {
+			System.out.println("\n\n\n\n FFFFFFFFFFFFFFFF");
 			triggerCode.add(dbQuery.getTriggerCode());
 		}
 		rdfDbQueries.addAll(dbQuery.getMethodImpl());
@@ -116,6 +119,8 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
 			elePattern += operator;
 			elePattern += dbQuery.getMethodName();
+			System.out.println("\n\n\n\n FFFFFFFFFFFFFFFF 222222222");
+
 			triggerCode.add(dbQuery.getTriggerCode());
 			rdfDbQueries.addAll(dbQuery.getMethodImpl());
 		}

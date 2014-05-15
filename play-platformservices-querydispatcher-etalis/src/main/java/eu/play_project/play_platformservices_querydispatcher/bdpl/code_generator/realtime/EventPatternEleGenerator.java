@@ -12,6 +12,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.data_structure.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.CollectVariablesInTriplesAndFilterVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EqualizeEventIdVariableWithTriplestoreId;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventTypeVisitor;
@@ -52,6 +53,9 @@ public class EventPatternEleGenerator {
 			String code = notOperatorEleGenerator.getEle();
 			pattern.setMethodName(code);
 			pattern.setMethodImpl(notOperatorEleGenerator.getMethodImpl());
+			pattern.setTriggerCode(notOperatorEleGenerator.getTriggerPattern());
+			System.out.println("\n\n\ndd " + notOperatorEleGenerator.getTriggerPattern() + "...................");
+			virtualPatterns.add(pattern.getTriggerCode());
 		} else {
 			ele += SimpleEventPattern(eventGraph, executeCode);
 		

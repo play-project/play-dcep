@@ -82,7 +82,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 	@Override
 	public void outputEvent(EtalisEvent event) {
-
+System.out.println(event);
 		try {
 			List<Quadruple> quadruples = this.getEventData(engine, event);
 					 

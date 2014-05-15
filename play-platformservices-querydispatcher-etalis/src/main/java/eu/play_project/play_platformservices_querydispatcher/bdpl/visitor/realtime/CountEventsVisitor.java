@@ -27,6 +27,11 @@ public class CountEventsVisitor extends GenericVisitor {
 	}
 	
 	@Override
+	public void visit(ElementDuration el) {
+		numberOfEvents++;
+	}
+	
+	@Override
 	public void visit(ElementBraceOperator el) {
 		el.getSubElements().visit(this);
 	}

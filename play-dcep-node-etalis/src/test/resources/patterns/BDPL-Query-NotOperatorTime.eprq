@@ -15,7 +15,6 @@ WHERE {
 		EVENT ?id1 {
 			?e1 rdf:type :BidRequest .
 			?e1 :stream <http://streams.event-processing.org/ids/ffd#stream> .
-			?e1 :driver ?drivers .
 		},
 		EVENT ?id2 {
 			?e2 rdf:type :DeliveryBid .
@@ -25,6 +24,6 @@ WHERE {
 			?e2 :driver ?bider .
 			?e2 :committedPickupTime ?time .
 		},
-		("PT2M"^^xsd:duration)
+		("PT1S"^^xsd:duration)
 	)
 }

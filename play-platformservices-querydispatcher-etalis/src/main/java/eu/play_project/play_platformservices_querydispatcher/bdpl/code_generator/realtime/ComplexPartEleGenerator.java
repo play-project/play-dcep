@@ -36,7 +36,7 @@ public class ComplexPartEleGenerator {
 		String ele = "";
 		
 		ele += Complex(query);
-		//ele += "'http://events.event-processing.org/types/NoBiddersAlert'(abc, cba)";
+		ele = "'http://events.event-processing.org/types/NoBiddersAlert'(abc, 123)";
 		return ele;
 	}
 	
@@ -54,7 +54,7 @@ public class ComplexPartEleGenerator {
 		elePattern += DecrementReferenceCounter();
 		elePattern += ", constructResultIsNotEmpty(" + getVarNameManager().getCeid() + ")";
 		getVarNameManager().resetTriplestoreVariable();
-		elePattern += ")";
+		elePattern += "))";
 		
 		return elePattern;
 	}
@@ -154,7 +154,9 @@ public class ComplexPartEleGenerator {
 		while (iter.hasNext()) {
 			dbQueryDecl.append(", " + iter.next());
 			// Decide if it is the last variable or end of decl.
-			if (!iter.hasNext()) {
+			if (iter.hasNext()) {
+				dbQueryDecl.append(", ");
+			} else {
 				dbQueryDecl.append(")");
 			}
 		}

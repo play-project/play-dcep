@@ -10,7 +10,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
-import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleEventPattern;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.data_structure.EleEventPattern;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EventPatternEleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
@@ -22,7 +22,7 @@ import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeM
 public class NotOperatorEleGenerator extends GenericVisitor {
 	String executeCode; // Code will be executed after end event appeared. E.g. to generate complex event id.
 	List<String> methodImpl;
-	List<String> triggerPattern;
+	String triggerPattern;
 	VariableTypeManager vtm;
 	String patternId;
 	String ele;
@@ -30,7 +30,7 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 	public NotOperatorEleGenerator(VariableTypeManager vtm, String patternId, String executeCode) {
 		this.executeCode = executeCode;
 		this.methodImpl = new LinkedList<String>();
-		this.triggerPattern = new LinkedList<String>();
+		this.triggerPattern = "";
 		this.patternId = patternId;
 		this.vtm = vtm;
 		ele = "";
@@ -51,21 +51,34 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 		methodImpl.addAll(pattern.getMethodImpl());
 		triggerEvent = pattern.getMethodName();
 		code.append(pattern.getMethodName());
-//		code.append("'SEQ'");
-//		//getVarNameManager().processNextEvent();
-//		pattern = codeGenerator.generateEle(elementNotOperator.getEnd(), patternId, vtm, executeCode);
-//		methodImpl.addAll(pattern.getMethodImpl());
-//		code.append(pattern.getMethodName());
-//		code.append(") 'cnot' (");
-//		getVarNameManager().processNextEvent();
-//
-//		NotEventEleGenerator notEventEleGenerator = new NotEventEleGenerator();
-//		pattern =  notEventEleGenerator.generate(elementNotOperator.getNot(), triggerEvent);
-//
-//		methodImpl.addAll(pattern.getMethodImpl());
-//		triggerPattern.add(pattern.getTriggerCode());
-//		code.append(pattern.getMethodName());
-//		code.append(")");
+		code.append(" 'SEQ' ");
+		
+		getVarNameManager().processNextEvent();
+		
+		
+		if (elementNotOperator.getEnd() instanceof ElementDuration) {
+			// Set virtual event in main pattern.
+			code.append(getVarNameManager().getVirtualEvent());
+			
+			// Generate code to fire virtual event.
+			NotEventEleGenerator notEventEleGenerator = new NotEventEleGenerator();
+			pattern =  notEventEleGenerator.generate(elementNotOperator.getEnd(), getVarNameManager().getVirtualEvent());
+			System.out.println("\n\n\n\n\n ........................h.. " + pattern.getTriggerCode());
+			triggerPattern = pattern.getTriggerCode();
+		} else {
+			pattern = codeGenerator.generateEle(elementNotOperator.getEnd(), patternId, vtm, executeCode);
+			methodImpl.addAll(pattern.getMethodImpl());
+			code.append(pattern.getMethodName());
+		}
+		
+		code.append(") 'cnot' (");
+		getVarNameManager().processNextEvent();
+
+		NotEventEleGenerator notEventEleGenerator = new NotEventEleGenerator();
+		pattern =  notEventEleGenerator.generate(elementNotOperator.getNot(), triggerEvent);
+		methodImpl.addAll(pattern.getMethodImpl());
+		code.append(pattern.getMethodName());
+		code.append(")");
 		
 		ele = code.toString();
 	}
@@ -102,7 +115,8 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 		
 		@Override
 		public void visit(ElementDuration duration) {
-			pattern.setTriggerCode(("dc <- " + triggerEvent + "WHERE(triggerEventWithDelay("+ getVarNameManager().getVirtualEvent() + ", " + duration.getTimeInSeconds() + "))"));
+			System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr \n\n\n");
+			pattern.setTriggerCode(("dc <- " + triggerEvent + " 'WHERE'(triggerEventWithDelay("+ getVarNameManager().getVirtualEvent() + ", " + duration.getTimeInSeconds() + "))"));
 		}
 		
 		@Override
@@ -112,6 +126,10 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 			pattern.setMethodImpl(patternLocal.getMethodImpl());
 			pattern.setMethodName(patternLocal.getMethodName());
 		}		
+	}
+
+	public String getTriggerPattern() {
+		return this.triggerPattern;
 	}
 
 }

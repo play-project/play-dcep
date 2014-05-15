@@ -1,4 +1,4 @@
-package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime;
+package eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.data_structure;
 
 import java.util.LinkedList;
 import java.util.List;

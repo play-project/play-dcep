@@ -149,9 +149,9 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					throw new DistributedEtalisException("Error registering RdfDbQueries for queryId " + bdplQuery.getDetails().getQueryId());
 				}
 			}
-			System.out.println(bdplQuery.getDetails());
-			System.out.println(bdplQuery.getDetails().getTriggerPattern());
+
 			for (String triggerPattern : bdplQuery.getDetails().getTriggerPattern()) {
+				System.out.println("\n\n\n Register virual event pattern: \n\n\n{}" + triggerPattern);
 				etalis.addDynamicRuleWithId(quoteForProlog(bdplQuery.getDetails().getQueryId()), triggerPattern);
 			}
 			

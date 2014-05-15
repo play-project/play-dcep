@@ -18,6 +18,7 @@ public class EqualizeEventIdVariableWithTriplestoreId extends GenericVisitor {
 
 	public EqualizeEventIdVariableWithTriplestoreId(UniqueNameManager uniqueNameManager) {
 		this.uniqueNameManager = uniqueNameManager;
+		equalizeCode = "";
 	}
 	
 	@Override

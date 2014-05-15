@@ -424,6 +424,41 @@ public class BdplEleTest {
 		visitor1.getEle()
 				.equals("\'http://events.event-processing.org/types/NoBiddersAlert\'(CEID1,example1) do (forall((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)), (generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/NoBiddersAlert\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/stream\',\'http://streams.event-processing.org/ids/fds#stream\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/requestId\',VrequestId,CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve3, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve2, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve1, CEID1))), decrementReferenceCounter(ViD1), decrementReferenceCounter(ViD2), decrementReferenceCounter(ViD3), constructResultIsNotEmpty(CEID1))<-(\'http://events.event-processing.org/types/DeliveryBid\'(ViD1) \'WHERE\' ((\\+forall(rdf(Ve3,\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/TimeOut\',ViD1), (\\+((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)))))), Vid2=ViD1,  incrementReferenceCounter(ViD1)))\n");
 	}
+	
+	@Test
+	public void testNotOperatorCodeGenerationTimeBased() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/BDPL-Query-NotOperatorTime.eprq");
+		logger.debug("BDPL query: \n{}", queryString);
+		
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+				
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+System.out.println(visitor1.getEle());
+		visitor1.getEle()
+				.equals("\'http://events.event-processing.org/types/NoBiddersAlert\'(CEID1,example1) do (forall((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)), (generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/NoBiddersAlert\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/stream\',\'http://streams.event-processing.org/ids/fds#stream\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/requestId\',VrequestId,CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve3, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve2, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve1, CEID1))), decrementReferenceCounter(ViD1), decrementReferenceCounter(ViD2), decrementReferenceCounter(ViD3), constructResultIsNotEmpty(CEID1))<-(\'http://events.event-processing.org/types/DeliveryBid\'(ViD1) \'WHERE\' ((\\+forall(rdf(Ve3,\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/TimeOut\',ViD1), (\\+((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)))))), Vid2=ViD1,  incrementReferenceCounter(ViD1)))\n");
+	}
 
 	@Test
 	public void testShowQdResult() throws IOException {
