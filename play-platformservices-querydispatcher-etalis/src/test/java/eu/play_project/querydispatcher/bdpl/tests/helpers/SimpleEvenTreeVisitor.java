@@ -1,8 +1,7 @@
-package eu.play_project.querydispatcher.epsparql.tests.helpers;
+package eu.play_project.querydispatcher.bdpl.tests.helpers;
 
 import org.junit.Assert;
 
-import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
@@ -11,17 +10,17 @@ import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.GenericVisitor;
 
 /**
- * Visit tree elements to generate ELE and compare the visited nodes with with expected values.
- * Visit tree in in-order  fashion and add brackets. 
- * @author Stefan Obermeier
+ * Visit event binary operators and events in in-order fashion.
+ * Compare string representation of the visited node with expected value.
+ * @author sobermeier
  *
  */
-public class NestedEventsTreeVisitor extends GenericVisitor {
+public class SimpleEvenTreeVisitor extends GenericVisitor {
 	
 	String[] expctedResults;
 	int index;
 	
-	public NestedEventsTreeVisitor(String[] expctedResults) {
+	public SimpleEvenTreeVisitor(String[] expctedResults) {
 		this.expctedResults = expctedResults;
 		index = 0;
 	}
@@ -31,13 +30,6 @@ public class NestedEventsTreeVisitor extends GenericVisitor {
 		el.getLeft().visit(this);
 		Assert.assertEquals(expctedResults[index++], el.getTyp());
 		el.getRight().visit(this);
-	}
-	
-	@Override
-	public void visit(ElementBraceOperator el) {
-		Assert.assertEquals("(", expctedResults[index++]);
-		el.getSubElements().visit(this);
-		Assert.assertEquals(")", expctedResults[index++]);
 	}
 	
 	@Override
@@ -52,6 +44,6 @@ public class NestedEventsTreeVisitor extends GenericVisitor {
 	
 	@Override
 	public void visit(ElementPathBlock el) {
-		Assert.assertEquals(el.getPattern().get(0).getSubject().toString(), expctedResults[index++]);
+		Assert.assertEquals(expctedResults[index++], el.getPattern().get(0).getSubject().toString());
 	}
 }

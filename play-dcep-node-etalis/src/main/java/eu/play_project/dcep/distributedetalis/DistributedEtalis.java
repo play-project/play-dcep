@@ -151,7 +151,9 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			}
 
 			for (String triggerPattern : bdplQuery.getDetails().getTriggerPattern()) {
-				System.out.println("\n\n\n Register virual event pattern: \n\n\n{}" + triggerPattern);
+				System.out.println("Register virual event pattern: " + triggerPattern );
+
+				logger.debug("Register virual event pattern: {}", triggerPattern );
 				etalis.addDynamicRuleWithId(quoteForProlog(bdplQuery.getDetails().getQueryId()), triggerPattern);
 			}
 			

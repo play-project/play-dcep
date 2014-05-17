@@ -59,7 +59,6 @@ public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 	
 	@Override
 	public void visit(ElementDuration el) {
-		vars = new HashSet<String>();
 	}
 	
 	@Override
@@ -99,7 +98,11 @@ public class CollectVariablesInTriplesAndFilterVisitor extends GenericVisitor{
 	 * Return all variables used in this query.
 	 */
 	public  Set<String> getVariables(){
-		return vars;
+		if (vars == null) {
+			return new HashSet<String>();
+		} else {
+			return vars;
+		}
 	}
 
 

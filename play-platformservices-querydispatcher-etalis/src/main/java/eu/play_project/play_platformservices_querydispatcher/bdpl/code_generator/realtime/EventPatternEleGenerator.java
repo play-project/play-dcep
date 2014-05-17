@@ -53,8 +53,9 @@ public class EventPatternEleGenerator {
 			String code = notOperatorEleGenerator.getEle();
 			pattern.setMethodName(code);
 			pattern.setMethodImpl(notOperatorEleGenerator.getMethodImpl());
-			pattern.setTriggerCode(notOperatorEleGenerator.getTriggerPattern());
-			System.out.println("\n\n\ndd " + notOperatorEleGenerator.getTriggerPattern() + "...................");
+			if (!notOperatorEleGenerator.getTriggerPattern().isEmpty()) {
+				pattern.setTriggerCode(notOperatorEleGenerator.getTriggerPattern());
+			}
 			virtualPatterns.add(pattern.getTriggerCode());
 		} else {
 			ele += SimpleEventPattern(eventGraph, executeCode);

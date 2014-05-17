@@ -9,8 +9,8 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
 import eu.play_project.querydispatcher.bdpl.tests.BdplEleTest;
-import eu.play_project.querydispatcher.epsparql.tests.helpers.NestedEventsTreeVisitor;
-import eu.play_project.querydispatcher.epsparql.tests.helpers.SimpleEvenTreeVisitor;
+import eu.play_project.querydispatcher.bdpl.tests.helpers.NestedEventsTreeVisitor;
+import eu.play_project.querydispatcher.bdpl.tests.helpers.SimpleEvenTreeVisitor;
 
 /**
  * Check if the produced tree has the expected structure.

@@ -100,9 +100,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 		EleEventPattern dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
 		elePattern += dbQuery.getMethodName();
-		System.out.println("\n\n\n\n FFFFFFFFFFFFFFFF" + dbQuery.getTriggerCode());
 		if (dbQuery.getTriggerCode() != null) {
-			System.out.println("\n\n\n\n FFFFFFFFFFFFFFFF");
 			triggerCode.add(dbQuery.getTriggerCode());
 		}
 		rdfDbQueries.addAll(dbQuery.getMethodImpl());
@@ -119,8 +117,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 			dbQuery = eventPatternEleGenerator.generateEle(eventQueryIter.next(), inputQuery.getQueryId(), vtm, complexEventIdCode);
 			elePattern += operator;
 			elePattern += dbQuery.getMethodName();
-			System.out.println("\n\n\n\n FFFFFFFFFFFFFFFF 222222222");
-
 			triggerCode.add(dbQuery.getTriggerCode());
 			rdfDbQueries.addAll(dbQuery.getMethodImpl());
 		}

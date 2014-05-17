@@ -42,14 +42,14 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 	@Override
 	public void visit(ElementNotOperator elementNotOperator) {
 		StringBuffer code = new StringBuffer();
-		String triggerEvent = "";
+		String startEvent = "";
 		EventPatternEleGenerator codeGenerator =  new EventPatternEleGenerator();
 		EleEventPattern pattern;
 		
 		code.append("(") ;
 		pattern = codeGenerator.generateEle(elementNotOperator.getStart(), patternId, vtm, "");
 		methodImpl.addAll(pattern.getMethodImpl());
-		triggerEvent = pattern.getMethodName();
+		startEvent = pattern.getMethodName();
 		code.append(pattern.getMethodName());
 		code.append(" 'SEQ' ");
 		
@@ -62,8 +62,7 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 			
 			// Generate code to fire virtual event.
 			NotEventEleGenerator notEventEleGenerator = new NotEventEleGenerator();
-			pattern =  notEventEleGenerator.generate(elementNotOperator.getEnd(), getVarNameManager().getVirtualEvent());
-			System.out.println("\n\n\n\n\n ........................h.. " + pattern.getTriggerCode());
+			pattern =  notEventEleGenerator.generate(elementNotOperator.getEnd(), startEvent, getVarNameManager().getVirtualEvent());
 			triggerPattern = pattern.getTriggerCode();
 		} else {
 			pattern = codeGenerator.generateEle(elementNotOperator.getEnd(), patternId, vtm, executeCode);
@@ -75,7 +74,7 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 		getVarNameManager().processNextEvent();
 
 		NotEventEleGenerator notEventEleGenerator = new NotEventEleGenerator();
-		pattern =  notEventEleGenerator.generate(elementNotOperator.getNot(), triggerEvent);
+		pattern =  notEventEleGenerator.generate(elementNotOperator.getNot(), startEvent, "");
 		methodImpl.addAll(pattern.getMethodImpl());
 		code.append(pattern.getMethodName());
 		code.append(")");
@@ -101,11 +100,20 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 	 */
 	class NotEventEleGenerator extends GenericVisitor {
 		private EleEventPattern pattern;
-		private String triggerEvent;
+		private String virtualEvent;
+		private String startEvent;
 		
-		public EleEventPattern generate(Element el, String triggerEvent) {
+		/**
+		 *  Generate end node code.
+		 * @param el Not operator end node.
+		 * @param startEvent Simple event which will start the timer.
+		 * @param virtualEvent Event which will be produced when time is up.
+		 * @return
+		 */
+		public EleEventPattern generate(Element el, String startEvent, String virtualEvent) {
 			pattern = new EleEventPattern();
-			this.triggerEvent = triggerEvent;
+			this.virtualEvent = virtualEvent;
+			this.startEvent = startEvent;
 			
 			// For one event only.
 			el.visit(this);
@@ -115,8 +123,7 @@ public class NotOperatorEleGenerator extends GenericVisitor {
 		
 		@Override
 		public void visit(ElementDuration duration) {
-			System.out.println("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr \n\n\n");
-			pattern.setTriggerCode(("dc <- " + triggerEvent + " 'WHERE'(triggerEventWithDelay("+ getVarNameManager().getVirtualEvent() + ", " + duration.getTimeInSeconds() + "))"));
+			pattern.setTriggerCode(("dc <- " + startEvent + " 'WHERE'(triggerEventWithDelay("+ virtualEvent + ", " + duration.getTimeInSeconds() + "))"));
 		}
 		
 		@Override

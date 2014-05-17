@@ -36,7 +36,7 @@ public class ComplexPartEleGenerator {
 		String ele = "";
 		
 		ele += Complex(query);
-		ele = "'http://events.event-processing.org/types/NoBiddersAlert'(abc, 123)";
+		//ele = "'http://events.event-processing.org/types/NoBiddersAlert'(abc, 123)";
 		return ele;
 	}
 	
@@ -51,10 +51,10 @@ public class ComplexPartEleGenerator {
 		// Collect complex event data.
 		elePattern += GenerateConstructResult(inputQuery, inputQuery.getQueryId());
 		elePattern += Having(inputQuery);
-		elePattern += DecrementReferenceCounter();
+		//elePattern += DecrementReferenceCounter();
 		elePattern += ", constructResultIsNotEmpty(" + getVarNameManager().getCeid() + ")";
 		getVarNameManager().resetTriplestoreVariable();
-		elePattern += "))";
+		elePattern += ")";
 		
 		return elePattern;
 	}
@@ -151,8 +151,11 @@ public class ComplexPartEleGenerator {
 																			     // corresponding
 																			     // data.
 		Iterator<String> iter = v.getVariables().iterator();
+		if (iter.hasNext()) {
+			dbQueryDecl.append(", ");
+		}
 		while (iter.hasNext()) {
-			dbQueryDecl.append(", " + iter.next());
+			dbQueryDecl.append(iter.next());
 			// Decide if it is the last variable or end of decl.
 			if (iter.hasNext()) {
 				dbQueryDecl.append(", ");

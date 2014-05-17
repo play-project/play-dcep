@@ -96,9 +96,8 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 		try{
 			boolean result = ctx.getEngineWrapper().executeGoal(prologString);
 			ctx.getEngineWrapper().executeGoal("write('a'),write(\\n).");
-			ctx.getEngineWrapper().executeGoal("triggerEventWithDelay(virtualEvent2, 1).");
-			ctx.getEngineWrapper().executeGoal("event(virtualEvent2).");
-			System.out.println("aa");
+			//ctx.getEngineWrapper().executeGoal("triggerEventWithDelay(virtualEvent2, 1).");
+			//ctx.getEngineWrapper().executeGoal("event(virtualEvent2).");
 //			ctx.getEngineWrapper().executeGoal("printRdfStat");
 //			ctx.getEngineWrapper().executeGoal("printNumberOfEvents");
 //			ctx.getEngineWrapper().executeGoal("printRefCountN");

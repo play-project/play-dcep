@@ -60,7 +60,7 @@ public class NotOperatorTimeBasedTest extends ScenarioAbstractTest {
 		logger.info("Publish events");
 		
 		CompoundEvent event = EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig));
-		for (int j = 0; j < 2; j++) {
+		for (int j = 0; j < 10; j++) {
 			System.out.println(j);
 			Thread.sleep(500);
 			testApi.publish(event);
