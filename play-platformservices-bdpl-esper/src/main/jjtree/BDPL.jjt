@@ -97,6 +97,27 @@ public class SyntaxTreeBuilder {
 		return s;
 	}
 	
+	/**
+	 * Transform parameters in PNAME_LN 
+	 */
+	private static String getPNAME_LN(String s){
+		StringBuffer sb = new StringBuffer();
+		char c;
+		for(int i=0; i < s.length(); i++){
+			c = s.charAt(i);
+			if(c == '['){
+				sb.append('#');
+			}
+			else if(c == ']'){
+				
+			}
+			else{
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+	
 	void jjtreeOpenNodeScope( Node node )
 	{
 		((SimpleNode)node).jjtSetFirstToken(getToken(1));
@@ -321,7 +342,7 @@ TOKEN:
 	<Q_IRI_REF: "<" (~["<", ">", "\"", "{", "}", "|", "^", "`", "\\", "\u0000"-"\u0020"])* ">">
 
 |	<PNAME_NS: (<PN_PREFIX>)? ":">
-|	<PNAME_LN: (<PN_PREFIX>)? ":" <PN_LOCAL>> // Note: PN_LOCAL not optional, case handled by PNAME_NS
+|	<PNAME_LN: (<PN_PREFIX>)? ":" <PN_LOCAL> (<PN_PARAM>)?> // ningyuan changed Note: PN_LOCAL not optional, case handled by PNAME_NS
 |	<BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | <NUM>) ((<PN_CHARS>|".")* <PN_CHARS>)? >
 |	<VAR1: "?" <VARNAME>>
 |	<VAR2: "$" <VARNAME>>
@@ -372,6 +393,7 @@ TOKEN:
 |	<#PERCENT: "%" <HEX> <HEX>>
 |	<#PN_LOCAL_ESC: "\\" [ "_", "~", ".", "-", "!", "$", "&", "\"", "(", ")", "*", "+", ",", ";", "=", "/", "?", "#", "@", "%" ]>
 |	<#VARNAME: (<PN_CHARS_U> | <NUM> ) (<VAR_CHAR>)*>
+|	<#PN_PARAM: <LBRACK> (<ALPHA> | <NUM> | "_")* <RBRACK>> // ningyuan added
 }
 
 
@@ -1737,7 +1759,7 @@ void PrefixedName() #QName :
 { Token t; }
 {
 	(t = <PNAME_LN> | t = <PNAME_NS>)
-	{jjtThis.setValue(t.image);}
+	{jjtThis.setValue(getPNAME_LN(t.image));}
 }
 
 void BlankNode() :
