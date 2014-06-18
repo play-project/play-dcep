@@ -16,18 +16,18 @@ import javax.xml.datatype.DatatypeFactory;
  * Apr 10, 2014
  *
  */
-public class BDPLTranslateUtil {
+public class EPLTranslateUtil {
 	
 	public static final int TERM_EVENT = 0, TERM_TIME = 1;
 	
-	public static long getDurationInSec(String duration) throws BDPLTranslateException{
+	public static long getDurationInSec(String duration) throws EPLTranslateException{
 		try{
 			DatatypeFactory dtf = DatatypeFactory.newInstance();
 			long msec = dtf.newDuration(duration).getTimeInMillis(new Date());
 			return msec/1000;
 		}
 		catch(Exception e){
-			throw new BDPLTranslateException("Duration data type "+duration+" could not be parsed");
+			throw new EPLTranslateException("Duration data type "+duration+" could not be parsed");
 		}
 	}
 	

@@ -42,7 +42,7 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
  * @author ningyuan
  *
  */
-public class TranslatorMain implements QueryParser{
+public class EPLTranslator implements QueryParser{
 	
 	/* (non-Javadoc)
 	 * @see org.openrdf.query.parser.QueryParser#parseUpdate(java.lang.String, java.lang.String)
@@ -85,7 +85,7 @@ public class TranslatorMain implements QueryParser{
 					
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
 					System.out.println(EPLTranslationProcessor.process(qc)+"\n");
-					System.out.println(EPLListenerProcessor.process(qc)+"\n");
+					//System.out.println(EPLListenerProcessor.process(qc)+"\n");
 				}
 				else if (queryNode instanceof ASTAskQuery) {
 					
@@ -135,7 +135,7 @@ public class TranslatorMain implements QueryParser{
 			throws java.io.IOException
 		{
 		
-		    TranslatorMain trans = new TranslatorMain();
+		    EPLTranslator trans = new EPLTranslator();
 		
 			System.out.println("Your BDPL query:");
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.filter;
+package eu.play_project.platformservices.querydispatcher.query.translate.filter;
 
 
 import java.util.Iterator;
