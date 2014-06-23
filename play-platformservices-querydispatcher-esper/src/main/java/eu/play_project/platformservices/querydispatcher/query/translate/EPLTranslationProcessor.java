@@ -46,8 +46,8 @@ import org.openrdf.query.MalformedQueryException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLConstants;
-import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLTranslateException;
-import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLTranslateUtil;
+import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLTranslateException;
+import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLTranslateUtil;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.IEntry;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.NotEntry;
@@ -89,6 +89,9 @@ public class EPLTranslationProcessor {
 		
 		private StringBuffer prologText = new StringBuffer();
 		
+		/*
+		 * temp variable for saving the Sparql text of each event
+		 */
 		private StringBuffer eventClauseText = new StringBuffer();
 		
 		private long windowDuration = -1l;
@@ -134,7 +137,7 @@ public class EPLTranslationProcessor {
 			Object ret = super.visit(node, data);
 			
 			/*
-			 * Get the prolog  
+			 * Get the prefix in prolog  
 			 */
 			StringBuffer prologText = ((EPLTranslatorData)data).getPrologText();
 			Token token = node.jjtGetFirstToken();
@@ -164,7 +167,7 @@ public class EPLTranslationProcessor {
 			Object ret = super.visit(node, data);
 			
 			/*
-			 * Get the prolog  
+			 * Get the base in prolog  
 			 */
 			StringBuffer prologText = ((EPLTranslatorData)data).getPrologText();
 			Token token = node.jjtGetFirstToken();
@@ -197,7 +200,7 @@ public class EPLTranslationProcessor {
 			
 			try{
 				epl = getEPL(ret, (EPLTranslatorData)data);
-			}catch (BDPLTranslateException e) {
+			}catch (EPLTranslateException e) {
 				throw new VisitorException(e.getMessage());
 			}
 			
@@ -238,8 +241,8 @@ public class EPLTranslationProcessor {
 			}
 			
 			try {
-				((EPLTranslatorData)data).setWindowParam(BDPLTranslateUtil.getDurationInSec(duration.getValue()), node.getType());
-			} catch (BDPLTranslateException e) {
+				((EPLTranslatorData)data).setWindowParam(EPLTranslateUtil.getDurationInSec(duration.getValue()), node.getType());
+			} catch (EPLTranslateException e) {
 				throw new VisitorException("Time delay format exception: "+duration.getValue());
 			}
 			
@@ -251,22 +254,10 @@ public class EPLTranslationProcessor {
 			throws VisitorException
 		{
 			
-			OrClause ret;
-			
 			// EventPattern = C
 			if(node.jjtGetNumChildren() <= 1){
-				ret = (OrClause) super.visit(node, data);
 				
-				/*if(node.getTop())
-				{
-					try{
-						epl = getEPL(ret, (EPLTranslatorData)data);
-					}catch (BDPLTranslateException e) {
-						throw new VisitorException(e.getMessage());
-					}
-				}*/
-				
-				return ret;
+				return super.visit(node, data);
 			}
 			// EventPattern = C (seq C)+
 			else{
@@ -278,23 +269,11 @@ public class EPLTranslationProcessor {
 				
 				// return the united expression
 				try {
-					ret =  unionSeqExpression(expressions);
-				} catch (BDPLTranslateException e) {
+					return  unionSeqExpression(expressions);
+				} catch (EPLTranslateException e) {
 					throw new VisitorException(e.getMessage());
 				}
-				
-				/*if(node.getTop())
-				{
-					try{
-						epl = getEPL(ret, (EPLTranslatorData)data);
-					}catch (BDPLTranslateException e) {
-						throw new VisitorException(e.getMessage());
-					}
-				}*/
-				
-				return ret;
 			}
-			
 		}
 		
 		
@@ -340,7 +319,7 @@ public class EPLTranslationProcessor {
 				// return the united expression
 				try {
 					return unionAndExpression(expansions);
-				} catch (BDPLTranslateException e) {
+				} catch (EPLTranslateException e) {
 					throw new VisitorException(e.getMessage());
 				}
 			}
@@ -379,14 +358,14 @@ public class EPLTranslationProcessor {
 			}
 			
 			// B is time delay
-			if(BDPLTranslateUtil.getTermType(notTerms[1]) == BDPLTranslateUtil.TERM_TIME){
+			if(EPLTranslateUtil.getTermType(notTerms[1]) == EPLTranslateUtil.TERM_TIME){
 				// C is time delay
-				if(BDPLTranslateUtil.getTermType(notTerms[2]) == BDPLTranslateUtil.TERM_TIME){
+				if(EPLTranslateUtil.getTermType(notTerms[2]) == EPLTranslateUtil.TERM_TIME){
 					// B is longer than C
 					if(notTerms[1].getDuration() > notTerms[2].getDuration()){
 						// A is time delay
-						// T -> T
-						if(BDPLTranslateUtil.getTermType(notTerms[0]) == BDPLTranslateUtil.TERM_TIME){
+						// T -> T : T 	time delay table is null
+						if(EPLTranslateUtil.getTermType(notTerms[0]) == EPLTranslateUtil.TERM_TIME){
 							notTerms[0].setDuration(notTerms[0].getDuration()+notTerms[2].getDuration());
 							
 							List<Term> seq = expression.getSeqClauses().get(0).getTerms();
@@ -396,7 +375,7 @@ public class EPLTranslationProcessor {
 							return expression;
 						}
 						// A is event
-						// A -> T
+						// A -> T	set time delay table
 						else{
 							TimeDelayTable tdTable = new TimeDelayTable();
 							List<TimeDelayEntry> entries = tdTable.getEntries();
@@ -428,7 +407,7 @@ public class EPLTranslationProcessor {
 					
 					List<Term> seq = expression.getSeqClauses().get(0).getTerms();
 					seq.clear();
-					// may fix time delay
+					// fixed time delay, when A is a time delay
 					seq.add(notTerms[0]);
 					seq.add(notTerms[2]);
 					
@@ -448,7 +427,7 @@ public class EPLTranslationProcessor {
 				
 				List<Term> seq = expression.getSeqClauses().get(0).getTerms();
 				seq.clear();
-				// may fix time delay
+				// fixed time delay, when either A or C is a time delay
 				seq.add(notTerms[0]);
 				seq.add(notTerms[2]);
 				
@@ -460,27 +439,23 @@ public class EPLTranslationProcessor {
 		public Object visit(ASTTimeBasedEvent node, Object data)
 				throws VisitorException
 		{
-			/*System.out.print(" "+node.getOperator()+" ");
-			System.out.print(" "+node.getEventName());
-			System.out.print("("+node.getEventParam()+") ");
 			
 			super.visit(node, data);
 			
-			return data;*/
-			
-			super.visit(node, data);
-			
-			Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
-			// ASTTimeBasedEvent must have one ASTString node. !!! Pay attension to grammar file
-			ASTString duration = node.jjtGetChild(ASTString.class);
-			if(duration == null){
+			// ASTTimeBasedEvent must have one ASTString node. !!! Pay attention to grammar file
+			ASTString durationString = node.jjtGetChild(ASTString.class);
+			if(durationString == null){
 				throw new VisitorException("Time delay dose not have a duration string");
 			}
 			
+			/* 
+			 * create the new Term of the time delay, time delay table is null
+			 */
+			Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
 			try {
-				term.setDuration(BDPLTranslateUtil.getDurationInSec(duration.getValue()));
-			} catch (BDPLTranslateException e) {
-				throw new VisitorException("Time delay format exception: "+duration.getValue());
+				term.setDuration(EPLTranslateUtil.getDurationInSec(durationString.getValue()));
+			} catch (EPLTranslateException e) {
+				throw new VisitorException("Time delay format exception: "+durationString.getValue());
 			}
 			
 			SeqClause seq = new SeqClause();
@@ -517,7 +492,7 @@ public class EPLTranslationProcessor {
 			// last token must be }
 			
 			/*
-			 * Create the term of this event
+			 * Create the term of this event, time delay table is null
 			 */
 			OrClause expression;
 			try{
@@ -532,7 +507,7 @@ public class EPLTranslationProcessor {
 				expression = new OrClause();
 				expression.addSeqClause(seq);
 			}
-			catch(BDPLTranslateException e){
+			catch(EPLTranslateException e){
 				throw new VisitorException(e.getMessage());
 			}
 			
@@ -541,7 +516,7 @@ public class EPLTranslationProcessor {
 		
 		//TODO
 		/*
-		 * process sparql query in epl
+		 * process Sparql query in epl
 		 */
 		private String processSparql(String s){
 			String ret = s.replace("\"", "\'");
@@ -551,7 +526,7 @@ public class EPLTranslationProcessor {
 		/*
 		 * 
 		 */
-		private String getEventType(String prolog, String sparql) throws BDPLTranslateException{
+		private String getEventType(String prolog, String sparql) throws EPLTranslateException{
 			
 			try{
 				String ret = null;
@@ -577,7 +552,7 @@ public class EPLTranslationProcessor {
 								hasType = true;
 							}
 							else{
-								throw new BDPLTranslateException("Object of rdf:type has no value");
+								throw new EPLTranslateException("Object of rdf:type has no value");
 							}
 						}
 					}
@@ -589,32 +564,48 @@ public class EPLTranslationProcessor {
 				}
 				
 				if(!hasType){
-					throw new BDPLTranslateException("Event clause contains no rdf:type");
+					throw new EPLTranslateException("Event clause contains no rdf:type");
 				}
 				else if(!hasStream){
-					throw new BDPLTranslateException("Event clause contains no "+BDPLConstants.URI_STREAM);
+					throw new EPLTranslateException("Event clause contains no "+BDPLConstants.URI_STREAM);
 				}
 				else{
 					return ret;
 				}
 			}
 			catch (VisitorException e){
-				throw new BDPLTranslateException(e.getMessage());
+				throw new EPLTranslateException(e.getMessage());
 			}
 			catch (ParseException e) {
-				throw new BDPLTranslateException(e.getMessage());
+				throw new EPLTranslateException(e.getMessage());
 			}
 			catch (TokenMgrError e) {
-				throw new BDPLTranslateException(e.getMessage());
+				throw new EPLTranslateException(e.getMessage());
 			}
 			catch (MalformedQueryException e){
-				throw new BDPLTranslateException(e.getMessage());
+				throw new EPLTranslateException(e.getMessage());
 			}
 			
 		}
 		
+		
+		
+		
+		
+		/*
+		 * Standard form of the expression (OrClause):
+		 * 
+		 * Exp = ((TERM (seq TERM)*:=SEQ CLAUSE) or SEQ CLAUSE)*:=OR CLAUSE)
+		 */
+		
+		
+		
 		/*
 		 * Exp = Exp (or Exp)+
+		 * 
+		 * United OR connected expressions into one expression
+		 * 
+		 * @param expressions must not be null and must have at least one element
 		 */
 		private OrClause unionOrExpression(List<OrClause> expressions){
 			OrClause ret = expressions.get(0);
@@ -631,45 +622,51 @@ public class EPLTranslationProcessor {
 			return ret;
 		}
 		
-		/*
-		 * Exp = ((TERM (seq TERM)*:=SEQ CLAUSE) or SEQ CLAUSE)*:=OR CLAUSE)
-		 */
-		
-		
+
 		/*
 		 * Exp = Exp (seq Exp)+
+		 * 
+		 * United SEQ connected expressions into one expression
 		 * 
 		 * @param expressions 
 		 * @return united expression
 		 */
-		private OrClause unionSeqExpression(List<OrClause> expressions) throws BDPLTranslateException{
+		private OrClause unionSeqExpression(List<OrClause> expressions) throws EPLTranslateException{
 			
-			OrClause ret = new OrClause();
-			combineSeqClause(new ArrayList<SeqClause>(), expressions, 1, ret);
-			
-			return ret;
+			return combineSeqClause(expressions, 1);
+		
 		}
 		
 		/*
 		 * Exp = Exp (and Exp)+
+		 * 
+		 * United AND connected expressions into one expression
 		 */
-		private OrClause unionAndExpression(List<OrClause> expansions) throws BDPLTranslateException{
-			OrClause ret = new OrClause();
-			combineSeqClause(new ArrayList<SeqClause>(), expansions, 2, ret);
+		private OrClause unionAndExpression(List<OrClause> expansions) throws EPLTranslateException{
 			
-			return ret;
+			return combineSeqClause(expansions, 2);
+			
 		}
 		
 		/*
-		 * (SEQ CLAUSE (op SEQ CLAUSE)*):=combi (or (SEQ CLAUSE (op SEQ CLAUSE)*))* = ( SEQ CLAUSE (or SEQ CLAUSE)*):=exp (op (SEQ CLAUSE (or SEQ CLAUSE)*))*
+		 * (SEQ CLAUSE (op SEQ CLAUSE)*):=combination (or (SEQ CLAUSE (op SEQ CLAUSE)*))* = ( SEQ CLAUSE (or SEQ CLAUSE)*):=exp (op (SEQ CLAUSE (or SEQ CLAUSE)*))*
 		 * 
-		 * @param combi a combination of and terms from each exps
-		 * @param exps 
+		 * 
+		 * Find every combination composed of one SeqClause from each expression. Expand every combination and return the result expression connected
+		 * by every combination.
+		 * 
+		 * @param exps list of expressions
+		 * @param type the operator connecting expressions. 1 SEQ	2 AND
+		 * @return expression in standard form connected by every connection
 		 */
-		private void combineSeqClause(List<SeqClause> combi, List<OrClause> exps, int type, OrClause result) throws BDPLTranslateException{
-			int size = exps.size();
+		private OrClause combineSeqClause(List<OrClause> exps, int type) throws EPLTranslateException{
+			OrClause ret;
 			
+			int size = exps.size();
 			if(size > 0){
+				ret = new OrClause();
+				List<SeqClause> combination = new ArrayList<SeqClause>();
+				
 				// a stack of the index of current SEQ CLAUSE of each expression
 				int [] stack = new int [size];
 				// a pointer to current expression from which a SEQ CLAUSE will be chosen
@@ -686,19 +683,19 @@ public class EPLTranslationProcessor {
 					else if(pointer >= size){
 						switch(type){
 							case 1:{
-								// (SEQ CLAUSE (seq SEQ CLAUSE)*) (or (SEQ CLAUSE (seq SEQ CLAUSE)*)) = (SEQ CLAUSE (or SEQ CLAUSE)*)(seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
-								expand1(combi, result);
+								// SEQ CLAUSE = (SEQ CLAUSE (seq SEQ CLAUSE)*):= combination
+								expand1(combination, ret);
 								break;
 							}
 							case 2:{
-								// SEQ CLAUSE (or SEQ CLAUSE)* = (SEQ CLAUSE (or SEQ CLAUSE)*)(and (SEQ CLAUSE (or SEQ CLAUSE)*))*
-								expand2(combi, result);
+								// Exp = (SEQ CLAUSE (and SEQ CLAUSE)*):= combination
+								expand2(combination, ret);
 								break;
 							}
 						}
 						
 						// remove the last SEQ CLAUSE
-						combi.remove(combi.size()-1);
+						combination.remove(combination.size()-1);
 						pointer --;
 					}
 					// a further SEQ CLAUSE will be chosen here
@@ -709,7 +706,7 @@ public class EPLTranslationProcessor {
 						// chose a SEQ CLAUSE from this expression
 						// pointer goes to the next expression
 						if(index < seqcs.size()){
-							combi.add(seqcs.get(index));
+							combination.add(seqcs.get(index));
 							stack[pointer] = index + 1;
 							pointer++;
 							
@@ -719,107 +716,78 @@ public class EPLTranslationProcessor {
 						else{
 							if(pointer > 0){
 								stack[pointer] = 0;
-								combi.remove(combi.size()-1);
+								combination.remove(combination.size()-1);
 							}
 							pointer --;		
 						}
 						
 					}
 				}
+				return ret;
 			}
-			
-		}
-		
-		/*
-		 * (AND CLAUSE (op AND CLAUSE)*):=combi (or (AND CLAUSE (op AND CLAUSE)*))* = ( AND CLAUSE (or AND CLAUSE)*):=exp (op (AND CLAUSE (or AND CLAUSE)*))*
-		 * 
-		 * @param combi a combination of and terms from each exps
-		 * @param exps 
-		 */
-		private void combineSeqClauseRecursive(List<SeqClause> combi, List<OrClause> exps, int depth, int type, OrClause result) throws BDPLTranslateException{
-			
-			if(exps.size() > 0){
-				// make combination of and terms from every expansion
-				if(depth < exps.size()){
-					OrClause otrs = exps.get(depth);
-					
-					for(int i = 0; i < otrs.getSeqClauses().size(); i++){
-						SeqClause seqc = otrs.getSeqClauses().get(i);
-						// add the next and terms in this level
-						combi.add(seqc);
-						// go to the next depth
-						combineSeqClauseRecursive(combi, exps, depth+1, type, result);
-						// remove the old and terms in this level
-						combi.remove(combi.size()-1);
-					}
-				}
-				else{
-					switch(type){
-						case 1:{
-							// (SEQ CLAUSE (seq SEQ CLAUSE)*) (or (SEQ CLAUSE (seq SEQ CLAUSE)*)) = (SEQ CLAUSE (or SEQ CLAUSE)*)(seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
-							expand1(combi, result);
-							break;
-						}
-						case 2:{
-							// AND CLAUSE (or AND CLAUSE)* = (AND CLAUSE (or AND CLAUSE)*)(and (AND CLAUSE (or AND CLAUSE)*))*
-							expand2(combi, result);
-							break;
-						}
-					}
-				}
+			else{
+				throw new EPLTranslateException("No expressions for combination");
 			}
 		}
 		
-
+		
 		/*
-		 * SEQ CLAUSE = (SEQ CLAUSE (seq SEQ CLAUSE)*):= combi
+		 * SEQ CLAUSE = (SEQ CLAUSE (seq SEQ CLAUSE)*):= combination
 		 * 
-		 * @param combi only used for passing data, must not be null
+		 * 
+		 * 
+		 * @param combi only used for passing data, the content must not be changed and must not be null
+		 * @param result used for save end expression connected by every expanded combination
 		 */
-		private void expand1(List<SeqClause> combi, OrClause result) throws BDPLTranslateException{
+		private void expand1(List<SeqClause> combination, OrClause result) throws EPLTranslateException{
 			
 			// create new result SEQ CLAUSE and its time delay table
-			SeqClause seq = new SeqClause();
-			List<Term> trs = seq.getTerms();
-			TimeDelayTable tdTable = new TimeDelayTable();
-			seq.setTdTable(tdTable);
+			SeqClause resultSeq = new SeqClause();
+			List<Term> resultTerms = resultSeq.getTerms();
+			TimeDelayTable resultTDTable = new TimeDelayTable();
+			resultSeq.setTdTable(resultTDTable);
 			
 			Term endEvent = null;
-			for(int i = 0; i < combi.size(); i++){
+			for(int i = 0; i < combination.size(); i++){
 				
 				// set the end event from last SEQ CLAUSE
-				if(trs.size() > 0){
-					endEvent = trs.get(trs.size()-1);
+				if(resultTerms.size() > 0){
+					endEvent = resultTerms.get(resultTerms.size()-1);
 				}
 				
-				SeqClause current = combi.get(i);
-				List<Term> cts = current.getTerms();
-				// initiate SEQ CLAUSE with only one term
-				if(current.getTdTable() == null){
-					initTimeDelayTable(current);
+				SeqClause currentSeq = combination.get(i);
+				List<Term> currentTerms = currentSeq.getTerms();
+				
+				// initiate time delay table of SEQ CLAUSE with only one term
+				if(currentSeq.getTdTable() == null){
+					initTimeDelayTable(currentSeq);
 				}
 				
 				// copy time delay table of the current term for further connection
-				TimeDelayTable currentTable = new TimeDelayTable();
-				List<TimeDelayEntry> currentEntries = current.getTdTable().getEntries();
+				TimeDelayTable currentTDTable = new TimeDelayTable();
+				List<TimeDelayEntry> currentEntries = currentSeq.getTdTable().getEntries();
 				for(int j = 0; j < currentEntries.size(); j++){
 					TimeDelayEntry currentEntry = currentEntries.get(j);
-					currentTable.getEntries().add(new TimeDelayEntry(currentEntry.getStart(), currentEntry.getEnd(), currentEntry.getDuration()));
+					currentTDTable.getEntries().add(new TimeDelayEntry(currentEntry.getStart(), currentEntry.getEnd(), currentEntry.getDuration()));
 				}
 					
-					System.out.println("\nConnected");
-					for(int j = 0; j < trs.size(); j++){
-						System.out.print(trs.get(j).getName()+" ");
+					
+					// for test
+					System.out.println("\nSEQ Connected");
+					for(int j = 0; j < resultTerms.size(); j++){
+						System.out.print(resultTerms.get(j).getName()+" ");
 					}
 					System.out.print("+ ");
-					for(int j = 0; j < cts.size(); j++){
-						System.out.print(cts.get(j).getName()+" ");
+					for(int j = 0; j < currentTerms.size(); j++){
+						System.out.print(currentTerms.get(j).getName()+" ");
 					}
 					System.out.println();
 				
-				appendSeqClauses(endEvent, trs, tdTable, cts, currentTable);
+				sequenceSeqClauses(endEvent, resultTerms, resultTDTable, currentTerms, currentTDTable);
 					
-					List<TimeDelayEntry> temp = tdTable.getEntries();
+					
+					// for test
+					List<TimeDelayEntry> temp = resultTDTable.getEntries();
 					for(int j = 0; j < temp.size(); j++){
 						TimeDelayEntry en = temp.get(j);
 						String s = "null", e = "null";
@@ -833,161 +801,166 @@ public class EPLTranslationProcessor {
 				
 			
 			// write one OR CLAUSE in result
-			result.addSeqClause(seq);
+			result.addSeqClause(resultSeq);
 		}
 		
 		/*
-		 *  Exp = (SEQ CLAUSE (and SEQ CLAUSE)*):= combi
+		 *  Exp = (SEQ CLAUSE (and SEQ CLAUSE)*):= combination
 		 */
-		private void expand2(List<SeqClause> combi, OrClause result) throws BDPLTranslateException{
+		private void expand2(List<SeqClause> combination, OrClause result) throws EPLTranslateException{
 			
-			OrClause or;
-			
-			// (SEQ CLAUSE (or SEQ CLAUSE)*) = AND CLAUSE
-			or = transformAndClause(combi);
-			
-			List<SeqClause> seqcs = or.getSeqClauses();
-			for(int j = 0; j < seqcs.size(); j++){
-				result.addSeqClause(seqcs.get(j));
-			}			
-		}
+			// time delay table entries of result
+			List<TimeDelayEntry> resultTDEntries = new ArrayList<TimeDelayEntry>();
 		
-		/*
-		 * 
-		 * @param seqcs must not be null
-		 */
-		private OrClause transformAndClause(List<SeqClause> seqcs) throws BDPLTranslateException{
-			OrClause ret = new OrClause();
-			
-			if(seqcs.size() > 0){
+			// every SEQ CLAUSE in this AND CLAUSE 
+			for(int i = 0; i < combination.size(); i++){
+				SeqClause currentSeq = combination.get(i);
+				List<Term> currentTerms = currentSeq.getTerms();
 				
-				List<TimeDelayEntry> entries = new ArrayList<TimeDelayEntry>();
-			
-				// every SEQ CLAUSE in this AND CLAUSE 
-				for(int i = 0; i < seqcs.size(); i++){
-					SeqClause st = seqcs.get(i);
-					
-					if(st.getTdTable() == null){
-						initTimeDelayTable(st);
-					}
-					TimeDelayTable temp = st.getTdTable();
-					
-					List<Term> terms = st.getTerms();
-					if(terms.size() < 1){
-						throw new BDPLTranslateException("Time delay should not be an operant of an AND operator");
-					}
-					else{
-						for(int j = 0; j < terms.size(); j++){
-							if(BDPLTranslateUtil.getTermType(terms.get(j)) == BDPLTranslateUtil.TERM_TIME){
-								throw new BDPLTranslateException("Time delays connected with AND could not be expanded any more");
-							}
-						}
-						
-						// make the time delay table of the result
-						for(TimeDelayEntry entry : temp.getEntries()){
-							entries.add(entry);
-						}
-					}
+				// initiate time delay table of SEQ CLAUSE with only one term
+				if(currentSeq.getTdTable() == null){
+					initTimeDelayTable(currentSeq);
 				}
+				TimeDelayTable currentTDTable = currentSeq.getTdTable();
 				
 				
-				
-			
-				List<SeqTerms> seqs = new ArrayList<SeqTerms>();
-				SeqClause copy = new SeqClause();
-				List<Term> init = seqcs.get(0).getTerms();
-				for(int i = 0; i < init.size(); i++){
-					copy.addTerm(init.get(i));
+				if(currentTerms.size() < 1){
+					throw new EPLTranslateException("Time delay should not be an operand of an AND operator");
 				}
-				
-				seqs.add(new SeqTerms(0, copy));
-				
-					/*System.out.println("START AND ELE:");
-					SeqClause s = seqcs.get(0);
-					for(Term ter : s.getTerms()){
-						System.out.println(ter.getType());
-					}*/
-				
-				// insert seq terms in AND CLAUSE
-				for(int i = 1; i < seqcs.size(); i++){
-					SeqClause iseq = seqcs.get(i);
-						
-						/*System.out.println("AND ELE:");
-						s = seqcs.get(i);
-						for(Term ter : s.getTerms()){
-							System.out.println(ter.getType());
-						}*/
-					seqs = insertSeq(seqs, iseq);
-				}
-				
-				// create result
-				for(int i = 0; i < seqs.size(); i++){
-					SeqClause seqc = seqs.get(i).getSequence();
-					
-					// copy time delay table for every sequence combinations
-					TimeDelayTable tdTable = new TimeDelayTable();
-					List<TimeDelayEntry> temp = tdTable.getEntries();
-					for(int j = 0; j < entries.size(); j++){
-						TimeDelayEntry entry = entries.get(j);
-						temp.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
-					}
-					
-					// fix time delay at start
-					List<TimeDelayEntry> left = tdTable.getEntriesByStart(null);
-					BDPLTranslateUtil.reduceStartDelayEntry(left, seqc, true, tdTable);
-					/*
-					 * ([T] -> A -> *) -> * to (T -> A -> *)
-					 */
-					if(left.size() > 1){
-						List<Term> terms = seqc.getTerms();
-						if(left.get(0).getEnd() != terms.get(0)){
-							throw new BDPLTranslateException("Fixed Time delay error at start");
-						}
-						else{
-							Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
-							term.setDuration(left.get(0).getDuration());
-							terms.add(0, term);
-								
-							tdTable.getEntries().remove(left.get(0));
+				else{
+					for(int j = 0; j < currentTerms.size(); j++){
+						if(EPLTranslateUtil.getTermType(currentTerms.get(j)) == EPLTranslateUtil.TERM_TIME){
+							throw new EPLTranslateException("Time delays connected with AND could not be expanded any more");
 						}
 					}
 					
-					// fix time delay at end
-					List<TimeDelayEntry> right = tdTable.getEntriesByEnd(null);
-					BDPLTranslateUtil.reduceEndDelayEntry(right, seqc, true, tdTable);
-					/*
-					 * * -> (* -> A -> [T]) to * -> (* -> A -> T)
-					 */
-					if(right.size() > 1){
-						List<Term> terms = seqc.getTerms();
-						if(right.get(right.size()-1).getStart() != terms.get(terms.size()-1)){
-							throw new BDPLTranslateException("Fixed Time delay error at end");
-						}
-						else{
-							Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
-							term.setDuration(right.get(right.size()-1).getDuration());
-							terms.add(term);
-								
-							tdTable.getEntries().remove(right.get(right.size()-1));
-						}
+					// make the time delay table of the result, copy every time delay table of SEQ CLAUSE
+					for(TimeDelayEntry entry : currentTDTable.getEntries()){
+						resultTDEntries.add(entry);
 					}
-					
-					seqc.setTdTable(tdTable);
-					ret.addSeqClause(seqc);
 				}
 			}
 			
+			// (SEQ CLAUSE (or SEQ CLAUSE)*) = AND CLAUSE
+			List<SequenceOption> seqOptions = transformAndClause(combination);
+			
+			
+			// create result
+			for(int i = 0; i < seqOptions.size(); i++){
+				SeqClause resultSeq = seqOptions.get(i).getSequence();
+				
+				// copy time delay table for every sequence combinations
+				TimeDelayTable resultTDTable = new TimeDelayTable();
+				List<TimeDelayEntry> temp = resultTDTable.getEntries();
+				for(int j = 0; j < resultTDEntries.size(); j++){
+					TimeDelayEntry entry = resultTDEntries.get(j);
+					temp.add(new TimeDelayEntry(entry.getStart(), entry.getEnd(), entry.getDuration()));
+				}
+				
+				// fix time delay at start
+				List<TimeDelayEntry> left = resultTDTable.getEntriesByStart(null);
+				EPLTranslateUtil.reduceStartDelayEntry(left, resultSeq, true, resultTDTable);
+				/*
+				 * ([T] -> A -> *) -> * to (T -> A -> *)
+				 */
+				if(left.size() > 1){
+					List<Term> terms = resultSeq.getTerms();
+					if(left.get(0).getEnd() != terms.get(0)){
+						throw new EPLTranslateException("Fixed Time delay error at start");
+					}
+					else{
+						Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
+						term.setDuration(left.get(0).getDuration());
+						terms.add(0, term);
+							
+						resultTDTable.getEntries().remove(left.get(0));
+					}
+				}
+				
+				// fix time delay at end
+				List<TimeDelayEntry> right = resultTDTable.getEntriesByEnd(null);
+				EPLTranslateUtil.reduceEndDelayEntry(right, resultSeq, true, resultTDTable);
+				/*
+				 * * -> (* -> A -> [T]) to * -> (* -> A -> T)
+				 */
+				if(right.size() > 1){
+					List<Term> terms = resultSeq.getTerms();
+					if(right.get(right.size()-1).getStart() != terms.get(terms.size()-1)){
+						throw new EPLTranslateException("Fixed Time delay error at end");
+					}
+					else{
+						Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
+						term.setDuration(right.get(right.size()-1).getDuration());
+						terms.add(term);
+							
+						resultTDTable.getEntries().remove(right.get(right.size()-1));
+					}
+				}
+				
+					// for test
+					System.out.println("\nAND Connected");
+					List<Term> terms = resultSeq.getTerms();
+					for(int j = 0; j < terms.size(); j++){
+						System.out.print(terms.get(j).getName()+" + ");
+					}
+					System.out.println();
+					
+					List<TimeDelayEntry> t = resultTDTable.getEntries();
+					for(int j = 0; j < t.size(); j++){
+						TimeDelayEntry en = t.get(j);
+						String s = "null", e = "null";
+						if(en.getStart() != null)
+							s = en.getStart().getName();
+						if(en.getEnd() != null)
+							e = en.getEnd().getName();
+						System.out.println(s+" "+en.getDuration()+" "+e);
+					}
+					
+				resultSeq.setTdTable(resultTDTable);
+				result.addSeqClause(resultSeq);
+			}
+					
+		}
+		
+		/*
+		 * Transform AND CLAUSE into all possible sequence options
+		 * 
+		 * @param seqcs must not be null
+		 */
+		private List<SequenceOption> transformAndClause(List<SeqClause> combination) throws EPLTranslateException{
+			
+			List<SequenceOption> ret = new ArrayList<SequenceOption>();
+			SeqClause copy = new SeqClause();
+			List<Term> init = combination.get(0).getTerms();
+			for(int i = 0; i < init.size(); i++){
+				copy.addTerm(init.get(i));
+			}
+				
+			ret.add(new SequenceOption(0, copy));
+				
+					
+			// insert seq terms in AND CLAUSE
+			for(int i = 1; i < combination.size(); i++){
+				SeqClause iseq = combination.get(i);
+						
+				ret = insertSeq(ret, iseq);
+			}
+				
 			return ret;
 		}
 		
 		/*
 		 * Create new time delay table and time delay entries for a SEQ CLAUSE containing only one term.
+		 * For a time delay term, the table has only one entry "null delay null". For a event term, the 
+		 * table is empty.
+		 * 
+		 * This method is only called by expand1 and expand2, when united AND expressions or united SEQ expressions.
 		 */
-		private void initTimeDelayTable(SeqClause seqc) throws BDPLTranslateException{
+		private void initTimeDelayTable(SeqClause seqc) throws EPLTranslateException{
 			List<Term> terms = seqc.getTerms();
 			
 			if(terms.size() != 1){
-				throw new BDPLTranslateException("Time delay table can not be initiated");
+				throw new EPLTranslateException("Time delay table can not be initiated");
 			}
 			
 			Term term = terms.get(0);
@@ -997,7 +970,7 @@ public class EPLTranslationProcessor {
 			seqc.setTdTable(tdTable);
 			
 			// term is time delay: create one time delay entry, remove time delay term
-			if(BDPLTranslateUtil.getTermType(term) == BDPLTranslateUtil.TERM_TIME){
+			if(EPLTranslateUtil.getTermType(term) == EPLTranslateUtil.TERM_TIME){
 				List<TimeDelayEntry> entries = tdTable.getEntries();
 				entries.add(new TimeDelayEntry(null, null, term.getDuration()));
 				terms.remove(0);
@@ -1007,11 +980,14 @@ public class EPLTranslationProcessor {
 		}
 		
 		/*
-		 * Append a SEQ CLAUSE and its time delay table 
+		 * Sequence a current SEQ CLAUSE and its time delay table to a result SEQ CLAUSE
 		 *
-		 * @param ct content should not be changed
+		 * @param rt the term list of result SEQ CLAUSE
+		 * @param resultTable time delay table of result SEQ CLAUSE 
+		 * @param ct the term list of current SEQ CLAUSE, its content should not be changed
+		 * @param currentTable time delay table of current SEQ CLAUSE
 		 */
-		private void appendSeqClauses(Term endEvent, List<Term> rt, TimeDelayTable resultTable, List<Term> ct, TimeDelayTable currentTable){
+		private void sequenceSeqClauses(Term endEvent, List<Term> rt, TimeDelayTable resultTable, List<Term> ct, TimeDelayTable currentTable){
 			
 
 			Term startEvent = null; 
@@ -1023,7 +999,7 @@ public class EPLTranslationProcessor {
 			
 			List<TimeDelayEntry> left = currentTable.getEntriesByStart(null);
 			
-			
+				/*//for test
 				if(endEvent != null){
 					System.out.println("endEvent "+ endEvent.getName());
 				}
@@ -1037,7 +1013,7 @@ public class EPLTranslationProcessor {
 					System.out.println("startEvent null");
 				}
 				System.out.println("endSize "+end.size());
-				System.out.println("leftSize "+left.size());
+				System.out.println("leftSize "+left.size());*/
 			
 			/*
 			 * null
@@ -1056,7 +1032,7 @@ public class EPLTranslationProcessor {
 					 * * -> A -> T
 					 * * -> T -> T
 					 */
-					if(BDPLTranslateUtil.getTermType(endEvent) == BDPLTranslateUtil.TERM_TIME){
+					if(EPLTranslateUtil.getTermType(endEvent) == EPLTranslateUtil.TERM_TIME){
 						/*
 						 * A -> *
 						 * T -> A -> *
@@ -1267,7 +1243,7 @@ public class EPLTranslationProcessor {
 						 */
 						else{
 						
-							if(BDPLTranslateUtil.getTermType(startEvent) == BDPLTranslateUtil.TERM_EVENT){
+							if(EPLTranslateUtil.getTermType(startEvent) == EPLTranslateUtil.TERM_EVENT){
 								end.get(0).setDuration(end.get(0).getDuration()+left.get(0).getDuration());
 								currentTable.getEntries().remove(left.get(0));
 							}
@@ -1313,7 +1289,7 @@ public class EPLTranslationProcessor {
 					/*
 					 * * -> (* -> A -> T)
 					 */
-					if(BDPLTranslateUtil.getTermType(endEvent) == BDPLTranslateUtil.TERM_TIME){
+					if(EPLTranslateUtil.getTermType(endEvent) == EPLTranslateUtil.TERM_TIME){
 							
 						for(int j = 0; j < ct.size(); j++){
 							rt.add(ct.get(j));
@@ -1402,7 +1378,7 @@ public class EPLTranslationProcessor {
 							 */
 							else{
 							
-								if(BDPLTranslateUtil.getTermType(startEvent) == BDPLTranslateUtil.TERM_EVENT){
+								if(EPLTranslateUtil.getTermType(startEvent) == EPLTranslateUtil.TERM_EVENT){
 									
 									end.get(0).setDuration(end.get(0).getDuration()+left.get(0).getDuration());
 									currentTable.getEntries().remove(left.get(0));
@@ -1492,16 +1468,16 @@ public class EPLTranslationProcessor {
 		 * @param seq the original sequence into which iseq is inserted
 		 * @param iseq the sequence to be inserted
 		 */
-		private List<SeqTerms> insertSeq(List<SeqTerms> seqs, SeqClause iseq) throws BDPLTranslateException{
-			List<SeqTerms> ret = new ArrayList<SeqTerms>();
+		private List<SequenceOption> insertSeq(List<SequenceOption> seqs, SeqClause iseq) throws EPLTranslateException{
+			List<SequenceOption> ret = new ArrayList<SequenceOption>();
 			
-			List<SeqTerms> temp = new ArrayList<SeqTerms>();
+			List<SequenceOption> temp = new ArrayList<SequenceOption>();
 			List<Term> iterms = iseq.getTerms();
 			
 			if(seqs.size() > 0){
 				// every sequence into which the iseq should be inserted
 				for(int i = 0; i < seqs.size(); i++){
-					SeqTerms seq = seqs.get(i);
+					SequenceOption seq = seqs.get(i);
 					// default start position for a iseq is 0
 					seq.setInsertIndex(0);
 					temp.add(seq);
@@ -1516,7 +1492,7 @@ public class EPLTranslationProcessor {
 					for(int j = 0; j < temp.size(); j++){
 						
 						if(ret.size() > MAX_NUM_SEQ_CLAUSE){
-							throw new BDPLTranslateException("The number of SEQ Clause is larger than "+MAX_NUM_SEQ_CLAUSE);
+							throw new EPLTranslateException("The number of SEQ Clause is larger than "+MAX_NUM_SEQ_CLAUSE);
 						}
 						
 						ret.add(temp.get(j));
@@ -1526,7 +1502,7 @@ public class EPLTranslationProcessor {
 			}
 			// when seqs is empty sequences, copy iseq as sequence
 			else{
-				ret.add(new SeqTerms(0, iseq));
+				ret.add(new SequenceOption(0, iseq));
 			}
 			
 			return ret;
@@ -1541,18 +1517,18 @@ public class EPLTranslationProcessor {
 		 * @return new sequences with inserted term
 		 * 
 		 */
-		private List<SeqTerms> insertTerm(List<SeqTerms> seqs, Term term){
+		private List<SequenceOption> insertTerm(List<SequenceOption> seqs, Term term){
 			
-			List<SeqTerms> ret = new ArrayList<SeqTerms>();
+			List<SequenceOption> ret = new ArrayList<SequenceOption>();
 			
 			// every sequence into which the term should be inserted
 			for(int i = 0; i < seqs.size(); i++){
-				SeqTerms seq = seqs.get(i);
+				SequenceOption seq = seqs.get(i);
 				int index = seq.getInsertIndex();
 				SeqClause ostrs = seq.getSequence();
 				List<Term> otrs = ostrs.getTerms();
 				
-					/*//test output
+					/*//for test
 					System.out.print("org seq: ");
 					for(int j = 0; j < otrs.size(); j++){
 						System.out.print(otrs.get(j).getType()+" ");
@@ -1572,7 +1548,7 @@ public class EPLTranslationProcessor {
 					}
 					
 					// add new sequence after insertion
-					SeqTerms instrs = new SeqTerms(j+1, strs);
+					SequenceOption instrs = new SequenceOption(j+1, strs);
 					ret.add(instrs);
 						
 						//System.out.println("add term "+term.getType()+" at "+j);
@@ -1590,7 +1566,10 @@ public class EPLTranslationProcessor {
 			return ret;
 		}
 		
-		private String getEPL(OrClause result, EPLTranslatorData data) throws BDPLTranslateException{
+		/*
+		 * Get EPL from standard expression.
+		 */
+		private String getEPL(OrClause result, EPLTranslatorData data) throws EPLTranslateException{
 			StringBuffer epl = new StringBuffer();
 			
 			epl.append(String.format(EPLConstants.SELECT, "*")+" \n");
@@ -1606,14 +1585,17 @@ public class EPLTranslationProcessor {
 					epl.append(String.format(EPLConstants.WINDOW_TUMBLING, wDuration));
 				}
 				else{
-					throw new BDPLTranslateException("Unsupported window type "+wType);
+					throw new EPLTranslateException("Unsupported window type "+wType);
 				}
 			}
 			
 			return epl.toString();
 		}
 		
-		private String getPatternExpression(OrClause result, EPLTranslatorData data) throws BDPLTranslateException{
+		/*
+		 * Get EPL of event pattern part. 
+		 */
+		private String getPatternExpression(OrClause result, EPLTranslatorData data) throws EPLTranslateException{
 			StringBuffer ret = new StringBuffer();
 			
 			NotTable notTable = data.getNotTable();
@@ -1623,27 +1605,34 @@ public class EPLTranslationProcessor {
 			List<SeqClause> seqcs = result.getSeqClauses();
 			
 			if(seqcs.size() > 0){
+					
+					//for test
+					System.out.println("\nTotal SEQ CLAUSE size: "+seqcs.size());
 				
-				System.out.println("\nSeq clause size: "+seqcs.size());
-				
-				for(int i = 0; i < seqcs.size(); i++){
-					System.out.println("TimeDelayTable "+i);
-					TimeDelayTable tdTable = seqcs.get(i).getTdTable();
-					if(tdTable != null){
-						List<TimeDelayEntry> entries = tdTable.getEntries();
-						
-						for(int j = 0; j < entries.size(); j++){
-							TimeDelayEntry en = entries.get(j);
-							String s = "null", e = "null";
-							if(en.getStart() != null)
-								s = en.getStart().getName();
-							if(en.getEnd() != null)
-								e = en.getEnd().getName();
-							System.out.println(s+" "+en.getDuration()+" "+e);
+					for(int i = 0; i < seqcs.size(); i++){
+						SeqClause seq = seqcs.get(i);
+						List<Term> ts = seq.getTerms();
+						System.out.println("\n"+i);
+						for(int j = 0; j < ts.size(); j++){
+							System.out.print(ts.get(j).getName()+" + ");
+						}
+						System.out.println("\nTimeDelayTable: ");
+						TimeDelayTable tdTable = seq.getTdTable();
+						if(tdTable != null){
+							List<TimeDelayEntry> entries = tdTable.getEntries();
+							
+							for(int j = 0; j < entries.size(); j++){
+								TimeDelayEntry en = entries.get(j);
+								String s = "null", e = "null";
+								if(en.getStart() != null)
+									s = en.getStart().getName();
+								if(en.getEnd() != null)
+									e = en.getEnd().getName();
+								System.out.println(s+" "+en.getDuration()+" "+e);
+							}
 						}
 					}
-				}
-				System.out.println();
+					System.out.println();
 				
 				/*
 				 * eIndex[i]: the last event tag number of the ith SEQ CLAUSE
@@ -1664,7 +1653,10 @@ public class EPLTranslationProcessor {
 			return ret.toString();
 		}
 		
-		private String getSeqClauseExpression(SeqClause seqc, NotTable notTable, int sIndex, int [] eIndexs, int [] nIndexs, String prologText) throws BDPLTranslateException{
+		/*
+		 * Get EPL of SEQ CLAUSE part.
+		 */
+		private String getSeqClauseExpression(SeqClause seqc, NotTable notTable, int sIndex, int [] eIndexs, int [] nIndexs, String prologText) throws EPLTranslateException{
 			StringBuffer ret = new StringBuffer();
 			List<Term> ltrs = seqc.getTerms();
 			Map<Term, Term> notList = new HashMap<Term, Term>();
@@ -1672,6 +1664,7 @@ public class EPLTranslationProcessor {
 			Stack<IEntry> openParaStack = new Stack<IEntry>();
 			IEntry stackTop = null;
 			StringBuffer sparqlText = new StringBuffer();
+			
 			// event tag and not tag
 			int eStart = 1, eIndex = 1, nStart = 1, nIndex = 1;
 			
@@ -1700,17 +1693,17 @@ public class EPLTranslationProcessor {
 			if(ltrs.size() > 0){
 				StringBuffer eParams = new StringBuffer();
 				
-				// only one term without being unioned by seq
+				// SEQ CLAUSE never be united by AND or SEQ
 				if(tdTable == null){
 					if(ltrs.size() > 1){
-						throw new BDPLTranslateException("Sequence clause has no time delay table");
+						throw new EPLTranslateException("One sequence clause has no time delay table");
 					}
 					else{
 						Term term = ltrs.get(0);
 						//System.out.print(EPLConstants.EVERY+" ");
 						ret.append(EPLConstants.EVERY+" ");
 						
-						if(BDPLTranslateUtil.getTermType(term) == BDPLTranslateUtil.TERM_TIME){
+						if(EPLTranslateUtil.getTermType(term) == EPLTranslateUtil.TERM_TIME){
 							//System.out.print(EPLConstants.TIMER_INTERVAL+"("+term.getDuration()+") ");
 							ret.append(String.format(EPLConstants.TIMER_INTERVAL, term.getDuration())+" ");
 						}
@@ -1753,7 +1746,7 @@ public class EPLTranslationProcessor {
 					 *  (...
 					 */
 					List<TimeDelayEntry> left = tdTable.getEntriesByStart(null);
-					BDPLTranslateUtil.sortTimeDelayEntryByEnd(left, seqc);
+					EPLTranslateUtil.sortTimeDelayEntryByEnd(left, seqc);
 					
 					for(int i = left.size()-1; i > -1 ; i--){
 						//System.out.print("( ");
@@ -1769,9 +1762,11 @@ public class EPLTranslationProcessor {
 					 */
 					Term term = ltrs.get(0);
 					
-					// ) -> term : time delay entries ending at term
+					/*
+					 *  ) -> term : time delay entries ending at term
+					 */
 					List<TimeDelayEntry> right = tdTable.getEntriesByEnd(term);
-					BDPLTranslateUtil.sortTimeDelayEntryByStart(right, seqc);
+					EPLTranslateUtil.sortTimeDelayEntryByStart(right, seqc);
 					
 					String firstEvery = EPLConstants.EVERY;
 					if(right.size() <= 1){
@@ -1797,16 +1792,16 @@ public class EPLTranslationProcessor {
 								firstEvery = "";
 							}
 							else{
-								throw new BDPLTranslateException("Time delays are overlapping");
+								throw new EPLTranslateException("Time delays are overlapping");
 							}
 						}
 					}
 					else{
-						throw new BDPLTranslateException("Time delays are duplicated at begin");
+						throw new EPLTranslateException("Time delays are duplicated at begin");
 					}
 					
 					boolean lastTermTime = false;
-					if(BDPLTranslateUtil.getTermType(term) == BDPLTranslateUtil.TERM_TIME){
+					if(EPLTranslateUtil.getTermType(term) == EPLTranslateUtil.TERM_TIME){
 						//System.out.print(EPLConstants.TIMER_INTERVAL+"("+term.getDuration()+") ");
 						ret.append(firstEvery+" "+String.format(EPLConstants.TIMER_INTERVAL, term.getDuration())+" ");
 						lastTermTime = true;
@@ -1836,7 +1831,7 @@ public class EPLTranslationProcessor {
 					boolean notOpenPara = false;
 					NotEntry entry = notTable.getEntryByNotStart(term);
 					if(entry != null){
-						if(BDPLTranslateUtil.getTermType(entry.getNot()) == BDPLTranslateUtil.TERM_TIME){
+						if(EPLTranslateUtil.getTermType(entry.getNot()) == EPLTranslateUtil.TERM_TIME){
 							openParaStack.push(entry);
 							stackTop = openParaStack.peek();
 							notOpenPara = true;
@@ -1859,9 +1854,11 @@ public class EPLTranslationProcessor {
 						
 						// last term -> ( term : time delay entries starting from last term
 						left = tdTable.getEntriesByStart(lTerm);
-						BDPLTranslateUtil.sortTimeDelayEntryByEnd(left, seqc);
+						EPLTranslateUtil.sortTimeDelayEntryByEnd(left, seqc);
 							
-							/*for(int j = left.size()-1; j >-1; j--){
+							/*
+							// for test
+							for(int j = left.size()-1; j >-1; j--){
 								TimeDelayEntry temp = left.get(j);
 								String s = "null", e = "null";
 								if(temp.getStart() != null){
@@ -1876,7 +1873,7 @@ public class EPLTranslationProcessor {
 						
 						// last term ) -> term : time delay entries ending at this term
 						right = tdTable.getEntriesByEnd(term);
-						BDPLTranslateUtil.sortTimeDelayEntryByStart(right, seqc);
+						EPLTranslateUtil.sortTimeDelayEntryByStart(right, seqc);
 							
 							/*for(int j = 0; j < right.size(); j++){
 								System.out.println(term.getName()+" end "+right.get(j).getStart().getName());
@@ -1903,7 +1900,7 @@ public class EPLTranslationProcessor {
 									
 									// add triple end '.'
 									String temp = sparqlText.toString().trim();
-									if(temp.charAt(temp.length()-1) != '.'){
+									if(temp.length() > 0 && temp.charAt(temp.length()-1) != '.'){
 										sparqlText.append(EPLConstants.TRIPLEEND+" ");
 									}
 									
@@ -1935,7 +1932,7 @@ public class EPLTranslationProcessor {
 							TimeDelayEntry temp = right.get(j);
 							if(temp == stackTop){
 								if(notOpenPara){
-									throw new BDPLTranslateException("Not time delay can not start from a time delay");
+									throw new EPLTranslateException("Not time delay can not start from a time delay");
 								}
 								
 								flag1 = true;
@@ -1951,7 +1948,7 @@ public class EPLTranslationProcessor {
 								}
 							}
 							else{
-								throw new BDPLTranslateException("Time delays are overlapping");
+								throw new EPLTranslateException("Time delays are overlapping");
 							}
 						}
 						
@@ -2001,7 +1998,7 @@ public class EPLTranslationProcessor {
 						 * 
 						 */
 						StringBuffer sparqlOptText = null;
-						if(BDPLTranslateUtil.getTermType(term) == BDPLTranslateUtil.TERM_TIME){
+						if(EPLTranslateUtil.getTermType(term) == EPLTranslateUtil.TERM_TIME){
 							//System.out.print(EPLConstants.TIMER_INTERVAL+"("+term.getDuration()+") ");
 							ret.append(String.format(EPLConstants.TIMER_INTERVAL, term.getDuration())+" "); 
 							thisTermTime = true;
@@ -2021,7 +2018,8 @@ public class EPLTranslationProcessor {
 							
 							// add triple end '.'
 							String temp = sparqlText.toString().trim();
-							if(temp.charAt(temp.length()-1) != '.'){
+							
+							if(temp.length() > 0 && temp.charAt(temp.length()-1) != '.'){
 								sparqlText.append(EPLConstants.TRIPLEEND+" ");
 							}
 							
@@ -2038,7 +2036,7 @@ public class EPLTranslationProcessor {
 						//XXX check
 						if(!lastTermTime && !thisTermTime){
 							if(flag1 && flag2){
-								throw new BDPLTranslateException("Time delays are overlapping");
+								throw new EPLTranslateException("Time delays are overlapping");
 							}
 						}
 						lastTermTime = thisTermTime;
@@ -2074,7 +2072,7 @@ public class EPLTranslationProcessor {
 							}
 							// add triple end '.'
 							String temp = sparqlOptText.toString().trim();
-							if(temp.charAt(temp.length()-1) != '.'){
+							if(temp.length() > 0 && temp.charAt(temp.length()-1) != '.'){
 								sparqlOptText.append(EPLConstants.TRIPLEEND+" ");
 							}
 							
@@ -2100,7 +2098,7 @@ public class EPLTranslationProcessor {
 						 */
 						NotEntry notTime = notTable.getEntryByNotEnd(term);
 						if(notTime != null){
-							if(BDPLTranslateUtil.getTermType(notTime.getNot()) == BDPLTranslateUtil.TERM_TIME){
+							if(EPLTranslateUtil.getTermType(notTime.getNot()) == EPLTranslateUtil.TERM_TIME){
 								if(notTime == stackTop){
 									//System.out.print(") "+EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+EPLConstants.TIMER_INTERVAL+"("+notTime.getNot().getDuration()+") ");
 									ret.append(") "+EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+String.format(EPLConstants.TIMER_INTERVAL, notTime.getNot().getDuration())+" ");
@@ -2113,7 +2111,7 @@ public class EPLTranslationProcessor {
 									}
 								}
 								else{
-									throw new BDPLTranslateException("Time delays are overlapping");
+									throw new EPLTranslateException("Time delays are overlapping");
 								}
 							}
 						}
@@ -2121,7 +2119,7 @@ public class EPLTranslationProcessor {
 						notOpenPara = false;
 						entry = notTable.getEntryByNotStart(term);
 						if(entry != null){
-							if(BDPLTranslateUtil.getTermType(entry.getNot()) == BDPLTranslateUtil.TERM_TIME){
+							if(EPLTranslateUtil.getTermType(entry.getNot()) == EPLTranslateUtil.TERM_TIME){
 								openParaStack.push(entry);
 								stackTop = openParaStack.peek();
 								notOpenPara = true;
@@ -2136,14 +2134,14 @@ public class EPLTranslationProcessor {
 					
 					// term -> ) : time delay entries ending at end
 					right = tdTable.getEntriesByEnd(null);
-					BDPLTranslateUtil.sortTimeDelayEntryByStart(right, seqc);
+					EPLTranslateUtil.sortTimeDelayEntryByStart(right, seqc);
 						/*for(int i = 0; i < right.size(); i++){
 							System.out.println("null end "+right.get(i).getStart().getName());
 						}*/
 					
 					// term -> ( : time delay entries starting from the last term
 					left = tdTable.getEntriesByStart(term);
-					BDPLTranslateUtil.sortTimeDelayEntryByEnd(left, seqc);
+					EPLTranslateUtil.sortTimeDelayEntryByEnd(left, seqc);
 						
 						//System.out.println(term.getName()+" start "+left.size());
 					if(left.size() <= 1){
@@ -2156,7 +2154,7 @@ public class EPLTranslationProcessor {
 						}
 					}
 					else{
-						throw new BDPLTranslateException("Time delays are duplicated at end");
+						throw new EPLTranslateException("Time delays are duplicated at end");
 					}
 					
 					
@@ -2174,7 +2172,7 @@ public class EPLTranslationProcessor {
 							}
 						}
 						else{
-							throw new BDPLTranslateException("Time delays are overlapping");
+							throw new EPLTranslateException("Time delays are overlapping");
 						}
 					}
 				}
@@ -2182,7 +2180,7 @@ public class EPLTranslationProcessor {
 			// only one connected time delay, must have time delay table
 			else{
 				if(tdTable == null){
-					throw new BDPLTranslateException("Null seq clause expession");
+					throw new EPLTranslateException("Null seq clause expession");
 				}
 				else{
 					TimeDelayEntry temp = tdTable.getEntries().get(0);
@@ -2196,6 +2194,50 @@ public class EPLTranslationProcessor {
 		}
 		
 		
+		/*
+		 * (AND CLAUSE (op AND CLAUSE)*):=combi (or (AND CLAUSE (op AND CLAUSE)*))* = ( AND CLAUSE (or AND CLAUSE)*):=exp (op (AND CLAUSE (or AND CLAUSE)*))*
+		 * 
+		 * 
+		 * Find every combination composed of one SeqClause from each expression by recursive method calling.
+		 * 
+		 * @param combi a combination of and terms from each exps
+		 * @param exps 
+		 
+		private void combineSeqClauseRecursive(List<SeqClause> combination, List<OrClause> exps, int depth, int type, OrClause result) throws EPLTranslateException{
+			
+			if(exps.size() > 0){
+				// make combination of and terms from every expansion
+				if(depth < exps.size()){
+					OrClause otrs = exps.get(depth);
+					
+					for(int i = 0; i < otrs.getSeqClauses().size(); i++){
+						SeqClause seqc = otrs.getSeqClauses().get(i);
+						// add the next and terms in this level
+						combination.add(seqc);
+						// go to the next depth
+						combineSeqClauseRecursive(combination, exps, depth+1, type, result);
+						// remove the old and terms in this level
+						combination.remove(combination.size()-1);
+					}
+				}
+				else{
+					switch(type){
+						case 1:{
+							// (SEQ CLAUSE (seq SEQ CLAUSE)*) (or (SEQ CLAUSE (seq SEQ CLAUSE)*)) = (SEQ CLAUSE (or SEQ CLAUSE)*)(seq (SEQ CLAUSE (or SEQ CLAUSE)*))*
+							expand1(combination, result);
+							break;
+						}
+						case 2:{
+							// AND CLAUSE (or AND CLAUSE)* = (AND CLAUSE (or AND CLAUSE)*)(and (AND CLAUSE (or AND CLAUSE)*))*
+							expand2(combination, result);
+							break;
+						}
+					}
+				}
+			}
+		}*/
+		
+
 		
 		/*
 		 * Make a time delay table for a SEQ CLAUSE
@@ -2461,12 +2503,12 @@ public class EPLTranslationProcessor {
 		}*/
 		
 		
-		private class SeqTerms{
+		private class SequenceOption{
 			private int insertIndex;
 			
 			private final SeqClause sequence;
 			
-			public SeqTerms(int i, SeqClause seq){
+			public SequenceOption(int i, SeqClause seq){
 				insertIndex = i;
 				sequence = seq;
 			}

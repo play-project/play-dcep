@@ -4,7 +4,11 @@
 package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 /**
- * The Data structure for describing time delays: START -> TIME DELAY -> END
+ * This class describes time delays: START -> DURATION -> END.
+ * The DURATION starts direct after event START happening and ends before
+ * event END occuring.
+ * 
+ *  
  * 
  * @author ningyuan 
  * 

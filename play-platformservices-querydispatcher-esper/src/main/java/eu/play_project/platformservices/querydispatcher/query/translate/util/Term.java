@@ -5,14 +5,13 @@ package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 
 /**
+ * Term is a basic component of an expression. It could be either simple event
+ * with an attribute sparqlText or a time interval with an attribute duration.
+ * 
+ * 
+ * 
  * @author ningyuan
  *
- */
-
-/*
- * event
- * time interval
- * 
  */
 public class Term {
 	

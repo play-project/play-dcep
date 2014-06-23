@@ -4,6 +4,10 @@
 package eu.play_project.platformservices.querydispatcher.query.translate.util;
 
 /**
+ * This class describes a pattern A -> B and not C, which Term A
+ * is notStart, B is notEnd and C is not.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Apr 4, 2014

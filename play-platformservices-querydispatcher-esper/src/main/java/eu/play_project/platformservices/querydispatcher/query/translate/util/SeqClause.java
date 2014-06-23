@@ -8,12 +8,20 @@ import java.util.List;
 
 
 /**
+ * An SeqClause is an expression of many Term connected with operator "seq".
+ * On a SeqClause a TimeDelayTable may be attached describing all time delays
+ * between events.
+ * 
+ * SeqClause := Term ( seq Term )*
+ * 
+ * 
+ * 
  * @author ningyuan
  *
  */
 public class SeqClause {
 	
-private List<Term> terms = new ArrayList<Term>();
+	private List<Term> terms = new ArrayList<Term>();
 	
 	private TimeDelayTable tdTable;
 	

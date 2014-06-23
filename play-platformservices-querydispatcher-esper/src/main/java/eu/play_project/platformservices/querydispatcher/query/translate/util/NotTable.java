@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This is a data structure describing all NOT patterns in an 
+ * expression.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Apr 4, 2014

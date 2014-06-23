@@ -7,6 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class is a data structure for describing all time delays in
+ * a SeqClause.
+ * 
+ * A -> 2 -> B -> (C -> D) and 3 -> E
+ * 
+ * 
  * @author ningyuan 
  * 
  * Apr 7, 2014

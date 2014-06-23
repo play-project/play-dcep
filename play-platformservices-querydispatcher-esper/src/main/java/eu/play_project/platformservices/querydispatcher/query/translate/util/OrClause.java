@@ -8,6 +8,12 @@ import java.util.List;
 
 
 /**
+ * An OrClause is an expression of many SeqClause connected with operator "or".
+ * 
+ * OrClause := SeqClause ( or SeqClause )*
+ * 
+ * 
+ * 
  * @author ningyuan
  *
  */

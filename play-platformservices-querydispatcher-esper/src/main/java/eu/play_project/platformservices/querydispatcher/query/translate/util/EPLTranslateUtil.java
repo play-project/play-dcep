@@ -111,12 +111,13 @@ public class EPLTranslateUtil {
 	}
 	
 	/**
-	 * 
+	 * Reduce time delay at the start of pattern. For example, having (T1 -> A) and T2 -> B
+	 * if T1 >= T2, T2 could be reduced.
 	 * 
 	 * @param entries
 	 * @param seqc the content should not be changed
 	 */
-	public static void reduceStartDelayEntry(List<TimeDelayEntry> entries, SeqClause seqc, boolean dele, TimeDelayTable tdTable){
+	public static void reduceStartDelayEntry(List<TimeDelayEntry> entries, SeqClause seqc, boolean delete, TimeDelayTable tdTable){
 		
 		// sort time delay entries ascendingly by the sequence of end term in terms
 		List<Term> terms = seqc.getTerms();
@@ -154,7 +155,7 @@ public class EPLTranslateUtil {
 			}
 		}
 		
-		if(dele){
+		if(delete){
 			List<TimeDelayEntry> tdEntries = tdTable.getEntries();
 			for(int i = 0; i < removeIndex.size(); i++){
 				tdEntries.remove(entries.get(removeIndex.get(i)));
@@ -172,7 +173,7 @@ public class EPLTranslateUtil {
 	 * @param entries
 	 * @param seqc the content should not be changed
 	 */
-	public static void reduceEndDelayEntry(List<TimeDelayEntry> entries, SeqClause seqc, boolean dele, TimeDelayTable tdTable){
+	public static void reduceEndDelayEntry(List<TimeDelayEntry> entries, SeqClause seqc, boolean delete, TimeDelayTable tdTable){
 		
 		// sort time delay entries ascendingly by the sequence of end term in terms
 		List<Term> terms = seqc.getTerms();
@@ -210,7 +211,7 @@ public class EPLTranslateUtil {
 			}
 		}
 		
-		if(dele){
+		if(delete){
 			List<TimeDelayEntry> tdEntries = tdTable.getEntries();
 			for(int i = 0; i < removeIndex.size(); i++){
 				tdEntries.remove(entries.get(removeIndex.get(i)));
