@@ -8,16 +8,16 @@ PREFIX :       <http://events.event-processing.org/types/>
     :e :date ?pub_date 
  }
  WHERE{
- 	
 	EVENT ?e1 {
 		?e1 rdf:type :Temperature .
 		?e1 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
 		?e1 :current ?temperature .
 		?e1 :date ?pub_date 
 	}
-	AND
+	SEQ
 	EVENT ?e2 {
 		?e2 rdf:type :Speed .
 		?e2 :stream <http://streams.event-processing.org/ids/Speed#stream> .
+		
 	}
-}
+ }

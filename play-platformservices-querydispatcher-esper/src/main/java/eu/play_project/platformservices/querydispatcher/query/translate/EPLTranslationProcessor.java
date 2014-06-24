@@ -1665,7 +1665,12 @@ public class EPLTranslationProcessor {
 			IEntry stackTop = null;
 			StringBuffer sparqlText = new StringBuffer();
 			
-			// event tag and not tag
+			/*
+			 * eStart: start number of event tag in this SEQ CLAUSE
+			 * eIndex: the largest event tag number
+			 * nStart: start number of not event tag in this SEQ CLAUSE
+			 * nIndex: the largest not event tag number
+			 */
 			int eStart = 1, eIndex = 1, nStart = 1, nIndex = 1;
 			
 			int i1 = sIndex-1;
@@ -1773,12 +1778,6 @@ public class EPLTranslationProcessor {
 						if(right.size() == 1){
 							if(right.get(0) == stackTop){
 								
-								
-								//System.out.print(EPLConstants.EVERY+" ");
-								//System.out.print(EPLConstants.TIMER_INTERVAL+"("+right.get(0).getDuration()+") ) ");
-								//System.out.print(EPLConstants.OPERATOR_SEQ+" ");
-								
-								//ret.append(EPLConstants.EVERY+" "+EPLConstants.TIMER_INTERVAL+"("+right.get(0).getDuration()+") ) "+EPLConstants.OPERATOR_SEQ+" ");
 								ret.append(firstEvery+" "+String.format(EPLConstants.TIMER_INTERVAL, right.get(0).getDuration())+") "+EPLConstants.OPERATOR_SEQ+" ");
 								
 								openParaStack.pop();
@@ -1886,17 +1885,17 @@ public class EPLTranslationProcessor {
 								lastTermTime = true;
 								
 								interval = EPLConstants.OPERATOR_SEQ+" "+String.format(EPLConstants.TIMER_INTERVAL, left.get(0).getDuration())+" ";
-								//interval = "-> interval "+left.get(0).getDuration()+" ";
 								
 								for(Term not : notList.values()){
 									interval += EPLConstants.OPERATOR_AND+" "+EPLConstants.OPERATOR_NOT+" "+EPLConstants.NOTEVENTTAG+nIndex+"="+not.getName();
 									
 									eParams.append(", {");
 									int k = eStart;
-									for(; k < eIndex-1; k++){
+										
+									for(; k < eIndex; k++){
 										eParams.append(EPLConstants.EVENTTAG+k+",");
 									}
-									eParams.append(EPLConstants.EVENTTAG+k);
+									
 									
 									// add triple end '.'
 									String temp = sparqlText.toString().trim();
@@ -1906,7 +1905,7 @@ public class EPLTranslationProcessor {
 									
 									int se = sparqlText.length();
 									sparqlText.append(not.getSparqlText());
-									interval += ("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+"}) ");
+									interval += ("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString()+EPLConstants.NOTEVENTTAG+nIndex+"}")+") ");
 									sparqlText.delete(se, sparqlText.length());
 									
 									nIndexs[sIndex] = nIndex;
@@ -1936,7 +1935,7 @@ public class EPLTranslationProcessor {
 								}
 								
 								flag1 = true;
-								//System.out.print(") "+EPLConstants.OPERATOR_AND+" "+EPLConstants.TIMER_INTERVAL+"("+temp.getDuration()+") ");
+								
 								ret.append(") "+EPLConstants.OPERATOR_AND+" "+String.format(EPLConstants.TIMER_INTERVAL, temp.getDuration())+" ");
 	
 								openParaStack.pop();
@@ -1997,14 +1996,14 @@ public class EPLTranslationProcessor {
 						 * last term and not ... ) and time:interval -> ... -> ( this term
 						 * 
 						 */
-						StringBuffer sparqlOptText = null;
+						StringBuffer sparqlTextNOT = new StringBuffer(sparqlText);
 						if(EPLTranslateUtil.getTermType(term) == EPLTranslateUtil.TERM_TIME){
-							//System.out.print(EPLConstants.TIMER_INTERVAL+"("+term.getDuration()+") ");
+							
 							ret.append(String.format(EPLConstants.TIMER_INTERVAL, term.getDuration())+" "); 
 							thisTermTime = true;
 						}
 						else{
-							//System.out.print(EPLConstants.EVENTTAG+eIndex+"=");
+							
 							ret.append(EPLConstants.EVENTTAG+eIndex+"=");
 							eIndexs[sIndex] = eIndex;
 							eIndex++;
@@ -2023,11 +2022,10 @@ public class EPLTranslationProcessor {
 								sparqlText.append(EPLConstants.TRIPLEEND+" ");
 							}
 							
-							sparqlOptText = new StringBuffer(sparqlText);
-							sparqlOptText.append(String.format(BDPLConstants.SPARQL_OPTIONAL_CLAUSE, term.getSparqlText()));
+							//sparqlTextNOT = new StringBuffer(sparqlText);
+							//sparqlTextNOT.append(String.format(BDPLConstants.SPARQL_OPTIONAL_CLAUSE, term.getSparqlText()));
 							
 							sparqlText.append(term.getSparqlText());
-							//System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							
 							eParams.delete(0, eParams.length());
@@ -2055,32 +2053,27 @@ public class EPLTranslationProcessor {
 							eParams.append(", {");
 							int k =eStart;
 							if(thisTermTime){
-								for(; k < eIndex-1; k++){
+								for(; k < eIndex; k++){
 									eParams.append(EPLConstants.EVENTTAG+k+",");
 								}
 							}
 							else{
-								for(; k < eIndex-2; k++){
+								for(; k < eIndex-1; k++){
 									eParams.append(EPLConstants.EVENTTAG+k+",");
 								}
 							}
-							eParams.append(EPLConstants.EVENTTAG+k);
 							
-							// use optional graph of this term
-							if(sparqlOptText == null){
-								sparqlOptText = new StringBuffer(sparqlText);
-							}
+				
 							// add triple end '.'
-							String temp = sparqlOptText.toString().trim();
+							String temp = sparqlTextNOT.toString().trim();
 							if(temp.length() > 0 && temp.charAt(temp.length()-1) != '.'){
-								sparqlOptText.append(EPLConstants.TRIPLEEND+" ");
+								sparqlTextNOT.append(EPLConstants.TRIPLEEND+" ");
 							}
 							
-							int se = sparqlOptText.length();
-							sparqlOptText.append(not.getSparqlText());
-							//System.out.print("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+") ");
-							ret.append("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlOptText), eParams.toString()+","+EPLConstants.NOTEVENTTAG+nIndex)+"}) ");
-							sparqlOptText.delete(se, sparqlOptText.length());
+							int se = sparqlTextNOT.length();
+							sparqlTextNOT.append(not.getSparqlText());
+							ret.append("("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlTextNOT), eParams.toString()+EPLConstants.NOTEVENTTAG+nIndex+"}")+") ");
+							sparqlTextNOT.delete(se, sparqlTextNOT.length());
 							
 							nIndexs[sIndex] = nIndex;
 							nIndex++;
