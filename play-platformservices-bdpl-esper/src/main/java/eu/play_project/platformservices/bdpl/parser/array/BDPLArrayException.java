@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.array;
+package eu.play_project.platformservices.bdpl.parser.array;
 
 /**
  * @author ningyuan 

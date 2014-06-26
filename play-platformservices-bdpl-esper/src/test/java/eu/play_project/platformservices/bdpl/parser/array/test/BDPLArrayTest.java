@@ -1,15 +1,17 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.array.test;
+package eu.play_project.platformservices.bdpl.parser.array.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import eu.play_project.platformservices.querydispatcher.query.array.BDPLArray;
-import eu.play_project.platformservices.querydispatcher.query.array.BDPLArrayElement;
-import eu.play_project.platformservices.querydispatcher.query.array.BDPLArrayException;
+import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayElement;
+import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayException;
+
+
 
 /**
  * @author ningyuan 

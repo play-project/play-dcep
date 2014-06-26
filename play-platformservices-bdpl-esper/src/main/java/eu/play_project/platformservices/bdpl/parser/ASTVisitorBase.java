@@ -873,6 +873,11 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		 *  Added from Ningyuan 
 		 *
 		 */
+		@Override
+		public Object visit(ASTArrayVariable node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
 		
 		@Override
 		public Object visit(ASTArrayClause node, Object data)
@@ -880,6 +885,18 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 			return node.childrenAccept(this, data);
 		}
 
+		@Override
+		public Object visit(ASTDynamicArrayDef1 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTStaticArrayDef1 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
 		@Override
 		public Object visit(ASTArrayDecl node, Object data)
 				throws VisitorException {
