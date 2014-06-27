@@ -1928,7 +1928,8 @@ void ArrayVariable() :
 	Token t;
 }
 {
-	Var() <LBRACK> [t=<INTEGER> {jjtThis.setSize(t.image);}] <RBRACK>
+	Var() 
+	(<LPAREN> t=<INTEGER> {jjtThis.setSize(t.image);} <RPAREN> | <NIL>) 
 }
 
 void ArrayClause() :
@@ -1957,7 +1958,7 @@ void DynamicArrayDef1() :
 void StaticArrayDef1() : 
 {}
 {
-	<LBRACE> SelectQuery() <RBRACE>
+	<LPAREN> (String())+ <RPAREN>
 }
 
 void BDPLWhereClause() :

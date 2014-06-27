@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.bdpl.parser.array;
+package eu.play_project.platformservices.bdpl.parser.util;
 
 /**
  * @author ningyuan 

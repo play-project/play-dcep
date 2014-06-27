@@ -16,6 +16,9 @@ public class BDPLArrayElement {
 	private String content;
 	
 	public BDPLArrayElement(String content){
+		if(content == null){
+			throw new IllegalArgumentException();
+		}
 		this.content = content;
 	}
 	
@@ -24,6 +27,9 @@ public class BDPLArrayElement {
 	}
 	
 	public void setContent(String content){
+		if(content == null){
+			throw new IllegalArgumentException();
+		}
 		this.content = content;
 	}
 

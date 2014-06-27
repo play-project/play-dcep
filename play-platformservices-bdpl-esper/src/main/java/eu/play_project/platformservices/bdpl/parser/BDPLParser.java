@@ -28,6 +28,10 @@ import org.openrdf.query.parser.ParsedUpdate;
 import org.openrdf.query.parser.QueryParser;
 import org.openrdf.query.parser.QueryParserFactory;
 
+import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.util.ArrayTable;
+import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
+
 
 
 
@@ -93,6 +97,13 @@ public class BDPLParser implements QueryParser {
 				Dataset dataset = DatasetDeclProcessor.process(qc);
 				if (dataset != null) {
 					query.setDataset(dataset);
+				}
+				
+				ArrayTable arrayTable = VarProcessor.process(qc);
+				System.out.println("ArrayTable: ");
+				for(String key : arrayTable.keySet()){
+					ArrayTableEntry arrayEntry = arrayTable.get(key);
+					System.out.println(key+" "+arrayEntry.getSource());
 				}
 				
 				return query;

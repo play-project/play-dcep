@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayElement;
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayException;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 
 
 
@@ -21,16 +21,17 @@ import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayException;
  */
 public class BDPLArrayTest {
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void testStaticArray1() {
-		BDPLArray sArray = new BDPLArray(null);
-	}
 	
 	@Test(expected = BDPLArrayException.class)
-	public void testStaticArray2() throws BDPLArrayException {
+	public void testStaticArray1() throws BDPLArrayException {
 		BDPLArrayElement head = new BDPLArrayElement("1");
 		BDPLArray sArray = new BDPLArray(head);
 		sArray.write("2");
+	}
+	
+	@Test
+	public void testStaticArray2() {
+		BDPLArray sArray = new BDPLArray(null);
 	}
 	
 	@Test
@@ -67,8 +68,14 @@ public class BDPLArrayTest {
 		BDPLArray dArray = new BDPLArray(1, head);
 	}
 	
-	@Test
+	@Test(expected = BDPLArrayException.class)
 	public void testDynamicArray3() throws BDPLArrayException {
+		BDPLArray dArray = new BDPLArray(1, null);
+		dArray.write(new String[]{"1", "2"});
+	}
+	
+	@Test
+	public void testDynamicArray4() throws BDPLArrayException {
 		BDPLArray dArray = new BDPLArray(1, null);
 		dArray.write("1");
 		String[] result = dArray.read();
@@ -82,7 +89,7 @@ public class BDPLArrayTest {
 	}
 	
 	@Test
-	public void testDynamicArray4() throws BDPLArrayException {
+	public void testDynamicArray5() throws BDPLArrayException {
 		BDPLArray dArray = new BDPLArray(2, null);
 		dArray.write("1");
 		String[] result = dArray.read();
@@ -98,5 +105,35 @@ public class BDPLArrayTest {
 		result = dArray.read();
 		expected = new String[] {"2", "3"};
 		assertArrayEquals(expected, result);
+	}
+	
+	@Test
+	public void testDynamicArray6() throws BDPLArrayException {
+		BDPLArray dArray = new BDPLArray(4, null);
+		dArray.write(new String[]{"1", "2"});
+		String[] result = dArray.read();
+		String[] expected = new String[] {"1", "2"};
+		assertArrayEquals(expected, result);
+		
+		dArray.write(new String[]{"3"});
+		result = dArray.read();
+		expected = new String[] {"1", "2", "3"};
+		assertArrayEquals(expected, result);
+		
+	}
+	
+	@Test
+	public void testDynamicArray7() throws BDPLArrayException {
+		BDPLArray dArray = new BDPLArray(4, null);
+		dArray.write("1");
+		String[] result = dArray.read();
+		String[] expected = new String[] {"1"};
+		assertArrayEquals(expected, result);
+		
+		dArray.write(new String[]{"2", "3"});
+		result = dArray.read();
+		expected = new String[] {"1", "2", "3"};
+		assertArrayEquals(expected, result);
+		
 	}
 }
