@@ -1923,6 +1923,16 @@ void Modify() :
 }
 
 // ningyuan added
+void SubConstructQuery() : // subconstruct does not accept subconstruct
+{}
+{
+	Construct()
+	( DatasetClause() )*
+	BDPLWhereClause()
+	SolutionModifier()
+	[BindingsClause()]
+} 
+
 void ArrayVariable() :
 {
 	Token t;
@@ -1943,7 +1953,7 @@ void ArrayClause() :
 void ArrayDecl() :
 {}
 {
-	( DynamicArrayDef1() | StaticArrayDef1() )
+	( LOOKAHEAD(2) ( DynamicArrayDef1() | DynamicArrayDef2()) | StaticArrayDef1() | StaticArrayDef2() )
 	<AS>
 	ArrayVariable()
 	<DOT>
@@ -1955,10 +1965,26 @@ void DynamicArrayDef1() :
 	[<CHECKED> {jjtThis.setChecked(true);}] Var() 
 }
 
+void DynamicArrayDef2() : 
+{}
+{
+	<LBRACE>
+	SubConstructQuery()
+	<RBRACE>
+}
+
 void StaticArrayDef1() : 
 {}
 {
 	<LPAREN> (String())+ <RPAREN>
+}
+
+void StaticArrayDef2() :
+{}
+{
+	<LBRACE>
+	SelectQuery()
+	<RBRACE>
 }
 
 void BDPLWhereClause() :

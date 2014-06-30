@@ -28,7 +28,6 @@ import org.openrdf.query.parser.ParsedUpdate;
 import org.openrdf.query.parser.QueryParser;
 import org.openrdf.query.parser.QueryParserFactory;
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.ArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
 

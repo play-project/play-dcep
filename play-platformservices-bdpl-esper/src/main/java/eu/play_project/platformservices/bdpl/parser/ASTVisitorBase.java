@@ -892,13 +892,31 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		}
 		
 		@Override
+		public Object visit(ASTDynamicArrayDef2 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
 		public Object visit(ASTStaticArrayDef1 node, Object data)
 				throws VisitorException {
 			return node.childrenAccept(this, data);
 		}
 		
 		@Override
+		public Object visit(ASTStaticArrayDef2 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
 		public Object visit(ASTArrayDecl node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTSubConstructQuery node, Object data) 
 				throws VisitorException {
 			return node.childrenAccept(this, data);
 		}

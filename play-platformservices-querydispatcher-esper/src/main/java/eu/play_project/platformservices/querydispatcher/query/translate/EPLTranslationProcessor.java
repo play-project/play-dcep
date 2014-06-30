@@ -22,14 +22,13 @@ import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
 import org.openrdf.query.parser.bdpl.TupleExprBuilder;
 import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
 import org.openrdf.query.parser.bdpl.ast.ASTA;
+import org.openrdf.query.parser.bdpl.ast.ASTArrayClause;
 import org.openrdf.query.parser.bdpl.ast.ASTB;
-import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
-import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTRealTimeEventQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTString;
@@ -68,11 +67,11 @@ import eu.play_project.platformservices.querydispatcher.query.translate.util.Tim
  */
 public class EPLTranslationProcessor {
 	
-	public static String process(ASTOperationContainer qc)
+	public static String process(ASTOperationContainer qc, String prologText)
 			throws MalformedQueryException{
 		EPLTranslator translator = new EPLTranslator();
 		
-		EPLTranslatorData data = new EPLTranslatorData();
+		EPLTranslatorData data = new EPLTranslatorData(prologText);
 		
 		try {
 			qc.jjtAccept(translator, data);
@@ -87,8 +86,6 @@ public class EPLTranslationProcessor {
 		
 		private NotTable notTable = new NotTable();
 		
-		private StringBuffer prologText = new StringBuffer();
-		
 		/*
 		 * temp variable for saving the Sparql text of each event
 		 */
@@ -97,6 +94,12 @@ public class EPLTranslationProcessor {
 		private long windowDuration = -1l;
 		
 		private String windowType = null;
+		
+		private String prologText;
+		
+		public EPLTranslatorData(String p){
+			prologText = p;
+		}
 		
 		public void setWindowParam(long d, String t){
 			windowDuration = d;
@@ -119,7 +122,7 @@ public class EPLTranslationProcessor {
 			return eventClauseText;
 		}
 		
-		public StringBuffer getPrologText(){
+		public String getPrologText(){
 			return prologText;
 		}
 	}
@@ -131,66 +134,14 @@ public class EPLTranslationProcessor {
 		String epl = null;
 		
 		@Override
-		public Object visit(ASTPrefixDecl node, Object data)
+		public Object visit(ASTArrayClause node, Object data)
 				throws VisitorException
 		{
-			Object ret = super.visit(node, data);
-			
 			/*
-			 * Get the prefix in prolog  
+			 * skip array declaration
 			 */
-			StringBuffer prologText = ((EPLTranslatorData)data).getPrologText();
-			Token token = node.jjtGetFirstToken();
-			
-			boolean nullToken = false; 
-			for(; token != node.jjtGetLastToken(); ){
-				if(token != null){
-					prologText.append(token.image+" ");
-					token = token.next;
-				}
-				else{
-					nullToken = true;
-					break;
-				}
-			}
-			if(!nullToken && token != null){
-				prologText.append(token.image+" ");
-			}
-				
-			return ret;
+			return data;
 		}
-		
-		@Override
-		public Object visit(ASTBaseDecl node, Object data)
-				throws VisitorException
-		{
-			Object ret = super.visit(node, data);
-			
-			/*
-			 * Get the base in prolog  
-			 */
-			StringBuffer prologText = ((EPLTranslatorData)data).getPrologText();
-			Token token = node.jjtGetFirstToken();
-			
-			boolean nullToken = false; 
-			for(; token != node.jjtGetLastToken(); ){
-				if(token != null){
-					prologText.append(token.image+" ");
-					token = token.next;
-				}
-				else{
-					nullToken = true;
-					break;
-				}
-			}
-			if(!nullToken && token != null){
-				prologText.append(token.image+" ");
-			}
-				
-			return ret;
-		}
-		
-		
 		
 		@Override
 		public Object visit(ASTRealTimeEventQuery node, Object data)
@@ -480,7 +431,7 @@ public class EPLTranslationProcessor {
 			/*
 			 * Get the sparql text of this event, !!! pay attention to the grammar  
 			 */
-			StringBuffer prologText = ((EPLTranslatorData)data).getPrologText();
+			String prologText = ((EPLTranslatorData)data).getPrologText();
 			StringBuffer eventClauseText = ((EPLTranslatorData)data).getEventClauseText();
 			Token token = node.jjtGetFirstToken();
 			for(int i = 0; i < 3; i++){
@@ -497,7 +448,7 @@ public class EPLTranslationProcessor {
 			OrClause expression;
 			try{
 				
-				Term term = new Term(getEventType(prologText.toString(), eventClauseText.toString()));
+				Term term = new Term(getEventType(prologText, eventClauseText.toString()));
 				term.setSparqlText(processSparql(eventClauseText.toString()));
 				eventClauseText.delete(0, eventClauseText.length());
 				

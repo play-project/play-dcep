@@ -87,9 +87,9 @@ public class EPLTranslator implements QueryParser{
 					
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
 					
-					BDPLSyntaxCheckProcessor.process(qc);
+					String prologText = BDPLSyntaxCheckProcessor.process(qc);
 					
-					System.out.println(EPLTranslationProcessor.process(qc)+"\n");
+					System.out.println(EPLTranslationProcessor.process(qc, prologText)+"\n");
 					//System.out.println(EPLListenerProcessor.process(qc)+"\n");
 				}
 				else if (queryNode instanceof ASTAskQuery) {

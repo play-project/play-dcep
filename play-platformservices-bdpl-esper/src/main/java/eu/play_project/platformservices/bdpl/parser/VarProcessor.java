@@ -7,11 +7,14 @@ import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayVariable;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef1;
+import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef2;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTStaticArrayDef1;
+import org.openrdf.query.parser.bdpl.ast.ASTStaticArrayDef2;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
 import org.openrdf.query.parser.bdpl.ast.ArrayDef;
 import org.openrdf.query.parser.bdpl.ast.Node;
+import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
@@ -33,16 +36,35 @@ public class VarProcessor {
 			throws MalformedQueryException{
 		VarTableCreator vtCreator = new VarTableCreator();
 		
-		ArrayTable varTable = new ArrayTable();
+		VarTableCreatorData data = new VarTableCreatorData();
 		
 		try {
-			qc.jjtAccept(vtCreator, varTable);
-			return varTable;
+			qc.jjtAccept(vtCreator, data);
+			return data.getArrayTable();
 			
 		} catch (VisitorException e) {
 			throw new MalformedQueryException(e.getMessage());
 		}
 	}
+	
+	private static class VarTableCreatorData{
+		
+		private ArrayTable arrayTable = new ArrayTable();
+		
+		/*
+		 * temp variable for saving the source text of array variable
+		 */
+		private StringBuffer sourceText = new StringBuffer();
+		
+		public StringBuffer getSourceText(){
+			return sourceText;
+		}
+		
+		public ArrayTable getArrayTable(){
+			return arrayTable;
+		}
+		
+	} 
 	
 	private static class VarTableCreator extends ASTVisitorBase {
 		
@@ -77,10 +99,10 @@ public class VarProcessor {
 			
 			try{
 				
-				ArrayTable table = (ArrayTable)data;
+				ArrayTable table = ((VarTableCreatorData)data).getArrayTable();
 				table.add(arrayValNode.getName(), entry);
 				
-				// XXX check super.visit()
+				// here must return data, see SimpleNode.childrenAccept()
 				return data;
 			}
 			catch(BDPLArrayException ae){
@@ -93,13 +115,13 @@ public class VarProcessor {
 		public Object visit(ASTArrayVariable node, Object data)
 				throws VisitorException
 		{
-			super.visit(node, data);
+			super.visit(node, null);
 			
 			BDPLArray ret;
 			// the 1st child of ASTArrayVariable must be ASTVar !!! Pay attention to grammar file
 			node.setName(((ASTVar)node.jjtGetChild(0)).getName());
 			
-			
+			// create array object here
 			String size = node.getSize();
 			if(size == null){
 				ret = new BDPLArray(null);
@@ -120,8 +142,44 @@ public class VarProcessor {
 		public Object visit(ASTDynamicArrayDef1 node, Object data)
 				throws VisitorException
 		{
-			super.visit(node, data);
-			node.setSource("d1");
+			/*
+			 *	(checked) ?x AS ?x() 
+			 */
+			super.visit(node, null);
+			node.setSource("dynamic definition");
+			return true;
+		}
+		
+		@Override
+		public Object visit(ASTDynamicArrayDef2 node, Object data)
+				throws VisitorException
+		{
+			/*
+			 * 	{ SUB CONSTRUCT QUERY } AS ?x()
+			 */
+			super.visit(node, null);
+			
+			StringBuffer sourceText = ((VarTableCreatorData)data).getSourceText();
+			Token token = node.jjtGetFirstToken();
+			
+			boolean nullToken = false; 
+			for(; token != node.jjtGetLastToken(); ){
+				if(token != null){
+					sourceText.append(token.image+" ");
+					token = token.next;
+				}
+				else{
+					nullToken = true;
+					break;
+				}
+			}
+			if(!nullToken && token != null){
+				sourceText.append(token.image+" ");
+			}
+			
+			node.setSource(sourceText.toString());
+			sourceText.delete(0, sourceText.length());
+			
 			return true;
 		}
 		
@@ -129,8 +187,65 @@ public class VarProcessor {
 		public Object visit(ASTStaticArrayDef1 node, Object data)
 				throws VisitorException
 		{
-			super.visit(node, data);
-			node.setSource("s1");
+			/*
+			 * 	(1 2 3) AS ?x()
+			 */
+			super.visit(node, null);
+			
+			StringBuffer sourceText = ((VarTableCreatorData)data).getSourceText();
+			Token token = node.jjtGetFirstToken();
+			
+			boolean nullToken = false; 
+			for(; token != node.jjtGetLastToken(); ){
+				if(token != null){
+					sourceText.append(token.image+" ");
+					token = token.next;
+				}
+				else{
+					nullToken = true;
+					break;
+				}
+			}
+			if(!nullToken && token != null){
+				sourceText.append(token.image+" ");
+			}
+			
+			node.setSource(sourceText.toString());
+			sourceText.delete(0, sourceText.length());
+			
+			return false;
+		}
+		
+		@Override
+		public Object visit(ASTStaticArrayDef2 node, Object data)
+				throws VisitorException
+		{
+			/*
+			 * 	{ SELECT QUERY } AS ?x()
+			 */
+			super.visit(node, null);
+			
+			StringBuffer sourceText = ((VarTableCreatorData)data).getSourceText();
+			Token token = node.jjtGetFirstToken();
+			
+			boolean nullToken = false; 
+			for(; token != node.jjtGetLastToken(); ){
+				if(token != null){
+					sourceText.append(token.image+" ");
+					token = token.next;
+				}
+				else{
+					nullToken = true;
+					break;
+				}
+			}
+			if(!nullToken && token != null){
+				sourceText.append(token.image+" ");
+			}
+			
+			node.setSource(sourceText.toString());
+			sourceText.delete(0, sourceText.length());
+			
 			return false;
 		}
 	}

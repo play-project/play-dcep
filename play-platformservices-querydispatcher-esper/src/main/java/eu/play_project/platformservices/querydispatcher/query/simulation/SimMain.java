@@ -43,6 +43,7 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
+import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.querydispatcher.query.translate.EPLTranslationProcessor;
 
 
@@ -231,7 +232,9 @@ public class SimMain {
 									
 									pQuery = new ParsedGraphQuery(query, tupleExpr, prefixes);
 									
-									query = EPLTranslationProcessor.process(qc);
+									String prolog = BDPLSyntaxCheckProcessor.process(qc);
+									
+									query = EPLTranslationProcessor.process(qc, prolog);
 									//EPLListenerProcessor.process(qc);
 									System.out.println(query+"\n");
 								}
