@@ -45,7 +45,7 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
-import eu.play_project.platformservices.querydispatcher.query.translate.util.BDPLConstants;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLTranslateException;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLTranslateUtil;
 import eu.play_project.platformservices.querydispatcher.query.translate.util.EPLConstants;
@@ -478,7 +478,7 @@ public class EPLTranslationProcessor {
 			super.visit(node, data);
 			
 			/*
-			 * Get the sparql text of this event 
+			 * Get the sparql text of this event, !!! pay attention to the grammar  
 			 */
 			StringBuffer prologText = ((EPLTranslatorData)data).getPrologText();
 			StringBuffer eventClauseText = ((EPLTranslatorData)data).getEventClauseText();
@@ -541,37 +541,20 @@ public class EPLTranslationProcessor {
 				TupleExpr tupleExpr = (TupleExpr)qc.jjtAccept(tupleExprBuilder, null);
 				
 				List<StatementPattern> statementPatterns = StatementPatternCollector.process(tupleExpr);
-				boolean hasType = false, hasStream = false;
+				
 				for(StatementPattern sp : statementPatterns){
-					if(!hasType){
-						if(sp.getPredicateVar().getValue().equals(RDF.TYPE)){
-							Value val = sp.getObjectVar().getValue();
-							if(val != null){
-								ret = val.stringValue();
-								ret = ret.replaceAll("[^a-zA-Z0-9]", "");
-								hasType = true;
-							}
-							else{
-								throw new EPLTranslateException("Object of rdf:type has no value");
-							}
-						}
-					}
-					if(!hasStream){
-						if(sp.getPredicateVar().getValue().stringValue().equals(BDPLConstants.URI_STREAM)){
-							hasStream = true;
-						}
+					// return the first rdf:type, syntax check is executed by bdpl parser
+					if(sp.getPredicateVar().getValue().equals(RDF.TYPE)){
+						Value val = sp.getObjectVar().getValue();
+							
+						ret = val.stringValue();
+						ret = ret.replaceAll("[^a-zA-Z0-9]", "");
+						break;
 					}
 				}
 				
-				if(!hasType){
-					throw new EPLTranslateException("Event clause contains no rdf:type");
-				}
-				else if(!hasStream){
-					throw new EPLTranslateException("Event clause contains no "+BDPLConstants.URI_STREAM);
-				}
-				else{
-					return ret;
-				}
+				return ret;
+				
 			}
 			catch (VisitorException e){
 				throw new EPLTranslateException(e.getMessage());

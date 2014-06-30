@@ -1,7 +1,9 @@
 # Too many variables. @expectedException<Only one Filter expression allowed>
 PREFIX dc: <http://play-project.eu/bdpl> 
 PREFIX rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX : <http://play-project.eu/M12/>
+PREFIX m12: <http://play-project.eu/M12/>
+PREFIX :       <http://events.event-processing.org/types/>
+
 
 	CONSTRUCT { 
 				:e rdf:type :FaceBookComplexEvent.
@@ -9,19 +11,29 @@ PREFIX : <http://play-project.eu/M12/>
 			} 
 		WHERE{
 			WINDOW{
-				EVENT ?id1{ :source :is :myFackebookAccountID.
-							?friend1 :talksAbout ?topic.
+				EVENT ?id1{ 
+							?e1 rdf:type :FacebookStatusFeedEvent.
+							?e1 :stream <http://streams.event-processing.org/ids/FacebookStatus#stream> .
+							m12:source m12:is m12:myFackebookAccountID.
+							?friend1 m12:talksAbout ?topic.
 							FILTER contains(?topic, "Jeans")
 							}
 							
                              SEQ
-				EVENT ?id2{ :source :is :myFackebookAccountID.
-							?friend2 :talksAbout ?topic.
+				EVENT ?id2{ 
+							 ?e2 rdf:type :FacebookStatusFeedEvent.
+							?e2 :stream <http://streams.event-processing.org/ids/FacebookStatus#stream> .
+							m12:source m12:is m12:myFackebookAccountID.
+							?friend2 m12:talksAbout ?topic.
 							FILTER contains(?topic, "Jeans")
 							}
 							
                              SEQ
-				EVENT ?id3{ :source :is :myFackebookAccountID.
-							?friend3 :talksAbout ?topic}
+				EVENT ?id3{ 
+							 ?e3 rdf:type :FacebookStatusFeedEvent.
+							?e3 :stream <http://streams.event-processing.org/ids/FacebookStatus#stream> .
+							m12:source m12:is m12:myFackebookAccountID.
+							?friend3 m12:talksAbout ?topic
+							}
          } ("PT30M"^^xsd:duration, sliding)
      }

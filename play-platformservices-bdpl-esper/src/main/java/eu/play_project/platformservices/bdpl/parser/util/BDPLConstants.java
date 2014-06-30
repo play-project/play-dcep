@@ -1,16 +1,15 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.translate.util;
+package eu.play_project.platformservices.bdpl.parser.util;
 
 /**
  * @author ningyuan 
  * 
- * May 15, 2014
+ * Jun 30, 2014
  *
  */
 public class BDPLConstants {
-	
 	public static final String URI_STREAM = "http://events.event-processing.org/types/stream";
 	
 	public static final String SPARQL_ASK_QUERY = "ASK WHERE { %s }";

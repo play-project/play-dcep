@@ -37,6 +37,8 @@ import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
+import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
+
 
 /**
  * @author ningyuan
@@ -84,6 +86,9 @@ public class EPLTranslator implements QueryParser{
 				else if (queryNode instanceof ASTConstructQuery) {
 					
 					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
+					
+					BDPLSyntaxCheckProcessor.process(qc);
+					
 					System.out.println(EPLTranslationProcessor.process(qc)+"\n");
 					//System.out.println(EPLListenerProcessor.process(qc)+"\n");
 				}
