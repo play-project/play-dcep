@@ -4,6 +4,7 @@
 package eu.play_project.platformservices.bdpl.parser.util;
 
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayType;
 
 /**
  * @author ningyuan 
@@ -14,6 +15,8 @@ import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
 public class ArrayTableEntry {
 	
 	private BDPLArray array;
+
+	private BDPLArrayType type;
 	
 	private String source;
 	
@@ -32,4 +35,13 @@ public class ArrayTableEntry {
 	public void setArray(BDPLArray array) {
 		this.array = array;
 	}
+	
+	public BDPLArrayType getType() {
+		return this.type;
+	}
+	
+	public void setType(BDPLArrayType type) {
+		this.type = type;
+	}
+
 }

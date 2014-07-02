@@ -41,11 +41,11 @@ public class BDPLArray {
     	
     }
     
-    public String[] read(){
+    public Object[][] read(){
     	r.lock();
     	try{
     		
-    		String [] ret = new String[length];
+    		Object [][] ret = new Object[length][];
 	    	BDPLArrayElement current = head;
 	    		
 	    	int i = 0;
@@ -67,7 +67,7 @@ public class BDPLArray {
      * @param add 
      * @throws BDPLArrayException
      */
-    public void write(String add) throws BDPLArrayException{
+    public void write(Object[] add) throws BDPLArrayException{
     	
     	if(size > -1){
     		
@@ -118,7 +118,7 @@ public class BDPLArray {
      * @param adds 
      * @throws BDPLArrayException
      */
-    public void write(String [] adds) throws BDPLArrayException{
+    public void write(Object [][] adds) throws BDPLArrayException{
     	
     	if(size > -1){
 	    	w.lock();

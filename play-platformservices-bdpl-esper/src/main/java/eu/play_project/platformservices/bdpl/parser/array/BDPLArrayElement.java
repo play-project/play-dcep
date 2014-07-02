@@ -3,6 +3,7 @@
  */
 package eu.play_project.platformservices.bdpl.parser.array;
 
+
 /**
  * @author ningyuan 
  * 
@@ -13,20 +14,20 @@ public class BDPLArrayElement {
 	
 	private BDPLArrayElement next = null;
 	
-	private String content;
+	private Object[] content;
 	
-	public BDPLArrayElement(String content){
+	public BDPLArrayElement(Object[] content){
 		if(content == null){
 			throw new IllegalArgumentException();
 		}
 		this.content = content;
 	}
 	
-	public String getContent(){
+	public Object[] getContent(){
 		return content;
 	}
 	
-	public void setContent(String content){
+	public void setContent(Object[] content){
 		if(content == null){
 			throw new IllegalArgumentException();
 		}

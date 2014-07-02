@@ -100,7 +100,7 @@ public class BDPLParser implements QueryParser {
 				
 				BDPLSyntaxCheckProcessor.process(qc);
 				
-				ArrayTable arrayTable = VarProcessor.process(qc);
+				ArrayTable arrayTable = BDPLVarProcessor.process(qc);
 				System.out.println("ArrayTable: ");
 				for(String key : arrayTable.keySet()){
 					ArrayTableEntry arrayEntry = arrayTable.get(key);

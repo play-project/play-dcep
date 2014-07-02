@@ -314,6 +314,7 @@ TOKEN [IGNORE_CASE] :	// SPARQL 1.1 Update-specific tokens
 TOKEN [IGNORE_CASE] :	// BDPL tokens
 {
 	<ARRAY: "array">
+|	<CONTEXT: "context">
 |	<CHECKED: "checked">
 |	<WINDOW: "window">
 |	<EVENT: "event">
@@ -1923,15 +1924,26 @@ void Modify() :
 }
 
 // ningyuan added
-void SubConstructQuery() : // subconstruct does not accept subconstruct
+void SubBDPLQuery() : // sub BDPL does not accept sub bdpl query
 {}
 {
-	Construct()
+	Select()
 	( DatasetClause() )*
 	BDPLWhereClause()
 	SolutionModifier()
 	[BindingsClause()]
 } 
+
+void ContextClause() :
+{}
+{
+	<CONTEXT> Var()
+	(  
+		( <NIL> {jjtThis.setArrayDef(true);} <LBRACE> ( StaticArrayDef1() | StaticArrayDef2() ) <RBRACE> )
+	| 
+		( {jjtThis.setArrayDef(false);} <LBRACE> TriplesBlock() <RBRACE> )
+	)
+}
 
 void ArrayVariable() :
 {
@@ -1953,7 +1965,7 @@ void ArrayClause() :
 void ArrayDecl() :
 {}
 {
-	( LOOKAHEAD(2) ( DynamicArrayDef1() | DynamicArrayDef2()) | StaticArrayDef1() | StaticArrayDef2() )
+	( DynamicArrayDef1() | DynamicArrayDef2())
 	<AS>
 	ArrayVariable()
 	<DOT>
@@ -1962,29 +1974,33 @@ void ArrayDecl() :
 void DynamicArrayDef1() : 
 {}
 {
-	[<CHECKED> {jjtThis.setChecked(true);}] Var() 
+	[<CHECKED> {jjtThis.setChecked(true);}] Var()  
 }
 
 void DynamicArrayDef2() : 
 {}
 {
 	<LBRACE>
-	SubConstructQuery()
+	SubBDPLQuery()
 	<RBRACE>
 }
 
 void StaticArrayDef1() : 
 {}
 {
-	<LPAREN> (String())+ <RPAREN>
+	<LPAREN> 
+	(
+		(String())+ 
+		|
+		(NumericLiteral())+
+	)
+	<RPAREN>
 }
 
 void StaticArrayDef2() :
 {}
 {
-	<LBRACE>
 	SelectQuery()
-	<RBRACE>
 }
 
 void BDPLWhereClause() :
@@ -1992,6 +2008,7 @@ void BDPLWhereClause() :
 {
 	[<WHERE>]
 	<LBRACE>
+	(ContextClause())*
 	RealTimeEventQuery()
 	HistoricalEventQuery()
 	<RBRACE>
