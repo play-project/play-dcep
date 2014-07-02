@@ -16,8 +16,6 @@ public class MapEvent <T extends EventModel> extends HashMap<String, T>{
 	
 	public static final String EVENT_MODEL = "model";
 	
-	public long timestamp = -1l;
-	
 	public MapEvent(T model){
 		if(model == null)
 			throw new IllegalArgumentException();
@@ -25,11 +23,4 @@ public class MapEvent <T extends EventModel> extends HashMap<String, T>{
 		this.put(EVENT_MODEL, model);
 	}
 	
-	public void setTimeStamp(long t){
-		timestamp = t;
-	}
-	
-	public long getTimeStamp(){
-		return timestamp;
-	}
 }

@@ -24,11 +24,15 @@ import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
 import org.openrdf.query.parser.bdpl.ast.ASTA;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayClause;
 import org.openrdf.query.parser.bdpl.ast.ASTB;
+import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
+import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
+import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
+import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTRealTimeEventQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTString;
@@ -133,15 +137,45 @@ public class EPLTranslationProcessor {
 		
 		String epl = null;
 		
+		
+		
+		/*
+		 * skipped nodes
+		 */
 		@Override
-		public Object visit(ASTArrayClause node, Object data)
+		public Object visit(ASTBaseDecl node, Object data)
 				throws VisitorException
 		{
-			/*
-			 * skip array declaration
-			 */
+			
 			return data;
 		}
+		
+		@Override
+		public Object visit(ASTPrefixDecl node, Object data)
+				throws VisitorException
+		{
+			
+			return data;
+		}
+		
+		@Override
+		public Object visit(ASTConstruct node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		@Override
+		public Object visit(ASTDatasetClause node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		
+		/*
+		 * visited nodes
+		 */
 		
 		@Override
 		public Object visit(ASTRealTimeEventQuery node, Object data)

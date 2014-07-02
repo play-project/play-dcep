@@ -70,7 +70,7 @@ public class FeederOutputStream implements OutputStream
         		epService.getEPAdministrator().getConfiguration().addEventType("Event1", mapDef);
         		/*String eventType = ((Model)ew.event.get("model")).filter(null, RDF.TYPE, null).iterator().next().getObject().stringValue();*/
         		try {
-        			((MapEvent)ew.event).setTimeStamp(System.currentTimeMillis());
+        			
         			runtime.sendEvent(ew.event, "Event1");
         				//System.out.println("Send Event1");
         		} catch (EPException e) {
@@ -80,14 +80,14 @@ public class FeederOutputStream implements OutputStream
         	else if(ename.equals("rdf2")){
         		epService.getEPAdministrator().getConfiguration().addEventType("Event2", mapDef);
         		
-        		((MapEvent)ew.event).setTimeStamp(System.currentTimeMillis());
+        		
         		runtime.sendEvent(ew.event, "Event2");
         			//System.out.println("Send Event2");
         	}
         	else{
         		epService.getEPAdministrator().getConfiguration().addEventType("Event3", mapDef);
         		
-        		((MapEvent)ew.event).setTimeStamp(System.currentTimeMillis());
+        		
         		runtime.sendEvent(ew.event, "Event3");
         			//System.out.println("Send Event3");
         	}	

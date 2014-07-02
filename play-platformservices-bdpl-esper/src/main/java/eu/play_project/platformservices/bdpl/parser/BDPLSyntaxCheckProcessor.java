@@ -80,6 +80,13 @@ public class BDPLSyntaxCheckProcessor {
 
 	private static class BDPLSyntaxChecker extends ASTVisitorBase {
 		
+		
+		
+		/*
+		 * visited nodes
+		 * 
+		 */
+		
 		@Override
 		public Object visit(ASTPrefixDecl node, Object data)
 				throws VisitorException
