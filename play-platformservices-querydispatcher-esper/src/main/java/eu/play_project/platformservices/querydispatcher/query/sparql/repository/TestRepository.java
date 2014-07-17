@@ -22,7 +22,7 @@ import org.openrdf.rio.Rio;
 import org.openrdf.rio.UnsupportedRDFormatException;
 import org.openrdf.sail.memory.MemoryStore;
 
-import eu.play_project.platformservices.querydispatcher.query.sparql.SparqlRepository;
+import eu.play_project.platformservices.querydispatcher.query.sparql.ISparqlRepository;
 
 /**
  * @author ningyuan 
@@ -30,7 +30,7 @@ import eu.play_project.platformservices.querydispatcher.query.sparql.SparqlRepos
  * Jul 2, 2014
  *
  */
-public class TestRepository implements SparqlRepository{
+public class TestRepository implements ISparqlRepository{
 	
 	private Repository repo;
 	
