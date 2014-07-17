@@ -6,7 +6,9 @@ package eu.play_project.platformservices.querydispatcher.query.initiate;
 
 import eu.play_project.platformservices.bdpl.parser.util.ArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
+import eu.play_project.platformservices.querydispatcher.query.initiate.array.IArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.initiate.util.InitiateException;
+import eu.play_project.platformservices.querydispatcher.query.initiate.util.SubQueryTable;
 
 
 /**
@@ -17,33 +19,22 @@ import eu.play_project.platformservices.querydispatcher.query.initiate.util.Init
  */
 public class ArrayInitiator {
 	
+	private final IArrayMaker arrayMaker;
 	
-	
-	public ArrayInitiator(){
-		
+	public ArrayInitiator(IArrayMaker m){
+		arrayMaker = m;
 	}
 	
-	public void initiate(ArrayTable arrayTable) throws InitiateException{
+	public SubQueryTable initiate(ArrayTable arrayTable) throws InitiateException{
+		SubQueryTable subQueryTable = new SubQueryTable();
+		
 		for(String key : arrayTable.keySet()){
 			ArrayTableEntry entry = arrayTable.get(key);
 			
-			switch(entry.getType()){
-				case STATIC_EXPLICITE:{
-					break;
-				}
-				case STATIC_QUERY:{
-					break;
-				}
-				case DYNAMIC_VAR:{
-					break;
-				}
-				case DYNAMIC_QUERY:{
-					break;
-				}
-				default:{
-					throw new InitiateException("Unsupported BDPL array type.");
-				}
-			}
+			arrayMaker.make(entry, subQueryTable);
+			
 		}
+		
+		return subQueryTable;
 	}
 }
