@@ -14,20 +14,20 @@ public class BDPLArrayElement {
 	
 	private BDPLArrayElement next = null;
 	
-	private Object[] content;
+	private String[] content;
 	
-	public BDPLArrayElement(Object[] content){
+	public BDPLArrayElement(String[] content){
 		if(content == null){
 			throw new IllegalArgumentException();
 		}
 		this.content = content;
 	}
 	
-	public Object[] getContent(){
+	public String[] getContent(){
 		return content;
 	}
 	
-	public void setContent(Object[] content){
+	public void setContent(String[] content){
 		if(content == null){
 			throw new IllegalArgumentException();
 		}
