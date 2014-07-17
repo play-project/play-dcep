@@ -1974,7 +1974,7 @@ void ArrayDecl() :
 void DynamicArrayDef1() : 
 {}
 {
-	[<CHECKED> {jjtThis.setChecked(true);}] Var()  
+	[<CHECKED> {jjtThis.setChecked(true);}] ( Var() )+ 
 }
 
 void DynamicArrayDef2() : 
@@ -1985,14 +1985,24 @@ void DynamicArrayDef2() :
 	<RBRACE>
 }
 
+void ArrayElement() :
+{}
+{
+	(	IRIref()
+		|	RDFLiteral()
+		|	NumericLiteral()
+	)+
+}
+
 void StaticArrayDef1() : 
 {}
 {
 	<LPAREN> 
 	(
-		(String())+ 
-		|
-		(NumericLiteral())+
+		ArrayElement()
+		(	<SEMICOLON>
+			ArrayElement()
+		)*
 	)
 	<RPAREN>
 }

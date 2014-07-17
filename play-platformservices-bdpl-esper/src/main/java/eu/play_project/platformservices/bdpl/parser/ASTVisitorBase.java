@@ -886,6 +886,12 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		}
 		
 		@Override
+		public Object visit(ASTArrayElement node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
 		public Object visit(ASTContextClause node, Object data)
 				throws VisitorException {
 			return node.childrenAccept(this, data);
@@ -914,6 +920,7 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 				throws VisitorException {
 			return node.childrenAccept(this, data);
 		}
+		
 		
 		@Override
 		public Object visit(ASTArrayDecl node, Object data)

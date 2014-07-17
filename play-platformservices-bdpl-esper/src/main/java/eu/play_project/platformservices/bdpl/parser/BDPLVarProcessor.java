@@ -5,6 +5,7 @@ package eu.play_project.platformservices.bdpl.parser;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayDecl;
+import org.openrdf.query.parser.bdpl.ast.ASTArrayElement;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayVariable;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTBindingsClause;
@@ -13,8 +14,12 @@ import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef1;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef2;
+import org.openrdf.query.parser.bdpl.ast.ASTIRI;
+import org.openrdf.query.parser.bdpl.ast.ASTNumericLiteral;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
+import org.openrdf.query.parser.bdpl.ast.ASTQName;
+import org.openrdf.query.parser.bdpl.ast.ASTRDFLiteral;
 import org.openrdf.query.parser.bdpl.ast.ASTStaticArrayDef1;
 import org.openrdf.query.parser.bdpl.ast.ASTStaticArrayDef2;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
@@ -116,7 +121,12 @@ public class BDPLVarProcessor {
 			return data;
 		}
 		
-		
+		@Override
+		public Object visit(ASTQName node, Object data)
+			throws VisitorException
+		{
+			throw new VisitorException("QNames must be resolved before creating variable table.");
+		}
 		
 		/*
 		 * visited nodes
@@ -278,28 +288,60 @@ public class BDPLVarProcessor {
 			 */
 			
 			StringBuffer sourceText = ((VarTableCreatorData)data).getSourceText();
-			Token token = node.jjtGetFirstToken();
 			
-			boolean nullToken = false; 
-			for(; token != node.jjtGetLastToken(); ){
-				if(token != null){
-					sourceText.append(token.image+" ");
-					token = token.next;
-				}
-				else{
-					nullToken = true;
-					break;
-				}
-			}
-			if(!nullToken && token != null){
-				sourceText.append(token.image+" ");
-			}
+			// between every child node ASTArrayElement should be a ";". Pay attention to grammar file.
+			for(Node child : node.jjtGetChildren()){
+				child.jjtAccept(this, data);
+				sourceText.append(";");
+			} 
 			
-			node.setSource(sourceText.toString());
+			node.setSource(sourceText.toString().trim());
 			sourceText.delete(0, sourceText.length());
 			
 			return BDPLArrayType.STATIC_EXPLICITE;
 		}
+		
+		@Override
+		public Object visit(ASTArrayElement node, Object data)
+				throws VisitorException
+		{	
+			StringBuffer sourceText = ((VarTableCreatorData)data).getSourceText();
+			
+			for(Node child : node.jjtGetChildren()){
+				if(child instanceof ASTRDFLiteral){
+					ASTRDFLiteral rdfLiteral = (ASTRDFLiteral)child;
+					sourceText.append(rdfLiteral.getLabel().getValue());
+					if(rdfLiteral.getLang() != null){
+						sourceText.append(rdfLiteral.getLang()+" ");
+					}
+					else if(rdfLiteral.getDatatype() != null){
+						sourceText.append("^^"+rdfLiteral.getDatatype().getValue()+" ");
+					}
+					else{
+						sourceText.append(" ");
+					}
+				}
+				else if(child instanceof ASTNumericLiteral){
+					ASTNumericLiteral numLiteral = (ASTNumericLiteral)child;
+					sourceText.append(numLiteral.getValue());
+					if(numLiteral.getDatatype() != null){
+						sourceText.append("^^"+numLiteral.getDatatype()+" ");
+					}
+					else{
+						sourceText.append(" ");
+					}
+				}
+				else if(child instanceof ASTIRI){
+					sourceText.append(((ASTIRI)child).getValue()+" ");
+				}
+				else{
+					throw new VisitorException("Invalid data type for static arrays.");
+				}
+			} 
+			
+			return data;
+		}
+		
 		
 		@Override
 		public Object visit(ASTStaticArrayDef2 node, Object data)
