@@ -29,10 +29,10 @@ public class BDPLArrayTest {
 		sArray.write(new String[]{"1"});
 	}
 	
-	@Test
+	/*@Test
 	public void testStaticArray2() {
 		new BDPLArray(null);
-	}
+	}*/
 	
 	@Test
 	public void testStaticArray3(){

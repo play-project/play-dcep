@@ -45,7 +45,7 @@ public class EPLTranslatorTest {
   	 
   	  File testsDir = new File(testsLocation.getPath());
   	  assertTrue("[ERROR] Invalid directory of test queries.", testsDir.isDirectory());
-  	 
+  	  	System.out.println(testsLocation.getPath());
   	  File [] queries = testsDir.listFiles();
   	  for(File query : queries){
   		 assertTrue("[ERROR] Invalid file name of test queries.", query.isFile());

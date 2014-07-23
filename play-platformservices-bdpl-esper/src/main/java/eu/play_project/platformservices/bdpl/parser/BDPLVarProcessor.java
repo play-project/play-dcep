@@ -140,7 +140,6 @@ public class BDPLVarProcessor {
 			if(node.getArrayDef()){
 				// the 1st child of ASTContext must be ASTVar !!! Pay attention to grammar file
 				String arrayName = ((ASTVar)node.jjtGetChild(0)).getName();
-				BDPLArray array = new BDPLArray(null);
 				
 				// the 2nd child of ASTContextClause must be a ArrayDef. !!! Pay attention to grammar file
 				// a ArrayDef has a 'source' property
@@ -149,7 +148,6 @@ public class BDPLVarProcessor {
 				
 				// create new array table entry
 				ArrayTableEntry entry = new ArrayTableEntry();
-				entry.setArray(array);
 				entry.setType(arrayType);
 				entry.setSource(((ArrayDef)arrayDefNode).getSource());
 				
@@ -213,14 +211,15 @@ public class BDPLVarProcessor {
 				throws VisitorException
 		{
 			
-			BDPLArray ret;
+			BDPLArray ret = null;
 			// the 1st child of ASTArrayVariable must be ASTVar !!! Pay attention to grammar file
 			node.setName(((ASTVar)node.jjtGetChild(0)).getName());
 			
 			// create array object here
 			String size = node.getSize();
 			if(size == null){
-				ret = new BDPLArray(null);
+				//XXX 
+				//ret = new BDPLArray(null);
 			}
 			else{
 				try{

@@ -5,21 +5,26 @@ package eu.play_project.platformservices.querydispatcher.query.sparql.repository
 
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
-import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.Rio;
-import org.openrdf.rio.UnsupportedRDFormatException;
 import org.openrdf.sail.memory.MemoryStore;
 
 import eu.play_project.platformservices.querydispatcher.query.sparql.ISparqlRepository;
@@ -35,15 +40,42 @@ public class TestRepository implements ISparqlRepository{
 	private Repository repo;
 	
 	@Override
-	public Object query(String query) {
+	public String[][] query(String query) {
 		RepositoryConnection con = null;
-		Object ret = null;
+		TupleQueryResult result = null;
+		String[][] ret = null;
 		try {
 			con = repo.getConnection();
 			
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, query);
 			
-			ret = tupleQuery.evaluate();
+			result = tupleQuery.evaluate();
+			List<String> names = result.getBindingNames();
+				for(int i = 0; i < names.size(); i++){
+					System.out.println("names: "+names.get(i));
+				}
+			List<String[]> temp = new ArrayList<String[]>();
+			
+			while(result.hasNext()){
+				BindingSet bindingSet = result.next();
+				
+				String [] ele = new String[names.size()];
+				temp.add(ele);
+				for(int i = 0; i < names.size(); i++){
+					ele[i]=bindingSet.getValue(names.get(i)).stringValue();
+				}
+				
+			}
+			
+			ret = new String[temp.size()][];
+			for(int i = 0; i < temp.size(); i++){
+				ret[i] = temp.get(i);
+					String [] s = ret[i];
+					for(int j = 0; j < s.length; j++){
+						System.out.print(s[j]+"  ");
+					}
+					System.out.println();
+			}
 			
 		} catch (RepositoryException e) {
 			e.printStackTrace();
@@ -56,10 +88,14 @@ public class TestRepository implements ISparqlRepository{
 		}
 		finally{
 			try {
-				if(con != null)
+				if(result != null){
+					result.close();
+				}
+				if(con != null){
 					con.close();
+				}
 				
-			} catch (RepositoryException e) {
+			} catch (RepositoryException | QueryEvaluationException e) {
 				e.printStackTrace();
 			}
 		}
@@ -80,18 +116,6 @@ public class TestRepository implements ISparqlRepository{
 
 	@Override
 	public void start() {
-		Model model = null;
-		try {
-			
-			model = Rio.parse(TestRepository.class.getResourceAsStream("/java/rdf/ScenarioIntelligentTransportTest_Users.trig"), "", RDFFormat.TRIG, new Resource [0]);
-			
-		} catch (RDFParseException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedRDFormatException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
 		
 		repo = new SailRepository( new MemoryStore() );
 		
@@ -110,12 +134,17 @@ public class TestRepository implements ISparqlRepository{
 		RepositoryConnection con = null;
 		try {
 			con = repo.getConnection();
+			con.add(TestRepository.class.getResourceAsStream("/rdf/test_data.trig"), "", RDFFormat.TRIG, new Resource[0]);
 			
-			con.add(model, new Resource [0]);
-			
-		} catch (RepositoryException e) {
+		} catch(RDFParseException re){
+			re.printStackTrace();
+		} 
+		catch (RepositoryException e) {
 			e.printStackTrace();
 		}
+		catch(IOException ioe){
+			ioe.printStackTrace();
+		} 
 		finally{
 			try {
 				if(con != null)

@@ -24,6 +24,33 @@ public class BDPLArray {
     private int size = -1, length = 0;
     private BDPLArrayElement head, tail;
     
+    public BDPLArray(String[][] content){
+    	if(content == null){
+    		throw new IllegalArgumentException();
+    	}
+    	
+    	if(content.length == 0){
+    		tail = null;
+    		head = null;
+    	}
+    	else if(content.length > 1){
+    		head = new BDPLArrayElement(content[0]);
+    		tail = head;
+    		length = 1;
+    		for(int i = 1; i < content.length; i++){
+    			BDPLArrayElement temp = new BDPLArrayElement(content[i]);
+    			tail.setNext(temp);
+    			tail = temp;
+    			length++;
+    		}
+    	}
+    	else{
+    		head = new BDPLArrayElement(content[0]);
+    		tail = head;
+    		length = 1;
+    	}
+    }
+     
     public BDPLArray(BDPLArrayElement head){
     	// the sequence of initiation is important
     	this.tail = findTail(head);
