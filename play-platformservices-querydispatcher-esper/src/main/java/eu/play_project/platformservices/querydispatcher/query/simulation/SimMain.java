@@ -44,7 +44,7 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
-import eu.play_project.platformservices.querydispatcher.query.translate.EPLTranslationProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
 
 
 /**

@@ -10,8 +10,8 @@ package com.espertech.esper.example.transaction.sim;
 
 
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
-import eu.play_project.platformservices.querydispatcher.query.eventImpl.rdf.sesame.SesameEventModel;
-import eu.play_project.platformservices.querydispatcher.query.eventImpl.rdf.sesame.SesameMapEvent;
+import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
+import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameMapEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
