@@ -5,12 +5,8 @@ package eu.play_project.platformservices.querydispatcher.query.sparql.repository
 
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.openrdf.model.Resource;
 import org.openrdf.query.BindingSet;
@@ -62,7 +58,7 @@ public class TestRepository implements ISparqlRepository{
 				String [] ele = new String[names.size()];
 				temp.add(ele);
 				for(int i = 0; i < names.size(); i++){
-					ele[i]=bindingSet.getValue(names.get(i)).stringValue();
+					ele[i]=bindingSet.getValue(names.get(i)).toString();
 				}
 				
 			}

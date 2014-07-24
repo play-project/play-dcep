@@ -167,13 +167,13 @@ public class DefaultArrayMakerTest {
 	@Test
 	public void testQStatic1() {
 		arrayTableEntry.setType(BDPLArrayType.STATIC_QUERY);
-		arrayTableEntry.setSource("PREFIX : <http://events.event-processing.org/types/> SELECT ?x WHERE { ?id :name ?x }");
+		arrayTableEntry.setSource("PREFIX : <http://events.event-processing.org/types/> PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#> SELECT ?x WHERE { ?id :name ?x }");
 		
 		try {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][] result = arrayTableEntry.getArray().read();
-			String[][] expected = new String[][] {{"tom"}, {"jack"}, {"jane"}};
+			String[][] expected = new String[][] {{"\"tom\"@en"}, {"\"jack\"@en"}, {"\"jane\"@en"}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -183,13 +183,29 @@ public class DefaultArrayMakerTest {
 	@Test
 	public void testQStatic2() {
 		arrayTableEntry.setType(BDPLArrayType.STATIC_QUERY);
-		arrayTableEntry.setSource("PREFIX : <http://events.event-processing.org/types/> SELECT ?x ?y WHERE { ?z :name ?x. ?z :age ?y }");
+		arrayTableEntry.setSource("PREFIX : <http://events.event-processing.org/types/> PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#> SELECT ?x ?y WHERE { ?z :name ?x. ?z :age ?y }");
 		
 		try {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][] result = arrayTableEntry.getArray().read();
-			String[][] expected = new String[][] {{"tom", "21"}, {"jack", "32"}, {"jane", "24"}};
+			String[][] expected = new String[][] {{"\"tom\"@en", "\"21\"^^<http://www.w3.org/2001/XMLSchema#integer>"}, {"\"jack\"@en", "\"32\"^^<http://www.w3.org/2001/XMLSchema#integer>"}, {"\"jane\"@en", "\"24\"^^<http://www.w3.org/2001/XMLSchema#integer>"}};
+			assertArrayEquals(expected, result);
+		} catch (InitiateException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testQStatic3() {
+		arrayTableEntry.setType(BDPLArrayType.STATIC_QUERY);
+		arrayTableEntry.setSource("PREFIX : <http://events.event-processing.org/types/> PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#> SELECT ?y ?x WHERE { ?z :name ?x. ?z :tall ?y }");
+		
+		try {
+			arrayMaker.make(arrayTableEntry, null);
+			
+			String[][] result = arrayTableEntry.getArray().read();
+			String[][] expected = new String[][] {{"\"1.74\"^^<http://double>", "\"tom\"@en"}, {"\"1.89\"^^<http://double>", "\"jack\"@en"}, {"\"1.67\"^^<http://double>", "\"jane\"@en"}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();

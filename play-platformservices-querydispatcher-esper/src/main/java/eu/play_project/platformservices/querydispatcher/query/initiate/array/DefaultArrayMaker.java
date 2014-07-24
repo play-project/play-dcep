@@ -6,12 +6,8 @@ package eu.play_project.platformservices.querydispatcher.query.initiate.array;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
 import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
 import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
@@ -22,9 +18,7 @@ import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayElement;
 import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
-import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 import eu.play_project.platformservices.querydispatcher.query.initiate.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.initiate.util.SubQueryTable;
 import eu.play_project.platformservices.querydispatcher.query.sparql.ISparqlRepository;
@@ -42,11 +36,11 @@ public class DefaultArrayMaker implements IArrayMaker {
 	public void make(ArrayTableEntry entry, SubQueryTable subQueryTable) throws InitiateException {
 		switch(entry.getType()){
 			case STATIC_EXPLICITE:{
-				make1(entry, subQueryTable);
+				make1(entry);
 				break;
 			}
 			case STATIC_QUERY:{
-				make2(entry, subQueryTable);
+				make2(entry);
 				break;
 			}
 			case DYNAMIC_VAR:{
@@ -61,7 +55,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 	/*
 	 * STATIC_EXPLICITE
 	 */
-	private void make1(ArrayTableEntry entry, SubQueryTable table) throws InitiateException{
+	private void make1(ArrayTableEntry entry) throws InitiateException{
 		entry.setArray(parseStaticArray(entry.getSource()));
 	}
 	
@@ -74,12 +68,13 @@ public class DefaultArrayMaker implements IArrayMaker {
 		}
 		
 		BDPLArray ret;
-		BDPLArrayElement head = null, current = null, temp = null;
 		
 		char c;
 		int state = 0, dimension = 0;
 		StringBuffer oneDim = new StringBuffer();
-		List<String> content = new ArrayList<String>();
+	
+		List<String> element = new ArrayList<String>();
+		List<List<String>> content = new ArrayList<List<String>>();
 		for(int i = 0; i < source.length(); i++){
 			c = source.charAt(i);
 			
@@ -102,36 +97,24 @@ public class DefaultArrayMaker implements IArrayMaker {
 				case 1:{
 					if(c == ' '){
 						state = 2;
-						content.add(oneDim.toString());
+						element.add(oneDim.toString());
 						oneDim.delete(0, oneDim.length());
 					}
 					else if(c == ';'){
-						content.add(oneDim.toString());
+						element.add(oneDim.toString());
 						oneDim.delete(0, oneDim.length());
 						
 						if(dimension != 0){
-							if(dimension != content.size()){
+							if(dimension != element.size()){
 								throw new InitiateException("Not matched dimension of static array in declaration. ");
 							}
 						}
 						else{
-							dimension = content.size();
+							dimension = element.size();
 						}
 						
-						if(head == null){
-							String [] element = new String[content.size()];
-							content.toArray(element);
-							head = new BDPLArrayElement(element);
-							current = head;
-						}
-						else{
-							String [] element = new String[content.size()];
-							content.toArray(element);
-							temp = new BDPLArrayElement(element);
-							current.setNext(temp);
-							current = temp;
-						}
-						content.clear();
+						content.add(element);
+						element = new ArrayList<String>();
 						
 						state = 0;
 					}
@@ -147,28 +130,16 @@ public class DefaultArrayMaker implements IArrayMaker {
 					}
 					else if(c == ';'){
 						if(dimension != 0){
-							if(dimension != content.size()){
+							if(dimension != element.size()){
 								throw new InitiateException("Not matched dimension of static array in declaration. ");
 							}
 						}
 						else{
-							dimension = content.size();
+							dimension = element.size();
 						}
 						
-						if(head == null){
-							String [] element = new String[content.size()];
-							content.toArray(element);
-							head = new BDPLArrayElement(element);
-							current = head;
-						}
-						else{
-							String [] element = new String[content.size()];
-							content.toArray(element);
-							temp = new BDPLArrayElement(element);
-							current.setNext(temp);
-							current = temp;
-						}
-						content.clear();
+						content.add(element);
+						element = new ArrayList<String>();
 						
 						state = 0;
 					}
@@ -183,45 +154,40 @@ public class DefaultArrayMaker implements IArrayMaker {
 		
 		
 		if(oneDim.length() > 0){
-			content.add(oneDim.toString());
+			element.add(oneDim.toString());
 			oneDim.delete(0, oneDim.length());
 		}
 		
-		if(content.size() > 0){
+		if(element.size() > 0){
 			if(dimension != 0){
-				if(dimension != content.size()){
+				if(dimension != element.size()){
 					throw new InitiateException("Not matched dimension of static array in declaration. ");
 				}
 			}
 			else{
-				dimension = content.size();
+				dimension = element.size();
 			}
 			
-			if(head == null){
-				String [] element = new String[content.size()];
-				content.toArray(element);
-				head = new BDPLArrayElement(element);
-				current = head;
-			}
-			else{
-				String [] element = new String[content.size()];
-				content.toArray(element);
-				temp = new BDPLArrayElement(element);
-				current.setNext(temp);
-				current = temp;
-			}
+			content.add(element);
 		}
 		
-		ret = new BDPLArray(head);
+		String [][] sContent = new String[content.size()][];
+		for(int i = 0; i < content.size(); i++){
+			String [] sElement = new String[content.get(i).size()];
+			content.get(i).toArray(sElement);
+			
+			sContent[i] = sElement;
+		}
+		ret = new BDPLArray(sContent);
 		return ret;
 	}
 	
 	/*
 	 * STATIC_QUERY
 	 */
-	private void make2(ArrayTableEntry entry, SubQueryTable table) throws InitiateException{
+	private void make2(ArrayTableEntry entry) throws InitiateException{
 		
-		List<String> varNames = null;
+		/*List<String> varNames = null;
 		
 		try{
 			ASTQueryContainer qc = SyntaxTreeBuilder.parseQuery(entry.getSource());
@@ -240,62 +206,14 @@ public class DefaultArrayMaker implements IArrayMaker {
 		}
 		catch (ParseException e) {
 			throw new InitiateException(e.getMessage());
-		}
-		
-		
-		
-		ISparqlRepository repo = new TestRepository();
-		repo.start();
-		
-		BDPLArray array = new BDPLArray(repo.query(entry.getSource()));
-		entry.setArray(array);
-
-		
-		/*//TODO repository management
-		ISparqlRepository repo = new TestRepository();
-		
-		repo.start();
-		TupleQueryResult result = (TupleQueryResult)repo.query(entry.getSource());
-		BDPLArray array = new BDPLArray(null);
-		entry.setArray(array);
-		
-		System.out.println(entry.getSource());
-		
-		try{
-			
-			while(result.hasNext()){
-			
-				BindingSet bindingSet = result.next();
-				// TODO content type
-				Set<String> names = bindingSet.getBindingNames();
-				
-				for(String name : names){
-					System.out.println(name);
-				}
-				
-				String [] content = new String[bindingSet.size()];
-				
-				for(int i = 0; i < varNames.size(); i++){
-						System.out.println(varNames.get(i));
-					content[i] = bindingSet.getValue(varNames.get(i)).stringValue();
-				}
-				
-				array.write(content);
-			}
-		}
-		catch(QueryEvaluationException qe){
-			throw new InitiateException(qe.getMessage());
-		}
-		catch(BDPLArrayException be){
-			throw new InitiateException(be.getMessage());
-		}
-		finally{
-			try {
-				result.close();
-			} catch (QueryEvaluationException e) {
-
-			}
 		}*/
+		
+		
+		
+		ISparqlRepository repo = new TestRepository();
+		repo.start();
+		
+		entry.setArray(new BDPLArray(repo.query(entry.getSource())));
 		
 		repo.close();
 	}

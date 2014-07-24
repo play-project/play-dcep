@@ -24,48 +24,84 @@ public class BDPLArray {
     private int size = -1, length = 0;
     private BDPLArrayElement head, tail;
     
+    /**
+     * Constructor of static BDPL array
+     * 
+     * @param content
+     */
     public BDPLArray(String[][] content){
-    	if(content == null){
-    		throw new IllegalArgumentException();
+    	if(content != null){
+    		if(content.length == 0){
+	    		tail = null;
+	    		head = null;
+	    	}
+	    	else if(content.length > 1){
+	    		head = new BDPLArrayElement(content[0]);
+	    		tail = head;
+	    		length = 1;
+	    		for(int i = 1; i < content.length; i++){
+	    			BDPLArrayElement temp = new BDPLArrayElement(content[i]);
+	    			tail.setNext(temp);
+	    			tail = temp;
+	    			length++;
+	    		}
+	    	}
+	    	else{
+	    		head = new BDPLArrayElement(content[0]);
+	    		tail = head;
+	    		length = 1;
+	    	}
     	}
-    	
-    	if(content.length == 0){
+    	else{
     		tail = null;
     		head = null;
     	}
-    	else if(content.length > 1){
-    		head = new BDPLArrayElement(content[0]);
-    		tail = head;
-    		length = 1;
-    		for(int i = 1; i < content.length; i++){
-    			BDPLArrayElement temp = new BDPLArrayElement(content[i]);
-    			tail.setNext(temp);
-    			tail = temp;
-    			length++;
-    		}
-    	}
-    	else{
-    		head = new BDPLArrayElement(content[0]);
-    		tail = head;
-    		length = 1;
-    	}
-    }
-     
-    public BDPLArray(BDPLArrayElement head){
-    	// the sequence of initiation is important
-    	this.tail = findTail(head);
-    	this.head = head;
     }
     
-    public BDPLArray(int size, BDPLArrayElement head){
+    /**
+     * Constructor of dynamic BDPL array
+     * 
+     * @param size
+     * @param content
+     */
+    public BDPLArray(int size, String[][] content){
     	if(size < 1){
     		throw new IllegalArgumentException("The size of a dynamic BDPL array should be greater than 0.");
     	}
-    	// the sequence of initiation is important
-    	this.size = size;
-    	this.tail = findTail(head);
-    	this.head = head;
     	
+    	if(content != null){
+    		if(size < content.length){
+    			throw new IllegalArgumentException("The initiate length of a dynamic BDPL array is greater than its size.");
+    		}
+    		else{
+    			if(content.length == 0){
+    	    		tail = null;
+    	    		head = null;
+    	    	}
+    	    	else if(content.length > 1){
+    	    		head = new BDPLArrayElement(content[0]);
+    	    		tail = head;
+    	    		length = 1;
+    	    		for(int i = 1; i < content.length; i++){
+    	    			BDPLArrayElement temp = new BDPLArrayElement(content[i]);
+    	    			tail.setNext(temp);
+    	    			tail = temp;
+    	    			length++;
+    	    		}
+    	    	}
+    	    	else{
+    	    		head = new BDPLArrayElement(content[0]);
+    	    		tail = head;
+    	    		length = 1;
+    	    	}
+    		}
+    	}
+    	else{
+    		tail = null;
+    		head = null;
+    	}
+    	
+    	this.size = size;
     }
     
     public String[][] read(){
@@ -185,19 +221,35 @@ public class BDPLArray {
     	}
     }
     
-    private BDPLArrayElement findTail(BDPLArrayElement head){
-    	BDPLArrayElement ret = head;
-    	BDPLArrayElement current = head;
-    	while(current != null){
-    		ret = current;
-    		length++;
-    		current = current.getNext();
-    	}
-    		
-    	if(size > -1 && length > size){
-    		throw new IllegalArgumentException("The initiate length of a dynamic BDPL array is greater than its size.");
+    private static class BDPLArrayElement{
+    	private BDPLArrayElement next = null;
+    	
+    	private String[] content;
+    	
+    	public BDPLArrayElement(String[] content){
+    		if(content == null){
+    			throw new IllegalArgumentException();
+    		}
+    		this.content = content;
     	}
     	
-    	return ret;
+    	public String[] getContent(){
+    		return content;
+    	}
+    	
+    	public void setContent(String[] content){
+    		if(content == null){
+    			throw new IllegalArgumentException();
+    		}
+    		this.content = content;
+    	}
+
+    	public BDPLArrayElement getNext() {
+    		return this.next;
+    	}
+
+    	public void setNext(BDPLArrayElement next) {
+    		this.next = next;
+    	}
     }
 }

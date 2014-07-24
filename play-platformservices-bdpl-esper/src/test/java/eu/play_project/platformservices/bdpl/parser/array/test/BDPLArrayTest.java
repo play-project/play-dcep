@@ -8,7 +8,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayElement;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 
 
@@ -24,20 +23,23 @@ public class BDPLArrayTest {
 	
 	@Test(expected = BDPLArrayException.class)
 	public void testStaticArray1() throws BDPLArrayException {
-		BDPLArrayElement head = new BDPLArrayElement(new String[]{"1"});
-		BDPLArray sArray = new BDPLArray(head);
+		
+		BDPLArray sArray = new BDPLArray(null);
 		sArray.write(new String[]{"1"});
 	}
 	
-	/*@Test
+	@Test
 	public void testStaticArray2() {
-		new BDPLArray(null);
-	}*/
+		BDPLArray sArray = new BDPLArray(null);
+		String[][] result = sArray.read();
+		String[][] expected = new String[][] {};
+		assertArrayEquals(expected, result);
+	}
 	
 	@Test
 	public void testStaticArray3(){
-		BDPLArrayElement head = new BDPLArrayElement(new String[]{"1"});
-		BDPLArray sArray = new BDPLArray(head);
+		
+		BDPLArray sArray = new BDPLArray(new String[][]{{"1"}});
 		String[][] result = sArray.read();
 		String[][] expected = new String[][] {{"1"}};
 		assertArrayEquals(expected, result);
@@ -45,10 +47,8 @@ public class BDPLArrayTest {
 	
 	@Test
 	public void testStaticArray4(){
-		BDPLArrayElement head = new BDPLArrayElement(new String[]{"1"});
-		BDPLArrayElement tail = new BDPLArrayElement(new String[]{"2"});
-		head.setNext(tail);
-		BDPLArray sArray = new BDPLArray(head);
+		
+		BDPLArray sArray = new BDPLArray(new String[][]{{"1"}, {"2"}});
 		String[][] result = sArray.read();
 		String[][] expected = new String[][] {{"1"}, {"2"}};
 		assertArrayEquals(expected, result);
@@ -56,16 +56,14 @@ public class BDPLArrayTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testDynamicArray1() {
-		BDPLArrayElement head = new BDPLArrayElement(new String[]{"1"});
-		new BDPLArray(0, head);
+		
+		new BDPLArray(0, new String[][]{{"1"}});
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testDynamicArray2() {
-		BDPLArrayElement head = new BDPLArrayElement(new String[]{"1"});
-		BDPLArrayElement tail = new BDPLArrayElement(new String[]{"2"});
-		head.setNext(tail);
-		new BDPLArray(1, head);
+		
+		new BDPLArray(1, new String[][]{{"1"}, {"2"}});
 	}
 	
 	@Test(expected = BDPLArrayException.class)
