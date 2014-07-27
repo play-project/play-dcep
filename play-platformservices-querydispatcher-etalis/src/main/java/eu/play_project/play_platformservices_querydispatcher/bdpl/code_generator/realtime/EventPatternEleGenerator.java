@@ -111,7 +111,7 @@ public class EventPatternEleGenerator {
 	
 	private String TriplestoreQuery(Element currentElement) {
 		UniqueNameManager uniqueNameManager = getVarNameManager();
-		TriplestoreQueryVisitor triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager, varTypeManger, patternId);
+		TriplestoreQueryVisitor triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager, varTypeManger);
 		String rdfDbQueries = "";
 		String flatDbQueries;
 		String ele = "";

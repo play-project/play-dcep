@@ -46,7 +46,7 @@ public class ComplexPartEleGenerator {
 		
 		// Detect complex type;
 		elePattern += (new ComplexTypeFinder()).visit(inputQuery.getConstructTemplate());
-		elePattern += "(" + uniqueNameManager.getNextCeid() + "," + inputQuery.getQueryId() + ") do (";
+		elePattern += "(" + uniqueNameManager.getNextCeid() + ",'" + inputQuery.getQueryId() + "') do (";
 		
 		// Collect complex event data.
 		elePattern += GenerateConstructResult(inputQuery, inputQuery.getQueryId());

@@ -34,14 +34,12 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	private String triplestoreQuery;
 	private final UniqueNameManager uniqueNameManager;
 	private String aggregateValuesCode;
-	private String queryId;
 	VariableTypeManager vtm;
 
-	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager, VariableTypeManager vtm, String queryId){
+	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager, VariableTypeManager vtm){
 		triplestoreQuery = "";
 		aggregateValuesCode = "";
 		this.uniqueNameManager = uniqueNameManager;
-		this.queryId = queryId;
 		this.vtm = vtm;
 	}
 	
