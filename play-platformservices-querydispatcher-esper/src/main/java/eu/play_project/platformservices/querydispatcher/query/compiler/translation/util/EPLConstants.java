@@ -39,7 +39,9 @@ public class EPLConstants {
 	
 	public static final String NOTEVENTTAG = "n";
 	
-	public static final String FILTER_RDF = "eu.play_project.platformservices.querydispatcher.query.filter.SesameRDFGraphFilter.evaluate(\"%s\"%s)";
+	public static final String FILTER_RDF = "eu.play_project.platformservices.querydispatcher.query.compiler.translation.filter.RDFGraphEventFilter.evaluate(\"%s\"%s)";
+	
+	public static final String FILTER_VAR_BINDING = "eu.play_project.platformservices.querydispatcher.query.compiler.translation.filter.RealTimeResultBindingFilter.evaluate(\"%s\"%s)";
 	
 	public static final String SPARQL_UNION = "UNION";
 }

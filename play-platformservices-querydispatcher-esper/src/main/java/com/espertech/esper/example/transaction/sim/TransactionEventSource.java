@@ -73,6 +73,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(id)));
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/type"), new LiteralImpl(String.valueOf(type)));
         	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event1"));
+        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event1"));
         	/*Event1 rdf1 = new Event1(m);*/
         	mapEvent = new SesameMapEvent(new SesameEventModel(m));
         	
@@ -93,6 +94,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(id2)));
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e2Stamp)));
         	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event2"));
+        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event2"));
         	
         	/*Event2 rdf2 = new Event2(m);*/
         	mapEvent = new SesameMapEvent(new SesameEventModel(m));
@@ -111,6 +113,8 @@ public class TransactionEventSource extends EventSource {
             Model m = new LinkedHashModel();
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e3Stamp)));
         	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event3"));
+        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event3"));
+        	
         	/*Event3 rdf3 = new Event3(m);*/
         	mapEvent = new SesameMapEvent(new SesameEventModel(m));
         	

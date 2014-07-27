@@ -29,10 +29,11 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
  * Apr 16, 2014
  *
  */
-public class SesameRDFGraphFilter {
+public class RDFGraphEventFilter {
 		
-		static public boolean evaluate(String askQuery,  Map[] events){
-		
+		static public boolean evaluate(String query,  Map[] events){
+			boolean ret = false;
+			
 			Repository repo = new SailRepository(new MemoryStore());
 			RepositoryConnection con = null;
 				//System.out.println(askQuery);
@@ -60,8 +61,8 @@ public class SesameRDFGraphFilter {
 					}
 				}
 				
-				boolean ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, askQuery).evaluate();
-					System.out.println(ret);
+				ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(query, "ASK")).evaluate();
+					System.out.println(Thread.currentThread().getName()+"   RDFGraphEventFilter: "+ret);
 				return ret;
 				
 				

@@ -44,6 +44,7 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.RealTimeResultListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
 
 
@@ -115,6 +116,8 @@ public class SimMain {
 								 // Configure engine with event names to make the statements more readable.
 						        // This could also be done in a configuration file.
 						        Configuration configuration = new Configuration();
+						        //configuration.addPlugInSingleRowFunction("filter1", "eu.play_project.platformservices.querydispatcher.query.compiler.translation.filter.RDFGraphEventFilter", "evaluate");
+						        //configuration.addPlugInSingleRowFunction("filter2", "eu.play_project.platformservices.querydispatcher.query.compiler.translation.filter.VariableBindingFilter", "evaluate");
 						        //configuration.addPlugInPatternGuard("bdpl", "andguard", "ningyuan.pan.query.parser.bdpl.guard.AndGuardFactory");
 						        //configuration.addPlugInPatternObserver("bdpl", "andobs", "ningyuan.pan.query.parser.bdpl.guard.AndObserverFactory");
 						        
@@ -280,7 +283,7 @@ public class SimMain {
 							if(epService != null){
 								
 								EPStatement testStmt = epService.getEPAdministrator().createEPL(query);
-								testStmt.addListener(new TestStmtListener());
+								testStmt.addListener(new RealTimeResultListener());
 								        
 								stmts.put(++statementCounter, new EPStatementEntry(query, testStmt));
 								System.out.println("\n[Statement "+statementCounter+":\n"+query+"\nis started]");
