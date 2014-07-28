@@ -58,6 +58,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		ConfigApi, DEtalisConfigApi, Serializable {
 
 	private static final long serialVersionUID = 100L;
+	private int prologTriggerDelay = 100; // Delay between two prolog trigger calls.
 	private String name;
 	private JtalisContextImpl etalis; // ETALIS Object
 	private JtalisOutputProvider eventOutputProvider;
@@ -270,6 +271,10 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					throw new DcepManagementException(String.format(
 							"Specified middleware is not implemented: %s.", middleware));
 				}
+				
+				// Start prolog triger thread.
+				new PrologTriggerThread(etalis, prologTriggerDelay);
+				
 				init = true;
 			} catch (DistributedEtalisException e) {
 				throw new DcepManagementException(e.getMessage());

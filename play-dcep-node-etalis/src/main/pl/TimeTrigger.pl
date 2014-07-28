@@ -14,3 +14,9 @@ alarm(
 		_ID,
 		[]
 	).
+
+% Tell prolog to calculate something.
+% This is sometimes necessary to trigger the alarm.
+% See http://www.swi-prolog.org/bugzilla/show_bug.cgi?id=173. 	
+doSomething :- 
+ (true).
