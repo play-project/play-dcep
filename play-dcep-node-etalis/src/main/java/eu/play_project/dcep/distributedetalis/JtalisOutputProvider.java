@@ -82,7 +82,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 
 	@Override
 	public void outputEvent(EtalisEvent event) {
-System.out.println(event);
+
 		try {
 			List<Quadruple> quadruples = this.getEventData(engine, event);
 					 
@@ -174,12 +174,6 @@ System.out.println(event);
 					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
 					NodeFactory.createURI(predicate),
 	                objectNode));
-			Quadruple q = new Quadruple(
-					GRAPHNAME,
-					// Replace dummy event id placeholder with actual unique id for complex event:
-					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
-					NodeFactory.createURI(predicate),
-	                objectNode);
 		}
 
 		logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);
