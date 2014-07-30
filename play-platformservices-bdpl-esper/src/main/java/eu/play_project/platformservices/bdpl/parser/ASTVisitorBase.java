@@ -923,7 +923,7 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		
 		
 		@Override
-		public Object visit(ASTArrayDecl node, Object data)
+		public Object visit(ASTDynamicArrayDecl node, Object data)
 				throws VisitorException {
 			return node.childrenAccept(this, data);
 		}

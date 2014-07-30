@@ -10,6 +10,7 @@ package eu.play_project.platformservices.bdpl.parser.util;
  *
  */
 public class BDPLConstants {
+	
 	public static final String URI_STREAM = "http://events.event-processing.org/types/stream";
 	
 	public static final String SPARQL_ASK_QUERY = "ASK WHERE { %s }";

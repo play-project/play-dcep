@@ -1,7 +1,7 @@
 package org.openrdf.query.parser.bdpl.ast;
 
 public
-class ASTDynamicArrayDef2 extends SimpleNode implements ArrayDef{
+class ASTDynamicArrayDef2 extends SimpleNode implements IArrayDecl{
 	private String source;	
 	
   public ASTDynamicArrayDef2(int id) {

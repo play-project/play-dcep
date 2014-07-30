@@ -3,7 +3,7 @@
 package org.openrdf.query.parser.bdpl.ast;
 
 public
-class ASTStaticArrayDef1 extends SimpleNode implements ArrayDef{
+class ASTStaticArrayDef1 extends SimpleNode implements IArrayDecl{
 	private String source;	
 	
   public ASTStaticArrayDef1(int id) {

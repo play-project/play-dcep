@@ -4,8 +4,8 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.initiation;
 
 
-import eu.play_project.platformservices.bdpl.parser.util.ArrayTable;
-import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.IArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
@@ -25,11 +25,11 @@ public class ArrayInitiator {
 		arrayMaker = m;
 	}
 	
-	public SubQueryTable initiate(ArrayTable arrayTable) throws InitiateException{
+	public SubQueryTable initiate(BDPLArrayTable arrayTable) throws InitiateException{
 		SubQueryTable subQueryTable = new SubQueryTable();
 		
 		for(String key : arrayTable.keySet()){
-			ArrayTableEntry entry = arrayTable.get(key);
+			BDPLArrayTableEntry entry = arrayTable.get(key);
 			
 			arrayMaker.make(entry, subQueryTable);
 			

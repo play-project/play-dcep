@@ -5,11 +5,11 @@ class ASTContextClause extends SimpleNode {
 	private boolean arrayDef = false;
 	
 	
-	public void setArrayDef(boolean d){
+	public void setStaticArrayDecl(boolean d){
 	    arrayDef = d;
 	}
 	  
-	public boolean getArrayDef(){
+	public boolean isStaticArrayDecl(){
 		return arrayDef;
 	}
 	

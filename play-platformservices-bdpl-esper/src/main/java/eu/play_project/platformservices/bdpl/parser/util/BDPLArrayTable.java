@@ -13,9 +13,9 @@ import java.util.Set;
  * Jun 26, 2014
  *
  */
-public class ArrayTable {
+public class BDPLArrayTable {
 	
-	private Map<String, ArrayTableEntry> table = new HashMap<String, ArrayTableEntry>();
+	private Map<String, BDPLArrayTableEntry> table = new HashMap<String, BDPLArrayTableEntry>();
 	
 	/**
 	 * 
@@ -23,7 +23,7 @@ public class ArrayTable {
 	 * @param entry must not be null
 	 * @throws BDPLArrayException 
 	 */
-	public void add(String name, ArrayTableEntry entry) throws BDPLArrayException{
+	public void add(String name, BDPLArrayTableEntry entry) throws BDPLArrayException{
 		
 		if(!table.containsKey(name)){
 			table.put(name, entry);
@@ -38,7 +38,7 @@ public class ArrayTable {
 	 * @param name
 	 * @return
 	 */
-	public ArrayTableEntry get(String name){
+	public BDPLArrayTableEntry get(String name){
 		return table.get(name);
 	}
 	

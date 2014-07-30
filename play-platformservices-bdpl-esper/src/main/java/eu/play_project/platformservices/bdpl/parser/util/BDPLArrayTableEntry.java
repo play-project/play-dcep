@@ -12,7 +12,7 @@ import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayType;
  * Jun 27, 2014
  *
  */
-public class ArrayTableEntry {
+public class BDPLArrayTableEntry {
 	
 	private BDPLArray array;
 

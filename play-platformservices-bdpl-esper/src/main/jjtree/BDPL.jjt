@@ -1939,9 +1939,9 @@ void ContextClause() :
 {
 	<CONTEXT> Var()
 	(  
-		( <NIL> {jjtThis.setArrayDef(true);} <LBRACE> ( StaticArrayDef1() | StaticArrayDef2() ) <RBRACE> )
+		( <NIL> {jjtThis.setStaticArrayDecl(true);} <LBRACE> ( StaticArrayDef1() | StaticArrayDef2() ) <RBRACE> )
 	| 
-		( {jjtThis.setArrayDef(false);} <LBRACE> TriplesBlock() <RBRACE> )
+		( {jjtThis.setStaticArrayDecl(false);} <LBRACE> TriplesBlock() <RBRACE> )
 	)
 }
 
@@ -1958,11 +1958,11 @@ void ArrayClause() :
 {}
 {
 	<ARRAY> <LBRACE>
-    (ArrayDecl())*
+    (DynamicArrayDecl())*
 	<RBRACE>
 }
  
-void ArrayDecl() :
+void DynamicArrayDecl() :
 {}
 {
 	( DynamicArrayDef1() | DynamicArrayDef2())

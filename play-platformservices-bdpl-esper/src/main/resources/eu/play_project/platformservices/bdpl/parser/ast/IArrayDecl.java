@@ -1,6 +1,6 @@
 package org.openrdf.query.parser.bdpl.ast;
 
-public interface ArrayDef {
+public interface IArrayDecl {
 	
 	public String getSource();
 	

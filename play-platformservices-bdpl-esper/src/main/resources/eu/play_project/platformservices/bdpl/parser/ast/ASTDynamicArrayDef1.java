@@ -3,7 +3,7 @@
 package org.openrdf.query.parser.bdpl.ast;
 
 public
-class ASTDynamicArrayDef1 extends SimpleNode implements ArrayDef{
+class ASTDynamicArrayDef1 extends SimpleNode implements IArrayDecl{
   
   private String source;	
   private boolean checked = false;

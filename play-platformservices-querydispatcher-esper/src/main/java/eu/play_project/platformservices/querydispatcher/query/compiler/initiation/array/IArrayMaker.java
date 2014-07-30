@@ -3,7 +3,7 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array;
 
-import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 
@@ -15,5 +15,5 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.initiatio
  */
 public interface IArrayMaker {
 	
-	public void make(ArrayTableEntry entry, SubQueryTable subQueryTable) throws InitiateException;
+	public void make(BDPLArrayTableEntry entry, SubQueryTable subQueryTable) throws InitiateException;
 }
