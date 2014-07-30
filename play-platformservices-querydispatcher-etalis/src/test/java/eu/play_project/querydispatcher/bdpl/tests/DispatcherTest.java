@@ -87,7 +87,6 @@ public class DispatcherTest {
 		
 		VariableTypeManager vtm = new VariableTypeManager(query);
 		
-		vtm.collectVars();
 		System.out.println(queryString);
 		List<String> vars = vtm.getVariables(VariableTypes.CONSTRUCT_TYPE);
 		assertTrue(vars.size() == 6);
@@ -210,7 +209,6 @@ public class DispatcherTest {
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
-		QueryTemplate qt = templateGenerator.createQueryTemplate(query);
 	}
 	
 	@Test
@@ -222,12 +220,12 @@ public class DispatcherTest {
 		Query q;
 		try {
 			q = QueryFactory.create(queryString, Syntax.syntaxBDPL);
+			q.setQueryId("patternId1");
 		} catch (com.hp.hpl.jena.query.QueryException e) {
 			throw new QueryDispatchException(e.getMessage());
 		}
 
 		// Generate CEP-language
-		eleGenerator.setPatternId("patternId1");
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails

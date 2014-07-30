@@ -23,13 +23,13 @@ import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueNode;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueString;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueVisitor;
-import com.hp.hpl.jena.sparql.syntax.BooleanOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementAssign;
 import com.hp.hpl.jena.sparql.syntax.ElementBind;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementData;
 import com.hp.hpl.jena.sparql.syntax.ElementDataset;
+import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
-import com.hp.hpl.jena.sparql.syntax.ElementEventFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
@@ -38,6 +38,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementMinus;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementNotExists;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementOptional;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
@@ -47,13 +48,18 @@ import com.hp.hpl.jena.sparql.syntax.ElementUnion;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
 
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
+
 
 /**
  * This visitor generates no code. The visited node name is given to info logger.
  * @author sobermeier
  *
  */
-public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,  NodeValueVisitor {
+public class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,  NodeValueVisitor {
 	Logger logger;
 	StringBuffer ele;
 	// Test rdf('0.01','0.01',_L1,l1),rdf('0.1','0.1',_L2,l2),rdf('0.01','0.01',_B1,b1),rdf('0.1','0.1',_B2,b2),minus(_L2,_L1, _FilterVar1), abs(_FilterVar1, _FilterVar2), less(_FilterVar2, 0.1), minus(_B2,_B1, _FilterVar4), abs(_FilterVar4, _FilterVar5), less(_FilterVar5, 0.5)
@@ -105,9 +111,7 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 
 	@Override
 	public void visit(NodeValue nv) {
-		logger.info("GenericVisitor visit: " + nv.getClass().getName());
-		System.out.println(nv.toString());
-		
+		logger.info("GenericVisitor visit: " + nv.getClass().getName());	
 	}
 
 	@Override
@@ -239,11 +243,7 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 		logger.info("GenericVisitor visit: " + el.getClass().getName());
 		
 	}
-	@Override
-	public void visit(ElementEventFilter el) {
-		logger.info("GenericVisitor visit: " + el.getClass().getName());
-		
-	}
+
 	@Override
 	public void visit(ElementNamedGraph el) {
 		logger.info("GenericVisitor visit: " + el.getClass().getName());
@@ -254,13 +254,6 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 	public void visit(ElementFnAbsFilter elementFnAbsFilter) {
 		logger.info("GenericVisitor visit: " + elementFnAbsFilter.getClass().getName());
 	}
-
-	@Override
-	public void visit(BooleanOperator booleanOperator) {
-		logger.info("GenericVisitor visit: " + booleanOperator.getClass().getName());
-		
-	}
-
 
 	@Override
 	public void visit(NodeValueDecimal arg0) {
@@ -287,6 +280,34 @@ public   class GenereicFilterExprVisitor implements ExprVisitor, ElementVisitor,
 	public void visit(ElementMinus arg0) {
 		logger.info("GenericVisitor visit: " + arg0.getClass().getName());
 		
+	}
+	@Override
+	public void visit(ElementNotOperator elementNotOperator) {
+		logger.info("GenericVisitor visit: " + elementNotOperator.getClass().getName());
+	}
+	@Override
+	public void visit(CountWindow countWindow) {
+		logger.info("GenericVisitor visit: " + countWindow.getClass().getName());
+	}
+	@Override
+	public void visit(SlidingWindow slidingWindow) {
+		logger.info("GenericVisitor visit: " + slidingWindow.getClass().getName());
+	}
+	@Override
+	public void visit(TumblingWindow tumblingWindow) {
+		logger.info("GenericVisitor visit: " + tumblingWindow.getClass().getName());
+	}
+	@Override
+	public void visit(DummyWindow dummyWindow) {
+		logger.info("GenericVisitor visit: " + dummyWindow.getClass().getName());
+	}
+	@Override
+	public void visit(ElementBraceOperator elementBraceOperator) {
+		logger.info("GenericVisitor visit: " + elementBraceOperator.getClass().getName());
+	}
+	@Override
+	public void visit(ElementDuration duration) {
+		logger.info("GenericVisitor visit: " + duration.getClass().getName());
 	}
 	
 }

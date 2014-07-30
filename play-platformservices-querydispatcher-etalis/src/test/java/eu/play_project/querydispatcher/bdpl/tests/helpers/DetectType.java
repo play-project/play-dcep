@@ -1,4 +1,4 @@
-package eu.play_project.querydispatcher.epsparql.tests.helpers;
+package eu.play_project.querydispatcher.bdpl.tests.helpers;
 
 import com.hp.hpl.jena.sparql.expr.E_GreaterThan;
 import com.hp.hpl.jena.sparql.expr.E_LessThan;

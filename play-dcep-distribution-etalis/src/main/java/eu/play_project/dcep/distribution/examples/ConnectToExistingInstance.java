@@ -155,8 +155,7 @@ public class ConnectToExistingInstance {
 		// Use custom visitor
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		String patternId = PrologHelpers.quoteForProlog(Namespace.PATTERN.getUri() + Math.random() * 1000000);
-		//String patternId = "'p1'";
-		visitor1.setPatternId(patternId);
+		query.setQueryId(patternId);
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();

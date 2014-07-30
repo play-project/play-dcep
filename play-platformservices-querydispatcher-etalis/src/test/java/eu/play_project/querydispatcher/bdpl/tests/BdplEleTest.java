@@ -16,6 +16,8 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -35,10 +37,14 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventPatternOperatorCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.FilterExpressionCodeGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.HavingVisitor;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.NotOperatorEleGenerator;
+import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 public class BdplEleTest {
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Test
 	public void testManualParserUsage() throws IOException {
@@ -70,11 +76,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
@@ -116,11 +122,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
@@ -145,11 +151,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception was thrown: " + e);
 		}
@@ -176,10 +182,10 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		query.setQueryId(patternId);
 
 		try {
 			visitor1.generateQuery(query);
@@ -212,11 +218,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
@@ -241,11 +247,11 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
@@ -270,11 +276,12 @@ public class BdplEleTest {
 
 		// Set id.
 		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
-		visitor1.setPatternId(patternId);
+		
 
 		// Parse query
 		try {
 			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
 		} catch (Exception e) {
 			System.out.println("Exception while parsing the query: " + e);
 		}
@@ -328,8 +335,8 @@ public class BdplEleTest {
 
 		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
 		visitor1.collectValues(query.getEventQuery());
-
-		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
+		
+		Assert.assertEquals(3, visitor1.getEventPatterns().size());
 
 		String[] expectedOperator = { "'SEQ'(", "'OR'", ")" };
 		Assert.assertArrayEquals(expectedOperator, visitor1.getOperators().toArray());
@@ -348,12 +355,109 @@ public class BdplEleTest {
 
 		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
 		visitor1.collectValues(query.getEventQuery());
-
-		Assert.assertTrue(visitor1.getEventPatterns().size() == 3);
+		
+		Assert.assertEquals(3, visitor1.getEventPatterns().size());
 
 		String[] expectedOperator = { "'SEQ'", "'OR'" };
-		System.out.println(visitor1.getOperators());
 		Assert.assertArrayEquals(expectedOperator, visitor1.getOperators().toArray());
+	}
+	
+	@Test
+	public void testNotOperatorCodeGeneration() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/BDPL-Query-NotOperatorEvent.eprq");
+
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+
+		// Get not pattern.
+		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
+		visitor1.collectValues(query.getEventQuery());
+		System.out.println(visitor1.getEventPatterns());
+
+		Assert.assertEquals(1, visitor1.getEventPatterns().size());
+		
+		VariableTypeManager vtm = new VariableTypeManager(query);
+
+		// Generate ELE.
+		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm, "p1", "");
+		
+		visitor1.getEventPatterns().get(0).visit(eleGenerator);
+		System.out.println(eleGenerator.getEle());
+		
+	}
+	
+	@Test
+	public void testNotOperatorCodeGenerationWholePattern() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/BDPL-Query-NotOperatorEvent.eprq");
+		logger.debug("BDPL query: \n{}", queryString);
+		
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+				
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+
+		visitor1.getEle()
+				.equals("\'http://events.event-processing.org/types/NoBiddersAlert\'(CEID1,example1) do (forall((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)), (generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/NoBiddersAlert\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/stream\',\'http://streams.event-processing.org/ids/fds#stream\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/requestId\',VrequestId,CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve3, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve2, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve1, CEID1))), decrementReferenceCounter(ViD1), decrementReferenceCounter(ViD2), decrementReferenceCounter(ViD3), constructResultIsNotEmpty(CEID1))<-(\'http://events.event-processing.org/types/DeliveryBid\'(ViD1) \'WHERE\' ((\\+forall(rdf(Ve3,\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/TimeOut\',ViD1), (\\+((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)))))), Vid2=ViD1,  incrementReferenceCounter(ViD1)))\n");
+	}
+	
+	@Test
+	public void testNotOperatorCodeGenerationTimeBased() throws IOException {
+
+		String queryString;
+
+		// Get query.
+		queryString = getSparqlQuery("queries/BDPL-Query-NotOperatorTime.eprq");
+		logger.debug("BDPL query: \n{}", queryString);
+		
+		// Parse query
+		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+		
+		// Instantiate code generator
+		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
+		
+		// Set id.
+		String patternId = "'" + Namespace.PATTERN.getUri() + Math.random() * 1000000 + "'";
+				
+
+		// Parse query
+		try {
+			query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
+			query.setQueryId(patternId);
+		} catch (Exception e) {
+			System.out.println("Exception while parsing the query: " + e);
+		}
+
+		UniqueNameManager.getVarNameManager().setWindowTime(query.getWindow().getValue());
+
+		visitor1.generateQuery(query);
+System.out.println(visitor1.getEle());
+		visitor1.getEle()
+				.equals("\'http://events.event-processing.org/types/NoBiddersAlert\'(CEID1,example1) do (forall((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)), (generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/NoBiddersAlert\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/stream\',\'http://streams.event-processing.org/ids/fds#stream\',CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/requestId\',VrequestId,CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve3, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve2, CEID1), generateConstructResult(\'http://events.event-processing.org/types/e\',\'http://events.event-processing.org/types/members\',Ve1, CEID1))), decrementReferenceCounter(ViD1), decrementReferenceCounter(ViD2), decrementReferenceCounter(ViD3), constructResultIsNotEmpty(CEID1))<-(\'http://events.event-processing.org/types/DeliveryBid\'(ViD1) \'WHERE\' ((\\+forall(rdf(Ve3,\'http://www.w3.org/1999/02/22-rdf-syntax-ns#type\',\'http://events.event-processing.org/types/TimeOut\',ViD1), (\\+((\'dbQuery_example1_e1\'(ViD1, Ve2, Vid2)))))), Vid2=ViD1,  incrementReferenceCounter(ViD1)))\n");
 	}
 
 	@Test
@@ -368,7 +472,7 @@ public class BdplEleTest {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
+		query.setQueryId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
@@ -387,7 +491,7 @@ public class BdplEleTest {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
+		query.setQueryId(Namespace.PATTERN.getUri() + Math.random() * 1000000);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 
@@ -406,7 +510,7 @@ public class BdplEleTest {
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
-		visitor1.setPatternId(Namespace.PATTERN.getUri() + 42);
+		query.setQueryId(Namespace.PATTERN.getUri() + 42);
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();
 		assertTrue(etalisPattern.contains("'screenName02',VscreenName02)))")
@@ -434,20 +538,6 @@ public class BdplEleTest {
 		System.out.println(visitor.getEle());
 
 	}
-
-	// @Test
-	// public void dispatchQuery(){
-	// String queryString =
-	// "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
-	// Query query = QueryFactory.create(queryString,
-	// com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-	//
-	// VariableTypeVisitor visitor = new VariableTypeVisitor();
-	//
-	// Map<String, List<Variable>> variables = visitor.getVariables(query,
-	// VariableTypes.historicType);
-	// System.out.println(variables.values());
-	// }
 
 	/**
 	 * Return the query from given file. If given it returns the message of the
@@ -496,9 +586,9 @@ public class BdplEleTest {
 	}
 
 	/**
-	 * Returns the filenaes of the testfiles depending on the type of the
-	 * testfile. The filename of a file with contains a broken query (a query
-	 * which the parser do not acceapt) must start with "BDPL-BrokenQuery". The
+	 * Returns the filenaes of the test files depending on the type of the
+	 * test file. The filename of a file with contains a broken query (a query
+	 * which the parser do not accept) must start with "BDPL-BrokenQuery". The
 	 * filename of a file with a regular query must start with "BDPL-Query".
 	 * 
 	 * @param dir

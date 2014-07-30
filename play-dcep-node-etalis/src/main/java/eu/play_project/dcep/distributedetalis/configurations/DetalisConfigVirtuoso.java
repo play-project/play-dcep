@@ -73,6 +73,7 @@ public class DetalisConfigVirtuoso extends DetalisConfigNet implements Configura
 				cl.loadCode("ReferenceCounting.pl", engine);
 				cl.loadCode("Aggregatfunktions.pl", engine);
 				cl.loadCode("ComplexEventData.pl", engine);
+				cl.loadCode("TimeTrigger.pl", engine);
 				cl.loadCode("Measurement.pl", engine);
 				cl.loadCode("Statistics.pl", engine);
 				cl.loadCode("Windows.pl", engine);

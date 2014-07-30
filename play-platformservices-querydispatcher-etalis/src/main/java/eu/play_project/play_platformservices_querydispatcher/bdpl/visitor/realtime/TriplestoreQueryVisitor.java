@@ -10,14 +10,18 @@ import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 import eu.play_platform.platformservices.bdpl.VariableTypes;
+import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 
 
 /**
@@ -30,8 +34,15 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	private String triplestoreQuery;
 	private final UniqueNameManager uniqueNameManager;
 	private String aggregateValuesCode;
+	VariableTypeManager vtm;
 
-	// Start
+	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager, VariableTypeManager vtm){
+		triplestoreQuery = "";
+		aggregateValuesCode = "";
+		this.uniqueNameManager = uniqueNameManager;
+		this.vtm = vtm;
+	}
+	
 	@Override
 	public void visit(ElementEventGraph el) {
 		// Visit triples
@@ -48,12 +59,6 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		}
 	}
 	
-	public TriplestoreQueryVisitor(UniqueNameManager uniqueNameManager){
-		triplestoreQuery = "";
-		aggregateValuesCode = "";
-		this.uniqueNameManager = uniqueNameManager;
-	}
-
 	
 	public String getTriplestoreQueryGraphTerms() {
 		return triplestoreQuery;
@@ -85,17 +90,17 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 	public Object visitVariable(Node_Variable it, String name) {
 		
 		//Add code to save values.
-		if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.SAMPLE_TYPE)){
+		if(vtm.isType(name, VariableTypes.SIMPLE_TYPE)) {
 			logger.error("VariableTypes.SAMPLE_TYPE is not implemented in dETALIS");
-		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.COUNT_TYPE)){
+		}else if(vtm.isType(name, VariableTypes.COUNT_TYPE)){
 			logger.error("VariableTypes.COUNT_TYPE is not implemented in dETALIS");
-		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.AVG_TYPE)){
+		}else if(vtm.isType(name, VariableTypes.AVG_TYPE)){
 			aggregateValuesCode += ", addAgregatValue(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
-		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
+		}else if(vtm.isType(name, VariableTypes.MIN_TYPE)){
 			aggregateValuesCode += ", storeMin(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
-		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.MIN_TYPE)){
+		}else if(vtm.isType(name, VariableTypes.MIN_TYPE)){
 			aggregateValuesCode += ", storeMin(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
-		}else if(UniqueNameManager.getVariableTypeManage().isType(name, VariableTypes.SUM_TYPE)){
+		}else if(vtm.isType(name, VariableTypes.SUM_TYPE)){
 			aggregateValuesCode += ", sumAdd(" + uniqueNameManager.getAggrDbId() + ", " + "V" + name + ")";
 		}
 		
@@ -150,6 +155,10 @@ public class TriplestoreQueryVisitor extends GenericVisitor {
 		el.getLeft().visit(this);
 		triplestoreQuery = "'" + el.getTyp() + "'";
 		el.getRight().visit(this);
-		
+	}
+	
+	@Override
+	public void visit(ElementBraceOperator el) {
+		el.getSubElements().visit(this);
 	}
 }

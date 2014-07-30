@@ -4,13 +4,15 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
 /** Evaluate a query element based on source information in a named collection. */
-public class ElementEventGraph extends Element { // extends ElementNamedGraph{ // extends Element
+public class ElementEventGraph extends ElementCep { // extends ElementNamedGraph{ // extends Element
 	
 	private Node sourceNode;
 	private Element element;
 	
 	private Element filtexExp; 
 	
+	
+	public ElementEventGraph() {}
 	
 	// GRAPH * (not in SPARQL)
 	public ElementEventGraph(Element el) {

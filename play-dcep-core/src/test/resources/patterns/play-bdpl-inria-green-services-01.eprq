@@ -47,13 +47,13 @@ CONSTRUCT {
 			?e1 mgs:polluant ?polluant .
 			?e1 mgs:value ?pollutionRate .
 			?e1 mgs:dateTime ?date .
-			}
-			FILTER(
+						FILTER(
 					(contains(?polluant, "O3NO2") ||
 					contains(?polluant, "PM10") ||
 					contains(?polluant, "NO2"))
 					&& ?pollutionRate >= 6
 			)
+			}
 		SEQ
 		EVENT ?id2 {
 			?e2 rdf:type :MyGreenServicesSensors .
@@ -61,7 +61,7 @@ CONSTRUCT {
 			?e2 geo:lat ?latitude2 .
 			?e2 geo:lng ?longitude2 .
 			?e2 mgu:idUser ?userId .
-			}
 			FILTER (abs(?latitude1 - ?latitude2) < 10 && abs(?longitude1 - ?longitude2) < 2000) # nearby
+			}
 	} ("PT3M"^^xsd:duration, sliding)
 }

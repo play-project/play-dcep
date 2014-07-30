@@ -287,6 +287,10 @@
 				<filtering>false</filtering>
 				<directory>src/test/adl</directory>
 			</testResource>
+			<testResource>
+				<directory>src/main/pl</directory>
+				<filtering>false</filtering>
+			</testResource>
 		</testResources>
 	</build>
 	<dependencyManagement>

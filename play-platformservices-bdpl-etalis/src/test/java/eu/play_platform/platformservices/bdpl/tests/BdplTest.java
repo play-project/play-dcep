@@ -10,7 +10,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
@@ -18,14 +21,16 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 
 
+
 public class BdplTest {
 	public final String NL = System.getProperty("line.separator");
+	private final Logger logger = LoggerFactory.getLogger(BdplTest.class);
 
 	public enum TestType {
 		BDPL_QUERY, BDPL_BROKEN_QUERY
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void manualTest(){
 		Query q = QueryFactory.create("PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> CONSTRUCT{ rdf:abc rdf:type rdf:name } WHERE{ EVENT ?id{?A  ?B ?C} FILTER contains(?A , 'dddd')}", Syntax.syntaxBDPL);
@@ -35,7 +40,9 @@ public class BdplTest {
 	public void testPositiveTests() {
 				
 		for (String fileName : new String[] {
-				//"BDPL-Query-NotOperator.eprq", // Not implemented yet.
+				"BDPL-Query-miltiple-bin-operators.eprq",
+				"BDPL-Query-NotOperatorEvent.eprq",
+				"BDPL-Query-NotOperatorTime.eprq",
 				"BDPL-Query-HistoricSyntax.eprq",
 				"BDPL-Query-nested-events-2.eprq",
 				"BDPL-Query-nested-events.eprq",
@@ -72,8 +79,10 @@ public class BdplTest {
 				"play-bdpl-personalmonitoring-03-related-location.eprq",
 				"play-bdpl-personalmonitoring-04-slowdown-recom-three-events.eprq",
 				}) {
-			System.out.println("Testing queryfile: " + fileName);
+			
+			logger.info(("Testing queryfile: " + fileName));
 			try {
+				logger.debug("Fiele \"{}\" content {}",fileName, (getQuery(fileName)[0]));
 				QueryFactory.create(getQuery(fileName)[0], Syntax.syntaxBDPL);
 			} catch (IOException e) {
 				fail("Could not read query file: " + fileName);
@@ -91,7 +100,7 @@ public class BdplTest {
 		String[] query;
 		
 		for (String fileName : getFilenames(new File("src/test/resources/"), TestType.BDPL_BROKEN_QUERY)) {
-			System.out.println("Testing queryfile: " + fileName);
+			logger.info(("Testing queryfile: " + fileName));
 			try {
 				query = getQuery(fileName);
 				// Test if expeted exeption is given.
@@ -120,7 +129,6 @@ public class BdplTest {
 	 * @throws IOException
 	 */
 	public String[] getQuery(String queryFile) throws IOException {
-		System.out.println(queryFile );
 		InputStream is = (InputStream) getClass().getClassLoader().getResource(queryFile).getContent();
 		
 		InputStreamReader isr = new InputStreamReader(is);
@@ -141,7 +149,6 @@ public class BdplTest {
 				sb.append("\n");
 			}
 		}
-		// System.out.println(sb.toString());
 		br.close();
 		isr.close();
 		is.close();

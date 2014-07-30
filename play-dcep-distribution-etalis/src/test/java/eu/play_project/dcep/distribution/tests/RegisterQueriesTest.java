@@ -62,7 +62,7 @@ public class RegisterQueriesTest {
 		
 		EleGenerator visitor1 = new EleGeneratorForConstructQuery();
 		
-		visitor1.setPatternId(PrologHelpers.quoteForProlog(Namespace.PATTERN.getUri() + "123456"));
+		query.setQueryId(PrologHelpers.quoteForProlog(Namespace.PATTERN.getUri() + "123456"));
 
 		visitor1.generateQuery(query);
 		String etalisPattern = visitor1.getEle();

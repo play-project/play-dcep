@@ -12,20 +12,6 @@ import com.hp.hpl.jena.query.QueryFactory;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.RdfQueryRepresentativeQueryVisitor;
 
 public class RdfQueryRepresentativeQueryVisitorTest {
-
-	// @Test
-	// public void dispatchQuery(){
-	// String queryString =
-	// "CONSTRUCT{ ?x ?nice ?name } WHERE {EVENT ?id{?e1 ?location \"abc\"} FILTER (abs(?Latitude1 - ?Latitude2) < 0.1 && abs(?Longitude1 - ?Longitude2) < 0.5)}";
-	// Query query = QueryFactory.create(queryString,
-	// com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-	//
-	// VariableTypeVisitor visitor = new VariableTypeVisitor();
-	//
-	// Map<String, List<Variable>> variables = visitor.getVariables(query,
-	// VariableTypes.historicType);
-	// System.out.println(variables.values());
-	// }
 	
 	@Test
 	public void testRdfQueryRepresentativeQueryVisitor() throws IOException {

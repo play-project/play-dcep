@@ -4,8 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
+import com.hp.hpl.jena.sparql.syntax.ElementCep;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 
 /**
  * Separate event patterns from operators. For more intuitive code generation.
@@ -15,7 +18,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
  */
 
 public class EventPatternOperatorCollector extends GenericVisitor {
-	private List<ElementEventGraph> eventPatterns;
+	private List<ElementCep> eventPatterns;
 	private List<String> operators;
 	StringBuffer opTmp;
 	
@@ -25,7 +28,7 @@ public class EventPatternOperatorCollector extends GenericVisitor {
 	 * @param root Root node of syntax tree.
 	 */
 	public void collectValues(Element root) {
-		eventPatterns = new LinkedList<ElementEventGraph>();
+		eventPatterns = new LinkedList<ElementCep>();
 		operators = new LinkedList<String>();
 		opTmp = new StringBuffer();
 		
@@ -35,19 +38,17 @@ public class EventPatternOperatorCollector extends GenericVisitor {
 	@Override
 	public void visit(ElementEventBinOperator el) {
 		el.getLeft().visit(this);
-		
-		if(el.getRight() instanceof ElementEventGraph) {
-			operators.add("'" + el.getTyp() + "'");
-			el.getRight().visit(this);
-		} else {
-			
+
+		if(el.getRight() instanceof ElementBraceOperator) {
 			opTmp.append("'" + el.getTyp() + "'");
 			opTmp.append("(");
 			operators.add(opTmp.toString());
 			opTmp = new StringBuffer();
 			el.getRight().visit(this);
-			
 			opTmp.append(")");
+		} else {
+			operators.add("'" + el.getTyp() + "'");
+			el.getRight().visit(this);
 		}
 		
 		if(opTmp.length() != 0) {
@@ -56,16 +57,28 @@ public class EventPatternOperatorCollector extends GenericVisitor {
 		
 	}
 	
+
+
+	public List<ElementCep> getEventPatterns() {
+		return this.eventPatterns;
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		eventPatterns.add(el);
+	}
+	
 	@Override
 	public void visit(ElementEventGraph el) {
 		eventPatterns.add(el);
 	}
 
-	public List<ElementEventGraph> getEventPatterns() {
-		return this.eventPatterns;
-	}
-
 	public List<String> getOperators() {
 		return this.operators;
+	}
+	
+	@Override
+	public void visit(ElementBraceOperator elementBraceOperator) {
+		elementBraceOperator.getSubElements().visit(this);
 	}
 }

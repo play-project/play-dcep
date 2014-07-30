@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import com.hp.hpl.jena.query.Query;
 
@@ -19,17 +22,24 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.genera
  */
 public class VariableTypeManager {
 	
-	Map<String, Integer> variables;
-	Query query;
+	private Map<String, Integer> variables;
+	private Query query;
+	Logger logger; 
 	
 	public VariableTypeManager(Query q){
+		logger = LoggerFactory.getLogger(this.getClass());
 		variables = new HashMap<String, Integer>();
-		this.query = q;
+		
+		if (q != null) {
+			this.query = q;
+			this.collectVars();
+		} else {
+			logger.warn("Parameter shuld not be null.");
+		}
 	}
 	
-	public void collectVars(){
+	private void collectVars(){
 		VariableTypeVisitor vv = new VariableTypeVisitor(this);
-		
 		vv.collectVariables(query);
 	}
 

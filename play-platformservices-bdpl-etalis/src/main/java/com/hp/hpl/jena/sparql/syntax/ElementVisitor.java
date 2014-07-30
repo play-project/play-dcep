@@ -7,6 +7,11 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
+
 
 public interface ElementVisitor
 {
@@ -27,13 +32,17 @@ public interface ElementVisitor
     public void visit(ElementMinus el) ;
     public void visit(ElementService el) ;
     public void visit(ElementSubQuery el) ;
-	
     public void visit(RelationalOperator relationalOperator) ;
     public void visit(ElementEventGraph el) ;
 	public void visit(ElementEventBinOperator el);
-	public void visit(ElementEventFilter el);
-	public void visit(BooleanOperator booleanOperator);
 	public void visit(ElementFnAbsFilter elementFnAbsFilter);
+	public void visit(ElementNotOperator elementNotOperator);
+	public void visit(CountWindow countWindow);
+	public void visit(SlidingWindow slidingWindow);
+	public void visit(TumblingWindow tumblingWindow);
+	public void visit(DummyWindow dummyWindow);
+	public void visit(ElementBraceOperator elementBraceOperator);
+	public void visit(ElementDuration duration);
 }
 
 /*

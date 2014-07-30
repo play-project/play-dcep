@@ -34,10 +34,7 @@ public class EventIterator extends GenericVisitor implements Iterable<Element>, 
 
 	@Override
 	public void visit(ElementEventBinOperator el) {
-		System.out.println(el.getLeft().getClass().getName());
 		el.getLeft().visit(this);
-		
-		System.out.println("'" + el.getTyp() + "'");
 		el.getRight().visit(this);
 	}
 	

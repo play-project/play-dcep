@@ -58,6 +58,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		ConfigApi, DEtalisConfigApi, Serializable {
 
 	private static final long serialVersionUID = 100L;
+	private int prologTriggerDelay = 100; // Delay between two prolog trigger calls.
 	private String name;
 	private JtalisContextImpl etalis; // ETALIS Object
 	private JtalisOutputProvider eventOutputProvider;
@@ -149,6 +150,13 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					throw new DistributedEtalisException("Error registering RdfDbQueries for queryId " + bdplQuery.getDetails().getQueryId());
 				}
 			}
+
+			for (String triggerPattern : bdplQuery.getDetails().getTriggerPattern()) {
+				System.out.println("Register virual event pattern: " + triggerPattern );
+
+				logger.debug("Register virual event pattern: {}", triggerPattern );
+				etalis.addDynamicRuleWithId(quoteForProlog(bdplQuery.getDetails().getQueryId()), triggerPattern);
+			}
 			
 			// Configure ETALIS to inform output listener if complex event of new type appeared.
 			etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
@@ -156,12 +164,15 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			// Make subscriptions.
 			this.ecConnectionManager.registerEventPattern(bdplQuery);
 		} catch (PrologException e) {
+			e.printStackTrace();
 			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		} catch (EcConnectionmanagerException e) {
+			e.printStackTrace();
 			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		}
@@ -260,6 +271,10 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					throw new DcepManagementException(String.format(
 							"Specified middleware is not implemented: %s.", middleware));
 				}
+				
+				// Start prolog triger thread.
+				new PrologTriggerThread(etalis, prologTriggerDelay);
+				
 				init = true;
 			} catch (DistributedEtalisException e) {
 				throw new DcepManagementException(e.getMessage());

@@ -1,5 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.general;
 
+import javax.management.RuntimeErrorException;
+
 import com.hp.hpl.jena.graph.Node_ANY;
 import com.hp.hpl.jena.graph.Node_Blank;
 import com.hp.hpl.jena.graph.Node_Literal;
@@ -28,11 +30,13 @@ import com.hp.hpl.jena.sparql.expr.aggregate.AggMin;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSample;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggSum;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
 import com.hp.hpl.jena.sparql.syntax.ElementSubQuery;
@@ -136,7 +140,7 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 			state = VariableTypes.AVG_TYPE;
 			(arg0.getAggregator()).getExpr().visit(this);
 		}else if(arg0.getAggregator() instanceof AggSample){
-			state = VariableTypes.SAMPLE_TYPE;
+			state = VariableTypes.SIMPLE_TYPE;
 			(arg0.getAggregator()).getExpr().visit(this);
 		}		
 	}
@@ -239,6 +243,17 @@ public class VariableTypeVisitor extends GenericVisitor{ // extends GenericVisit
 	@Override
 	public void visit(ExprFunctionOp funcOp) {
 		funcOp.visit(this);
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getNot().visit(this);
+		el.getEnd().visit(this);
+	}
+	
+	public void visit(ElementBraceOperator elementBraceOperator) {
+		elementBraceOperator.getSubElements().visit(this);
 	}
 
 	@Override

@@ -7,8 +7,10 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.graph.NodeVisitor;
 import com.hp.hpl.jena.sparql.core.TriplePath;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 
@@ -52,6 +54,18 @@ public class EventTypeVisitor extends GenericVisitor implements ElementVisitor, 
 	public void visit(ElementEventGraph el) {
 		// Visit triples
 		el.getElement().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getEnd().visit(this);
+		el.getNot().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementBraceOperator el) {
+		el.getSubElements().visit(this);
 	}
 
 	public String getEventType(){

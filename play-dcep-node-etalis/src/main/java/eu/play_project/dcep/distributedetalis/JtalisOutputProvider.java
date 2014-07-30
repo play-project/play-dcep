@@ -165,7 +165,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			String predicate = item.get("P").toString();
 			predicate = predicate.substring(1, predicate.length() - 1);
 			String object = unquoteFromProlog(item.get("O").toString());
-
 			Node objectNode = EventHelpers.toJenaNode(object);
 			
 			quadruples.add(new Quadruple(
@@ -174,12 +173,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
 					NodeFactory.createURI(predicate),
 	                objectNode));
-			Quadruple q = new Quadruple(
-					GRAPHNAME,
-					// Replace dummy event id placeholder with actual unique id for complex event:
-					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
-					NodeFactory.createURI(predicate),
-	                objectNode);
 		}
 
 		logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);

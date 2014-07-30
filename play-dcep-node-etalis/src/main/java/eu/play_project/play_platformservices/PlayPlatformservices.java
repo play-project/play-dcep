@@ -171,17 +171,18 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		Query q;
 		try {
 			q = QueryFactory.create(query, Syntax.syntaxBDPL);
+			q.setQueryId(queryId);
 		} catch (com.hp.hpl.jena.query.QueryException e) {
 			throw new QueryDispatchException(e.getMessage());
 		}
 
 		// Generate CEP-language
-		eleGenerator.setPatternId(queryId);
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails
 		QueryDetails qd = this.createQueryDetails(queryId, q);
 		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
+		qd.setTriggerCode(eleGenerator.getTriggerCode());
 		
 		BdplQuery bdpl = BdplQuery.builder()
 				.details(qd)
@@ -238,7 +239,7 @@ public class PlayPlatformservices implements QueryDispatchApi,
 		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);
 		query.getWindow().accept(windowVisitor);
 		
-		// Check if id is alredy used.
+		// Check if id is already used.
 		if (dcepManagmentApi != null && dcepManagmentApi.getRegisteredEventPatterns().containsKey(queryId)) {
 			throw new QueryDispatchException("Query ID is already used: " + queryId);
 		}

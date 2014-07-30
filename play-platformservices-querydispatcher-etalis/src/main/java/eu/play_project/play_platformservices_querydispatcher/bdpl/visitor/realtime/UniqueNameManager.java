@@ -1,12 +1,7 @@
 package eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-
-import com.hp.hpl.jena.query.Query;
 
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
 /**
@@ -30,9 +25,7 @@ public class UniqueNameManager {
 	private String resultVar1s;
 	private long resultVar2;
 	private String resultVar2s;
-	private Map<String, Boolean> aggrVars;
 	private String windowTime;
-	private Stack<Long> filterVars;
 	
 
 	static UniqueNameManager uniqueNameManger;
@@ -42,10 +35,6 @@ public class UniqueNameManager {
 		triplestoreVariable = 0;
 		absVariable = 0;
 		aggrDbId = 0;
-		filterVars = new Stack<Long>();
-		aggrVars = new HashMap<String, Boolean>();
-		vtm = new VariableTypeManager(null);
-		
 	}
 	
 	public static UniqueNameManager getVarNameManager(){
@@ -53,18 +42,6 @@ public class UniqueNameManager {
 			uniqueNameManger = new UniqueNameManager();
 		}
 		return uniqueNameManger;
-	}
-	
-	public static void initVariableTypeManager(Query q){
-		vtm = new VariableTypeManager(q);
-	}
-	
-	public static VariableTypeManager getVariableTypeManage(){
-		if(vtm==null){
-			throw new RuntimeException("Init VariableTypeManager first");
-		}else{
-			return vtm;
-		}
 	}
 	
 	/**
@@ -95,7 +72,6 @@ public class UniqueNameManager {
 	
 
 	public long processNextEvent(){
-
 		if (++triplestoreVariable >  triplestoreVariableEnd) {
 			throw new RuntimeException("No event left. This query schould contains " + (triplestoreVariableEnd - triplestoreVariableStart));
 		}
@@ -117,8 +93,6 @@ public class UniqueNameManager {
 	private String getTriplestoreVariableForEventNr(long eventNumber){
 		return "ViD" + eventNumber;
 	}
-	
-	
 	
 	public String getNextAbsVariable(){
 		absVariable++;
@@ -195,6 +169,19 @@ public class UniqueNameManager {
 	
 	public String getCeid(){
 		return "CEID" + ceid;
+	}
+	
+	/**
+	 * This event can be produced by the engine and is related to the current triple store.
+	 * @return Event name for a virtual event.
+	 */
+	public String getVirtualEvent() {
+		return "virtualEvent" + triplestoreVariable;
+	}
+	
+	public UniqueNameManager reset() {
+		uniqueNameManger = new UniqueNameManager();
+		return uniqueNameManger;
 	}
 	
 }

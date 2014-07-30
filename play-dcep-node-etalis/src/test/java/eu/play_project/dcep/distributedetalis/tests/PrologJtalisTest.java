@@ -68,7 +68,7 @@ public class PrologJtalisTest {
 	 * Instantiate ETALIS
 	 * @throws InterruptedException
 	 */
-	@Before
+	//@Before
 	public void instantiateJtalis() throws InterruptedException{
 
 		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -78,36 +78,10 @@ public class PrologJtalisTest {
 		Thread.sleep(1000);
 	}
 	
-	@Test
-	public void testTimeTrigger() throws InterruptedException {
-			long delay = 3000;
-			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
-
-			PrologEngineWrapper<?> engine = new JPLEngineWrapper();
-			JtalisContext context = new JtalisContextImpl(engine);
-			context.addEventTrigger("c/1");
-
-			context.registerOutputProvider(new AbstractJtalisEventProvider() {
-				@Override
-				public void outputEvent(EtalisEvent event) {
-					list.add(event);
-				}
-			});
-
-
-			Assert.assertTrue(list.isEmpty());
-			engine.executeGoal("use_module(library(time))");
-			
-			String ruleId = context.addDynamicRule("exceptionAlarm(c(X), 1) <- a(X)");
-			context.pushEvent(new EtalisEvent("a", 1));
-			Thread.sleep(delay); // wait a little bit for the events to be processed
-
-			assertEquals(1, list.size());
-		
-	}
+	
 	
 	/**
-	 * Instantiate ETALIS and register eventpatterns.
+	 * Instantiate ETALIS and register event patterns.
 	 */
 	@Ignore
 	@Test

@@ -1,6 +1,7 @@
 package eu.play_project.play_platformservices.api;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public class QueryDetails implements Serializable {
 	private String etalisProperty;
 	private String tumblingWindow;
 	private List<String> rdfDbQueries;
+	private List<String> triggerCode = new LinkedList<String>();
 	private String complexType;  //Type name of the complex event.
 	
 	public QueryDetails(){} // JAXB needs this
@@ -33,6 +35,7 @@ public class QueryDetails implements Serializable {
 		// Init with valid values which have no functional effect.
 		this.etalisProperty = "";
 		this.tumblingWindow = "true";
+		this.triggerCode = new LinkedList<String>();
 	}
 	
 	public String getQueryId() {
@@ -124,6 +127,14 @@ public class QueryDetails implements Serializable {
 
 	public void setComplexType(String complexType) {
 		this.complexType = complexType;
+	}
+
+	public List<String> getTriggerPattern() {
+		return triggerCode;
+	}
+
+	public void setTriggerCode(List<String> triggerCode) {
+		this.triggerCode = triggerCode;
 	}
 	
 	// TODO stuehmer: add a builder for QueryDetails to validate a few mandatory settings upon build()

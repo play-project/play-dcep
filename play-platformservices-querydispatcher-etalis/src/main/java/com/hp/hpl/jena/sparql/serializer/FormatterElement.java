@@ -32,15 +32,15 @@ import com.hp.hpl.jena.sparql.core.PathBlock;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.path.PathWriter;
-import com.hp.hpl.jena.sparql.syntax.BooleanOperator;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.syntax.Element1;
 import com.hp.hpl.jena.sparql.syntax.ElementAssign;
 import com.hp.hpl.jena.sparql.syntax.ElementBind;
+import com.hp.hpl.jena.sparql.syntax.ElementBraceOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementData;
 import com.hp.hpl.jena.sparql.syntax.ElementDataset;
+import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementEventBinOperator;
-import com.hp.hpl.jena.sparql.syntax.ElementEventFilter;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementExists;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter;
@@ -49,6 +49,7 @@ import com.hp.hpl.jena.sparql.syntax.ElementGroup;
 import com.hp.hpl.jena.sparql.syntax.ElementMinus;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementNotExists;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementOptional;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementService;
@@ -57,6 +58,11 @@ import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 import com.hp.hpl.jena.sparql.syntax.ElementUnion;
 import com.hp.hpl.jena.sparql.syntax.ElementVisitor;
 import com.hp.hpl.jena.sparql.syntax.RelationalOperator;
+
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.CountWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
+import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
 
 
 public class FormatterElement extends FormatterBase
@@ -665,7 +671,7 @@ public class FormatterElement extends FormatterBase
 
 	@Override
 	public void visit(RelationalOperator relationalOperator) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -676,31 +682,61 @@ public class FormatterElement extends FormatterBase
 
 	@Override
 	public void visit(ElementEventBinOperator el) {
-		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public void visit(ElementEventFilter el) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void visit(BooleanOperator booleanOperator) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void visit(ElementFnAbsFilter elementFnAbsFilter) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void visit(ElementData el) {
-		// TODO Auto-generated method stub
+		
+		
+	}
+
+	@Override
+	public void visit(ElementNotOperator elementNotOperator) {
+		
+		
+	}
+
+	@Override
+	public void visit(CountWindow countWindow) {
+		
+		
+	}
+
+	@Override
+	public void visit(SlidingWindow slidingWindow) {
+		
+		
+	}
+
+	@Override
+	public void visit(TumblingWindow tumblingWindow) {
+		
+		
+	}
+
+	@Override
+	public void visit(DummyWindow dummyWindow) {
+		
+		
+	}
+
+	@Override
+	public void visit(ElementBraceOperator elementBraceOperator) {
+		
+		
+	}
+
+	@Override
+	public void visit(ElementDuration duration) {
+		
 		
 	}
     

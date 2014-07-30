@@ -24,6 +24,8 @@ alarm(
 	[]
 ).
 
+print :- alarm(1 , (write('Hello World!')), _ID, []).
+
 %% resetPattern(+PatternId:atom)
 %
 % Delete all consumed events for given pattern.

@@ -89,6 +89,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     // Play extensions ----------------------------------
     // Event Data
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private String queryId;
     private Element eventQuery;
     private Window window = new DummyWindow();
 
@@ -97,7 +98,7 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 		return eventQuery;
 	}
 
-	public void seteventQuery(Element element){
+	public void setEventQuery(Element element){
     	eventQuery = element;
     }
 
@@ -111,6 +112,14 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
 	
 	public void setWindow(Window window){
 		this.window = window;
+	}
+	
+	public String getQueryId() {
+		return queryId;
+	}
+
+	public void setQueryId(String queryId) {
+		this.queryId = queryId;
 	}
     
 //=================================================================================
@@ -977,6 +986,4 @@ public class Query extends Prologue implements Cloneable, Printable, Serializabl
     {
         Serializer.serialize(this, writer, outSyntax) ;
     }
-    
-
 }

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap;
 
-public class ElementEventBinOperator extends Element {
+public class ElementEventBinOperator extends ElementCep {
 
 	String type;
 	Element left;

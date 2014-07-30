@@ -17,8 +17,10 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.TriplePath;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementDuration;
 import com.hp.hpl.jena.sparql.syntax.ElementEventGraph;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementNotOperator;
 import com.hp.hpl.jena.sparql.syntax.ElementPathBlock;
 
 /**
@@ -49,6 +51,18 @@ public class RdfQueryRepresentativeQueryVisitor extends GenericVisitor {
 		
 		// Visit triples
 		el.getElement().visit(this);
+	}
+	
+	@Override
+	public void visit(ElementDuration el) {
+		varRepresentative = new HashMap<String, String>();
+	}
+	
+	@Override
+	public void visit(ElementNotOperator el) {
+		el.getStart().visit(this);
+		el.getEnd().visit(this);
+		el.getNot();
 	}
 
 	@Override

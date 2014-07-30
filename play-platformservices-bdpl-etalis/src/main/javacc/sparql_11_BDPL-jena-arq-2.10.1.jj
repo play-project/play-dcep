@@ -21,6 +21,7 @@
 // ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
 options
 {
+  FORCE_LA_CHECK = true;
       // \ u processed in the input stream
       // SPARQL 1.0
     JAVA_UNICODE_ESCAPE = true ;
@@ -269,22 +270,32 @@ void WhereClauseBDPL() : {Element el; Token th; Token t; Update up; Expr testExp
 	   		<LBRACE>
 	   			el = EventClause()
 			<RBRACE>
-		t = < WINDOWSIZE >
-				(
-		  			< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(t.image);}
-				|   < WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(t.image);}
-				)
-			<RPAREN> {getQuery().setWindow(win);}
+			win = WindowSize()
+		 {getQuery().setWindow(win);}
 		)  
 	|
 		//Real time query without window.
 	    el = EventClause()
 	)
-	{getQuery().seteventQuery(el);}
+	{getQuery().setEventQuery(el);}
 	
 	// Historical query is optional.
 	WhereClauseH(th)
   <RBRACE>
+}
+
+Window WindowSize() : {Token t; Window win;}
+{
+ 	<LPAREN>
+	t = < WINDOWSIZE >
+		(
+		  	< WINDOW_TYPE_SLIDING > {win = new SlidingWindow(new ElementDuration(t.image));}
+			|
+			< WINDOW_TYPE_TUMBLING > {win = new TumblingWindow(new ElementDuration(t.image));}
+		)
+	<RPAREN>
+		
+	{return win;}
 }
 
 void WhereClause() : { Element el ; }
@@ -314,6 +325,7 @@ void GroupClause() : { }
 {
   <GROUP> <BY> ( GroupCondition() )+
 }
+
 void GroupCondition() : { Var v = null ; Expr expr = null ; }
 {
   ( expr = BuiltInCall() { getQuery().addGroupBy((Var)null, expr) ; }
@@ -328,6 +340,7 @@ void GroupCondition() : { Var v = null ; Expr expr = null ; }
     { getQuery().addGroupBy(v) ; }
   )
 }
+
 void HavingClause() : { }
 {
     { allowAggregatesInExpressions = true ; }
@@ -1753,9 +1766,9 @@ TOKEN [IGNORE_CASE] :
 | < EVENT : "event" >
 | < SEQ : ("seq"){1} >
 | < OR : ("or"){1} >
-| < WINDOW_TYPE_SLIDING: "sliding" >
-| < WINDOW_TYPE_TUMBLING: "tumbling" >
-| < WINDOWSIZE : "(\"PT" (["0"-"9","H","M","S"])+ "\"^^xsd:duration, " >
+| < WINDOW_TYPE_SLIDING: ", sliding" >
+| < WINDOW_TYPE_TUMBLING: ", tumbling" >
+| < WINDOWSIZE : "\"PT" (["0"-"9","H","M","S"])+ "\"^^xsd:duration" >
 | < BEGIN_WINDOW : ("WINDOW"){1} >
 // | < DURATION : ("M^^xsd:duration"){1} >
 | < EQUALS : ("equals"){1} >
@@ -1950,8 +1963,17 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
   < LBRACE >
   	{startTriplesBlock();}
   	el = TriplesBlock(null)
-  	{endTriplesBlock();
-  	elg.addElement(el);}
+
+  	{
+  	  endTriplesBlock();
+  	  elg.addElement(el);
+  	}
+
+	(	  el = Filter()
+		{
+		  elg.addElement(el);		}
+	)?
+  	
   < RBRACE >
   
   {endGroup(elg);}
@@ -1959,55 +1981,66 @@ ElementEventGraph EventGraphPattern() :{ Element el; Node n;}
 }
 
 Element EventClause() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
-{    eventClause = NestedEvents()
-    (
-	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
-	  {
-	    op.setChilds(eventClause, eventClauseR);
-	    eventClause = op;
-	  }
-	)*
+{
+ (
+   	eventClause = NotClause() (eventClause = MoreEvents(eventClause))? |     eventClause = NestedEvents() (eventClause = MoreEvents(eventClause))? |	eventClause = Event() (eventClause = MoreEvents(eventClause))?
+ )
+  {return eventClause;}
+}
 
-	{return eventClause;}|
+
+Element EventClauseSingleEvent() : {Element eventClause = null; Element eventClauseR = null; ElementEventBinOperator op = null;}
+{
+ (
+   	eventClause = NotClause()
+ | 
+    eventClause = NestedEvents()
+ |
 	eventClause = Event()
-	(
-	  op = BdplBinOperators() (eventClauseR = Event() | eventClauseR = NestedEvents())
-	  {
-	    op.setChilds(eventClause, eventClauseR);
-	    eventClause = op;
-	  }
-	)* 
+ )
+  {return eventClause;}
+}
 
-	{return eventClause;}
+
+Element NotClause() : {Element start = null; Element end = null; Element not = null; Token t;}
+{
+   < NOT >
+	< LPAREN >		start = EventClause()  	 < COMMA >		not = EventClause()     < COMMA >   	  	(
+   	  	  <LPAREN>   	  	  	t = < WINDOWSIZE > {end = new ElementDuration(t.image);}
+   	  	  <RPAREN>
+		| 
+   	  	  end = EventClause()
+  	 	)   < RPAREN >
+   
+   {return new ElementNotOperator(start, not, end);}
 }
 
 Element NestedEvents() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
 {
-    
-	<LBRACE> eventClause = Events() <RBRACE>
-	{return eventClause;}
+	<LBRACE> eventClause = EventClause() <RBRACE>
+	{return new ElementBraceOperator(eventClause);}
 }
 
-Element Events() : {Element e; ElementEventBinOperator subElements = null; Element eventClause = null; ElementEventBinOperator op = null; Element eventClauseR =  null;}
-{
-	eventClause = Event()
-	(	  op = BdplBinOperators() eventClauseR = Event()	  {	    op.setChilds(eventClause, eventClauseR);	    eventClause = op;	  }	)*
-	{return eventClause;}
-}
 
-ElementEventGraph Event() :{ ElementEventGraph e; Element filter =  null;}
-{	e = EventGraphPattern() (filter = BdplFilter())?
+ElementEventGraph Event() : { ElementEventGraph e;}
+{	e = EventGraphPattern()
 	{
-	  e.setFilterExp(filter);
 	  return e;	}
 }
 
-ElementEventBinOperator MoreEvents() : {ElementEventBinOperator op; ElementEventGraph e2;}
-{	op = BdplBinOperators() e2 = Event()
-	{
-	  op.setRight(e2);
-	  return op;
-	}
+ElementEventBinOperator MoreEvents(Element leftElement) : {ElementEventBinOperator op; Element rightEvent;}
+{	(
+		op = BdplBinOperators()
+		rightEvent = EventClauseSingleEvent()
+		{
+		  op.setChilds(leftElement, rightEvent);
+		  leftElement = op;
+		}
+	)+
+
+		{  
+	  		return op;
+		}
 }
 
 // Binary operators for BDPL.
@@ -2040,16 +2073,6 @@ void BdplFilterOperators() :
   | < getENDTIME >
   )
 }
-
-Element BdplFilter() :
-{
-	Element filter = null;
-}
-{
-  filter = Filter()
-  {return filter;}
-}
-
 
 // http://research.petalslink.org/display/play/SPARQL+Expressivity
 
