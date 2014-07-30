@@ -165,7 +165,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 			String predicate = item.get("P").toString();
 			predicate = predicate.substring(1, predicate.length() - 1);
 			String object = unquoteFromProlog(item.get("O").toString());
-
 			Node objectNode = EventHelpers.toJenaNode(object);
 			
 			quadruples.add(new Quadruple(

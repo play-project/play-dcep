@@ -146,7 +146,6 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 
 	@Override
 	public List<String> getTriggerCode() {
-		
 		return triggerCode;
 	}
 

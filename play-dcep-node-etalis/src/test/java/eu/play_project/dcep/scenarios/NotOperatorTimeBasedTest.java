@@ -30,6 +30,7 @@ public class NotOperatorTimeBasedTest extends ScenarioAbstractTest {
 		// Get query.
 		queryString = loadSparqlQuery("patterns/BDPL-Query-NotOperatorTime.eprq");
 		logger.debug("BDPL query: \n{}", queryString);
+		
 		// Compile query
 		queryDispatchApi.registerQuery("example1", queryString);
 
@@ -43,38 +44,26 @@ public class NotOperatorTimeBasedTest extends ScenarioAbstractTest {
 			e.printStackTrace();
 		}
 
-		// No DeliveryBid appeared.
 		testApi.attach(subscriber);
-		logger.info("Publish events");
-		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
-		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
-
-		//delay();
-
-
-		// Wait
-		//delay();
-		//assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
 		
 		//DeliveryBid appeared before transaction ends.
 		logger.info("Publish events");
 		
 		CompoundEvent event = EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig));
-		for (int j = 0; j < 10; j++) {
-			System.out.println(j);
-			Thread.sleep(500);
-			testApi.publish(event);
-
-		}
-//		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
-//		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/BidRequest.trig", Syntax.Trig)));
-//		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
-//		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig)));
-//		testApi.publish(EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
-//		logger.debug("Sent event: \n{}", EventCloudHelpers.toCompoundEvent(loadEvent("events/TimeOut.trig", Syntax.Trig)));
+		CompoundEvent event2 = EventCloudHelpers.toCompoundEvent(loadEvent("events/DeliveryBid.trig", Syntax.Trig));
+		
+		System.out.println(event);
+		testApi.publish(event);
+		assertEquals("We expect exactly no event as a result.", 0, subscriber.getComplexEvents().size());
 		
 		// Wait
 		delay();
+		delay();
+		
+		// Trigger event.
+		testApi.publish(event2);
+		delay();
+		
 		assertEquals("We expect exactly one complex event as a result.", 1, subscriber.getComplexEvents().size());
 	}
 	

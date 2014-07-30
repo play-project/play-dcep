@@ -49,9 +49,9 @@ public class DelayEventTest {
 
 			context.addDynamicRule("c <- a");
 			
-			engine.executeGoal("triggerEventWithDelay(a)");
-			engine.executeGoal("triggerEventWithDelay(a)");
-			engine.executeGoal("triggerEventWithDelay(a)");
+			engine.executeGoal("triggerEventWithDelay(a, 1)");
+			engine.executeGoal("triggerEventWithDelay(a, 1)");
+			engine.executeGoal("triggerEventWithDelay(a, 1)");
 			engine.executeGoal("event(a)");
 		    		    
 			Thread.sleep(delay); // wait a little bit for the events to be processed

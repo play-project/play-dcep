@@ -95,7 +95,6 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	private boolean addPayloadToPlTriplestore(String prologString){
 		try{
 			boolean result = ctx.getEngineWrapper().executeGoal(prologString);
-			ctx.getEngineWrapper().executeGoal("write('a'),write(\\n).");
 			//ctx.getEngineWrapper().executeGoal("triggerEventWithDelay(virtualEvent2, 1).");
 			//ctx.getEngineWrapper().executeGoal("event(virtualEvent2).");
 //			ctx.getEngineWrapper().executeGoal("printRdfStat");

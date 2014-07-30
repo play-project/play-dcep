@@ -7,7 +7,7 @@
 % Depends on etalis.
 % @param Event name of event which will be produced.
 % @param Delay in seconds.
-triggerEventWithDelay(Event, Delay):- 
+triggerEventWithDelay(Event, Delay):-
 alarm(
 		Delay,
 		event(Event),
@@ -19,4 +19,4 @@ alarm(
 % This is sometimes necessary to trigger the alarm.
 % See http://www.swi-prolog.org/bugzilla/show_bug.cgi?id=173. 	
 doSomething :- 
- (true).
+  (true).

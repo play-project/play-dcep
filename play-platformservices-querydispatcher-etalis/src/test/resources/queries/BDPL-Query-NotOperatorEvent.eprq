@@ -4,7 +4,6 @@ PREFIX :        <http://events.event-processing.org/types/>
 CONSTRUCT {
 	:e rdf:type :NoBiddersAlert .
 	:e :stream <http://streams.event-processing.org/ids/fds#stream> .
-	:e :requestId ?requestId .
 	}
 WHERE {
 	NOT(

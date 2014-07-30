@@ -53,7 +53,7 @@ public class EventPatternEleGenerator {
 			String code = notOperatorEleGenerator.getEle();
 			pattern.setMethodName(code);
 			pattern.setMethodImpl(notOperatorEleGenerator.getMethodImpl());
-			if (!notOperatorEleGenerator.getTriggerPattern().isEmpty()) {
+			if (! notOperatorEleGenerator.getMethodImpl().isEmpty()) {
 				pattern.setTriggerCode(notOperatorEleGenerator.getTriggerPattern());
 			}
 			virtualPatterns.add(pattern.getTriggerCode());
@@ -85,7 +85,7 @@ public class EventPatternEleGenerator {
 		return elePattern;
 	}
 	
-	private String AdditionalConditions(Element element){
+	protected String AdditionalConditions(Element element){
 		String elePattern = "";
 		elePattern += TriplestoreQuery(element);
 		elePattern += EventIdVarIsSynonymousWithTriplestoreId(element);
@@ -94,7 +94,7 @@ public class EventPatternEleGenerator {
 		return elePattern;
 	}
 	
-	private String EventIdVarIsSynonymousWithTriplestoreId(Element currentElement) {
+	protected String EventIdVarIsSynonymousWithTriplestoreId(Element currentElement) {
 		String ele = "";
 		EqualizeEventIdVariableWithTriplestoreId eCcodeGeneratorVisitor = new EqualizeEventIdVariableWithTriplestoreId(getVarNameManager());
 		currentElement.visit(eCcodeGeneratorVisitor);
@@ -109,7 +109,7 @@ public class EventPatternEleGenerator {
 		return elePattern;
 	}
 	
-	private String TriplestoreQuery(Element currentElement) {
+	protected String TriplestoreQuery(Element currentElement) {
 		UniqueNameManager uniqueNameManager = getVarNameManager();
 		TriplestoreQueryVisitor triplestoreQueryVisitor = new TriplestoreQueryVisitor(uniqueNameManager, varTypeManger);
 		String rdfDbQueries = "";
