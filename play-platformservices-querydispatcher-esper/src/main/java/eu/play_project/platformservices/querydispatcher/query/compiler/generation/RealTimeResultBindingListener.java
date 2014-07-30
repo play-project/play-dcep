@@ -33,11 +33,11 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
  */
 public class RealTimeResultBindingListener implements UpdateListener{
 	
-	private final String [] queries;
+	private final String [] matchedPatternSparql;
 	
-	public RealTimeResultBindingListener(String[] queries){
+	public RealTimeResultBindingListener(String[] matchedPatternSparql){
 		
-		this.queries = queries;
+		this.matchedPatternSparql = matchedPatternSparql;
 	}
 	
 	@Override
@@ -52,8 +52,6 @@ public class RealTimeResultBindingListener implements UpdateListener{
 			
 			for(int i = 0; i < newEvents.length; i++){
 				
-				con.clear(context);
-			
 				EventBean eb = newEvents[i];
 				EventType et = eb.getEventType();
 				String[] enames =  et.getPropertyNames();
@@ -68,15 +66,17 @@ public class RealTimeResultBindingListener implements UpdateListener{
 					}
 				}
 				
-				for(int j = 0; j < queries.length; j++){
+				for(int j = 0; j < matchedPatternSparql.length; j++){
 					
-					if(con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(queries[j], " ASK ")).evaluate()){
-						TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(queries[j], " SELECT * ")).evaluate();
-						
+					if(con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(matchedPatternSparql[j], "ASK")).evaluate()){
+						TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(matchedPatternSparql[j], "SELECT *")).evaluate();
+						//TODO: handel variables
+						con.clear(context);
 						break;
 					}
 				}
-				//TODO
+				//TODO: historical part
+				
 			}
 			
 		}catch (RepositoryException e) {

@@ -61,7 +61,7 @@ public class RDFGraphEventFilter {
 					}
 				}
 				
-				ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(query, "ASK")).evaluate();
+				ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, query).evaluate();
 					System.out.println(Thread.currentThread().getName()+"   RDFGraphEventFilter: "+ret);
 				return ret;
 				

@@ -18,9 +18,10 @@ import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
-import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.sparql.ISparqlRepository;
 import eu.play_project.platformservices.querydispatcher.query.sparql.repository.TestRepository;
 
@@ -33,7 +34,7 @@ import eu.play_project.platformservices.querydispatcher.query.sparql.repository.
 public class DefaultArrayMaker implements IArrayMaker {
 
 	@Override
-	public void make(ArrayTableEntry entry, SubQueryTable subQueryTable) throws InitiateException {
+	public void make(BDPLArrayTableEntry entry, SubQueryTable subQueryTable) throws InitiateException {
 		switch(entry.getType()){
 			case STATIC_EXPLICITE:{
 				make1(entry);
@@ -44,6 +45,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 				break;
 			}
 			case DYNAMIC_VAR:{
+				make3(entry, subQueryTable);
 				break;
 			}
 			case DYNAMIC_QUERY:{
@@ -55,14 +57,14 @@ public class DefaultArrayMaker implements IArrayMaker {
 	/*
 	 * STATIC_EXPLICITE
 	 */
-	private void make1(ArrayTableEntry entry) throws InitiateException{
-		entry.setArray(parseStaticArray(entry.getSource()));
+	private void make1(BDPLArrayTableEntry entry) throws InitiateException{
+		entry.setArray(getElementsOfStaticArray(entry.getSource()));
 	}
 	
 	/*
 	 * Parse static array declaration, and initiate BDPL array.
 	 */
-	private BDPLArray parseStaticArray(String source) throws InitiateException{
+	private BDPLArray getElementsOfStaticArray(String source) throws InitiateException{
 		if(source == null || source.length() == 0){
 			throw new IllegalArgumentException();
 		}
@@ -185,7 +187,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 	/*
 	 * STATIC_QUERY
 	 */
-	private void make2(ArrayTableEntry entry) throws InitiateException{
+	private void make2(BDPLArrayTableEntry entry) throws InitiateException{
 		
 		/*List<String> varNames = null;
 		
@@ -216,5 +218,69 @@ public class DefaultArrayMaker implements IArrayMaker {
 		entry.setArray(new BDPLArray(repo.query(entry.getSource())));
 		
 		repo.close();
+	}
+	
+	/*
+	 * DYNAMIC_VAR
+	 */
+	private void make3(BDPLArrayTableEntry entry, SubQueryTable subQueryTable) throws InitiateException{
+		BDPLArray array = entry.getArray();
+		
+		if(array == null){
+			throw new InitiateException("A dynamic array is not created before initiation.");
+		}
+		else{
+			SubQueryTableEntry qEntry = new SubQueryTableEntry();
+			qEntry.setArray(array);
+			qEntry.setSelectedVars(getSelectedVarsOfDynamicArray(entry.getSource()));
+			subQueryTable.add(qEntry);
+		}
+	}
+	
+	private String[] getSelectedVarsOfDynamicArray(String source){
+		
+		List<String> tempVars = new ArrayList<String>();
+		StringBuffer var = new StringBuffer();
+		
+		char c;
+		int state = 0;
+		for(int i = 0; i < source.length(); i++){
+			c = source.charAt(i);
+			
+			switch(state){
+				// start of var
+				case 0:{
+					if(c == ' '){
+						continue;
+					}
+					else{
+						var.append(c);
+						state = 1;
+					}
+					break;
+				}
+				// middle of var
+				case 1:{
+					if(c == ' '){
+						tempVars.add(var.toString());
+						var.delete(0, var.length());
+						state = 0;
+					}
+					else{
+						var.append(c);
+					}
+					break;
+				}
+			}
+		}
+		
+		if(var.length() > 0){
+			tempVars.add(var.toString());
+		}
+			
+		String [] ret = new String[tempVars.size()];
+		tempVars.toArray(ret);
+		
+		return ret;
 	}
 }

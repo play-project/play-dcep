@@ -25,6 +25,9 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.initiatio
 
 
 /**
+ * Not used
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 3, 2014

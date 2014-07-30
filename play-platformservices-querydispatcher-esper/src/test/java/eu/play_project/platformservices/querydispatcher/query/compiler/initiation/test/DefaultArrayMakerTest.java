@@ -16,44 +16,29 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 
+import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayType;
-import eu.play_project.platformservices.bdpl.parser.util.ArrayTableEntry;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.DefaultArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.IArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 
 public class DefaultArrayMakerTest {
 	
 	private static IArrayMaker arrayMaker;
-	private static Repository rep;
-	private static RepositoryConnection conn;
-	private ArrayTableEntry arrayTableEntry;
+	
+	private BDPLArrayTableEntry arrayTableEntry;
 	
 	@BeforeClass
 	public static void setUp() throws RepositoryException, RDFParseException, IOException{
 		arrayMaker = new DefaultArrayMaker();
-		
-		/*Repository rep = new SailRepository(new MemoryStore());
-		rep.initialize();
-		 
-		
-		conn = rep.getConnection();
-		
-		conn.add(DefaultArrayMakerTest.class.getResourceAsStream("/rdf/test_data.trig"), "", RDFFormat.TRIG);*/
-		
 	}
 	
-	@AfterClass
-	public static void setDown() throws RepositoryException{
-		if(conn != null)
-			conn.close();
-		if(rep != null)
-			rep.shutDown();
-	}
 	
 	@Before
 	public void init(){
-		arrayTableEntry = new ArrayTableEntry();
+		arrayTableEntry = new BDPLArrayTableEntry();
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -210,5 +195,53 @@ public class DefaultArrayMakerTest {
 		} catch (InitiateException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test(expected = InitiateException.class)
+	public void testVDynamic1() throws InitiateException {
+		arrayTableEntry.setType(BDPLArrayType.DYNAMIC_VAR);
+		SubQueryTable table = new SubQueryTable();
+		
+		arrayMaker.make(arrayTableEntry, table);
+	}
+	
+	@Test
+	public void testVDynamic2() {
+		arrayTableEntry.setType(BDPLArrayType.DYNAMIC_VAR);
+		SubQueryTable table = new SubQueryTable();
+		
+		arrayTableEntry.setArray(new BDPLArray(2, null));
+		arrayTableEntry.setSource(" x ");
+		
+		try {
+			arrayMaker.make(arrayTableEntry, table);
+			String[] result = table.getEntryToSelf().get(0).getSelectedVars();
+			String[] expected = new String[] {"x"};
+			assertArrayEquals(expected, result);
+			
+		} catch (InitiateException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	@Test
+	public void testVDynamic3() {
+		arrayTableEntry.setType(BDPLArrayType.DYNAMIC_VAR);
+		SubQueryTable table = new SubQueryTable();
+		
+		arrayTableEntry.setArray(new BDPLArray(2, null));
+		arrayTableEntry.setSource("x  y");
+		
+		try {
+			arrayMaker.make(arrayTableEntry, table);
+			String[] result = table.getEntryToSelf().get(0).getSelectedVars();
+			String[] expected = new String[] {"x", "y"};
+			assertArrayEquals(expected, result);
+			
+		} catch (InitiateException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
