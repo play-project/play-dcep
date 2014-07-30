@@ -104,6 +104,10 @@ public class BDPLArray {
     	this.size = size;
     }
     
+    public int length(){
+    	return length;
+    }
+    
     public String[][] read(){
     	r.lock();
     	try{

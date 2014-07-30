@@ -70,7 +70,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
  */
 public class EPLTranslationProcessor {
 	
-	public static String process(ASTOperationContainer qc, String prologText)
+	public static TempReturn process(ASTOperationContainer qc, String prologText)
 			throws MalformedQueryException{
 		EPLTranslator translator = new EPLTranslator();
 		
@@ -78,7 +78,8 @@ public class EPLTranslationProcessor {
 		
 		try {
 			qc.jjtAccept(translator, data);
-			return translator.epl;
+			
+			return new TempReturn(translator.epl, translator.matchedPatternSparql);
 			
 		} catch (VisitorException e) {
 			throw new MalformedQueryException(e.getMessage());
@@ -100,16 +101,10 @@ public class EPLTranslationProcessor {
 		
 		private String prologText;
 		
-		private List<String> matchedPatternSparql = new ArrayList<String>();
-		
 		public EPLTranslatorData(String p){
 			prologText = p;
 		}
 		
-		public List<String> getMatchedPatternSparql() {
-			return this.matchedPatternSparql;
-		}
-
 		public void setWindowParam(long d, String t){
 			windowDuration = d;
 			windowType = t;
@@ -142,7 +137,7 @@ public class EPLTranslationProcessor {
 		
 		String epl = null;
 		
-		
+		List<String> matchedPatternSparql = new ArrayList<String>();
 		
 		/*
 		 * skipped nodes
@@ -1614,11 +1609,11 @@ public class EPLTranslationProcessor {
 				int eIndexs [] = new int [seqcs.size()];
 				int nIndexs [] = new int [seqcs.size()];
 				
-				ret.append(getSeqClauseExpression(seqcs.get(0), notTable, 0, eIndexs, nIndexs, prologText, data.getMatchedPatternSparql()));
+				ret.append(getSeqClauseExpression(seqcs.get(0), notTable, 0, eIndexs, nIndexs, prologText));
 			
 				for(int i = 1; i < seqcs.size(); i++){
 					ret.append(EPLConstants.OPERATOR_OR+" ");
-					ret.append(getSeqClauseExpression(seqcs.get(i), notTable, i, eIndexs, nIndexs, prologText, data.getMatchedPatternSparql()));
+					ret.append(getSeqClauseExpression(seqcs.get(i), notTable, i, eIndexs, nIndexs, prologText));
 				}
 			}
 			
@@ -1628,7 +1623,7 @@ public class EPLTranslationProcessor {
 		/*
 		 * Get EPL of SEQ CLAUSE part.
 		 */
-		private String getSeqClauseExpression(SeqClause seqc, NotTable notTable, int sIndex, int [] eIndexs, int [] nIndexs, String prologText, List<String> matchedPatternSparql) throws EPLTranslateException{
+		private String getSeqClauseExpression(SeqClause seqc, NotTable notTable, int sIndex, int [] eIndexs, int [] nIndexs, String prologText) throws EPLTranslateException{
 			StringBuffer ret = new StringBuffer();
 			List<Term> ltrs = seqc.getTerms();
 			Map<Term, Term> notList = new HashMap<Term, Term>();

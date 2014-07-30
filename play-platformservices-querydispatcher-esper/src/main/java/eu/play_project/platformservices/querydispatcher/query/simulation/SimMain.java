@@ -44,8 +44,11 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.RealTimeResultListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
 
 
 /**
@@ -210,7 +213,7 @@ public class SimMain {
 					
 					if(query.length() > 0){
 					
-						try {
+						/*try {
 							ASTQueryContainer qc = SyntaxTreeBuilder.parseQuery(query);
 							StringEscapesProcessor.process(qc);
 							BaseDeclProcessor.process(qc, null);
@@ -237,7 +240,7 @@ public class SimMain {
 									
 									String prolog = BDPLSyntaxCheckProcessor.process(qc);
 									
-									query = EPLTranslationProcessor.process(qc, prolog);
+									query = EPLTranslationProcessor.process(qc, prolog).getEpl();
 									//EPLListenerProcessor.process(qc);
 									System.out.println(query+"\n");
 								}
@@ -276,14 +279,15 @@ public class SimMain {
 						catch (MalformedQueryException e) {
 							System.out.println("\n["+e.getMessage()+"]");
 							continue;
-						}
+						}*/
 						
+						IBDPLQuery bdplQuery = BDPLCompiler.compile(query, null);
 						
 						synchronized(lock){
 							if(epService != null){
 								
-								EPStatement testStmt = epService.getEPAdministrator().createEPL(query);
-								testStmt.addListener(new RealTimeResultListener());
+								EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getQuery());
+								testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());
 								        
 								stmts.put(++statementCounter, new EPStatementEntry(query, testStmt));
 								System.out.println("\n[Statement "+statementCounter+":\n"+query+"\nis started]");

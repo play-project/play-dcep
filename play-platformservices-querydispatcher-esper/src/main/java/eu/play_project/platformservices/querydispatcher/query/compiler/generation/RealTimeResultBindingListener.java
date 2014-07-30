@@ -4,9 +4,16 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.generation;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
@@ -21,6 +28,9 @@ import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.EventType;
 import com.espertech.esper.client.UpdateListener;
 
+import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameMapEvent;
@@ -33,11 +43,16 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
  */
 public class RealTimeResultBindingListener implements UpdateListener{
 	
-	private final String [] matchedPatternSparql;
+	private final Set<String> realTimeCommonVars;
 	
-	public RealTimeResultBindingListener(String[] matchedPatternSparql){
-		
+	private final List<String> matchedPatternSparql;
+	
+	private final List<SubQueryTableEntry> subQueris;
+	
+	public RealTimeResultBindingListener(Set<String> realTimeCommonVars, List<String> matchedPatternSparql, List<SubQueryTableEntry> subQueris){
+		this.realTimeCommonVars = realTimeCommonVars;
 		this.matchedPatternSparql = matchedPatternSparql;
+		this.subQueris = subQueris;
 	}
 	
 	@Override
@@ -57,7 +72,7 @@ public class RealTimeResultBindingListener implements UpdateListener{
 				String[] enames =  et.getPropertyNames();
 			
 				for(String n : enames){
-					System.out.print(n+":   ");
+					
 					SesameMapEvent sevent = (SesameMapEvent)eb.get(n);
 					SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
 					Model model = eventModel.getModel();
@@ -66,11 +81,60 @@ public class RealTimeResultBindingListener implements UpdateListener{
 					}
 				}
 				
-				for(int j = 0; j < matchedPatternSparql.length; j++){
+				for(String ms : matchedPatternSparql){
 					
-					if(con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(matchedPatternSparql[j], "ASK")).evaluate()){
-						TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(matchedPatternSparql[j], "SELECT *")).evaluate();
+					if(con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(ms, "ASK")).evaluate()){
+					
+						TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(ms, "SELECT *")).evaluate();
+						
+						List<Map<String, String>> r = new ArrayList<Map<String, String>>();
+						
+						while(result.hasNext()){
+							BindingSet bs = result.next();
+							Map<String, String> m = new HashMap<String, String>();
+							r.add(m);
+							for(String name : realTimeCommonVars){
+								String var = bs.getBinding(name).getValue().toString();
+								m.put(name, var);
+							}
+						}
+						
+						
 						//TODO: handel variables
+						for(SubQueryTableEntry subQuery : subQueris){
+							BDPLArray array = subQuery.getArray();
+							String [] sVars = subQuery.getSelectedVars();
+							
+							for(Map<String, String> m : r){
+								String [] ele = new String [sVars.length];
+								
+								int k = 0;
+								for( ; k < sVars.length; k++){
+									String sVar = sVars[k];
+									String value = m.get(sVar);
+									
+									if(value == null || value.isEmpty()){
+										break;
+									}
+									else{
+										ele[k] = value;
+									}
+								}
+								
+								if(k == sVars.length){
+									try {
+											
+										array.write(ele);
+											System.out.println("Add element in dynamic array: "+array.length());
+											for(int n = 0; n < ele.length; n++){
+												System.out.print(sVars[n]+": "+ele[n]+"   ");
+											}
+											System.out.println();
+									} catch (BDPLArrayException e) {}
+								}
+							}
+						}
+						
 						con.clear(context);
 						break;
 					}
