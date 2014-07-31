@@ -3,15 +3,16 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.generation;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -31,6 +32,7 @@ import com.espertech.esper.client.UpdateListener;
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
+import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameMapEvent;
@@ -38,18 +40,18 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
 /**
  * @author ningyuan 
  * 
- * Jul 24, 2014
+ * Jul 31, 2014
  *
  */
-public class RealTimeResultBindingListener implements UpdateListener{
+public class RealTimeResultBindingListener2 implements UpdateListener {
 	
 	private final Set<String> realTimeCommonVars;
 	
-	private final List<String> matchedPatternSparql;
+	private final String matchedPatternSparql;
 	
 	private final List<SubQueryTableEntry> subQueris;
 	
-	public RealTimeResultBindingListener(Set<String> realTimeCommonVars, List<String> matchedPatternSparql, List<SubQueryTableEntry> subQueris){
+	public RealTimeResultBindingListener2(Set<String> realTimeCommonVars, String matchedPatternSparql, List<SubQueryTableEntry> subQueris){
 		this.realTimeCommonVars = realTimeCommonVars;
 		this.matchedPatternSparql = matchedPatternSparql;
 		this.subQueris = subQueris;
@@ -57,6 +59,7 @@ public class RealTimeResultBindingListener implements UpdateListener{
 	
 	@Override
 	public void update(EventBean[] newEvents, EventBean[] oldEvents) {
+		
 		Repository repo = new SailRepository(new MemoryStore());
 		RepositoryConnection con = null;
 			
@@ -66,98 +69,91 @@ public class RealTimeResultBindingListener implements UpdateListener{
 			con = repo.getConnection();
 			
 			for(int i = 0; i < newEvents.length; i++){
+					System.out.println("RealTimeResultBindingListener2 MEs: "+i);
 				
 				EventBean eb = newEvents[i];
 				EventType et = eb.getEventType();
 				String[] enames =  et.getPropertyNames();
 			
 				for(String n : enames){
-					
+						System.out.println("RealTimeResultBindingListener2 ME: "+n);
 					MapEvent<SesameEventModel> sevent = (MapEvent<SesameEventModel>)eb.get(n);
 					if(sevent != null){
 						SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
 						Model model = eventModel.getModel();
 						if(model != null){
-								System.out.println("RealTimeResultBindingListener2 ME: "+n);
+								//System.out.println("RealTimeResultBindingListener2 ME: "+n);
+								eventModel.getProperties("http://ningyuan.com/id");
 							con.add(model, context);
 						
 						}
 					}
 				}
 				
-				for(String ms : matchedPatternSparql){
-					
-					if(con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(ms, "ASK")).evaluate()){
-					
-						TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(ms, "SELECT *")).evaluate();
+				TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, matchedPatternSparql).evaluate();
 						
-						List<Map<String, String>> r = new ArrayList<Map<String, String>>();
+				List<Map<String, String>> r = new ArrayList<Map<String, String>>();
 						
-						while(result.hasNext()){
-							BindingSet bs = result.next();
-							Map<String, String> m = new HashMap<String, String>();
-							r.add(m);
-							for(String name : realTimeCommonVars){
-								String var = bs.getBinding(name).getValue().toString();
-								m.put(name, var);
-							}
-						}
-						
-						
-						//TODO: handel variables
-						for(SubQueryTableEntry subQuery : subQueris){
-							BDPLArray array = subQuery.getArray();
-							String [] sVars = subQuery.getSelectedVars();
-							
-							for(Map<String, String> m : r){
-								String [] ele = new String [sVars.length];
-								
-								int k = 0;
-								for( ; k < sVars.length; k++){
-									String sVar = sVars[k];
-									String value = m.get(sVar);
-									
-									if(value == null || value.isEmpty()){
-										break;
-									}
-									else{
-										ele[k] = value;
-									}
-								}
-								
-								if(k == sVars.length){
-									try {
-											
-										array.write(ele);
-											System.out.println("Add element in dynamic array: "+array.length());
-											for(int n = 0; n < ele.length; n++){
-												System.out.print(sVars[n]+": "+ele[n]+"   ");
-											}
-											System.out.println();
-									} catch (BDPLArrayException e) {}
-								}
-							}
-						}
-						
-						con.clear(context);
-						break;
+				while(result.hasNext()){
+						System.out.println("RealTimeResultBindingListener2 R: ");
+					BindingSet bs = result.next();
+					Map<String, String> m = new HashMap<String, String>();
+					r.add(m);
+					for(String name : realTimeCommonVars){
+						String var = bs.getBinding(name).getValue().toString();
+						m.put(name, var);
 					}
+				}
+				
+				
+						
+				//TODO: handel variables
+				for(SubQueryTableEntry subQuery : subQueris){
+					BDPLArray array = subQuery.getArray();
+					String [] sVars = subQuery.getSelectedVars();
+							
+					for(Map<String, String> m : r){
+						String [] ele = new String [sVars.length];
+								
+						int k = 0;
+						for( ; k < sVars.length; k++){
+							String sVar = sVars[k];
+							String value = m.get(sVar);
+									
+							if(value == null || value.isEmpty()){
+								break;
+							}
+							else{
+								ele[k] = value;
+							}
+						}
+								
+						if(k == sVars.length){
+							try {
+											
+								array.write(ele);
+									System.out.println("Add element in dynamic array: "+array.length());
+									for(int n = 0; n < ele.length; n++){
+										System.out.print(sVars[n]+": "+ele[n]+"   ");
+									}
+									System.out.println();
+							} catch (BDPLArrayException e) {}
+						}
+					}
+						
 				}
 				//TODO: historical part
 				
 			}
 			
 		}catch (RepositoryException e) {
-			e.printStackTrace();
-			//TODO
+			System.out.println("RepositoryException "+e.getMessage());
 			
 		} catch (MalformedQueryException e) {
-			e.printStackTrace();
-			//TODO
+			System.out.println("MalformedQueryException "+e.getMessage());
 			
 		} catch (QueryEvaluationException e) {
-			e.printStackTrace();
-			//TODO
+			System.out.println("QueryEvaluationException "+e.getMessage());
 		}
 		finally{
 			try {
@@ -165,11 +161,12 @@ public class RealTimeResultBindingListener implements UpdateListener{
 					con.close();
 				repo.shutDown();
 				
+				
 			} catch (RepositoryException e) {
 				e.printStackTrace();
 			}
 			
 		}
+		
 	}
-
 }

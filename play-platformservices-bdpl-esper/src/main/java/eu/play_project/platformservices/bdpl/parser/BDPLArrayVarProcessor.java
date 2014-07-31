@@ -260,7 +260,7 @@ public class BDPLArrayVarProcessor {
 					sourceText.append(var+" ");
 				}
 				else{
-					throw new VisitorException("Selected variable \'"+var+"\' for a dynamic array dose not exist in real time event pattern.");
+					throw new VisitorException("Selected variable \'"+var+"\' for a dynamic array dose not exist in all possible real time event patterns.");
 				}
 			}
 			node.setSource(sourceText.toString());

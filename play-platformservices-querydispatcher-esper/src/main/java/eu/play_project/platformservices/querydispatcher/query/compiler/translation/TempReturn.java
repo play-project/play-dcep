@@ -6,6 +6,9 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.translat
 import java.util.List;
 
 /**
+ * Not used
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 30, 2014

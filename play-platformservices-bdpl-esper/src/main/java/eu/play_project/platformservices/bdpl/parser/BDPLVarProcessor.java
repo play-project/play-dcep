@@ -159,7 +159,7 @@ public class BDPLVarProcessor {
 		public Object visit(ASTQName node, Object data)
 			throws VisitorException
 		{
-			throw new VisitorException("QNames must be resolved before creating array table.");
+			throw new VisitorException("QNames must be resolved before creating variable table.");
 		}
 		
 		/*

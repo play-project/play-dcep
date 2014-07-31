@@ -14,6 +14,8 @@ import java.util.HashMap;
  */
 public class MapEvent <T extends EventModel> extends HashMap<String, T>{
 	
+	private static final long serialVersionUID = 1L;
+	
 	public static final String EVENT_MODEL = "model";
 	
 	public MapEvent(T model){

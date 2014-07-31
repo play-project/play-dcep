@@ -38,6 +38,7 @@ import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.EPLListenerProcessor;
 
 
 /**
@@ -90,7 +91,7 @@ public class EPLTranslator implements QueryParser{
 					String prologText = BDPLSyntaxCheckProcessor.process(qc);
 					
 					System.out.println(EPLTranslationProcessor.process(qc, prologText)+"\n");
-					//System.out.println(EPLListenerProcessor.process(qc)+"\n");
+					System.out.println(EPLListenerProcessor.process(qc, prologText)+"\n");
 				}
 				else if (queryNode instanceof ASTAskQuery) {
 					

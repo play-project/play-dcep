@@ -10,6 +10,7 @@ import java.util.Map;
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
@@ -36,31 +37,36 @@ public class RDFGraphEventFilter {
 			
 			Repository repo = new SailRepository(new MemoryStore());
 			RepositoryConnection con = null;
-				//System.out.println(askQuery);
+				
 			try {
 				repo.initialize();
 				
 				con = repo.getConnection();
+				Resource context = new URIImpl("context://");
 				
 				for(int i = 0; i < events.length; i++){
-						System.out.println("E: "+i);
+						System.out.print("RDFGraphEventFilter: ");
 					
 					SesameMapEvent sevent = (SesameMapEvent)events[i];
-					SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
-					Model model = eventModel.getModel();
-					if(model != null){
-						con.add(model, new Resource [0]);
-						/*Iterator<Statement> itr = model.iterator();
-						while(itr.hasNext()){
-							Statement st = itr.next();
-							//XXX deep copy statement, so that events are not effected???
-							con.add(st, new Resource [0]);
-								System.out.println("A: "+st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
-						}*/
-						
+					if(sevent != null){
+						SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
+							
+						Model model = eventModel.getModel();
+						if(model != null){
+								eventModel.getProperties("http://ningyuan.com/id");
+							con.add(model, context);
+							/*Iterator<Statement> itr = model.iterator();
+							while(itr.hasNext()){
+								Statement st = itr.next();
+								//XXX deep copy statement, so that events are not effected???
+								con.add(st, new Resource [0]);
+									System.out.println("A: "+st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
+							}*/
+							
+						}
 					}
 				}
-				
+					//System.out.println("RDFGraphEventFilter: "+query);
 				ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, query).evaluate();
 					System.out.println(Thread.currentThread().getName()+"   RDFGraphEventFilter: "+ret);
 				return ret;
@@ -81,6 +87,7 @@ public class RDFGraphEventFilter {
 					if(con != null)
 						con.close();
 					repo.shutDown();
+					
 					
 				} catch (RepositoryException e) {
 					e.printStackTrace();

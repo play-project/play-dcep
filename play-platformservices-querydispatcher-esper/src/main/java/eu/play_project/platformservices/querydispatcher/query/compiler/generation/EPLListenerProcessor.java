@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.translation;
+package eu.play_project.platformservices.querydispatcher.query.compiler.generation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +12,15 @@ import org.openrdf.query.parser.bdpl.ast.ASTB;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
 import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
+import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
+import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
+import org.openrdf.query.parser.bdpl.ast.ASTQName;
+import org.openrdf.query.parser.bdpl.ast.ASTSubBDPLQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTTimeBasedEvent;
 import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.Token;
@@ -37,13 +41,15 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 
 public class EPLListenerProcessor {
 	
-	public static String process(ASTOperationContainer qc)
+	public static String process(ASTOperationContainer qc, String prologText)
 			throws MalformedQueryException{
-		ConstructQueryCreator queryCreator = new ConstructQueryCreator();
+		
+		ConstructQueryCreator queryCreator = new ConstructQueryCreator(prologText);
 		
 		try {
 			qc.jjtAccept(queryCreator, null);
 			return queryCreator.constructQuery;
+			
 		} catch (VisitorException e) {
 			throw new MalformedQueryException(e.getMessage());
 		}
@@ -53,96 +59,73 @@ public class EPLListenerProcessor {
 		
 		String constructQuery = null;
 		
-		private StringBuffer prologText = new StringBuffer();
+		private final String prologText;
 		
-		private StringBuffer constructText = new StringBuffer();
+		public ConstructQueryCreator(String prologText){
+			this.prologText = prologText;
+		}
+		
+
+		/*
+		 * skipped nodes
+		 */
+		@Override
+		public Object visit(ASTBaseDecl node, Object data)
+				throws VisitorException
+		{
+			
+			return data;
+		}
 		
 		@Override
 		public Object visit(ASTPrefixDecl node, Object data)
 				throws VisitorException
 		{
-			Object ret = super.visit(node, data);
 			
-			/*
-			 * Get the prolog  
-			 */
-			Token token = node.jjtGetFirstToken();
-			
-			boolean nullToken = false; 
-			for(; token != node.jjtGetLastToken(); ){
-				if(token != null){
-					prologText.append(token.image+" ");
-					token = token.next;
-				}
-				else{
-					nullToken = true;
-					break;
-				}
-			}
-			if(!nullToken && token != null){
-				prologText.append(token.image+" ");
-			}
-				
-			return ret;
-		}
-		
-		@Override
-		public Object visit(ASTBaseDecl node, Object data)
-				throws VisitorException
-		{
-			Object ret = super.visit(node, data);
-			
-			/*
-			 * Get the prolog  
-			 */
-			Token token = node.jjtGetFirstToken();
-			
-			boolean nullToken = false; 
-			for(; token != node.jjtGetLastToken(); ){
-				if(token != null){
-					prologText.append(token.image+" ");
-					token = token.next;
-				}
-				else{
-					nullToken = true;
-					break;
-				}
-			}
-			if(!nullToken && token != null){
-				prologText.append(token.image+" ");
-			}
-				
-			return ret;
+			return data;
 		}
 		
 		@Override
 		public Object visit(ASTConstruct node, Object data)
 				throws VisitorException
 		{
-			Object ret = super.visit(node, data);
-			
-			/*
-			 * Get the prolog  
-			 */
-			Token token = node.jjtGetFirstToken();
-			
-			boolean nullToken = false; 
-			for(; token != node.jjtGetLastToken(); ){
-				if(token != null){
-					constructText.append(token.image+" ");
-					token = token.next;
-				}
-				else{
-					nullToken = true;
-					break;
-				}
-			}
-			if(!nullToken && token != null){
-				constructText.append(token.image+" ");
-			}
-				
-			return ret;
+			return data;
 		}
+		
+		@Override
+		public Object visit(ASTDatasetClause node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		@Override
+		public Object visit(ASTContextClause node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		@Override
+		public Object visit(ASTQName node, Object data)
+			throws VisitorException
+		{
+			throw new VisitorException("QNames must be resolved before EPL translation.");
+		}
+		
+		@Override
+		public Object visit(ASTSubBDPLQuery node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		
+		
+		/*
+		 * Visited nodes
+		 * 
+		 */
 		
 		@Override
 		public Object visit(ASTEventPattern node, Object data)
@@ -157,8 +140,9 @@ public class EPLListenerProcessor {
 				
 				if(node.getTop())
 				{
-					constructQuery = getQuery(prologText.toString(), constructText.toString(), ret);
+					constructQuery = getQuery(prologText, ret);
 				}
+				
 				
 				return ret;
 			}
@@ -177,8 +161,11 @@ public class EPLListenerProcessor {
 				
 				if(node.getTop())
 				{
-					constructQuery = getQuery(prologText.toString(), constructText.toString(), ret);
+					constructQuery = getQuery(prologText, ret);
 				}
+				/*else{
+					ret = String.format(BDPLConstants.SPARQL_CLAUSE, ret);
+				}*/
 				
 				return ret;
 			}
@@ -254,9 +241,9 @@ public class EPLListenerProcessor {
 			}
 			
 			List<String> graphs = new ArrayList<String>();
-			for(int i = 0; i < children.size(); i++){
-				graphs.add((String) children.get(i).jjtAccept(this, data));
-			}
+			
+			graphs.add((String) children.get(0).jjtAccept(this, data));
+			graphs.add((String) children.get(2).jjtAccept(this, data));
 			
 			return connectGraphs(graphs);
 		}
@@ -304,7 +291,7 @@ public class EPLListenerProcessor {
 			StringBuffer ret = new StringBuffer();
 			for(int i = 0; i < graphs.size(); i++){
 				String graph = graphs.get(i).trim();
-				if(graph.length() > 0 && graph.charAt(graph.length()-1) != '.'){
+				if(graph.length() > 0 && graph.charAt(graph.length()-1) != '.' && graph.charAt(graph.length()-1) != '}'){
 					ret.append(graph+". ");
 				}
 				else{
@@ -316,19 +303,17 @@ public class EPLListenerProcessor {
 		
 		private String unionGraphs(List<String> graphs){
 			StringBuffer ret = new StringBuffer();
-			ret.append(String.format(BDPLConstants.SPARQL_CLAUSE, graphs.get(0)));
+			ret.append(String.format(BDPLConstants.SPARQL_CLAUSE, graphs.get(0))+" ");
 			for(int i = 1; i < graphs.size(); i++){
-				ret.append(" "+EPLConstants.SPARQL_UNION+" "+String.format(BDPLConstants.SPARQL_CLAUSE, graphs.get(i)+" "));
+				ret.append(EPLConstants.SPARQL_UNION+" "+String.format(BDPLConstants.SPARQL_CLAUSE, graphs.get(i)+" "));
 			}
 			
-			return ret.toString();
+			return String.format(BDPLConstants.SPARQL_CLAUSE, ret.toString());
 		}
 		
-		private String getQuery(String prolog, String construct, String graph){
+		private String getQuery(String prolog, String graph){
 			StringBuffer query = new StringBuffer();
-			query.append(prolog+" \n");
-			query.append(construct+" \n");
-			query.append(String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, graph));
+			query.append(prolog+" SELECT * "+ String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, graph));
 			return query.toString();
 		}
 	}

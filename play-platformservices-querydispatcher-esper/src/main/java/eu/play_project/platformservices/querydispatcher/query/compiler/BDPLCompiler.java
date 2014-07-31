@@ -32,13 +32,16 @@ import eu.play_project.platformservices.bdpl.parser.BDPLVarProcessor;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.EPLListenerProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.RealTimeResultBindingListener;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.RealTimeResultBindingListener2;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.ArrayInitiator;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.DefaultArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.TempReturn;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
 
@@ -50,7 +53,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDP
  */
 public class BDPLCompiler {
 	
-	public static IBDPLQuery compile(String queryStr, String baseURI) {
+	public static IBDPLQuery compile(String queryStr, String baseURI) throws BDPLCompileException {
 		IBDPLQuery ret = null;
 		
 		try {
@@ -85,28 +88,33 @@ public class BDPLCompiler {
 			
 			String prologText = BDPLSyntaxCheckProcessor.process(qc);
 			
-			TempReturn tempReturn = EPLTranslationProcessor.process(qc, prologText);
+			String epl = EPLTranslationProcessor.process(qc, prologText);
+				System.out.println("\nepl:\n"+epl);
+			
+			String listenerQuery = EPLListenerProcessor.process(qc, prologText);
+				System.out.println("\nListener query:\n"+listenerQuery);
 			
 			ArrayInitiator arrayInitiator = new ArrayInitiator(new DefaultArrayMaker());
 			
 			SubQueryTable subQueryTable = arrayInitiator.initiate(arrayTable);
 			
-			UpdateListener listener = new RealTimeResultBindingListener(varTable.getRealTimeCommonVars(), tempReturn.getMatchedPatternSparql(), subQueryTable.getEntryToSelf());
+			UpdateListener listener = new RealTimeResultBindingListener2(varTable.getRealTimeCommonVars(), listenerQuery, subQueryTable.getEntryToSelf());
+			//UpdateListener listener = new RealTimeResultBindingListener(varTable.getRealTimeCommonVars(), tempReturn.getMatchedPatternSparql(), subQueryTable.getEntryToSelf());
 			
-			ret = new DefaultBDPLQuery(tempReturn.getEpl(), listener, subQueryTable);
+			ret = new DefaultBDPLQuery(epl, listener, subQueryTable);
 			
 		}
 		catch (ParseException e) {
-			e.printStackTrace();
+			throw new BDPLCompileException(e.getMessage());
 		}
 		catch (TokenMgrError e) {
-			e.printStackTrace();
+			throw new BDPLCompileException(e.getMessage());
 		}
 		catch(MalformedQueryException e){
-			e.printStackTrace();
+			throw new BDPLCompileException(e.getMessage());
 		}
 		catch(InitiateException e){
-			e.printStackTrace();
+			throw new BDPLCompileException(e.getMessage());
 		}
 		
 		return ret; 

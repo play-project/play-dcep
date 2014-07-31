@@ -47,6 +47,7 @@ import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.RealTimeResultListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
 
@@ -281,20 +282,28 @@ public class SimMain {
 							continue;
 						}*/
 						
-						IBDPLQuery bdplQuery = BDPLCompiler.compile(query, null);
 						
-						synchronized(lock){
-							if(epService != null){
-								
-								EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getQuery());
-								testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());
-								        
-								stmts.put(++statementCounter, new EPStatementEntry(query, testStmt));
-								System.out.println("\n[Statement "+statementCounter+":\n"+query+"\nis started]");
+						try{
+							IBDPLQuery bdplQuery = BDPLCompiler.compile(query, null);
+							
+							synchronized(lock){
+								if(epService != null){
+									
+									EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getQuery());
+									testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());
+									        
+									stmts.put(++statementCounter, new EPStatementEntry(query, testStmt));
+									System.out.println("\n[Statement "+statementCounter+":\n"+query+"\nis started]");
+								}
+								else{
+									System.out.println("\n[Engine is not started]");
+								}
 							}
-							else{
-								System.out.println("\n[Engine is not started]");
-							}
+							
+						}
+						catch(BDPLCompileException e){
+							System.out.println("\n["+e.getMessage()+"]");
+							continue;	
 						}
 					}
 				}

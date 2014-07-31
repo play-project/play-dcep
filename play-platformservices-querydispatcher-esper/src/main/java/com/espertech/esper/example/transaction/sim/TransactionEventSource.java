@@ -69,6 +69,8 @@ public class TransactionEventSource extends EventSource {
         	
         	type = type * -1;
         	id++;
+        	count++;
+        	
         	Model m = new LinkedHashModel();
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(id)));
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/type"), new LiteralImpl(String.valueOf(type)));

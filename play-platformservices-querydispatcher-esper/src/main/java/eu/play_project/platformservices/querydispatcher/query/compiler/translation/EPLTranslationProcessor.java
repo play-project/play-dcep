@@ -26,15 +26,18 @@ import org.openrdf.query.parser.bdpl.ast.ASTB;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
 import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
+import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
+import org.openrdf.query.parser.bdpl.ast.ASTQName;
 import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTRealTimeEventQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTString;
+import org.openrdf.query.parser.bdpl.ast.ASTSubBDPLQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTTimeBasedEvent;
 import org.openrdf.query.parser.bdpl.ast.ASTWindowClause;
 import org.openrdf.query.parser.bdpl.ast.ASTWindowDecl;
@@ -70,7 +73,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
  */
 public class EPLTranslationProcessor {
 	
-	public static TempReturn process(ASTOperationContainer qc, String prologText)
+	public static String process(ASTOperationContainer qc, String prologText)
 			throws MalformedQueryException{
 		EPLTranslator translator = new EPLTranslator();
 		
@@ -79,7 +82,7 @@ public class EPLTranslationProcessor {
 		try {
 			qc.jjtAccept(translator, data);
 			
-			return new TempReturn(translator.epl, translator.matchedPatternSparql);
+			return translator.epl;
 			
 		} catch (VisitorException e) {
 			throw new MalformedQueryException(e.getMessage());
@@ -137,7 +140,7 @@ public class EPLTranslationProcessor {
 		
 		String epl = null;
 		
-		List<String> matchedPatternSparql = new ArrayList<String>();
+		//List<String> matchedPatternSparql = new ArrayList<String>();
 		
 		/*
 		 * skipped nodes
@@ -171,6 +174,28 @@ public class EPLTranslationProcessor {
 		{
 			return data;
 		}
+		
+		@Override
+		public Object visit(ASTContextClause node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		@Override
+		public Object visit(ASTQName node, Object data)
+			throws VisitorException
+		{
+			throw new VisitorException("QNames must be resolved before EPL translation.");
+		}
+		
+		@Override
+		public Object visit(ASTSubBDPLQuery node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
 		
 		
 		/*
@@ -1540,7 +1565,7 @@ public class EPLTranslationProcessor {
 		private String getEPL(OrClause result, EPLTranslatorData data) throws EPLTranslateException{
 			StringBuffer epl = new StringBuffer();
 			
-			epl.append(String.format(EPLConstants.SELECT, "*")+" \n");
+			epl.append(String.format(EPLConstants.SELECT, "*")+" ");
 			epl.append(String.format(EPLConstants.FROM_PATTERN, "", getPatternExpression(result, data))+" ");
 			
 			long wDuration = data.getWindowDuration();
@@ -1696,7 +1721,7 @@ public class EPLTranslationProcessor {
 							
 							//System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-							matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
+							//matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
 							//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_VAR_BINDING, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
 							
 							eParams.delete(0, eParams.length());
@@ -1792,14 +1817,14 @@ public class EPLTranslationProcessor {
 						
 						sparqlText.append(term.getSparqlText());
 						
-						if(ltrs.size() > 1){
+						//if(ltrs.size() > 1){
 							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-						}
-						else{
-							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-							matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
+						//}
+						//else{
+							//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
+							//matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
 							//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_VAR_BINDING, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
-						}
+						//}
 						
 						eParams.delete(0, eParams.length());
 					}
@@ -2017,14 +2042,14 @@ public class EPLTranslationProcessor {
 							//sparqlTextNOT.append(String.format(BDPLConstants.SPARQL_OPTIONAL_CLAUSE, term.getSparqlText()));
 							
 							sparqlText.append(term.getSparqlText());
-							if(i < ltrs.size()-1){
+							//if(i < ltrs.size()-1){
 								ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-							}
-							else{
-								ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
-								matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
+							//}
+							//else{
+								//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
+								//matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
 								//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_VAR_BINDING, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
-							}
+							//}
 							eParams.delete(0, eParams.length());
 						}
 						
