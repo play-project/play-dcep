@@ -20,4 +20,6 @@ public class BDPLConstants {
 	public static final String SPARQL_WHERE_CLAUSE = "WHERE { %s }";
 	
 	public static final String SPARQL_CLAUSE = "{ %s }";
+	
+	public static final String SPARQL_FILTER_VAR_NOT_EQUAL = "FILTER (!sameTerm(?%s, ?%s))";
 }

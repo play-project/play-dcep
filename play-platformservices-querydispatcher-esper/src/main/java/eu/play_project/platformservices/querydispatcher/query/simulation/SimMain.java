@@ -6,6 +6,7 @@ package eu.play_project.platformservices.querydispatcher.query.simulation;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,6 +38,7 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPException;
+import com.espertech.esper.client.EPPreparedStatement;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
@@ -45,9 +47,10 @@ import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.RealTimeResultListener;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeResultListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
 
@@ -120,8 +123,8 @@ public class SimMain {
 								 // Configure engine with event names to make the statements more readable.
 						        // This could also be done in a configuration file.
 						        Configuration configuration = new Configuration();
-						        //configuration.addPlugInSingleRowFunction("filter1", "eu.play_project.platformservices.querydispatcher.query.compiler.translation.filter.RDFGraphEventFilter", "evaluate");
-						        //configuration.addPlugInSingleRowFunction("filter2", "eu.play_project.platformservices.querydispatcher.query.compiler.translation.filter.VariableBindingFilter", "evaluate");
+						        //configuration.addPlugInSingleRowFunction("filter1", "eu.play_project.platformservices.querydispatcher.query.compiler.generation.filter.RDFGraphEventFilter", "evaluate");
+						        //configuration.addPlugInSingleRowFunction("filter2", "eu.play_project.platformservices.querydispatcher.query.compiler.generation.filter.RealTimeResultBindingFilter", "evaluate");
 						        //configuration.addPlugInPatternGuard("bdpl", "andguard", "ningyuan.pan.query.parser.bdpl.guard.AndGuardFactory");
 						        //configuration.addPlugInPatternObserver("bdpl", "andobs", "ningyuan.pan.query.parser.bdpl.guard.AndObserverFactory");
 						        
@@ -289,8 +292,19 @@ public class SimMain {
 							synchronized(lock){
 								if(epService != null){
 									
-									EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getQuery());
-									testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());
+									EPPreparedStatement prepared = epService.getEPAdministrator().prepareEPL(((DefaultBDPLPreparedQuery)bdplQuery).getEPL());
+									List<Integer> injectParas = ((DefaultBDPLPreparedQuery)bdplQuery).getInjectParams();
+									Map<Integer, Object> injectParaMapping = ((DefaultBDPLPreparedQuery)bdplQuery).getInjectParaMapping();
+									
+									for(int i = 0; i < injectParas.size(); i++){
+										prepared.setObject(i+1, injectParaMapping.get(injectParas.get(i)));
+									}
+									
+									EPStatement testStmt = epService.getEPAdministrator().create(prepared);
+									testStmt.addListener(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
+									
+									/*EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getEPL());
+									testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());*/
 									        
 									stmts.put(++statementCounter, new EPStatementEntry(query, testStmt));
 									System.out.println("\n[Statement "+statementCounter+":\n"+query+"\nis started]");

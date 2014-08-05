@@ -18,6 +18,8 @@ public class Term {
 	
 	private final String name;
 	
+	private String varName = null;
+	
 	private long duration = -1l;
 	
 	private String sparqlText;
@@ -39,14 +41,25 @@ public class Term {
 	public void setDuration(long duration) {
 		this.duration = duration;
 	}
-
+	
+	/*
+	 * Constructor time based event
+	 */
+	public Term(String t){
+		name = t;
+	}
+	
 	/*
 	 * Constructor simple event
 	 */
-	public Term(String n){
-		name = n;
+	public Term(String vn, String t){
+		varName = vn;
+		name = t;
 	}
 	
+	public String getVarName(){
+		return varName;
+	}
 	
 	public String getName(){
 		return name;

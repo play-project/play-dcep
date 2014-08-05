@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.generation;
+package eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener;
 
 
 import java.util.ArrayList;
@@ -31,9 +31,9 @@ import com.espertech.esper.client.UpdateListener;
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
+import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
-import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
-import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameMapEvent;
+
 
 /**
  * @author ningyuan 
@@ -73,9 +73,9 @@ public class RealTimeResultBindingListener implements UpdateListener{
 			
 				for(String n : enames){
 					
-					MapEvent<SesameEventModel> sevent = (MapEvent<SesameEventModel>)eb.get(n);
+					MapEvent<EventModel<Model>> sevent = (MapEvent<EventModel<Model>>)eb.get(n);
 					if(sevent != null){
-						SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
+						EventModel<Model> eventModel = sevent.get(MapEvent.EVENT_MODEL);
 						Model model = eventModel.getModel();
 						if(model != null){
 								System.out.println("RealTimeResultBindingListener2 ME: "+n);

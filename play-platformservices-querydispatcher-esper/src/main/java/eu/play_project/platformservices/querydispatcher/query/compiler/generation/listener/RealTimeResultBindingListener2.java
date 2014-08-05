@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.generation;
+package eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +34,7 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
-import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
-import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameMapEvent;
+
 
 /**
  * @author ningyuan 
@@ -77,19 +76,27 @@ public class RealTimeResultBindingListener2 implements UpdateListener {
 			
 				for(String n : enames){
 						System.out.println("RealTimeResultBindingListener2 ME: "+n);
-					MapEvent<SesameEventModel> sevent = (MapEvent<SesameEventModel>)eb.get(n);
+					MapEvent<EventModel<Model>> sevent = (MapEvent<EventModel<Model>>)eb.get(n);
 					if(sevent != null){
-						SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
+						EventModel<Model> eventModel = sevent.get(MapEvent.EVENT_MODEL);
 						Model model = eventModel.getModel();
 						if(model != null){
 								//System.out.println("RealTimeResultBindingListener2 ME: "+n);
 								eventModel.getProperties("http://ningyuan.com/id");
-							con.add(model, context);
-						
+							//con.add(model, context);
+							
+							Iterator<Statement> itr = model.iterator();
+							while(itr.hasNext()){
+								Statement st = itr.next();
+								//XXX deep copy statement, so that events are not effected???
+								con.add(st, context);
+									System.out.println(st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
+							}
 						}
 					}
 				}
 				
+					System.out.println("RealTimeResultBindingListener2: "+matchedPatternSparql);
 				TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, matchedPatternSparql).evaluate();
 						
 				List<Map<String, String>> r = new ArrayList<Map<String, String>>();
@@ -132,11 +139,13 @@ public class RealTimeResultBindingListener2 implements UpdateListener {
 							try {
 											
 								array.write(ele);
+								
 									System.out.println("Add element in dynamic array: "+array.length());
 									for(int n = 0; n < ele.length; n++){
 										System.out.print(sVars[n]+": "+ele[n]+"   ");
 									}
 									System.out.println();
+									
 							} catch (BDPLArrayException e) {}
 						}
 					}

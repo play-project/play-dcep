@@ -109,9 +109,9 @@ public class BDPLArray {
     }
     
     public String[][] read(){
-    	r.lock();
+    	
     	try{
-    		
+    		r.lock();
     		String [][] ret = new String[length][];
 	    	BDPLArrayElement current = head;
 	    		
@@ -137,9 +137,8 @@ public class BDPLArray {
     public void write(String[] add) throws BDPLArrayException{
     	
     	if(size > -1){
-    		
-	    	w.lock();
-	    	try{
+    		try{
+	    		w.lock();
 	    		// 
 	    		if(length == size){
 	    			if(length > 1){
@@ -188,8 +187,9 @@ public class BDPLArray {
     public void write(String [][] adds) throws BDPLArrayException{
     	
     	if(size > -1){
-	    	w.lock();
+	    	
 	    	try{
+	    		w.lock();
 	    		if(length + adds.length > size){
 	    			throw new BDPLArrayException("Writing too many elements into  a dynamic BDPL array.");
 	    		}

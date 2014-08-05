@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.translation.filter;
+package eu.play_project.platformservices.querydispatcher.query.compiler.generation.filter;
 
 
 import java.util.Iterator;
@@ -20,9 +20,9 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
+import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
-import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
-import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameMapEvent;
+
 
 /**
  * @author ningyuan 
@@ -45,30 +45,32 @@ public class RDFGraphEventFilter {
 				Resource context = new URIImpl("context://");
 				
 				for(int i = 0; i < events.length; i++){
-						System.out.print("RDFGraphEventFilter: ");
+						System.out.println("RDFGraphEventFilter E: "+i);
 					
-					SesameMapEvent sevent = (SesameMapEvent)events[i];
-					if(sevent != null){
-						SesameEventModel eventModel = sevent.get(MapEvent.EVENT_MODEL);
+					MapEvent<EventModel<Model>> event = (MapEvent<EventModel<Model>>)events[i];
+					if(event != null){
+						EventModel<Model> eventModel = event.get(MapEvent.EVENT_MODEL);
 							
 						Model model = eventModel.getModel();
 						if(model != null){
+								
+							//con.add(model, context);
+								
 								eventModel.getProperties("http://ningyuan.com/id");
-							con.add(model, context);
-							/*Iterator<Statement> itr = model.iterator();
+							Iterator<Statement> itr = model.iterator();
 							while(itr.hasNext()){
 								Statement st = itr.next();
 								//XXX deep copy statement, so that events are not effected???
-								con.add(st, new Resource [0]);
-									System.out.println("A: "+st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
-							}*/
+								con.add(st, context);
+									System.out.println(st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
+							}
 							
 						}
 					}
 				}
-					//System.out.println("RDFGraphEventFilter: "+query);
-				ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, query).evaluate();
-					System.out.println(Thread.currentThread().getName()+"   RDFGraphEventFilter: "+ret);
+					System.out.println("RDFGraphEventFilter : "+String.format(query, "ASK"));
+				ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(query, "ASK")).evaluate();
+					System.out.println("RDFGraphEventFilter: "+ret);
 				return ret;
 				
 				

@@ -15,8 +15,14 @@ import java.util.Set;
  */
 public class BDPLVarTable {
 	
+	/*
+	 * variables that appear in construct clause ( never be null )
+	 */
 	private Set<String> constructVars = new HashSet<String>();
 	
+	/*
+	 * common variables in real time pattern ( never be null ) 
+	 */
 	private Set<String> realTimeCommonVars = new HashSet<String>();
 
 	public Set<String> getConstructVars() {
