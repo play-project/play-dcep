@@ -155,7 +155,7 @@ public class PlatformservicesRestTest {
 		public String registerQuery(String queryId, String bdplQuery)
 				throws QueryDispatchException {
 			if (this.registeredQueries.containsKey(queryId)) {
-				throw new QueryDispatchException();
+				throw new QueryDispatchException("Query id already exists. \"{}\"" + queryId);
 			}
 			this.registeredQueries.put(queryId, new Query(queryId, bdplQuery));
 			return queryId;

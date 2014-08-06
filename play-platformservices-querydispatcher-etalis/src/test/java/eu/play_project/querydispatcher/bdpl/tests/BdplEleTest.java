@@ -1,5 +1,6 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
+import static eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager.getVarNameManager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -369,10 +370,11 @@ public class BdplEleTest {
 
 		// Get query.
 		queryString = getSparqlQuery("queries/BDPL-Query-NotOperatorEvent.eprq");
-
+		logger.debug("Query String: \n {}", queryString);
+		
 		// Parse query
 		Query query = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
-
+		
 		// Get not pattern.
 		EventPatternOperatorCollector visitor1 = new EventPatternOperatorCollector();
 		visitor1.collectValues(query.getEventQuery());
@@ -383,11 +385,10 @@ public class BdplEleTest {
 		VariableTypeManager vtm = new VariableTypeManager(query);
 
 		// Generate ELE.
+		getVarNameManager().newQuery(3);;
 		NotOperatorEleGenerator eleGenerator = new NotOperatorEleGenerator(vtm, "p1", "");
 		
 		visitor1.getEventPatterns().get(0).visit(eleGenerator);
-		System.out.println(eleGenerator.getEle());
-		
 	}
 	
 	@Test

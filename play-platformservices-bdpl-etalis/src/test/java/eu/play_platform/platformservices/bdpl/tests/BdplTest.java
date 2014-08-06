@@ -87,7 +87,6 @@ public class BdplTest {
 			} catch (IOException e) {
 				fail("Could not read query file: " + fileName);
 			} catch (QueryException e) {
-				e.printStackTrace();
 				fail("Malformed query file: " + fileName + " with error: " + e.getMessage());
 			}
 		}
@@ -112,7 +111,6 @@ public class BdplTest {
 					QueryFactory.create(query[0], Syntax.syntaxBDPL);
 				} catch (QueryException e) {
 					if (!e.getMessage().contains(query[1])) { // Test if expected exception
-						//e.printStackTrace();
 						throw new Exception("Not expected exception was thrown in " + fileName + "\n" + query[1] + " is expected");
 					}
 				}

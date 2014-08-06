@@ -14,7 +14,7 @@ import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-public class TimeTriggerTest {
+public class TimeTriggerTest extends PrologAbstractTest{
 	
 	/**
 	 *  Fire event with delay of one second. (With basic prolog methods)
@@ -24,8 +24,6 @@ public class TimeTriggerTest {
 			long delay = 3000;
 			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
 
-			PrologEngineWrapper<?> engine = new JPLEngineWrapper();
-			JtalisContext context = new JtalisContextImpl(engine);
 			context.addEventTrigger("c");
 
 			context.registerOutputProvider(new AbstractJtalisEventProvider() {

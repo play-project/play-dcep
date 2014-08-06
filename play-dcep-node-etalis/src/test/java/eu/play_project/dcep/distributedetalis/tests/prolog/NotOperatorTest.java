@@ -13,7 +13,7 @@ import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-public class NotOperatorTest {
+public class NotOperatorTest extends PrologAbstractTest{
 	
 	@Test
 	public void testCnotOperator() throws InterruptedException {
@@ -21,8 +21,6 @@ public class NotOperatorTest {
 			long delay = 100;
 			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
 
-			PrologEngineWrapper<?> engine = new JPLEngineWrapper();
-			JtalisContext context = new JtalisContextImpl(engine);
 			context.addEventTrigger("c");
 
 			context.registerOutputProvider(new AbstractJtalisEventProvider() {

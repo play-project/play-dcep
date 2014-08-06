@@ -17,5 +17,5 @@ WHERE {
 		?e1 :name ?friend1.
 		?e1 :temperature ?t1
     }
-		FILTER contains(?about1, "JEANS"^^xsd:int)
+		FILTER contains(?about1, "JEANS"^^xsd:string)
 } HAVING(AVG(?t) >= "30"^^xsd:string)

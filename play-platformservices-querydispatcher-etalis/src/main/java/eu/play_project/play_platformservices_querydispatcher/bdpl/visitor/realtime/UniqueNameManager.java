@@ -73,7 +73,11 @@ public class UniqueNameManager {
 
 	public long processNextEvent(){
 		if (++triplestoreVariable >  triplestoreVariableEnd) {
-			throw new RuntimeException("No event left. This query schould contains " + (triplestoreVariableEnd - triplestoreVariableStart));
+			if (triplestoreVariable == 1 && triplestoreVariableEnd == 0) {
+				throw new RuntimeException("UniqueNameManager was not initialized with newQuery(int numberOfEvents))");
+			} else {
+				throw new RuntimeException("No event left. This query schould contains " + (triplestoreVariableEnd - triplestoreVariableStart));
+			}
 		}
 		return triplestoreVariable;
 	}

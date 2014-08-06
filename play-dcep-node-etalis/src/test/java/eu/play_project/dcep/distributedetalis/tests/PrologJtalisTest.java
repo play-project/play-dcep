@@ -68,11 +68,16 @@ public class PrologJtalisTest {
 	 * Instantiate ETALIS
 	 * @throws InterruptedException
 	 */
-	//@Before
+	@Before
 	public void instantiateJtalis() throws InterruptedException{
 
 		PrologEngineWrapper<?> engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.ctx = new JtalisContextImpl(engine);
+		try {
+			this.init();
+		} catch (DistributedEtalisException e) {
+			e.printStackTrace();
+		}
 		
 	//	ctx.getEngineWrapper().executeGoal("reset_ETALIS");
 		Thread.sleep(1000);
@@ -559,7 +564,6 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
-	@Ignore
 	public void AverageTest3Values() throws InterruptedException, DistributedEtalisException{
 		
 		this.init();
@@ -595,6 +599,7 @@ public class PrologJtalisTest {
 	}
 	
 	@Test
+	@Ignore
 	public void AverageTestOutOfWindow() throws InterruptedException, DistributedEtalisException, IOException{
 		if(ctx==null){
 			this.init();
@@ -630,9 +635,8 @@ public class PrologJtalisTest {
 	
 	@Test
 	public void AverageTestSystemTime() throws InterruptedException, DistributedEtalisException{
-		if(ctx==null){
-			this.init();
-		}
+		this.init();
+	
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 1.0)");
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 2.0)");
 		((PlayJplEngineWrapper)ctx.getEngineWrapper()).executeGoal("addAgregatValue(id_1, 3.0)");
@@ -735,6 +739,7 @@ public class PrologJtalisTest {
 
 	
 	@Test
+	@Ignore
 	public void deleteUnusedTripleStoresTest() throws DistributedEtalisException{
 		if(ctx==null){
 			this.init();
@@ -762,7 +767,7 @@ public class PrologJtalisTest {
 		
 		
 		// Last inserted event by event execution worker.
-		e.execute("setLastInsertedEvent(4)");
+		//e.execute("setLastInsertedEvent(4)");
 		
 		// Delete all event with are older than 4 and counter is 0.
 		// Is triggered by garbage collection event.
@@ -813,8 +818,9 @@ public class PrologJtalisTest {
 	/**
 	 * Simulate performance measurement and test results.
 	 */
+	@Ignore
 	@Test
-	public void MeasurementTrheadTest(){
+	public void MeasurementThreadTest(){
 
 		//New prolog engine
 		PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
@@ -882,7 +888,9 @@ public class PrologJtalisTest {
 		for (String method : getPrologMethods("Aggregatfunktions.pl")) {
 			engine.execute("assert((" + method + "))");
 		}
-
+		for (String method : getPrologMethods("ReferenceCounting.pl")) {
+			engine.execute("assert((" + method + "))");
+		}
 	}
 	
 	private String[] getPrologMethods(String methodFile){

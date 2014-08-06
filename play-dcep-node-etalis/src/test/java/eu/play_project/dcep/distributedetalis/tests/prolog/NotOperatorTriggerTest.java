@@ -15,16 +15,13 @@ import com.jtalis.core.event.EtalisEvent;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 
-public class NotOperatorTriggerTest {
+public class NotOperatorTriggerTest extends PrologAbstractTest{
 	
 	@Test
 	public void testEventTrigger() throws InterruptedException {
 		try {
 			long delay = 100;
 			final List<EtalisEvent> complexEventList = new LinkedList<EtalisEvent>();
-
-			PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
-			JtalisContext context = new JtalisContextImpl(engine);
 			context.addEventTrigger("c");
 
 			context.registerOutputProvider(new AbstractJtalisEventProvider() {

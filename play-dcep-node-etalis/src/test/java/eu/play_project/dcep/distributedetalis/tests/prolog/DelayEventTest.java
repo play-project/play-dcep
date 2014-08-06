@@ -19,7 +19,7 @@ import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
 import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.configurations.helpers.LoadPrologCode;
 
-public class DelayEventTest {
+public class DelayEventTest extends PrologAbstractTest {
 	
 	/**
 	 *  Fire event with delay of one second.
@@ -31,9 +31,6 @@ public class DelayEventTest {
 			long delay = 3000;
 			final List<EtalisEvent> list = new LinkedList<EtalisEvent>();
 
-			// Init ETALIS
-			PlayJplEngineWrapper engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
-			JtalisContext context = new JtalisContextImpl(engine);
 			context.addEventTrigger("c");
 
 			context.registerOutputProvider(new AbstractJtalisEventProvider() {
