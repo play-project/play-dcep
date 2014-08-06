@@ -5,36 +5,12 @@ package eu.play_project.platformservices.querydispatcher.query.simulation;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.query.Dataset;
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.algebra.TupleExpr;
-import org.openrdf.query.parser.ParsedBooleanQuery;
-import org.openrdf.query.parser.ParsedGraphQuery;
-import org.openrdf.query.parser.ParsedQuery;
-import org.openrdf.query.parser.ParsedTupleQuery;
-import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
-import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
-import org.openrdf.query.parser.bdpl.DatasetDeclProcessor;
-import org.openrdf.query.parser.bdpl.PrefixDeclProcessor;
-import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
-import org.openrdf.query.parser.bdpl.TupleExprBuilder;
-import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
-import org.openrdf.query.parser.bdpl.ast.ASTAskQuery;
-import org.openrdf.query.parser.bdpl.ast.ASTConstructQuery;
-import org.openrdf.query.parser.bdpl.ast.ASTDescribeQuery;
-import org.openrdf.query.parser.bdpl.ast.ASTQuery;
-import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
-import org.openrdf.query.parser.bdpl.ast.ASTSelectQuery;
-import org.openrdf.query.parser.bdpl.ast.ParseException;
-import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
-import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
-import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPException;
@@ -45,14 +21,16 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
-import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
+
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeResultListener;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunction;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionClassLoader;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionInitiator;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExternalFunctionTable;
 
 
 /**
@@ -74,6 +52,16 @@ public class SimMain {
 		
 		int statementCounter = 0;
 		Map<Integer, EPStatementEntry> stmts = new HashMap<Integer, EPStatementEntry>();
+		
+		ExternalFunctionTable fTable = ExternalFunctionTable.getInstance();
+		ExFunctionInitiator.initiate(fTable);
+		
+		ExFunctionClassLoader fLoader = null;
+		try {
+			fLoader = new ExFunctionClassLoader("D:/Neo/Materials/Codes/Java/EclipseWorkspace/play-dcep/play-platformservices-querydispatcher-esper/exFunctionLib");
+		} catch (Exception e1) {
+			System.out.println(e1.getMessage());
+		}
 		
 		BufferedReader bin = new BufferedReader(new InputStreamReader(System.in));
 		
@@ -393,9 +381,62 @@ public class SimMain {
 								System.out.println("[Engine is not started]");
 							}
 						}
+						else if(as[1].equals("-f")){
+							String[][] eFunctions = fTable.list();
+							for(int i = 0; i < eFunctions.length; i++){
+								System.out.println(eFunctions[i][0]+"    "+eFunctions[i][1]);
+							}
+						}
 					}
 					else{
 						System.out.println("[:D]");
+					}
+				}
+				else if(cmd.startsWith("load")){
+					String [] as = cmd.split("\\s+");
+					
+					if(as.length > 1){
+						try{
+							if(as[1].equals("-f")){
+								if(fLoader != null){
+									if(as.length > 2){
+										
+										Class fc = fLoader.loadClass(as[2]);
+										
+										Method[] ms = fc.getDeclaredMethods();
+										
+										for(int i = 0; i < ms.length; i++){
+											ExFunction ef = new ExFunction(ms[i].getName(), ms[i].getParameterTypes()); 
+											fTable.putFunctionClass(ef, fc);
+										}
+										
+									}
+									else{
+										System.out.println("[load -f classname]");
+									}
+								}
+								else{
+									System.out.println("[Class loader is not initiated properly.]");
+								}
+							}
+						}
+						catch(ClassNotFoundException e){
+							System.out.println("["+e.getMessage()+"]");
+						}
+						catch(SecurityException e){
+							System.out.println("["+e.getMessage()+"]");
+						}
+					}
+					else{
+						System.out.println("[load -f classname]");
+					}
+				}
+				else if(cmd.startsWith("average")){
+					Class fc = fTable.getFunctionClass(new ExFunction("average", new Class[]{double[].class}));
+					
+					Method m = fc.getMethod("average", double[].class);
+					if(m != null){
+						m.invoke(fc.newInstance(), new double[]{1,2});
 					}
 				}
 			}

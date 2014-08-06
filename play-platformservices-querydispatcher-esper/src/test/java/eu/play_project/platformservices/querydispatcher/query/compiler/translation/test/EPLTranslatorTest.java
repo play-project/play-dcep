@@ -32,7 +32,7 @@ public class EPLTranslatorTest {
 	
 	public final String NL = System.getProperty("line.separator");
 	 
-	public static URL testsLocation;
+	private static URL testsLocation;
 	 
     @BeforeClass
     public static void setUp() throws Exception { 

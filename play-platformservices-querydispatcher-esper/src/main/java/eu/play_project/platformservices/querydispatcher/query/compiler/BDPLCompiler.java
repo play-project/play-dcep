@@ -20,6 +20,8 @@ import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 
 
+
+
 import com.espertech.esper.client.UpdateListener;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLArrayVarProcessor;
@@ -28,13 +30,13 @@ import eu.play_project.platformservices.bdpl.parser.BDPLVarProcessor;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.EPLListenerProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.EPLListenerProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeResultBindingListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeResultBindingListener2;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeResultListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResultBindingData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResults;
-import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.ArrayInitiator;
+import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.ArrayInitiator;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.DefaultArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;

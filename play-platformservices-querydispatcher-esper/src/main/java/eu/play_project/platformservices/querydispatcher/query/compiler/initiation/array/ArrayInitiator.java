@@ -1,12 +1,11 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.initiation;
+package eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array;
 
 
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
-import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.IArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 

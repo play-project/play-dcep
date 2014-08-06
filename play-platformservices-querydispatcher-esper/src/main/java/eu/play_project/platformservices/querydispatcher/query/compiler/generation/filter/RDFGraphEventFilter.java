@@ -32,7 +32,7 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
  */
 public class RDFGraphEventFilter {
 		
-		static public boolean evaluate(String query,  Map[] events){
+	static public boolean evaluate(String query,  Map[] events){
 			boolean ret = false;
 			
 			Repository repo = new SailRepository(new MemoryStore());

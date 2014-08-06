@@ -38,7 +38,7 @@ import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.EPLListenerProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.EPLListenerProcessor;
 
 
 /**

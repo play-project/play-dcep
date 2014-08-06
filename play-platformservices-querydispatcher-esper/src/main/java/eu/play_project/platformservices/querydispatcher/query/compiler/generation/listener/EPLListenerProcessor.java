@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.generation;
+package eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener;
 
 import java.util.ArrayList;
 import java.util.List;
