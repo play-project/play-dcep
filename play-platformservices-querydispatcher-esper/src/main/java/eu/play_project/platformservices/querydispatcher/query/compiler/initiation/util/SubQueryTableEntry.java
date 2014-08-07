@@ -15,10 +15,19 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDP
  */
 public class SubQueryTableEntry {
 	
+	/*
+	 * sub query object. If it is null, the sub query is the query it self
+	 */
 	private IBDPLQuery query;
 	
+	/*
+	 * the array into which the sub query inserts variables
+	 */
 	private BDPLArray array;
 	
+	/*
+	 * the selected variables of the sub query
+	 */
 	private String[] selectedVars;
 
 	public IBDPLQuery getQuery() {

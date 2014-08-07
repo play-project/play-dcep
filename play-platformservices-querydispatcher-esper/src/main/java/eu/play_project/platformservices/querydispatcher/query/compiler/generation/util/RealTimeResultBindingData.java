@@ -16,10 +16,19 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.initiatio
  */
 public class RealTimeResultBindingData {
 	
+	/*
+	 * common variables in real time event pattern
+	 */
 	private final Set<String> realTimeCommonVars;
 	
+	/*
+	 * container of real time results
+	 */
 	private final RealTimeResults results; 
 	
+	/*
+	 * dynamic arrays to be fed
+	 */
 	private final List<SubQueryTableEntry> dynamicArrays;
 
 	public RealTimeResultBindingData(Set<String> realTimeCommonVars, RealTimeResults results, List<SubQueryTableEntry> dynamicArrays){

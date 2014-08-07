@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -91,17 +93,29 @@ public class RealTimeResultBindingFilter {
 				TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(query, "SELECT *")).evaluate();
 
 				while(result.hasNext()){
-						System.out.println("RealTimeResultBindingListener2 R: ");
+						System.out.println("RealTimeResultBindingFilter R: ");
 					BindingSet bs = result.next();
 					
 					/*
 					 * real time variables
 					 */
-					Map<String, String> content = new HashMap<String, String>();
+					Map<String, String[]> content = new HashMap<String, String[]>();
 					
 					for(String name : realTimeCommonVars){
-						String var = bs.getBinding(name).getValue().toString();
-							System.out.print(name+": "+var+"   ");
+							String[] var = new String[2];
+							
+							Value v = bs.getBinding(name).getValue();
+							
+							if(v instanceof Literal){
+								var[0] = ((Literal) v).getLabel();
+							}
+							else{
+								var[0] = v.toString();
+							}
+							
+							var[1] = bs.getBinding(name).getValue().toString();
+								System.out.print(name+": "+var[0]+"   "+var[1]+"   ");
+							
 						content.put(name, var);
 					}
 						System.out.println();
@@ -116,14 +130,14 @@ public class RealTimeResultBindingFilter {
 						String [] sVars = dArrayEntrie.getSelectedVars();
 								
 						
-						String [] ele = new String [sVars.length];
+						String [][] ele = new String [sVars.length][2];
 									
 						int k = 0;
 						for( ; k < sVars.length; k++){
 							String sVar = sVars[k];
-							String value = content.get(sVar);
+							String[] value = content.get(sVar);
 										
-							if(value == null || value.isEmpty()){
+							if(value == null || value[1].isEmpty()){
 								break;
 							}
 							else{
@@ -138,7 +152,7 @@ public class RealTimeResultBindingFilter {
 									
 									System.out.println("Add element in dynamic array: "+array.length());
 									for(int n = 0; n < ele.length; n++){
-										System.out.print(sVars[n]+": "+ele[n]+"   ");
+										System.out.print(sVars[n]+": "+ele[n][1]+"   "+ele[n][0]+"   ");
 									}
 									System.out.println();
 										

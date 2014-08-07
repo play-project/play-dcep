@@ -34,9 +34,9 @@ public class RealTimeResultListener implements UpdateListener{
 		for(int i = 0; i < newEvents.length; i++){
 			System.out.println("Result "+i+": ");
 			
-			Map<String, String> result = realTimeResults.get();
+			Map<String, String[]> result = realTimeResults.get();
 			for(String key : result.keySet()){
-				System.out.print(key+": "+result.get(key)+"   ");
+				System.out.print(key+": "+result.get(key)[0]+"   "+result.get(key)[1]+"   ");
 			}
 				System.out.println();
 			

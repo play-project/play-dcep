@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
+import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -36,10 +38,10 @@ public class TestRepository implements ISparqlRepository{
 	private Repository repo;
 	
 	@Override
-	public String[][] query(String query) {
+	public String[][][] query(String query) {
 		RepositoryConnection con = null;
 		TupleQueryResult result = null;
-		String[][] ret = null;
+		String[][][] ret = null;
 		try {
 			con = repo.getConnection();
 			
@@ -50,25 +52,34 @@ public class TestRepository implements ISparqlRepository{
 				for(int i = 0; i < names.size(); i++){
 					System.out.println("names: "+names.get(i));
 				}
-			List<String[]> temp = new ArrayList<String[]>();
+			List<String[][]> temp = new ArrayList<String[][]>();
 			
 			while(result.hasNext()){
 				BindingSet bindingSet = result.next();
 				
-				String [] ele = new String[names.size()];
+				String [][] ele = new String[names.size()][2];
 				temp.add(ele);
 				for(int i = 0; i < names.size(); i++){
-					ele[i]=bindingSet.getValue(names.get(i)).toString();
+					Value v = bindingSet.getBinding(names.get(i)).getValue();
+					
+					if(v instanceof Literal){
+						ele[i][0] = ((Literal) v).getLabel();
+					}
+					else{
+						ele[i][0] = v.toString();
+					}
+					
+					ele[i][1] = v.toString();
 				}
 				
 			}
 			
-			ret = new String[temp.size()][];
+			ret = new String[temp.size()][][];
 			for(int i = 0; i < temp.size(); i++){
 				ret[i] = temp.get(i);
-					String [] s = ret[i];
+					String [][] s = ret[i];
 					for(int j = 0; j < s.length; j++){
-						System.out.print(s[j]+"  ");
+						System.out.print(s[j][0]+"   "+s[j][1]+"   ");
 					}
 					System.out.println();
 			}

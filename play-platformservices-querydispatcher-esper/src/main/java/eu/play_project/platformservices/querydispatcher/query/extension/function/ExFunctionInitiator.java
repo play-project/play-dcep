@@ -23,7 +23,7 @@ public class ExFunctionInitiator {
 		Method[] methods = fc.getDeclaredMethods();
 		
 		for(int i = 0; i < methods.length; i++){
-			ExFunction ef = new ExFunction(methods[i].getName(), methods[i].getParameterTypes()); 
+			ExFunctionSignature ef = new ExFunctionSignature(methods[i].getName(), methods[i].getParameterTypes()); 
 			fTable.putFunctionClass(ef, fc);
 		}
 	}

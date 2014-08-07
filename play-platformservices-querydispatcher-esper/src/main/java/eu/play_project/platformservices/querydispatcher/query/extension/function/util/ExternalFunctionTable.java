@@ -9,7 +9,7 @@ import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunction;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionSignature;
 
 /**
  * @author ningyuan 
@@ -27,10 +27,10 @@ public class ExternalFunctionTable {
     
     private final Lock w = rwl.writeLock();
     
-	private Map<ExFunction, Class> table;
+	private Map<ExFunctionSignature, Class> table;
 	
 	private ExternalFunctionTable(){
-		table = new HashMap<ExFunction, Class>();
+		table = new HashMap<ExFunctionSignature, Class>();
 	}
 	
 	public static ExternalFunctionTable getInstance(){
@@ -43,7 +43,7 @@ public class ExternalFunctionTable {
 		}
 	}
 	
-	public Class getFunctionClass(ExFunction fn){
+	public Class getFunctionClass(ExFunctionSignature fn){
 		try{
 			instance.r.lock();
 			Class ret = null;
@@ -55,7 +55,7 @@ public class ExternalFunctionTable {
 		}
 	}
 	
-	public void putFunctionClass(ExFunction fn, Class f){
+	public void putFunctionClass(ExFunctionSignature fn, Class f){
 		try{
 			instance.w.lock();
 			instance.table.put(fn, f);
@@ -71,7 +71,7 @@ public class ExternalFunctionTable {
 			String [][] list = new String[instance.table.size()][2]; 
 			
 			int i = 0;
-			for(ExFunction fn : instance.table.keySet()){
+			for(ExFunctionSignature fn : instance.table.keySet()){
 				list[i][0] = fn.getName();
 				list[i][1] = instance.table.get(fn).getName();
 				i++;

@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openrdf.model.Literal;
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -37,6 +39,9 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 
 
 /**
+ * Not used. (union matched pattern sparql)
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 31, 2014
@@ -99,15 +104,27 @@ public class RealTimeResultBindingListener2 implements UpdateListener {
 					System.out.println("RealTimeResultBindingListener2: "+matchedPatternSparql);
 				TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, matchedPatternSparql).evaluate();
 						
-				List<Map<String, String>> r = new ArrayList<Map<String, String>>();
+				List<Map<String, String[]>> r = new ArrayList<Map<String, String[]>>();
 						
 				while(result.hasNext()){
 						System.out.println("RealTimeResultBindingListener2 R: ");
 					BindingSet bs = result.next();
-					Map<String, String> m = new HashMap<String, String>();
+					Map<String, String[]> m = new HashMap<String, String[]>();
 					r.add(m);
 					for(String name : realTimeCommonVars){
-						String var = bs.getBinding(name).getValue().toString();
+						String[] var = new String[2];
+						
+						Value v = bs.getBinding(name).getValue();
+						
+						if(v instanceof Literal){
+							var[0] = ((Literal) v).getLabel();
+						}
+						else{
+							var[0] = v.toString();
+						}
+						
+						var[1] = bs.getBinding(name).getValue().toString();
+						
 						m.put(name, var);
 					}
 				}
@@ -119,15 +136,15 @@ public class RealTimeResultBindingListener2 implements UpdateListener {
 					BDPLArray array = subQuery.getArray();
 					String [] sVars = subQuery.getSelectedVars();
 							
-					for(Map<String, String> m : r){
-						String [] ele = new String [sVars.length];
+					for(Map<String, String[]> m : r){
+						String [][] ele = new String [sVars.length][2];
 								
 						int k = 0;
 						for( ; k < sVars.length; k++){
 							String sVar = sVars[k];
-							String value = m.get(sVar);
+							String[] value = m.get(sVar);
 									
-							if(value == null || value.isEmpty()){
+							if(value == null || value[1].isEmpty()){
 								break;
 							}
 							else{
@@ -142,7 +159,7 @@ public class RealTimeResultBindingListener2 implements UpdateListener {
 								
 									System.out.println("Add element in dynamic array: "+array.length());
 									for(int n = 0; n < ele.length; n++){
-										System.out.print(sVars[n]+": "+ele[n]+"   ");
+										System.out.print(sVars[n]+": "+ele[n][0]+"   "+ele[n][1]+"   ");
 									}
 									System.out.println();
 									

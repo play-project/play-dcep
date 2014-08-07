@@ -6,6 +6,7 @@ package eu.play_project.platformservices.bdpl.parser.array;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 
 /**
@@ -29,7 +30,7 @@ public class BDPLArray {
      * 
      * @param content
      */
-    public BDPLArray(String[][] content){
+    public BDPLArray(String[][][] content){
     	if(content != null){
     		if(content.length == 0){
 	    		tail = null;
@@ -64,7 +65,7 @@ public class BDPLArray {
      * @param size
      * @param content
      */
-    public BDPLArray(int size, String[][] content){
+    public BDPLArray(int size, String[][][] content){
     	if(size < 1){
     		throw new IllegalArgumentException("The size of a dynamic BDPL array should be greater than 0.");
     	}
@@ -108,11 +109,11 @@ public class BDPLArray {
     	return length;
     }
     
-    public String[][] read(){
+    public String[][][] read(){
     	
     	try{
     		r.lock();
-    		String [][] ret = new String[length][];
+    		String [][][] ret = new String[length][][];
 	    	BDPLArrayElement current = head;
 	    		
 	    	int i = 0;
@@ -134,7 +135,7 @@ public class BDPLArray {
      * @param add 
      * @throws BDPLArrayException
      */
-    public void write(String[] add) throws BDPLArrayException{
+    public void write(String[][] add) throws BDPLArrayException{
     	
     	if(size > -1){
     		try{
@@ -184,7 +185,7 @@ public class BDPLArray {
      * @param adds 
      * @throws BDPLArrayException
      */
-    public void write(String [][] adds) throws BDPLArrayException{
+    public void write(String [][][] adds) throws BDPLArrayException{
     	
     	if(size > -1){
 	    	
@@ -228,20 +229,20 @@ public class BDPLArray {
     private static class BDPLArrayElement{
     	private BDPLArrayElement next = null;
     	
-    	private String[] content;
+    	private String[][] content;
     	
-    	public BDPLArrayElement(String[] content){
+    	public BDPLArrayElement(String[][] content){
     		if(content == null){
     			throw new IllegalArgumentException();
     		}
     		this.content = content;
     	}
     	
-    	public String[] getContent(){
+    	public String[][] getContent(){
     		return content;
     	}
     	
-    	public void setContent(String[] content){
+    	public void setContent(String[][] content){
     		if(content == null){
     			throw new IllegalArgumentException();
     		}

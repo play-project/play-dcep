@@ -27,7 +27,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunction;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionSignature;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionClassLoader;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionInitiator;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExternalFunctionTable;
@@ -406,7 +406,7 @@ public class SimMain {
 										Method[] ms = fc.getDeclaredMethods();
 										
 										for(int i = 0; i < ms.length; i++){
-											ExFunction ef = new ExFunction(ms[i].getName(), ms[i].getParameterTypes()); 
+											ExFunctionSignature ef = new ExFunctionSignature(ms[i].getName(), ms[i].getParameterTypes()); 
 											fTable.putFunctionClass(ef, fc);
 										}
 										
@@ -432,7 +432,7 @@ public class SimMain {
 					}
 				}
 				else if(cmd.startsWith("average")){
-					Class fc = fTable.getFunctionClass(new ExFunction("average", new Class[]{double[].class}));
+					Class fc = fTable.getFunctionClass(new ExFunctionSignature("average", new Class[]{double[].class}));
 					
 					Method m = fc.getMethod("average", double[].class);
 					if(m != null){

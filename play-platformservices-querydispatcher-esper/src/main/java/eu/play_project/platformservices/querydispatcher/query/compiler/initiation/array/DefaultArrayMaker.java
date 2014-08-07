@@ -63,6 +63,9 @@ public class DefaultArrayMaker implements IArrayMaker {
 	
 	/*
 	 * Parse static array declaration, and initiate BDPL array.
+	 * 
+	 * Each dimension of array element must be grammar correct RDF literal or URI,
+	 * otherwise the function will not work correctly.
 	 */
 	private BDPLArray getElementsOfStaticArray(String source) throws InitiateException{
 		if(source == null || source.length() == 0){
@@ -74,9 +77,10 @@ public class DefaultArrayMaker implements IArrayMaker {
 		char c;
 		int state = 0, dimension = 0;
 		StringBuffer oneDim = new StringBuffer();
-	
-		List<String> element = new ArrayList<String>();
-		List<List<String>> content = new ArrayList<List<String>>();
+		
+		String [] value = null;
+		List<String[]> element = new ArrayList<String[]>();
+		List<List<String[]>> content = new ArrayList<List<String[]>>();
 		for(int i = 0; i < source.length(); i++){
 			c = source.charAt(i);
 			
@@ -86,25 +90,72 @@ public class DefaultArrayMaker implements IArrayMaker {
 					if(c == ' '){
 						continue;
 					}
+					else if(c == '\"'){
+						oneDim.append(c);
+						state = 1;
+					}
 					else if(c == ';'){
 						throw new InitiateException("No element defined in static array.");
 					}
 					else{
 						oneDim.append(c);
-						state = 1;
+						state = 2;
 					}
 					break;
 				}
-				// in one dimension
+				// in one dimension (in label)
 				case 1:{
 					if(c == ' '){
+						oneDim.append(c);
+					}
+					else if(c == '\"'){
+						oneDim.append(c);
+						
+						value = new String[2];
+						String s = oneDim.toString();
+						
+						if(s.length() > 2){
+							value[0] = s.substring(1, s.length()-1);
+						}
+						else{
+							value[0] = "";
+						}
+						
 						state = 2;
-						element.add(oneDim.toString());
+					}
+					else{
+						oneDim.append(c);
+					}
+					break;
+				}
+				// in one dimension (after label)
+				case 2:{
+					if(c == ' '){
+						if(value == null){
+							value = new String[2];
+							value[0] = oneDim.toString();
+						}
+						
+						value[1] = oneDim.toString();
+						
+						element.add(value);
 						oneDim.delete(0, oneDim.length());
+						value = null;
+						
+						state = 3;
 					}
 					else if(c == ';'){
-						element.add(oneDim.toString());
+						if(value == null){
+							value = new String[2];
+							value[0] = oneDim.toString();
+						}
+						
+						value[1] = oneDim.toString();
+						
+						element.add(value);
 						oneDim.delete(0, oneDim.length());
+						value = null;
+						
 						
 						if(dimension != 0){
 							if(dimension != element.size()){
@@ -116,7 +167,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 						}
 						
 						content.add(element);
-						element = new ArrayList<String>();
+						element = new ArrayList<String[]>();
 						
 						state = 0;
 					}
@@ -126,9 +177,13 @@ public class DefaultArrayMaker implements IArrayMaker {
 					break;
 				}
 				// after one dimension
-				case 2:{
+				case 3:{
 					if(c == ' '){
 						continue;
+					}
+					else if(c == '\"'){
+						oneDim.append(c);
+						state = 1;
 					}
 					else if(c == ';'){
 						if(dimension != 0){
@@ -141,13 +196,13 @@ public class DefaultArrayMaker implements IArrayMaker {
 						}
 						
 						content.add(element);
-						element = new ArrayList<String>();
+						element = new ArrayList<String[]>();
 						
 						state = 0;
 					}
 					else{
 						oneDim.append(c);
-						state = 1;
+						state = 2;
 					}
 					break;
 				}
@@ -156,8 +211,23 @@ public class DefaultArrayMaker implements IArrayMaker {
 		
 		
 		if(oneDim.length() > 0){
-			element.add(oneDim.toString());
-			oneDim.delete(0, oneDim.length());
+			// label not end
+			if(state == 1){
+				throw new InitiateException("Illegal RDF literal in static array declaration.");
+			}
+			else{
+				if(value == null){
+					value = new String[2];
+					value[0] = oneDim.toString();
+				}
+				
+				value[1] = oneDim.toString();
+				
+				element.add(value);
+				oneDim.delete(0, oneDim.length());
+				value = null;
+
+			}
 		}
 		
 		if(element.size() > 0){
@@ -173,9 +243,9 @@ public class DefaultArrayMaker implements IArrayMaker {
 			content.add(element);
 		}
 		
-		String [][] sContent = new String[content.size()][];
+		String [][][] sContent = new String[content.size()][][];
 		for(int i = 0; i < content.size(); i++){
-			String [] sElement = new String[content.get(i).size()];
+			String [][] sElement = new String[content.get(i).size()][2];
 			content.get(i).toArray(sElement);
 			
 			sContent[i] = sElement;
@@ -283,4 +353,5 @@ public class DefaultArrayMaker implements IArrayMaker {
 		
 		return ret;
 	}
+	
 }

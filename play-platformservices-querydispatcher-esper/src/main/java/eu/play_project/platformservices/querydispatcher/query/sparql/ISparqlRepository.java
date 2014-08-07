@@ -15,7 +15,7 @@ public interface ISparqlRepository {
 	
 	public void start();
 	
-	public String[][] query(String query);
+	public String[][][] query(String query);
 	
 	public void close();
 }
