@@ -319,6 +319,7 @@ TOKEN [IGNORE_CASE] :	// BDPL tokens
 |	<WINDOW: "window">
 |	<EVENT: "event">
 |	<INTERVAL: "interval">
+|	<ARRAYFILTER: "arrayfilter">
 |	<EVENT_UN_OP_1: <EVENT_OP_NOT>>
 |	<EVENT_UN_OP_2: <EVENT_OP_REPEAT>>
 |	<EVENT_BIN_OP_3: <EVENT_OP_AND>>
@@ -1945,7 +1946,7 @@ void ContextClause() :
 	)
 }
 
-void ArrayVariable() :
+void ArrayVar() :
 {
 	Token t;
 }
@@ -1967,7 +1968,7 @@ void DynamicArrayDecl() :
 {
 	( DynamicArrayDef1() | DynamicArrayDef2())
 	<AS>
-	ArrayVariable()
+	ArrayVar()
 	<DOT>
 }
 
@@ -2029,7 +2030,7 @@ void RealTimeEventQuery():
 {
 	WindowClause()
 	|
-	({System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]\n");})
+	({System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]\n");} (ArrayFilter())*)
 }
 
 void WindowClause():
@@ -2038,6 +2039,7 @@ void WindowClause():
 	<WINDOW>
 	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]");} <RBRACE>
 	WindowDecl()
+	((ArrayFilter())*)
     (FilterOrBind())*
 }
 
@@ -2129,6 +2131,89 @@ void TimeBasedEvent(String op):
 {
 	{ jjtThis.setOperator(op); }
 	(<INTERVAL> <LPAREN> String() <DT_PREFIX> PrefixedName() <RPAREN>{System.out.print(" timer:interval()");} )
+}
+
+void ArrayFilter():
+{}
+{
+	<ARRAYFILTER> <LPAREN> ArrayFilterExpression() <RPAREN>
+} 
+
+void ArrayFilterExpression():
+{
+	Token t;
+}
+{
+	AFA() [( t=<AND> | t=<OR>){jjtThis.setOperator(t.image);} AFA()]
+}
+
+void AFA():
+{
+	Token t;
+}
+{
+	AFB() [( t=<EQ> | t=<NE> | t=<GT> | t=<LT> | t=<GE> | t=<LE>){jjtThis.setOperator(t.image);} AFB()]
+}
+
+void AFB():
+{
+	Token t;
+}
+{
+	[t=<NOT> {jjtThis.setOperator(t.image);}] AFC()
+}
+
+void AFC():
+{
+	Token t;
+}
+{
+	(
+		ExternalFunctionDecl()
+		|
+		PrimitiveValue()
+		|
+		Var()
+		|
+		String()
+		|
+		(<LPAREN> ArrayFilterExpression() <RPAREN>)
+	)
+}
+
+void ExternalFunctionDecl():
+{
+	Token t;
+}
+{
+	IRIref() <LPAREN> ExternalFunctionParameterDecl() <RPAREN>
+}
+
+void ExternalFunctionParameterDecl():
+{}
+{
+	[ (LOOKAHEAD(2) Var() | LOOKAHEAD(2) ArrayVar() | String() | StaticArrayDef1() | PrimitiveValue())]
+	(<COMMA> (LOOKAHEAD(2) Var() | LOOKAHEAD(2) ArrayVar() | String() | StaticArrayDef1() | PrimitiveValue()))*
+}
+
+void PrimitiveValue():
+{
+	Token t;
+}
+{
+	(
+		(t=<TRUE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
+		|
+		(t=<FALSE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
+		|
+		(t=<INTEGER> {jjtThis.setValue(t.image); jjtThis.setType("int");})
+		|
+		(t=<INTEGER_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("int");})
+		|
+		(t=<DECIMAL> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
+		|
+		(t=<DECIMAL_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
+	)
 }
 
 void HistoricalEventQuery():

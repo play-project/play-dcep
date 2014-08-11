@@ -3,12 +3,13 @@
  */
 package eu.play_project.platformservices.bdpl.parser;
 
+import java.util.List;
 import java.util.Set;
 
 import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.parser.bdpl.ast.ASTArrayVar;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayElement;
-import org.openrdf.query.parser.bdpl.ast.ASTArrayVariable;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTBindingsClause;
 import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
@@ -16,6 +17,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef1;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef2;
+import org.openrdf.query.parser.bdpl.ast.ASTExternalFunctionParameterDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTIRI;
 import org.openrdf.query.parser.bdpl.ast.ASTNumericLiteral;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
@@ -27,6 +29,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTStaticArrayDef2;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
 import org.openrdf.query.parser.bdpl.ast.IArrayDecl;
 import org.openrdf.query.parser.bdpl.ast.Node;
+import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
@@ -40,6 +43,8 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
 
 
 /**
+ * process all array variables in a bdpl query, create array variable table
+ * 
  * @author ningyuan 
  * 
  * Jun 26, 2014
@@ -63,6 +68,8 @@ public class BDPLArrayVarProcessor {
 	}
 	
 	private static class ArrayTableCreatorData{
+		
+		int anonymousIndex = 0;
 		
 		private BDPLArrayTable arrayTable = new BDPLArrayTable();
 		
@@ -151,6 +158,8 @@ public class BDPLArrayVarProcessor {
 				throws VisitorException
 		{	
 			if(node.isStaticArrayDecl()){
+				
+				
 				// the 1st child of ASTContext must be ASTVar !!! Pay attention to grammar file
 				String arrayName = ((ASTVar)node.jjtGetChild(0)).getName();
 				
@@ -187,7 +196,7 @@ public class BDPLArrayVarProcessor {
 				throws VisitorException
 		{
 			// ASTDynamicArrayDecl must have one ASTArrayVariable node. !!! Pay attention to grammar file
-			ASTArrayVariable arrayValNode = node.jjtGetChild(ASTArrayVariable.class);
+			ASTArrayVar arrayValNode = node.jjtGetChild(ASTArrayVar.class);
 			BDPLArray array = (BDPLArray)arrayValNode.jjtAccept(this, data);
 			
 			if(arrayValNode.getSize() == null){
@@ -221,7 +230,55 @@ public class BDPLArrayVarProcessor {
 		}
 		
 		@Override
-		public Object visit(ASTArrayVariable node, Object data)
+		public Object visit(ASTExternalFunctionParameterDecl node, Object data)
+				throws VisitorException
+		{
+			
+			BDPLArrayTable table = ((ArrayTableCreatorData)data).getArrayTable();
+			
+			List<ASTStaticArrayDef1> ayArrayNodes = node.jjtGetChildren(ASTStaticArrayDef1.class);
+			
+			StringBuffer arrayName = new StringBuffer();
+			for(ASTStaticArrayDef1 ayArrayNode : ayArrayNodes){
+				
+				
+				BDPLArrayType arrayType = (BDPLArrayType)ayArrayNode.jjtAccept(this, data);
+				
+				// create new array table entry for anonymous static array
+				BDPLArrayTableEntry entry = new BDPLArrayTableEntry();
+				entry.setType(arrayType);
+				entry.setSource(((ASTStaticArrayDef1)ayArrayNode).getSource());
+				
+				arrayName.append("_:");
+				int index = ((ArrayTableCreatorData)data).anonymousIndex;
+				while(table.contain(arrayName.append(index).toString())){
+					arrayName.replace(arrayName.length()-1, arrayName.length(), ":");
+				}
+				((ArrayTableCreatorData)data).anonymousIndex++;
+				
+				try{
+					
+					table.add(arrayName.toString(), entry);
+				}
+				catch(BDPLArrayException ae){
+					throw new VisitorException(ae.getMessage());
+				}
+				
+				ASTArrayVar repNode = new ASTArrayVar(SyntaxTreeBuilderTreeConstants.JJTARRAYVAR);
+				repNode.setName(arrayName.toString());
+				
+				arrayName.delete(0, arrayName.length());
+				
+				node.jjtReplaceChild(ayArrayNode, repNode);
+			}
+			
+			//TODO check array var nodes
+			
+			return data;
+		}
+		
+		@Override
+		public Object visit(ASTArrayVar node, Object data)
 				throws VisitorException
 		{
 			
@@ -307,8 +364,8 @@ public class BDPLArrayVarProcessor {
 		{
 			/*
 			 * 	(1 2 3) AS ?x()
+			 *  (1 2 3) anonymous array _x()
 			 */
-			
 			StringBuffer sourceText = ((ArrayTableCreatorData)data).getSourceText();
 			
 			// between every child node ASTArrayElement should be a ";". Pay attention to grammar file.
@@ -319,6 +376,7 @@ public class BDPLArrayVarProcessor {
 			
 			node.setSource(sourceText.toString());
 			sourceText.delete(0, sourceText.length());
+			
 			
 			return BDPLArrayType.STATIC_EXPLICITE;
 		}

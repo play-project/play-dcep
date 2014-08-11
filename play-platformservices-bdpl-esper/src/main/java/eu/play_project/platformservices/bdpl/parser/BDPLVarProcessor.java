@@ -172,6 +172,9 @@ public class BDPLVarProcessor {
 			return data;
 		}
 		
+		
+		//TODO check variables in array filter
+		
 		/*
 		 * visited nodes
 		 * 

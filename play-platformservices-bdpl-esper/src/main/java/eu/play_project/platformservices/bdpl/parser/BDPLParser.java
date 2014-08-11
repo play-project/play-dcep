@@ -116,7 +116,7 @@ public class BDPLParser implements QueryParser {
 					System.out.println("\nArrayTable: ");
 					for(String key : arrayTable.keySet()){
 						BDPLArrayTableEntry arrayEntry = arrayTable.get(key);
-						System.out.println(key+" "+arrayEntry.getSource());
+						System.out.println(key+"   "+arrayEntry.getSource());
 					}
 				
 				return query;

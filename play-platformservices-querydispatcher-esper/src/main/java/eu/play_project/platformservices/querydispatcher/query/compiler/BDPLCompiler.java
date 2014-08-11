@@ -20,9 +20,8 @@ import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 
 
-
-
 import com.espertech.esper.client.UpdateListener;
+
 
 import eu.play_project.platformservices.bdpl.parser.BDPLArrayVarProcessor;
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
@@ -68,7 +67,7 @@ public class BDPLCompiler {
 			Dataset dataset = DatasetDeclProcessor.process(qc);
 			
 			
-			BDPLSyntaxCheckProcessor.process(qc);
+			String prologText = BDPLSyntaxCheckProcessor.process(qc);
 			
 			BDPLVarTable varTable = BDPLVarProcessor.process(qc);
 				System.out.println("Construct variables: ");
@@ -85,10 +84,9 @@ public class BDPLCompiler {
 				System.out.println("\nArrayTable: ");
 				for(String key : arrayTable.keySet()){
 					BDPLArrayTableEntry arrayEntry = arrayTable.get(key);
-					System.out.println(key+" "+arrayEntry.getSource());
+					System.out.println(key+"   "+arrayEntry.getSource());
 				}
 			
-			String prologText = BDPLSyntaxCheckProcessor.process(qc);
 			
 			EPLTranslationData tData = EPLTranslationProcessor.process(qc, prologText);
 				System.out.println("\nepl:\n"+tData.getEpl());

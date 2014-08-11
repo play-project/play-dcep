@@ -49,4 +49,8 @@ public class BDPLArrayTable {
 	public Set<String> keySet(){
 		return table.keySet();
 	}
+	
+	public boolean contain(String name){
+		return table.containsKey(name);
+	}
 }

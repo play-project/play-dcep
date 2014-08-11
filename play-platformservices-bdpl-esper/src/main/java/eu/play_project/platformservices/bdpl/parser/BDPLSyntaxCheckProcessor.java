@@ -36,6 +36,8 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 
 
 /**
+ * check bdpl specific syntax and parse prolog text
+ * 
  * @author ningyuan 
  * 
  * Jun 30, 2014

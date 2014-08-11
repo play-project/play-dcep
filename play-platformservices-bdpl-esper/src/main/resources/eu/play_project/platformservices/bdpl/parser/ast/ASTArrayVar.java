@@ -1,16 +1,16 @@
 package org.openrdf.query.parser.bdpl.ast;
 
 public 
-class ASTArrayVariable extends SimpleNode {
+class ASTArrayVar extends SimpleNode {
   
   private String name;	
   private String size;
   
-  public ASTArrayVariable(int id) {
+  public ASTArrayVar(int id) {
     super(id);
   }
 
-  public ASTArrayVariable(SyntaxTreeBuilder p, int id) {
+  public ASTArrayVar(SyntaxTreeBuilder p, int id) {
     super(p, id);
   }
   
