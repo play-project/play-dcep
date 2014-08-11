@@ -6,6 +6,7 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,23 +20,23 @@ public class ExFunctionClassLoader extends ClassLoader {
 	
 	private File pathDir;
 	
-	public ExFunctionClassLoader(String path) throws Exception{
+	public ExFunctionClassLoader(String path) throws FileNotFoundException{
 		pathDir = new File(path);
 		
 		if(pathDir == null){
-			throw new Exception("Could not find the path of external functions: "+path);
+			throw new FileNotFoundException("Could not find the path of external functions: "+path);
 		}
 	}
 	
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {  
 		/*	
-		 *  version problem
+		 *  version problem???
 		 * 
 		    if(this.findLoadedClass(name) != null){
-			throw new ClassNotFoundException("Class "+name+" has been loaded before.");
-		}
-		*/
+				throw new ClassNotFoundException("Class "+name+" has been loaded before.");
+			}
+		 */
 		
 		 byte[] classData = getClassData(name);   
          if (classData == null) {  

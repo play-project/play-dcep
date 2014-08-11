@@ -112,7 +112,7 @@ public class BDPLCompiler {
 			
 			
 			//UpdateListener listener = new RealTimeResultBindingListener2(varTable.getRealTimeCommonVars(), listenerQuery, subQueryTable.getEntryToSelf());
-			UpdateListener listener = new RealTimeResultListener(realTimeResults);
+			UpdateListener listener = new RealTimeResultListener(realTimeResults, arrayTable);
 			
 			ret = new DefaultBDPLPreparedQuery(tData.getEpl(), injectParaMapping, tData.getInjectParams(), listener, subQueryTable);
 			

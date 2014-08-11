@@ -25,7 +25,9 @@ public class BDPLArray {
     private int size = -1, length = 0;
     private BDPLArrayElement head, tail;
     
-    /**
+    private int dimension = 0;
+
+	/**
      * Constructor of static BDPL array
      * 
      * @param content
@@ -105,6 +107,14 @@ public class BDPLArray {
     	this.size = size;
     }
     
+    public int getDimension() {
+		return this.dimension;
+	}
+
+	public void setDimension(int dimension) {
+		this.dimension = dimension;
+	}
+	
     public int length(){
     	return length;
     }
@@ -136,6 +146,9 @@ public class BDPLArray {
      * @throws BDPLArrayException
      */
     public void write(String[][] add) throws BDPLArrayException{
+    	if(add.length == 0){
+    		return;
+    	}
     	
     	if(size > -1){
     		try{
@@ -186,6 +199,9 @@ public class BDPLArray {
      * @throws BDPLArrayException
      */
     public void write(String [][][] adds) throws BDPLArrayException{
+    	if(adds.length == 0){
+    		return;
+    	}
     	
     	if(size > -1){
 	    	
@@ -227,8 +243,13 @@ public class BDPLArray {
     }
     
     private static class BDPLArrayElement{
+    	
     	private BDPLArrayElement next = null;
     	
+    	/*
+    	 * content[dimension][0] = label value
+    	 * content[dimension][1] = whole value
+    	 */
     	private String[][] content;
     	
     	public BDPLArrayElement(String[][] content){

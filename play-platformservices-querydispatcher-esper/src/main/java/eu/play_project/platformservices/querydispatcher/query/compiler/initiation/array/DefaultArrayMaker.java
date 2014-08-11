@@ -7,15 +7,6 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.initiati
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
-import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
-import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
-import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
-import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
-import org.openrdf.query.parser.bdpl.ast.ParseException;
-import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
-import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 
 import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
@@ -243,6 +234,10 @@ public class DefaultArrayMaker implements IArrayMaker {
 			content.add(element);
 		}
 		
+		if(dimension == 0){
+			throw new InitiateException("A declared static array is empty. ");
+		}
+		
 		String [][][] sContent = new String[content.size()][][];
 		for(int i = 0; i < content.size(); i++){
 			String [][] sElement = new String[content.get(i).size()][2];
@@ -251,6 +246,8 @@ public class DefaultArrayMaker implements IArrayMaker {
 			sContent[i] = sElement;
 		}
 		ret = new BDPLArray(sContent);
+		ret.setDimension(dimension);
+		
 		return ret;
 	}
 	
@@ -259,33 +256,23 @@ public class DefaultArrayMaker implements IArrayMaker {
 	 */
 	private void make2(BDPLArrayTableEntry entry) throws InitiateException{
 		
-		/*List<String> varNames = null;
-		
-		try{
-			ASTQueryContainer qc = SyntaxTreeBuilder.parseQuery(entry.getSource());
-			StringEscapesProcessor.process(qc);
-			BaseDeclProcessor.process(qc, null);
-			WildcardProjectionProcessor.process(qc);
-			BlankNodeVarProcessor.process(qc);
-			varNames = ArrayElementProcessor.process(qc);
-		}
-		
-		catch (TokenMgrError e) {
-			throw new InitiateException(e.getMessage());
-		}
-		catch(MalformedQueryException e){
-			throw new InitiateException(e.getMessage());
-		}
-		catch (ParseException e) {
-			throw new InitiateException(e.getMessage());
-		}*/
-		
-		
-		
 		ISparqlRepository repo = new TestRepository();
 		repo.start();
 		
-		entry.setArray(new BDPLArray(repo.query(entry.getSource())));
+		String[][][] contents = repo.query(entry.getSource());
+		if(contents == null){
+			throw new InitiateException("A static array could not be initiated by sparql query: "+entry.getSource());
+		}
+		
+		BDPLArray array = new BDPLArray(contents);
+		if(contents.length > 0){
+			array.setDimension(contents[0].length);
+		}
+		else{
+			throw new InitiateException("A static array initiated by sparql query: "+entry.getSource()+" is empty.");
+		}
+		
+		entry.setArray(array);
 		
 		repo.close();
 	}
@@ -301,12 +288,20 @@ public class DefaultArrayMaker implements IArrayMaker {
 		}
 		else{
 			SubQueryTableEntry qEntry = new SubQueryTableEntry();
+			String[] svs = getSelectedVarsOfDynamicArray(entry.getSource());
+			if(svs.length == 0){
+				throw new InitiateException("A synchronized dynamic array selects no variable from this query.");
+			}
+			array.setDimension(svs.length);
 			qEntry.setArray(array);
-			qEntry.setSelectedVars(getSelectedVarsOfDynamicArray(entry.getSource()));
+			qEntry.setSelectedVars(svs);
 			subQueryTable.add(qEntry);
 		}
 	}
 	
+	/*
+	 * @return array of names of selected variables. never be null
+	 */
 	private String[] getSelectedVarsOfDynamicArray(String source){
 		
 		List<String> tempVars = new ArrayList<String>();

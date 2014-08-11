@@ -5,11 +5,12 @@ package eu.play_project.platformservices.querydispatcher.query.simulation;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+
 
 
 import com.espertech.esper.client.Configuration;
@@ -22,15 +23,18 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 
+
+
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionSignature;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionClassLoader;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionInitiator;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExternalFunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionManager;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunction;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionLoadException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionParameterTypeException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionTable;
 
 
 /**
@@ -53,14 +57,13 @@ public class SimMain {
 		int statementCounter = 0;
 		Map<Integer, EPStatementEntry> stmts = new HashMap<Integer, EPStatementEntry>();
 		
-		ExternalFunctionTable fTable = ExternalFunctionTable.getInstance();
-		ExFunctionInitiator.initiate(fTable);
 		
-		ExFunctionClassLoader fLoader = null;
+		ExFunctionManager fManager = ExFunctionManager.getInstance();
+		
 		try {
-			fLoader = new ExFunctionClassLoader("D:/Neo/Materials/Codes/Java/EclipseWorkspace/play-dcep/play-platformservices-querydispatcher-esper/exFunctionLib");
-		} catch (Exception e1) {
-			System.out.println(e1.getMessage());
+			fManager.initiateTable();
+		} catch (ExFunctionParameterTypeException e) {
+			System.out.println(e.getMessage());
 		}
 		
 		BufferedReader bin = new BufferedReader(new InputStreamReader(System.in));
@@ -382,7 +385,7 @@ public class SimMain {
 							}
 						}
 						else if(as[1].equals("-f")){
-							String[][] eFunctions = fTable.list();
+							String[][] eFunctions = fManager.listFunctions();
 							for(int i = 0; i < eFunctions.length; i++){
 								System.out.println(eFunctions[i][0]+"    "+eFunctions[i][1]);
 							}
@@ -398,45 +401,30 @@ public class SimMain {
 					if(as.length > 1){
 						try{
 							if(as[1].equals("-f")){
-								if(fLoader != null){
-									if(as.length > 2){
+								
+								if(as.length > 3){
+									
+									fManager.loadFunction(as[2], as[3]);
 										
-										Class fc = fLoader.loadClass(as[2]);
-										
-										Method[] ms = fc.getDeclaredMethods();
-										
-										for(int i = 0; i < ms.length; i++){
-											ExFunctionSignature ef = new ExFunctionSignature(ms[i].getName(), ms[i].getParameterTypes()); 
-											fTable.putFunctionClass(ef, fc);
-										}
-										
-									}
-									else{
-										System.out.println("[load -f classname]");
-									}
 								}
 								else{
-									System.out.println("[Class loader is not initiated properly.]");
+									System.out.println("[load -f functionname classname]");
 								}
+								
 							}
 						}
-						catch(ClassNotFoundException e){
-							System.out.println("["+e.getMessage()+"]");
-						}
-						catch(SecurityException e){
+						catch(ExFunctionLoadException e){
 							System.out.println("["+e.getMessage()+"]");
 						}
 					}
 					else{
-						System.out.println("[load -f classname]");
+						System.out.println("[load option parameters...]");
 					}
 				}
 				else if(cmd.startsWith("average")){
-					Class fc = fTable.getFunctionClass(new ExFunctionSignature("average", new Class[]{double[].class}));
-					
-					Method m = fc.getMethod("average", double[].class);
-					if(m != null){
-						m.invoke(fc.newInstance(), new double[]{1,2});
+					ExFunction ef = ExFunctionTable.getInstance().getFunction("average");
+					if(ef != null){
+						System.out.println(ef.invoke(new Object[]{new String[][][]{{{"1", "1"}}, {{"2", "2"}}}}));
 					}
 				}
 			}

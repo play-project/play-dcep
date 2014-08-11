@@ -37,17 +37,29 @@ public class TestRepository implements ISparqlRepository{
 	
 	private Repository repo;
 	
+	/**
+	 * 
+	 * @return return null if exceptions are thrown out
+	 * 
+	 * (non-Javadoc)
+	 * @see eu.play_project.platformservices.querydispatcher.query.sparql.ISparqlRepository#query(java.lang.String)
+	 */
 	@Override
 	public String[][][] query(String query) {
 		RepositoryConnection con = null;
 		TupleQueryResult result = null;
 		String[][][] ret = null;
+		
 		try {
 			con = repo.getConnection();
 			
 			TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, query);
 			
 			result = tupleQuery.evaluate();
+			
+			/*
+			 * the sequence of selected variables is kept 
+			 */
 			List<String> names = result.getBindingNames();
 				for(int i = 0; i < names.size(); i++){
 					System.out.println("names: "+names.get(i));
@@ -74,7 +86,7 @@ public class TestRepository implements ISparqlRepository{
 				
 			}
 			
-			ret = new String[temp.size()][][];
+			ret = new String[temp.size()][names.size()][2];
 			for(int i = 0; i < temp.size(); i++){
 				ret[i] = temp.get(i);
 					String [][] s = ret[i];

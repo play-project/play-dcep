@@ -31,7 +31,7 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLConstants;
 
 /**
- * 
+ * Not used
  * 
  * @author ningyuan 
  * 

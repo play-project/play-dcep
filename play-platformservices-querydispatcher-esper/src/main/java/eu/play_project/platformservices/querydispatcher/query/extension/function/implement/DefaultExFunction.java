@@ -11,7 +11,7 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
  */
 public class DefaultExFunction {
 	
-	public double average(double[] data){
+	public double execute(double[] data){
 		double ret = 0;
 		for(int i = 1; i < data.length; i++){
 			data[0] += data[i];
@@ -21,8 +21,7 @@ public class DefaultExFunction {
 			ret = data[0] / data.length;
 		}
 		
-		System.out.println(ret);
-		
 		return ret;
 	}
+
 }

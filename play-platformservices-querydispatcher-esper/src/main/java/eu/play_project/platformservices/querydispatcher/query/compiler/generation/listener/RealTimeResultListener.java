@@ -7,12 +7,11 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.generati
 import java.util.Map;
 
 import com.espertech.esper.client.EventBean;
-import com.espertech.esper.client.EventType;
 import com.espertech.esper.client.UpdateListener;
 
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResults;
-import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
-import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
+
 
 /**
  * @author ningyuan
@@ -22,8 +21,11 @@ public class RealTimeResultListener implements UpdateListener{
 	
 	private final RealTimeResults realTimeResults;
 	
-	public RealTimeResultListener(RealTimeResults realTimeResults){
+	private final BDPLArrayTable arrayTable;
+	
+	public RealTimeResultListener(RealTimeResults realTimeResults, BDPLArrayTable arrayTable){
 		this.realTimeResults = realTimeResults;
+		this.arrayTable = arrayTable;
 	}
 	
 	@Override
