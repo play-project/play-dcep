@@ -21,7 +21,7 @@ public class ExFunction {
 	
 	private final Class[] paraTypes;
 	
-	private final Class retype;
+	private final Class retType;
 	
 	private int[] castTypes;
 	
@@ -30,7 +30,20 @@ public class ExFunction {
 		exfunction = ef;
 		paraTypes = pts;
 		makeCastType(pts);
-		retype = r;
+		retType = r;
+	}
+	
+	public Class getReturnType(){
+		return retType;
+	}
+	
+	/**
+	 * do not change the content of return
+	 * 
+	 * @return
+	 */
+	public Class[] getParameterTypes(){
+		return paraTypes;
 	}
 	
 	/**
@@ -132,6 +145,9 @@ public class ExFunction {
 				}
 				else if(typeName.equals("java.lang.String")){
 					castTypes[i] = ExFunctionParameterCastor.TYPE_STR;
+				}
+				else if(typeName.equals("java.lang.Boolean") || typeName.equals("boolean")){
+					castTypes[i] = ExFunctionParameterCastor.TYPE_BOOLEAN;
 				}
 				else{
 					throw new ExFunctionParameterTypeException("Unsupported parameter type "+typeName);

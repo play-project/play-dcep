@@ -72,6 +72,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 		String [] value = null;
 		List<String[]> element = new ArrayList<String[]>();
 		List<List<String[]>> content = new ArrayList<List<String[]>>();
+		//TODO a^^<> 'b'@en
 		for(int i = 0; i < source.length(); i++){
 			c = source.charAt(i);
 			

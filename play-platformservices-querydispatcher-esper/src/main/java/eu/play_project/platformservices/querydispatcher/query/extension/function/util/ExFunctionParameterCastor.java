@@ -11,7 +11,7 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
  */
 public class ExFunctionParameterCastor {
 	
-	public static final int TYPE_INT = 0, TYPE_DOUBLE = 1, TYPE_STR = 2, 
+	public static final int TYPE_INT = 0, TYPE_DOUBLE = 1, TYPE_BOOLEAN = 2, TYPE_STR = 3, 
 			TYPE_ARRAY_INT = 10, TYPE_ARRAY_DOUBLE = 11, TYPE_ARRAY_STR = 12;
 	
 	public static Object cast(int type, Object o) throws ExFunctionParameterCastException{
@@ -56,6 +56,15 @@ public class ExFunctionParameterCastor {
 				try{
 						//System.out.println("ParameterCastor: cast int");
 					return Integer.valueOf((String)o);
+				}
+				catch(Exception e){
+					throw new ExFunctionParameterCastException(e.getMessage());
+				}
+			}
+			case TYPE_BOOLEAN:{
+				try{
+						//System.out.println("ParameterCastor: cast boolean");
+					return Boolean.valueOf((String)o);
 				}
 				catch(Exception e){
 					throw new ExFunctionParameterCastException(e.getMessage());

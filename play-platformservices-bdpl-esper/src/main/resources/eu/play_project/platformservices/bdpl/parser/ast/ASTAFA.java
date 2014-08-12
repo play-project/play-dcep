@@ -3,13 +3,15 @@
 package org.openrdf.query.parser.bdpl.ast;
 
 public
-class ASTAFA extends SimpleNode {
+class ASTAFA extends SimpleNode implements IArrayFilterExpressionOperatorNode{
 	 private String operator;
 	  
-	  public void setOperator(String s){
-		  operator = s;
+	 @Override
+	  public void setOperator(String o){
+		  operator = o;
 	  }
 	  
+	 @Override
 	  public String getOperator(){
 		  return operator;
 	  }
