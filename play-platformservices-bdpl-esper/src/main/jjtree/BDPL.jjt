@@ -2037,9 +2037,8 @@ void WindowClause():
 {}
 {
 	<WINDOW>
-	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]");} <RBRACE>
+	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]");} (ArrayFilter())* <RBRACE>
 	WindowDecl()
-	((ArrayFilter())*)
     (FilterOrBind())*
 }
 
@@ -2192,8 +2191,8 @@ void ExternalFunctionDecl():
 void ExternalFunctionParameterDecl():
 {}
 {
-	[ (LOOKAHEAD(2) Var() | LOOKAHEAD(2) ArrayVar() | String() | StaticArrayDef1() | PrimitiveValue())]
-	(<COMMA> (LOOKAHEAD(2) Var() | LOOKAHEAD(2) ArrayVar() | String() | StaticArrayDef1() | PrimitiveValue()))*
+	[ (LOOKAHEAD(2) ArrayVar() | Var() |  String() | StaticArrayDef1() | PrimitiveValue())]
+	(<COMMA> (LOOKAHEAD(2) ArrayVar() | Var() | String() | StaticArrayDef1() | PrimitiveValue()))*
 }
 
 void PrimitiveValue():

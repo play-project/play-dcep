@@ -65,7 +65,7 @@ public class ExFunctionManager {
 		
 		if(fm != null){
 			ExFunction ef = new ExFunction(fc.getCanonicalName(), fc, fm.getParameterTypes(), fm.getReturnType());
-			fTable.putFunction("average", ef);
+			fTable.putFunction("http://events.event-processing.org/function/"+"average", ef);
 		}
 	}
 	

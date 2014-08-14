@@ -33,11 +33,11 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	
 	public ExternalFunctionFunctionExpression(String functionName, VariableBinder varBinder) throws ExternalFunctionExpressionEvaluateException{
 		ExFunction ef = ft.getFunction(functionName);
-		if(ef == null){
-			throw new ExternalFunctionExpressionEvaluateException("External function "+functionName+" is not loaded into system");
+		/*if(ef == null){
+			throw new ExternalFunctionExpressionEvaluateException("External function \'"+functionName+"\' is not loaded into system");
 		}
 		
-		valueType = ef.getReturnType();
+		valueType = ef.getReturnType();*/
 		fn = functionName;
 		vb = varBinder;
 	}
@@ -50,13 +50,13 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	public void setParameters(List<String[]> paras) throws ExternalFunctionExpressionEvaluateException{
 		ExFunction ef = ft.getFunction(fn);
 		if(ef == null){
-			throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" is not loaded into system");
+			throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' is not loaded into system");
 		}
 		
 		Class[] efpts = ef.getParameterTypes();
 		
 		if(paras.size() != efpts.length){
-			throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" declared different parameter size as loaded function");
+			throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter size as loaded function");
 		}
 		
 		for(int i = 0; i < efpts.length; i++){
@@ -65,7 +65,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 			
 			if(efpt.isArray()){
 				if(!pt.equalsIgnoreCase(PARA_TYPE_ARRAY)){
-					throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" declared different parameter type as loaded function");
+					throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
 				}
 			}
 			else{
@@ -73,22 +73,22 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 				
 				if(pt.equalsIgnoreCase(PARA_TYPE_INT)){
 					if(!efptn.equals("java.lang.Integer") && !efptn.equals("int")){
-						throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" declared different parameter type as loaded function");
+						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else if(pt.equalsIgnoreCase(PARA_TYPE_DECIMAL)){
 					if(!efptn.equals("java.lang.Double") && !efptn.equals("double")){
-						throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" declared different parameter type as loaded function");
+						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else if(pt.equalsIgnoreCase(PARA_TYPE_BOOLEAN)){
 					if(!efptn.equals("java.lang.Boolean") && !efptn.equals("boolean")){
-						throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" declared different parameter type as loaded function");
+						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else if(pt.equalsIgnoreCase(PARA_TYPE_STR)){
 					if(!efptn.equals("java.lang.String")){
-						throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" declared different parameter type as loaded function");
+						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else{
@@ -107,7 +107,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	public Object getValue() throws ExternalFunctionExpressionEvaluateException{
 		ExFunction ef = ft.getFunction(fn);
 		if(ef == null){
-			throw new ExternalFunctionExpressionEvaluateException("External function "+fn+" is not loaded into system");
+			throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' is not loaded into system");
 		}
 		
 		// paras must not be null. setParameters() must be called before

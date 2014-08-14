@@ -4,6 +4,7 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener;
 
 
+import java.util.List;
 import java.util.Map;
 
 import com.espertech.esper.client.EventBean;
@@ -11,6 +12,8 @@ import com.espertech.esper.client.UpdateListener;
 
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResults;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.ArrayFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionExpressionEvaluateException;
 
 
 /**
@@ -23,9 +26,12 @@ public class RealTimeResultListener implements UpdateListener{
 	
 	private final BDPLArrayTable arrayTable;
 	
-	public RealTimeResultListener(RealTimeResults realTimeResults, BDPLArrayTable arrayTable){
+	private final List<ArrayFilter> arrayFilters;
+	
+	public RealTimeResultListener(RealTimeResults realTimeResults, BDPLArrayTable arrayTable, List<ArrayFilter> arrayFilters){
 		this.realTimeResults = realTimeResults;
 		this.arrayTable = arrayTable;
+		this.arrayFilters = arrayFilters;
 	}
 	
 	@Override
@@ -37,10 +43,23 @@ public class RealTimeResultListener implements UpdateListener{
 			System.out.println("Result "+i+": ");
 			
 			Map<String, String[]> result = realTimeResults.get();
-			for(String key : result.keySet()){
-				System.out.print(key+": "+result.get(key)[0]+"   "+result.get(key)[1]+"   ");
+			
+			if(result != null){
+				for(String key : result.keySet()){
+					System.out.print(key+": "+result.get(key)[0]+"   "+result.get(key)[1]+"   ");
+				}
+					System.out.println();
+					
+				for(ArrayFilter af : arrayFilters){
+					af.setVariableBinding(result);
+					try {
+						System.out.println("ArrayFilter: "+af.evaluate());
+					} catch (ExternalFunctionExpressionEvaluateException e) {
+						e.printStackTrace();
+					}
+				}
+					
 			}
-				System.out.println();
 			
 			/*EventBean eb = newEvents[i];
 			EventType et = eb.getEventType();

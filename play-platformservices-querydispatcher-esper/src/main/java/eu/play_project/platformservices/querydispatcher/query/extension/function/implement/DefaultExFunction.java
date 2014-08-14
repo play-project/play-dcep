@@ -19,6 +19,7 @@ public class DefaultExFunction {
 		
 		if(data.length > 0){
 			ret = data[0] / data.length;
+				System.out.println("DefaultExFunction.execute(): "+data[0]+"/"+data.length+"="+ret);
 		}
 		
 		return ret;

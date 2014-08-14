@@ -15,7 +15,9 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
  *
  */
 public class ExternalFunctionCompoundExpression implements IExternalFunctionExpression {
-	private Class valueType;
+	
+	private static final String OP_EQ = "=", OP_NE = "!=", OP_GT = ">", OP_LT = "<", OP_GE = ">=", OP_LE = "<=",
+			OP_NOT = "!", OP_AND = "&&", OP_OR = "||";
 	
 	private final String operator;
 	
@@ -34,8 +36,169 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 	 */
 	@Override
 	public Object getValue() throws ExternalFunctionExpressionEvaluateException{
-		// TODO Auto-generated method stub
-		return null;
+		
+		
+		IExternalFunctionExpression operand1 = operands.get(0);
+		IExternalFunctionExpression operand2 = null;
+			
+		Class ret1 = operand1.getValueType();
+		Class ret2 = null;
+		
+		if(operands.size() > 1){
+			operand2 = operands.get(1);
+			ret2 = operand2.getValueType();
+		}
+		
+		Class retType = getOperandsType(ret1, ret2);
+		
+		Object value1 = operand1.getValue();
+		Object value2 = null;
+		
+		if(operands.size() > 1){
+			value2 = operand2.getValue();
+		}
+		
+		
+		try{
+			if(operator.equals(OP_EQ)){
+				if(retType == null){
+					//TODO not use null type
+					return value1.equals(value2);
+				}
+				else{
+					return retType.cast(value1).equals(retType.cast(value2));
+				}
+			}
+			else if(operator.equals(OP_NE)){
+				if(retType == null){
+					//TODO not use null type
+					return value1.equals(value2);
+				}
+				else{
+					
+					return !retType.cast(value1).equals(retType.cast(value2));
+					
+				}	
+			}
+			else if(operator.equals(OP_GT)){
+				if(retType == null){
+					//TODO
+					return false;
+				}	
+				else{
+					if(retType.getCanonicalName().equals("java.lang.Integer")){
+						return ((int)value1 > (int)value2);
+					}
+					else if(retType.getCanonicalName().equals("java.lang.Double")){
+						return ((double)value1 > (double)value2);
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression "+retType);
+					}
+				}
+			}
+			else if(operator.equals(OP_LT)){
+				if(retType == null){
+					//TODO
+					return false;
+				}
+				else{
+					if(retType.getCanonicalName().equals("java.lang.Integer")){
+						return ((int)value1 < (int)value2);
+					}
+					else if(retType.getCanonicalName().equals("java.lang.Double")){
+						return ((double)value1 < (double)value2);
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+					}	
+				}
+			}
+			else if(operator.equals(OP_GE)){
+				if(retType == null){
+					//TODO
+					return false;
+				}
+				else{
+					if(retType.getCanonicalName().equals("java.lang.Integer")){
+						return ((int)value1 >= (int)value2);
+					}
+					else if(retType.getCanonicalName().equals("java.lang.Double")){
+						return ((double)value1 >= (double)value2);
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+					}
+				}
+			}
+			else if(operator.equals(OP_LE)){
+				if(retType == null){
+					//TODO
+					return false;
+				}
+				else{
+					if(retType.getCanonicalName().equals("java.lang.Integer")){
+						return ((int)value1 <= (int)value2);
+					}
+					else if(retType.getCanonicalName().equals("java.lang.Double")){
+						return ((double)value1 <= (double)value2);
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+					}	
+				}
+			}
+			else if(operator.equals(OP_NOT)){
+				if(retType == null){
+					//TODO
+					return false;
+				}
+				else{
+					if(retType.getCanonicalName().equals("java.lang.Boolean")){
+						return (!(boolean)value1);
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+					}	
+				}
+			}
+			else if(operator.equals(OP_AND)){
+				if(retType == null){
+					//TODO
+					return false;
+				}
+				else{
+					if(retType.getCanonicalName().equals("java.lang.Boolean")){
+						return ((boolean)value1 && (boolean)value2);
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+					}	
+				}
+			}
+			else if(operator.equals(OP_OR)){
+				if(retType == null){
+					//TODO
+					return false;
+				}
+				else{
+					if(retType.getCanonicalName().equals("java.lang.Boolean")){
+						return ((boolean)value1 || (boolean)value2);
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+					}	
+				}
+			}
+			else{
+				throw new ExternalFunctionExpressionEvaluateException("Not supported operator "+operator+" in external function expression");	
+			}
+		}
+		catch(ClassCastException e){
+			e.printStackTrace();
+			throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -44,8 +207,39 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 	@Override
 	public Class getValueType() {
 		
-		return valueType;
+		return Boolean.class;
 	
 	}
-
+	
+	private Class getOperandsType(Class t1, Class t2) throws ExternalFunctionExpressionEvaluateException{
+		if(t1 != null){
+			String ts1 = t1.getCanonicalName();
+			if(t2 != null){
+				String ts2 = t2.getCanonicalName();
+				if(ts1.equals(ts2)){
+					return t1;
+				}
+				else{
+					if((ts1.equals("java.lang.Double") && ts2.equals("java.lang.Integer")) || (ts1.equals("java.lang.Integer") && ts2.equals("java.lang.Double"))){
+						return Double.class;
+					}
+					else{
+						throw new ExternalFunctionExpressionEvaluateException("Different operand types during evaluating external function expression");
+					}
+				}
+			}
+			else{
+				return t1;
+			}
+		}
+		else{
+			
+			if(t2 != null){
+				return t2;
+			}
+			else{
+				return null;
+			}
+		}
+	}
 }

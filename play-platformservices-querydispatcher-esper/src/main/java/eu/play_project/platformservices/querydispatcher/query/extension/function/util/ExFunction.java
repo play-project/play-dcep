@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * external function represented in program
+ * 
  * @author ningyuan 
  * 
  * Aug 8, 2014
@@ -28,9 +30,13 @@ public class ExFunction {
 	public ExFunction(String cn, Class ef, Class[] pts, Class r) throws ExFunctionParameterTypeException{
 		className = cn;
 		exfunction = ef;
-		paraTypes = pts;
+		
 		makeCastType(pts);
-		retType = r;
+		
+		paraTypes = pts;
+		
+		retType = makeReturnType(r);
+		
 	}
 	
 	public Class getReturnType(){
@@ -47,10 +53,12 @@ public class ExFunction {
 	}
 	
 	/**
+	 * invoke the actual function with parameters. If parameter is array, please input a String[length][dimension][2],
+	 * if parameter is simple variable, please input a String
 	 * 
 	 * 
-	 * @param parameters parameters from bdpl query. pass String[][][] if it is an array
-	 * 		  pass String if it is an simple variable (must not be null)
+	 * @param parameters parameters from bdpl query. pass a String[][][] if it is an array
+	 * 		  pass a String if it is an simple variable (must not be null)
 	 * 
 	 * @return
 	 * @throws ExFunctionInvocationException
@@ -88,6 +96,12 @@ public class ExFunction {
 	
 	}
 	
+	/**
+	 * check whether two parameter types are identical
+	 * 
+	 * @param pts
+	 * @return
+	 */
 	public boolean compareParameterTypes(Class[] pts){
 		if(paraTypes.length == pts.length){
 			for(int i = 0; i < paraTypes.length; i++){
@@ -106,6 +120,10 @@ public class ExFunction {
 		return className;
 	}
 	
+	/*
+	 * change parameter types to casting types.
+	 * allowd parameter types are: int, double, String
+	 */
 	private void makeCastType(Class[] pts) throws ExFunctionParameterTypeException{
 		castTypes = new int[pts.length];
 		
@@ -152,6 +170,33 @@ public class ExFunction {
 				else{
 					throw new ExFunctionParameterTypeException("Unsupported parameter type "+typeName);
 				}
+			}
+		}
+	}
+	
+	private Class makeReturnType(Class r) throws ExFunctionParameterTypeException{
+		if(r.isPrimitive()){
+			String retName = r.getCanonicalName();
+			
+			if(retName.equals("java.lang.Double") || retName.equals("double")){
+				return Double.class;
+			}
+			else if(retName.equals("java.lang.Integer") || retName.equals("int")){
+				return Integer.class;
+			}
+			else if(retName.equals("java.lang.Boolean") || retName.equals("boolean")){
+				return Boolean.class;
+			}
+			else{
+				throw new ExFunctionParameterTypeException("Unsupported return type "+retName);
+			}
+		}
+		else{
+			if(r.getCanonicalName().equals("java.lang.String")){
+				return String.class;
+			}
+			else{
+				throw new ExFunctionParameterTypeException("Unsupported return type "+r);
 			}
 		}
 	}

@@ -33,21 +33,21 @@ public class ArrayFilter {
 	}
 	
 	public void setVariableBinding(Map<String, String[]> binding){
-		vb.setVars(binding);
+		vb.bindVariableValues(binding);
 	}
 	
 	public boolean evaluate() throws ExternalFunctionExpressionEvaluateException {
-		Object ret = exp.getValue();
 		
-		if(ret != null && ret instanceof Boolean){
-			return (Boolean) ret;
-		}
-		else{
-			throw new ExternalFunctionExpressionEvaluateException("External function expression is not evaluated as boolean value");
-		}
+		return (boolean)exp.getValue();
 	}
 	
-	void setExpression(IExternalFunctionExpression expression){
+	void setExpression(IExternalFunctionExpression expression) throws ExternalFunctionExpressionEvaluateException{
+		Class ret = expression.getValueType();
+		
+		if(!ret.getCanonicalName().equals("java.lang.Boolean")){
+			throw new ExternalFunctionExpressionEvaluateException("Array filter is not evaluated as boolean value but "+ret.getCanonicalName());
+		}
+		
 		exp = expression;
 	}
 }

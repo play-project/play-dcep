@@ -29,6 +29,8 @@ import org.openrdf.query.parser.bdpl.ast.ASTStaticArrayDef2;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
 import org.openrdf.query.parser.bdpl.ast.IArrayDecl;
 import org.openrdf.query.parser.bdpl.ast.Node;
+import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
+import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderConstants;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
@@ -265,7 +267,11 @@ public class BDPLArrayVarProcessor {
 				}
 				
 				ASTArrayVar repNode = new ASTArrayVar(SyntaxTreeBuilderTreeConstants.JJTARRAYVAR);
+				ASTVar varNode = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
+				varNode.setName(arrayName.toString());
+				repNode.jjtInsertChild(varNode, 0);
 				repNode.setName(arrayName.toString());
+				
 				
 				arrayName.delete(0, arrayName.length());
 				
@@ -390,7 +396,7 @@ public class BDPLArrayVarProcessor {
 			for(Node child : node.jjtGetChildren()){
 				if(child instanceof ASTRDFLiteral){
 					ASTRDFLiteral rdfLiteral = (ASTRDFLiteral)child;
-					sourceText.append(rdfLiteral.getLabel().getValue());
+					sourceText.append("\""+rdfLiteral.getLabel().getValue()+"\"");
 					if(rdfLiteral.getLang() != null){
 						sourceText.append(rdfLiteral.getLang()+" ");
 					}
@@ -403,7 +409,7 @@ public class BDPLArrayVarProcessor {
 				}
 				else if(child instanceof ASTNumericLiteral){
 					ASTNumericLiteral numLiteral = (ASTNumericLiteral)child;
-					sourceText.append(numLiteral.getValue());
+					sourceText.append("\""+numLiteral.getValue()+"\"");
 					if(numLiteral.getDatatype() != null){
 						sourceText.append("^^"+numLiteral.getDatatype()+" ");
 					}

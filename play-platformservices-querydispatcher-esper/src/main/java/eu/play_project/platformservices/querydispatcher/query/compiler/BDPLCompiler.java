@@ -3,11 +3,15 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.openrdf.query.Dataset;
 import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.parser.ParsedQuery;
 import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
 import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
 import org.openrdf.query.parser.bdpl.DatasetDeclProcessor;
@@ -20,7 +24,15 @@ import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 
 
+
+
+
+
 import com.espertech.esper.client.UpdateListener;
+
+
+
+
 
 
 import eu.play_project.platformservices.bdpl.parser.BDPLArrayVarProcessor;
@@ -39,12 +51,15 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.initiatio
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.DefaultArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.ExternalFunctionProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslationProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslationData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionManager;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionParameterTypeException;
 
 /**
  * @author ningyuan 
@@ -87,13 +102,13 @@ public class BDPLCompiler {
 					System.out.println(key+"   "+arrayEntry.getSource());
 				}
 			
-			
+			ExternalFunctionProcessor.process(qc, arrayTable);
+				
 			EPLTranslationData tData = EPLTranslationProcessor.process(qc, prologText);
 				System.out.println("\nepl:\n"+tData.getEpl());
 			
 			//String listenerQuery = EPLListenerProcessor.process(qc, prologText);
 				//System.out.println("\nListener query:\n"+listenerQuery);
-			
 				
 				
 			ArrayInitiator arrayInitiator = new ArrayInitiator(new DefaultArrayMaker());
@@ -110,7 +125,7 @@ public class BDPLCompiler {
 			
 			
 			//UpdateListener listener = new RealTimeResultBindingListener2(varTable.getRealTimeCommonVars(), listenerQuery, subQueryTable.getEntryToSelf());
-			UpdateListener listener = new RealTimeResultListener(realTimeResults, arrayTable);
+			UpdateListener listener = new RealTimeResultListener(realTimeResults, arrayTable, tData.getArrayFilters());
 			
 			ret = new DefaultBDPLPreparedQuery(tData.getEpl(), injectParaMapping, tData.getInjectParams(), listener, subQueryTable);
 			
@@ -131,5 +146,50 @@ public class BDPLCompiler {
 		return ret; 
 	}
 		
-	
+	public static void main(String[] args) throws IOException{
+		ExFunctionManager fManager = ExFunctionManager.getInstance();
+		
+		try {
+			fManager.initiateTable();
+		} catch (ExFunctionParameterTypeException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		System.out.println("Your BDPL query:");
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+		StringBuilder buf = new StringBuilder();
+		String line = null;
+		
+		int emptyLineCount = 0;
+		while ((line = in.readLine()) != null) {
+			if (line.length() > 0) {
+				emptyLineCount = 0;
+				buf.append(' ').append(line).append('\n');
+			}
+			else {
+				emptyLineCount++;
+			}
+
+			if (emptyLineCount == 2) {
+				emptyLineCount = 0;
+				String queryStr = buf.toString().trim();
+				if (queryStr.length() > 0) {
+					try {
+						
+						BDPLCompiler.compile(queryStr, null);
+						
+						System.out.println();
+
+					}
+					catch (Exception e) {
+						System.err.println(e.getMessage());
+						e.printStackTrace();
+					}
+				}
+				buf.setLength(0);
+			}
+		}
+	}
 }

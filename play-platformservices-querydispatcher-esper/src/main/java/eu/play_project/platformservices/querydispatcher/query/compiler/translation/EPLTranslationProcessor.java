@@ -23,6 +23,7 @@ import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
 import org.openrdf.query.parser.bdpl.TupleExprBuilder;
 import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
 import org.openrdf.query.parser.bdpl.ast.ASTA;
+import org.openrdf.query.parser.bdpl.ast.ASTArrayFilter;
 import org.openrdf.query.parser.bdpl.ast.ASTB;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
@@ -52,6 +53,7 @@ import org.openrdf.query.MalformedQueryException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.ArrayFilter;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateUtil;
@@ -84,7 +86,7 @@ public class EPLTranslationProcessor {
 		try {
 			qc.jjtAccept(translator, data);
 			
-			EPLTranslationData ret = new EPLTranslationData(translator.epl, translator.injectParams);
+			EPLTranslationData ret = new EPLTranslationData(translator.epl, translator.injectParams, translator.arrayFilters);
 			
 			return ret;
 			
@@ -145,6 +147,8 @@ public class EPLTranslationProcessor {
 		String epl = null;
 		
 		List<Integer> injectParams = new ArrayList<Integer>();
+		
+		List<ArrayFilter> arrayFilters = new ArrayList<ArrayFilter>();
 		
 		//List<String> matchedPatternSparql = new ArrayList<String>();
 		
@@ -216,6 +220,12 @@ public class EPLTranslationProcessor {
 			
 			try{
 				epl = getEPL(ret, (EPLTranslatorData)data);
+				
+				List<ASTArrayFilter> afs = node.jjtGetChildren(ASTArrayFilter.class);
+				for(ASTArrayFilter af : afs){
+					arrayFilters.add((ArrayFilter)af.getFilterObject());
+				}
+				
 			}catch (EPLTranslateException e) {
 				throw new VisitorException(e.getMessage());
 			}
@@ -233,7 +243,9 @@ public class EPLTranslationProcessor {
 				if(child instanceof ASTEventPattern){
 					ret = (OrClause)child.jjtAccept(this, data);
 				}
-				//TODO filter
+				else if(child instanceof ASTArrayFilter){
+					arrayFilters.add((ArrayFilter)((ASTArrayFilter)child).getFilterObject());
+				}
 				else{
 					child.jjtAccept(this, data);
 				}

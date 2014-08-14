@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTAFA;
 import org.openrdf.query.parser.bdpl.ast.ASTAFB;
@@ -20,6 +21,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTExternalFunctionDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTExternalFunctionParameterDecl;
+import org.openrdf.query.parser.bdpl.ast.ASTIRI;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTPrimitiveValue;
@@ -29,6 +31,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTSubBDPLQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
 import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
+
 
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
@@ -149,8 +152,13 @@ public class ExternalFunctionProcessor {
 			ArrayFilter arrayFilter = new ArrayFilter(((ExternalFunctionProcessorData)data).getVarBinder());
 			// pay attension to grammar file
 			ASTArrayFilterExpression expNode = node.jjtGetChild(ASTArrayFilterExpression.class);
-			arrayFilter.setExpression((IExternalFunctionExpression)expNode.jjtAccept(this, data));
+			try {
+				arrayFilter.setExpression((IExternalFunctionExpression)expNode.jjtAccept(this, data));
+			} catch (ExternalFunctionExpressionEvaluateException e) {
+				throw new VisitorException(e.getMessage());
+			}
 			
+			// ASTArrayFilter.setFilterObject() must be called
 			node.setFilterOjbect(arrayFilter);
 			
 			return data;
@@ -256,9 +264,10 @@ public class ExternalFunctionProcessor {
 				throws VisitorException
 		{	
 			// pay attension to grammar file
-			ASTQName fName = node.jjtGetChild(ASTQName.class);
+			ASTIRI fName = node.jjtGetChild(ASTIRI.class);
 			if(fName != null){
 				ExternalFunctionFunctionExpression exp;
+				
 				try {
 					exp = new ExternalFunctionFunctionExpression(fName.getValue(), ((ExternalFunctionProcessorData)data).getVarBinder());
 				} catch (ExternalFunctionExpressionEvaluateException e) {
@@ -313,10 +322,12 @@ public class ExternalFunctionProcessor {
 					if(t.equalsIgnoreCase(ExternalFunctionFunctionExpression.PARA_TYPE_INT)){
 						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_INT;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
+							System.out.println(p[1]);
 					}
 					else if(t.equalsIgnoreCase(ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL)){
 						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
+							System.out.println(p[1]);
 					}
 					else if(t.equalsIgnoreCase(ExternalFunctionFunctionExpression.PARA_TYPE_BOOLEAN)){
 						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_BOOLEAN;

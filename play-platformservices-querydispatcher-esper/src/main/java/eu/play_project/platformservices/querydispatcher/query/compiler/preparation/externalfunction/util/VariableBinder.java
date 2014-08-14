@@ -24,7 +24,12 @@ public class VariableBinder {
 		arrayVars = arrayTable;
 	}
 	
-	public void setVars(Map<String, String[]> vars) {
+	/**
+	 * set variable values for evaluating
+	 * 
+	 * @param vars
+	 */
+	public void bindVariableValues(Map<String, String[]> vars) {
 		this.vars = vars;
 	}
 	
