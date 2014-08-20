@@ -14,21 +14,28 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionCompoundExpression implements IExternalFunctionExpression {
+public class ExternalFunctionCompoundExpression implements IExternalFunctionExpression<VariableBinder> {
 	
 	private static final String OP_EQ = "=", OP_NE = "!=", OP_GT = ">", OP_LT = "<", OP_GE = ">=", OP_LE = "<=",
 			OP_NOT = "!", OP_AND = "&&", OP_OR = "||";
 	
 	private final String operator;
 	
-	private List<IExternalFunctionExpression> operands = new ArrayList<IExternalFunctionExpression>();
+	private List<IExternalFunctionExpression<VariableBinder>> operands = new ArrayList<IExternalFunctionExpression<VariableBinder>>();
 	
 	public ExternalFunctionCompoundExpression(String o){
 		operator = o;
 	}
 	
-	public void addOperand(IExternalFunctionExpression op){
+	public void addOperand(IExternalFunctionExpression<VariableBinder> op){
 		operands.add(op);
+	}
+	
+	@Override
+	public void setDataObject(VariableBinder data) {
+		for(IExternalFunctionExpression<VariableBinder> operand : operands){
+			operand.setDataObject(data);
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -38,8 +45,8 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 	public Object getValue() throws ExternalFunctionExpressionEvaluateException{
 		
 		
-		IExternalFunctionExpression operand1 = operands.get(0);
-		IExternalFunctionExpression operand2 = null;
+		IExternalFunctionExpression<VariableBinder> operand1 = operands.get(0);
+		IExternalFunctionExpression<VariableBinder> operand2 = null;
 			
 		Class ret1 = operand1.getValueType();
 		Class ret2 = null;
@@ -87,10 +94,10 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 				}	
 				else{
 					if(retType.getCanonicalName().equals("java.lang.Integer")){
-						return ((int)value1 > (int)value2);
+						return (Integer.valueOf(value1.toString()) > Integer.valueOf(value2.toString()));
 					}
 					else if(retType.getCanonicalName().equals("java.lang.Double")){
-						return ((double)value1 > (double)value2);
+						return (Double.valueOf(value1.toString()) > Double.valueOf(value2.toString()));
 					}
 					else{
 						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression "+retType);
@@ -104,10 +111,10 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 				}
 				else{
 					if(retType.getCanonicalName().equals("java.lang.Integer")){
-						return ((int)value1 < (int)value2);
+						return (Integer.valueOf(value1.toString()) < Integer.valueOf(value2.toString()));
 					}
 					else if(retType.getCanonicalName().equals("java.lang.Double")){
-						return ((double)value1 < (double)value2);
+						return (Double.valueOf(value1.toString()) < Double.valueOf(value2.toString()));
 					}
 					else{
 						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
@@ -121,10 +128,10 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 				}
 				else{
 					if(retType.getCanonicalName().equals("java.lang.Integer")){
-						return ((int)value1 >= (int)value2);
+						return (Integer.valueOf(value1.toString()) >= Integer.valueOf(value2.toString()));
 					}
 					else if(retType.getCanonicalName().equals("java.lang.Double")){
-						return ((double)value1 >= (double)value2);
+						return (Double.valueOf(value1.toString()) >= Double.valueOf(value2.toString()));
 					}
 					else{
 						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
@@ -138,10 +145,10 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 				}
 				else{
 					if(retType.getCanonicalName().equals("java.lang.Integer")){
-						return ((int)value1 <= (int)value2);
+						return (Integer.valueOf(value1.toString()) <= Integer.valueOf(value2.toString()));
 					}
 					else if(retType.getCanonicalName().equals("java.lang.Double")){
-						return ((double)value1 <= (double)value2);
+						return (Double.valueOf(value1.toString()) <= Double.valueOf(value2.toString()));
 					}
 					else{
 						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");

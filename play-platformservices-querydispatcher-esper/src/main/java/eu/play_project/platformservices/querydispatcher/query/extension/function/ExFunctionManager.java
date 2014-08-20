@@ -187,12 +187,10 @@ public class ExFunctionManager {
 					if(c == '('){
 						state = 2;
 					}
-					else if(Character.isLetter(c) || Character.isDigit(c)){
+					else {
 						fn.append(c);
 					}
-					else{
-						throw new ExFunctionLoadException("Bad format of function declaration");
-					}
+					
 					break;
 				}
 				// in parameter types

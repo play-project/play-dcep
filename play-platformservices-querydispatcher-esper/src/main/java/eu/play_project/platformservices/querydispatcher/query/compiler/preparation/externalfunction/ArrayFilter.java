@@ -26,28 +26,32 @@ public class ArrayFilter {
 	/*
 	 * the expression of array filter
 	 */
-	private IExternalFunctionExpression exp;
+	private final IExternalFunctionExpression<VariableBinder> exp;
 	
-	public ArrayFilter(VariableBinder variableBinder){
+	public ArrayFilter(VariableBinder variableBinder, IExternalFunctionExpression<VariableBinder> expression) throws ExternalFunctionExpressionEvaluateException{
 		vb = variableBinder;
+		
+		Class ret = expression.getValueType();
+		if(ret != null && !ret.getCanonicalName().equals("java.lang.Boolean")){
+			throw new ExternalFunctionExpressionEvaluateException("Array filter is not evaluated as boolean value but "+ret.getCanonicalName());
+		}
+		exp = expression;
+		exp.setDataObject(vb);
 	}
 	
+	/**
+	 * provides a variable binding for evaluating filter expression
+	 * 
+	 * @param binding
+	 */
 	public void setVariableBinding(Map<String, String[]> binding){
 		vb.bindVariableValues(binding);
 	}
 	
+	
 	public boolean evaluate() throws ExternalFunctionExpressionEvaluateException {
 		
-		return (boolean)exp.getValue();
+		return Boolean.valueOf(exp.getValue().toString());
 	}
 	
-	void setExpression(IExternalFunctionExpression expression) throws ExternalFunctionExpressionEvaluateException{
-		Class ret = expression.getValueType();
-		
-		if(!ret.getCanonicalName().equals("java.lang.Boolean")){
-			throw new ExternalFunctionExpressionEvaluateException("Array filter is not evaluated as boolean value but "+ret.getCanonicalName());
-		}
-		
-		exp = expression;
-	}
 }

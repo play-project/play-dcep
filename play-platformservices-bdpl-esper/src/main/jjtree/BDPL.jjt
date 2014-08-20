@@ -1925,6 +1925,8 @@ void Modify() :
 }
 
 // ningyuan added
+
+// not used
 void SubBDPLQuery() : // sub BDPL does not accept sub bdpl query
 {}
 {
@@ -1978,6 +1980,7 @@ void DynamicArrayDef1() :
 	[<CHECKED> {jjtThis.setChecked(true);}] ( Var() )+ 
 }
 
+// not used
 void DynamicArrayDef2() : 
 {}
 {
@@ -2121,7 +2124,7 @@ void EventGraphPattern():
 {}	
 {
 	( [TriplesBlock()] 
-	  ((OptionalGraphPattern() | GroupOrUnionGraphPattern() | Filter()) [<DOT>] [TriplesBlock()])* 
+	  ((OptionalGraphPattern() | GroupOrUnionGraphPattern() | Filter() | ArrayFilter()) [<DOT>] [TriplesBlock()])* 
 	) 
 }
 

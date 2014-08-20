@@ -11,17 +11,25 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionVarExpression implements IExternalFunctionExpression {
+public class ExternalFunctionVarExpression implements IExternalFunctionExpression<VariableBinder> {
 	
 	private final String vn;
 	
-	private final VariableBinder vb;
+	private VariableBinder vb;
 	
-	public ExternalFunctionVarExpression(String varName, VariableBinder variableBinder){
+	public ExternalFunctionVarExpression(String varName){
 		vn = varName;
-		vb = variableBinder;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression#setDataObject(java.lang.Object)
+	 */
+	@Override
+	public void setDataObject(VariableBinder data) {
+		vb = data;
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression#getValue()
 	 */
@@ -41,8 +49,10 @@ public class ExternalFunctionVarExpression implements IExternalFunctionExpressio
 	 */
 	@Override
 	public Class getValueType() {
+		/*
+		 * var expression's return type is null, because the type of var could not be determined at compile time
+		 */
 		return null;
 	}
-
 
 }

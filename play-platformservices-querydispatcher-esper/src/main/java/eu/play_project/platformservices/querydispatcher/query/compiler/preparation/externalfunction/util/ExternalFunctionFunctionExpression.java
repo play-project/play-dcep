@@ -16,7 +16,7 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionFunctionExpression implements IExternalFunctionExpression {
+public class ExternalFunctionFunctionExpression implements IExternalFunctionExpression<VariableBinder> {
 	
 	public static final String PARA_TYPE_INT = "int", PARA_TYPE_DECIMAL = "decimal", PARA_TYPE_BOOLEAN = "boolean", 
 			PARA_TYPE_STR = "str", PARA_TYPE_VAR = "var", PARA_TYPE_ARRAY = "array";
@@ -25,21 +25,25 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	
 	private final String fn;
 	
-	private final VariableBinder vb;
+	private VariableBinder vb;
 	
 	private final ExFunctionTable ft = ExFunctionTable.getInstance();
 	
 	private List<String[]> paras;
 	
-	public ExternalFunctionFunctionExpression(String functionName, VariableBinder varBinder) throws ExternalFunctionExpressionEvaluateException{
+	public ExternalFunctionFunctionExpression(String functionName) throws ExternalFunctionExpressionEvaluateException{
 		ExFunction ef = ft.getFunction(functionName);
-		/*if(ef == null){
+		if(ef == null){
 			throw new ExternalFunctionExpressionEvaluateException("External function \'"+functionName+"\' is not loaded into system");
 		}
 		
-		valueType = ef.getReturnType();*/
+		valueType = ef.getReturnType();
 		fn = functionName;
-		vb = varBinder;
+	}
+	
+	@Override
+	public void setDataObject(VariableBinder data) {
+		vb = data;
 	}
 	
 	/**
@@ -156,6 +160,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	public Class getValueType() {
 		return valueType;
 	}
+
 
 
 }

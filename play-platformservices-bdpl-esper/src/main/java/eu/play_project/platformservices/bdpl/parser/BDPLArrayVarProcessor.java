@@ -29,8 +29,6 @@ import org.openrdf.query.parser.bdpl.ast.ASTStaticArrayDef2;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
 import org.openrdf.query.parser.bdpl.ast.IArrayDecl;
 import org.openrdf.query.parser.bdpl.ast.Node;
-import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
-import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderConstants;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
@@ -54,9 +52,9 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
  */
 public class BDPLArrayVarProcessor {
 	
-	public static BDPLArrayTable process(ASTOperationContainer qc, BDPLVarTable varTable)
+	public static BDPLArrayTable process(ASTOperationContainer qc, BDPLVarTable varTable, String prologText)
 			throws MalformedQueryException{
-		ArrayTableCreator atCreator = new ArrayTableCreator();
+		ArrayTableCreator atCreator = new ArrayTableCreator(prologText);
 		
 		ArrayTableCreatorData data = new ArrayTableCreatorData(varTable.getRealTimeCommonVars());
 		
@@ -65,6 +63,7 @@ public class BDPLArrayVarProcessor {
 			return data.getArrayTable();
 			
 		} catch (VisitorException e) {
+			
 			throw new MalformedQueryException(e.getMessage());
 		}
 	}
@@ -100,6 +99,12 @@ public class BDPLArrayVarProcessor {
 	} 
 	
 	private static class ArrayTableCreator extends ASTVisitorBase {
+		
+		private String prologText;
+		
+		public ArrayTableCreator(String p){
+			prologText = p;
+		}
 		
 		/*
 		 * skipped nodes
@@ -454,7 +459,7 @@ public class BDPLArrayVarProcessor {
 				sourceText.append(token.image+" ");
 			}
 			
-			node.setSource(sourceText.toString());
+			node.setSource(prologText+" "+sourceText.toString());
 			sourceText.delete(0, sourceText.length());
 			
 			return BDPLArrayType.STATIC_QUERY;

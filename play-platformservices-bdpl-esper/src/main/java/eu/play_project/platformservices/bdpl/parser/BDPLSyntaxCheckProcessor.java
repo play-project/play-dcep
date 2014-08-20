@@ -18,12 +18,16 @@ import org.openrdf.query.parser.bdpl.PrefixDeclProcessor;
 import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
 import org.openrdf.query.parser.bdpl.TupleExprBuilder;
 import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
+import org.openrdf.query.parser.bdpl.ast.ASTArrayFilter;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
+import org.openrdf.query.parser.bdpl.ast.ASTEventGraphPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
+import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.ParseException;
+import org.openrdf.query.parser.bdpl.ast.SimpleNode;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
@@ -57,6 +61,7 @@ public class BDPLSyntaxCheckProcessor {
 			return ((BDPLSyntaxCheckerData)data).getPrologText().toString();
 			
 		} catch (VisitorException e) {
+			e.printStackTrace();
 			throw new MalformedQueryException(e.getMessage());
 		}
 	}
@@ -147,19 +152,19 @@ public class BDPLSyntaxCheckProcessor {
 			return data;
 		}
 		
-		@Override
+		/*@Override
 		public Object visit(ASTEventClause node, Object data)
 				throws VisitorException
 		{
 			
-			/*
+			
 			 * visit child nodes
-			 */
+			 
 			super.visit(node, data);
 			
-			/*
-			 * Get the sparql text of this event !!! pay attention to the grammar  
-			 */
+			
+			  Get the sparql text of this event !!! pay attention to the grammar  
+			 
 			StringBuffer prologText = ((BDPLSyntaxCheckerData)data).getPrologText();
 			StringBuffer eventClauseText = ((BDPLSyntaxCheckerData)data).getEventClauseText();
 			Token token = node.jjtGetFirstToken();
@@ -167,6 +172,7 @@ public class BDPLSyntaxCheckProcessor {
 				token = token.next;
 			}
 			for(; token != node.jjtGetLastToken(); token = token.next){
+				
 				eventClauseText.append(token.image+" ");
 			}
 			// last token must be }
@@ -180,7 +186,87 @@ public class BDPLSyntaxCheckProcessor {
 			}
 			
 			return data;
+		}*/
+		
+		@Override
+		public Object visit(ASTEventGraphPattern node, Object data)
+				throws VisitorException
+		{
+			StringBuffer prologText = ((BDPLSyntaxCheckerData)data).getPrologText();
+			StringBuffer eventClauseText = ((BDPLSyntaxCheckerData)data).getEventClauseText();
+			Token token = node.jjtGetFirstToken();
+			
+			int state = 0, parath = 0;
+			for(; token != node.jjtGetLastToken(); token = token.next){
+				switch(state){
+					// before array filter
+					case 0:{
+						if(token.image.equalsIgnoreCase("arrayfilter")){
+							state = 1;
+						}
+						else{
+							eventClauseText.append(token.image+" ");
+						}
+						break;
+					}
+					// in array filter
+					case 1:{
+						if(token.image.equalsIgnoreCase("(")){
+							parath++;
+						}
+						else if(token.image.equalsIgnoreCase(")")){
+							if(parath > 0){
+								parath--;
+							}
+							else{
+								throw new VisitorException("TODO");
+							}
+							
+							if(parath == 0){
+								state = 2;
+							}
+						}
+			
+						break;
+					}
+					// after array filter
+					case 2:{
+						if(token.image.equalsIgnoreCase(" ") || token.image.equalsIgnoreCase("\n") || token.image.equalsIgnoreCase("\r") 
+								|| token.image.equalsIgnoreCase("\t") || token.image.equalsIgnoreCase("\f")){
+							eventClauseText.append(token.image+" ");
+						}
+						else if(token.image.equalsIgnoreCase(".")){
+							state = 0;
+						}
+						else if(token.image.equalsIgnoreCase("arrayfilter")){
+							state = 1;
+						}
+						else{
+							eventClauseText.append(token.image+" ");
+							state = 0;
+						}
+						break;
+					}
+				}
+			}
+			if(state != 1){
+				eventClauseText.append(token.image+" ");
+			}
+			
+			
+			try{
+					//System.out.println(eventClauseText.toString());
+				checkEventClause(prologText.toString(), eventClauseText.toString());
+					
+				eventClauseText.delete(0, eventClauseText.length());
+			}
+			catch(VisitorException e){
+				throw new VisitorException(e.getMessage());
+			}
+			
+			return data;
 		}
+		
 		
 		private void checkEventClause(String prolog, String text) throws VisitorException{
 			try{

@@ -11,9 +11,27 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
  * Aug 11, 2014
  *
  */
-public interface IExternalFunctionExpression {
+public interface IExternalFunctionExpression<T> {
 	
+	
+	/**
+	 * Set data object used for evaluating expression. This method must be called before calling getValue().
+	 * 
+	 * @param data
+	 */
+	public void setDataObject(T data);
+	
+	/**
+	 * Get the value of this expression
+	 * 
+	 * @return
+	 * @throws ExternalFunctionExpressionEvaluateException
+	 */
 	public Object getValue() throws ExternalFunctionExpressionEvaluateException;
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Class getValueType();
 }

@@ -31,6 +31,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
+import org.openrdf.query.parser.bdpl.ast.ASTEventGraphPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTEventPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTNotClause;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
@@ -468,7 +469,7 @@ public class EPLTranslationProcessor {
 				throws VisitorException
 		{
 			
-			super.visit(node, data);
+			//super.visit(node, data);
 			
 			// ASTTimeBasedEvent must have one ASTString node. !!! Pay attention to grammar file
 			ASTString durationString = node.jjtGetChild(ASTString.class);
@@ -500,24 +501,15 @@ public class EPLTranslationProcessor {
 				throws VisitorException
 		{
 			
-			/*
-			 * visit child nodes
-			 */
-			super.visit(node, data);
 			
 			/*
 			 * Get the sparql text of this event, !!! pay attention to the grammar  
 			 */
+			ASTEventGraphPattern egp = node.jjtGetChild(ASTEventGraphPattern.class);
+			egp.jjtAccept(this, data);
+			
 			String prologText = ((EPLTranslatorData)data).getPrologText();
 			StringBuffer eventClauseText = ((EPLTranslatorData)data).getEventClauseText();
-			Token token = node.jjtGetFirstToken();
-			for(int i = 0; i < 3; i++){
-				token = token.next;
-			}
-			for(; token != node.jjtGetLastToken(); token = token.next){
-				eventClauseText.append(token.image+" ");
-			}
-			// last token must be }
 			
 			/*
 			 * Create the term of this event, time delay table is null
@@ -541,6 +533,74 @@ public class EPLTranslationProcessor {
 			}
 			
 			return expression;
+		}
+		
+		@Override
+		public Object visit(ASTEventGraphPattern node, Object data)
+				throws VisitorException
+		{
+			
+			StringBuffer eventClauseText = ((EPLTranslatorData)data).getEventClauseText();
+			Token token = node.jjtGetFirstToken();
+			
+			int state = 0, parath = 0;
+			for(; token != node.jjtGetLastToken(); token = token.next){
+				switch(state){
+					// out of array filter
+					case 0:{
+						if(token.image.equalsIgnoreCase("arrayfilter")){
+							state = 1;
+						}
+						else{
+							eventClauseText.append(token.image+" ");
+						}
+						break;
+					}
+					// in array filter
+					case 1:{
+						if(token.image.equalsIgnoreCase("(")){
+							parath++;
+						}
+						else if(token.image.equalsIgnoreCase(")")){
+							if(parath > 0){
+								parath--;
+							}
+							else{
+								throw new VisitorException("TODO");
+							}
+							
+							if(parath == 0){
+								state = 2;
+							}
+						}
+			
+						break;
+					}
+					// after array filter
+					case 2:{
+						if(token.image.equalsIgnoreCase(" ") || token.image.equalsIgnoreCase("\n") || token.image.equalsIgnoreCase("\r") 
+								|| token.image.equalsIgnoreCase("\t") || token.image.equalsIgnoreCase("\f")){
+							eventClauseText.append(token.image+" ");
+						}
+						else if(token.image.equalsIgnoreCase(".")){
+							state = 0;
+						}
+						else if(token.image.equalsIgnoreCase("arrayfilter")){
+							state = 1;
+						}
+						else{
+							eventClauseText.append(token.image+" ");
+							state = 0;
+						}
+						break;
+					}
+				}
+			}
+			if(state != 1){
+				eventClauseText.append(token.image+" ");
+			}
+			
+			return data;
 		}
 		
 		//TODO

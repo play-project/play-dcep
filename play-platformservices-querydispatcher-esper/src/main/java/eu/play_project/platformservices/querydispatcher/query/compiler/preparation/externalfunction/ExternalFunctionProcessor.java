@@ -149,17 +149,17 @@ public class ExternalFunctionProcessor {
 		public Object visit(ASTArrayFilter node, Object data)
 				throws VisitorException
 		{	
-			ArrayFilter arrayFilter = new ArrayFilter(((ExternalFunctionProcessorData)data).getVarBinder());
+			
 			// pay attension to grammar file
 			ASTArrayFilterExpression expNode = node.jjtGetChild(ASTArrayFilterExpression.class);
 			try {
-				arrayFilter.setExpression((IExternalFunctionExpression)expNode.jjtAccept(this, data));
+				ArrayFilter arrayFilter = new ArrayFilter(((ExternalFunctionProcessorData)data).getVarBinder(), (IExternalFunctionExpression<VariableBinder>)expNode.jjtAccept(this, data));
+				
+				// ASTArrayFilter.setFilterObject() must be called
+				node.setFilterOjbect(arrayFilter);
 			} catch (ExternalFunctionExpressionEvaluateException e) {
 				throw new VisitorException(e.getMessage());
 			}
-			
-			// ASTArrayFilter.setFilterObject() must be called
-			node.setFilterOjbect(arrayFilter);
 			
 			return data;
 		}
@@ -175,9 +175,9 @@ public class ExternalFunctionProcessor {
 				ExternalFunctionCompoundExpression expNode = new ExternalFunctionCompoundExpression(operator);
 				
 				Node op1 = node.jjtGetChild(0);
-				expNode.addOperand((IExternalFunctionExpression)op1.jjtAccept(this, data));
+				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
 				Node op2 = node.jjtGetChild(1);
-				expNode.addOperand((IExternalFunctionExpression)op2.jjtAccept(this, data));
+				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op2.jjtAccept(this, data));
 				
 				return expNode;
 			}
@@ -197,9 +197,9 @@ public class ExternalFunctionProcessor {
 				ExternalFunctionCompoundExpression expNode = new ExternalFunctionCompoundExpression(operator);
 				
 				Node op1 = node.jjtGetChild(0);
-				expNode.addOperand((IExternalFunctionExpression)op1.jjtAccept(this, data));
+				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
 				Node op2 = node.jjtGetChild(1);
-				expNode.addOperand((IExternalFunctionExpression)op2.jjtAccept(this, data));
+				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op2.jjtAccept(this, data));
 				
 				return expNode;
 			}
@@ -219,7 +219,7 @@ public class ExternalFunctionProcessor {
 				ExternalFunctionCompoundExpression expNode = new ExternalFunctionCompoundExpression(operator);
 				
 				Node op1 = node.jjtGetChild(0);
-				expNode.addOperand((IExternalFunctionExpression)op1.jjtAccept(this, data));
+				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
 				
 				return expNode;
 			}
@@ -245,7 +245,7 @@ public class ExternalFunctionProcessor {
 			}
 			else if(op1 instanceof ASTVar){
 				
-				return new ExternalFunctionVarExpression(((ASTVar) op1).getName(), ((ExternalFunctionProcessorData)data).getVarBinder());
+				return new ExternalFunctionVarExpression(((ASTVar) op1).getName());
 			}
 			else if(op1 instanceof ASTString){
 				try {
@@ -269,7 +269,7 @@ public class ExternalFunctionProcessor {
 				ExternalFunctionFunctionExpression exp;
 				
 				try {
-					exp = new ExternalFunctionFunctionExpression(fName.getValue(), ((ExternalFunctionProcessorData)data).getVarBinder());
+					exp = new ExternalFunctionFunctionExpression(fName.getValue());
 				} catch (ExternalFunctionExpressionEvaluateException e) {
 					throw new VisitorException(e.getMessage());
 				}

@@ -80,6 +80,7 @@ public class BDPLVarProcessor {
 		
 		private Set<String> varInEventClause = new HashSet<String>();
 		
+		
 		public boolean isInTriple() {
 			return this.inTriple;
 		}
@@ -88,8 +89,8 @@ public class BDPLVarProcessor {
 			this.inTriple = inTriple;
 		}
 		
-		public void setVarInEventClause(Set<String> varInEventClause) {
-			this.varInEventClause = varInEventClause;
+		public void clearVarInEventClause() {
+			this.varInEventClause = new HashSet<String>();
 		}
 
 		public Set<String> getVarInEventClause() {
@@ -173,7 +174,6 @@ public class BDPLVarProcessor {
 		}
 		
 		
-		//TODO check variables in array filter
 		
 		/*
 		 * visited nodes
@@ -183,12 +183,12 @@ public class BDPLVarProcessor {
 		public Object visit(ASTConstruct node, Object data)
 				throws VisitorException
 		{
-			
+			int s = ((VarTableCreatorData)data).state;
 			((VarTableCreatorData)data).setState(1);
 				
 			node.childrenAccept(this, data);
 				
-			((VarTableCreatorData)data).setState(0);
+			((VarTableCreatorData)data).setState(s);
 			
 			return data;
 		}
@@ -198,12 +198,12 @@ public class BDPLVarProcessor {
 		public Object visit(ASTRealTimeEventQuery node, Object data)
 				throws VisitorException
 		{
-			
+			int s = ((VarTableCreatorData)data).state;
 			((VarTableCreatorData)data).setState(2);
 				
 			node.childrenAccept(this, data);
 				
-			((VarTableCreatorData)data).setState(0);
+			((VarTableCreatorData)data).setState(s);
 			
 			return data;
 		}
@@ -215,6 +215,9 @@ public class BDPLVarProcessor {
 			Set<String> rtvs;
 			if(node.getTop()){
 				rtvs = ((VarTableCreatorData)data).getVarTable().getRealTimeCommonVars();
+				/*
+				 *  pattern [C -> ... -> C]
+				 */
 				for(Node child : node.jjtGetChildren()){
 					Set<String> rtvsc = (Set<String>)child.jjtAccept(this, data);
 					for(String rtv : rtvsc){
@@ -225,6 +228,9 @@ public class BDPLVarProcessor {
 				return data;
 			}
 			else{
+				/*
+				 * ( C -> ... -> C )
+				 */
 				Node firstChild = node.jjtGetChild(0);
 				rtvs = (Set<String>)firstChild.jjtAccept(this, data);
 				for(int i = 1; i < node.jjtGetNumChildren(); i++){
@@ -244,6 +250,9 @@ public class BDPLVarProcessor {
 		{	
 			List<Set<String>> orRtvs = new ArrayList<Set<String>>();
 			
+			/*
+			 * B or ... or B
+			 */
 			for(Node child : node.jjtGetChildren()){
 				orRtvs.add((Set<String>)child.jjtAccept(this, data));
 			}
@@ -256,9 +265,14 @@ public class BDPLVarProcessor {
 		@Override
 		public Object visit(ASTB node, Object data)
 				throws VisitorException
-		{
+		{	
+			
+			/*
+			 * A and ... and A
+			 */
 			Node firstChild = node.jjtGetChild(0);
 			Set<String> rtvs = (Set<String>)firstChild.jjtAccept(this, data);
+
 			for(int i = 1; i < node.jjtGetNumChildren(); i++){
 				Set<String> rtvsc = (Set<String>)node.jjtGetChild(i).jjtAccept(this, data);
 				for(String rtv : rtvsc){
@@ -272,17 +286,17 @@ public class BDPLVarProcessor {
 		@Override
 		public Object visit(ASTA node, Object data)
 				throws VisitorException
-		{
+		{	
+			/*
+			 * NOT CLAUSE, EVENT CLAUSE, TIME BASED EVENT, (EVENT PATTERN)
+			 */
+		
 			Node firstChild = node.jjtGetChild(0);
+			
 			Set<String> rtvs = (Set<String>)firstChild.jjtAccept(this, data);
-			for(int i = 1; i < node.jjtGetNumChildren(); i++){
-				Set<String> rtvsc = (Set<String>)node.jjtGetChild(i).jjtAccept(this, data);
-				for(String rtv : rtvsc){
-					rtvs.add(rtv);
-				}
-			}
 			
 			return rtvs;
+			
 		}
 		
 		@Override
@@ -291,8 +305,10 @@ public class BDPLVarProcessor {
 		{
 			Node firstChild = node.jjtGetChild(0);
 			Node lastChild = node.jjtGetChild(2);
+			
 			Set<String> rtvs = (Set<String>)firstChild.jjtAccept(this, data);
 			Set<String> rtvsc = (Set<String>)lastChild.jjtAccept(this, data);
+			
 			for(String rtv : rtvsc){
 				rtvs.add(rtv);
 			}
@@ -316,7 +332,7 @@ public class BDPLVarProcessor {
 			egpn.jjtAccept(this, data);
 			
 			Set<String> rtvs = ((VarTableCreatorData)data).getVarInEventClause();
-			((VarTableCreatorData)data).setVarInEventClause(new HashSet<String>());
+			((VarTableCreatorData)data).clearVarInEventClause();
 			
 			return rtvs;
 		}
@@ -332,6 +348,7 @@ public class BDPLVarProcessor {
 			return data;
 		}
 		
+		
 		@Override
 		public Object visit(ASTVar node, Object data)
 				throws VisitorException
@@ -345,16 +362,22 @@ public class BDPLVarProcessor {
 						((VarTableCreatorData)data).getVarTable().getConstructVars().add(node.getName());
 						break;
 					}
-					// var in triple block of event real time event query
+					// var in triple block of event real time event
 					case 2:{
 						((VarTableCreatorData)data).getVarInEventClause().add(node.getName());
 						break;
 					}
+					/*default:{
+						System.out.println(s+" "+node.getName());
+					}*/
 				}
 				
 				return data;
 			}
+
+				
 			return data;
+			
 		}
 		
 		//TODO: var in historical part 

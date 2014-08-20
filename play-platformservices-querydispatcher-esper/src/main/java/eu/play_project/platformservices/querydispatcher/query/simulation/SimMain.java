@@ -422,7 +422,7 @@ public class SimMain {
 					}
 				}
 				else if(cmd.startsWith("average")){
-					ExFunction ef = ExFunctionTable.getInstance().getFunction("average");
+					ExFunction ef = ExFunctionTable.getInstance().getFunction("http://events.event-processing.org/function/average");
 					if(ef != null){
 						System.out.println(ef.invoke(new Object[]{new String[][][]{{{"1", "1"}}, {{"2", "2"}}}}));
 					}

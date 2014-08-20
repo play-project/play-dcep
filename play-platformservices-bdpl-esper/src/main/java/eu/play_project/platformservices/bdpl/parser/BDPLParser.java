@@ -99,7 +99,7 @@ public class BDPLParser implements QueryParser {
 					query.setDataset(dataset);
 				}
 				
-				BDPLSyntaxCheckProcessor.process(qc);
+				String prologText = BDPLSyntaxCheckProcessor.process(qc);
 				
 				BDPLVarTable varTable = BDPLVarProcessor.process(qc);
 					System.out.println("Construct variables: ");
@@ -112,7 +112,7 @@ public class BDPLParser implements QueryParser {
 					}
 					
 					
-				BDPLArrayTable arrayTable = BDPLArrayVarProcessor.process(qc, varTable);
+				BDPLArrayTable arrayTable = BDPLArrayVarProcessor.process(qc, varTable, prologText);
 					System.out.println("\nArrayTable: ");
 					for(String key : arrayTable.keySet()){
 						BDPLArrayTableEntry arrayEntry = arrayTable.get(key);

@@ -11,7 +11,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionSimpleExpression implements IExternalFunctionExpression {
+public class ExternalFunctionSimpleExpression implements IExternalFunctionExpression<VariableBinder> {
 	/*
 	 * be identical with grammar file
 	 */
@@ -42,6 +42,10 @@ public class ExternalFunctionSimpleExpression implements IExternalFunctionExpres
 		}
 	}
 	
+	@Override
+	public void setDataObject(VariableBinder data) {}
+
+
 	/* (non-Javadoc)
 	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression#getValue()
 	 */
@@ -57,6 +61,5 @@ public class ExternalFunctionSimpleExpression implements IExternalFunctionExpres
 	public Class getValueType() {
 		return valueType;
 	}
-
 
 }

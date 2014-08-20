@@ -95,7 +95,7 @@ public class BDPLCompiler {
 				}
 				
 				
-			BDPLArrayTable arrayTable = BDPLArrayVarProcessor.process(qc, varTable);
+			BDPLArrayTable arrayTable = BDPLArrayVarProcessor.process(qc, varTable, prologText);
 				System.out.println("\nArrayTable: ");
 				for(String key : arrayTable.keySet()){
 					BDPLArrayTableEntry arrayEntry = arrayTable.get(key);
@@ -137,6 +137,7 @@ public class BDPLCompiler {
 			throw new BDPLCompileException(e.getMessage());
 		}
 		catch(MalformedQueryException e){
+			e.printStackTrace();
 			throw new BDPLCompileException(e.getMessage());
 		}
 		catch(InitiateException e){
