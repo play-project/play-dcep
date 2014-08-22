@@ -18,6 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openrdf.model.Model;
@@ -49,11 +52,18 @@ public class TransactionEventSource extends EventSource {
     private long id2 = 0l;
     private long count = 0l;
     
+    private DatatypeFactory dtf;
     /**
      * @param howManyTransactions How many transactions should events be generated for?
+     * @throws DatatypeConfigurationException 
      */
-    public TransactionEventSource(int howManyTransactions) {
+    public TransactionEventSource(int howManyTransactions){
         maxTrans = howManyTransactions;
+        try {
+			dtf = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException e) {
+			e.printStackTrace();
+		}
     }
 
     protected List<Object> createNextTransaction() {
@@ -76,6 +86,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/type"), new LiteralImpl(String.valueOf(type)));
         	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event1"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event1"));
+        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event1 rdf1 = new Event1(m);*/
         	mapEvent = new SesameMapEvent(new SesameEventModel(m));
         	
@@ -97,7 +108,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e2Stamp)));
         	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event2"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event2"));
-        	
+        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event2 rdf2 = new Event2(m);*/
         	mapEvent = new SesameMapEvent(new SesameEventModel(m));
         	
@@ -116,7 +127,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e3Stamp)));
         	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event3"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event3"));
-        	
+        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event3 rdf3 = new Event3(m);*/
         	mapEvent = new SesameMapEvent(new SesameEventModel(m));
         	

@@ -4,6 +4,7 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
  * @author ningyuan 
@@ -21,6 +22,11 @@ public class ExternalFunctionVarExpression implements IExternalFunctionExpressio
 		vn = varName;
 	}
 	
+	@Override
+	public IExternalFunctionExpression<VariableBinder> copy() {
+		return new ExternalFunctionVarExpression(vn);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression#setDataObject(java.lang.Object)
@@ -34,13 +40,13 @@ public class ExternalFunctionVarExpression implements IExternalFunctionExpressio
 	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression#getValue()
 	 */
 	@Override
-	public Object getValue() throws ExternalFunctionExpressionEvaluateException{
+	public Object getValue() throws BDPLFilterException{
 		Object ret = vb.getVar(vn);
 		if(ret != null){
 			return ret;
 		}
 		else{
-			throw new ExternalFunctionExpressionEvaluateException("Value of ariable "+vn+" could not be binded during evaluating external function expression");
+			throw new BDPLFilterException("Value of ariable "+vn+" could not be binded during evaluating external function expression");
 		}
 	}
 

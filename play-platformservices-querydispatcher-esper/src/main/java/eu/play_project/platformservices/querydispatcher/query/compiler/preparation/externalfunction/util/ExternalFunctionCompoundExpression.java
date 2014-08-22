@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
  * @author ningyuan 
@@ -27,6 +28,10 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 		operator = o;
 	}
 	
+	public String getOperator(){
+		return operator;
+	}
+	
 	public void addOperand(IExternalFunctionExpression<VariableBinder> op){
 		operands.add(op);
 	}
@@ -38,11 +43,21 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 		}
 	}
 	
+	@Override
+	public IExternalFunctionExpression<VariableBinder> copy(){
+		ExternalFunctionCompoundExpression ret = new ExternalFunctionCompoundExpression(operator);
+		for(IExternalFunctionExpression<VariableBinder> operand : operands){
+			ret.addOperand(operand.copy());
+		}
+		
+		return ret;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression#getValue()
 	 */
 	@Override
-	public Object getValue() throws ExternalFunctionExpressionEvaluateException{
+	public Object getValue() throws BDPLFilterException{
 		
 		
 		IExternalFunctionExpression<VariableBinder> operand1 = operands.get(0);
@@ -100,7 +115,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return (Double.valueOf(value1.toString()) > Double.valueOf(value2.toString()));
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression "+retType);
+						throw new BDPLFilterException("Return value cast exception during evaluation external function expression "+retType);
 					}
 				}
 			}
@@ -117,7 +132,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return (Double.valueOf(value1.toString()) < Double.valueOf(value2.toString()));
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+						throw new BDPLFilterException("Return value cast exception during evaluation external function expression");
 					}	
 				}
 			}
@@ -134,7 +149,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return (Double.valueOf(value1.toString()) >= Double.valueOf(value2.toString()));
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+						throw new BDPLFilterException("Return value cast exception during evaluation external function expression");
 					}
 				}
 			}
@@ -151,7 +166,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return (Double.valueOf(value1.toString()) <= Double.valueOf(value2.toString()));
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+						throw new BDPLFilterException("Return value cast exception during evaluation external function expression");
 					}	
 				}
 			}
@@ -165,7 +180,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return (!(boolean)value1);
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+						throw new BDPLFilterException("Return value cast exception during evaluation external function expression");
 					}	
 				}
 			}
@@ -179,7 +194,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return ((boolean)value1 && (boolean)value2);
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+						throw new BDPLFilterException("Return value cast exception during evaluation external function expression");
 					}	
 				}
 			}
@@ -193,17 +208,17 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return ((boolean)value1 || (boolean)value2);
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+						throw new BDPLFilterException("Return value cast exception during evaluation external function expression");
 					}	
 				}
 			}
 			else{
-				throw new ExternalFunctionExpressionEvaluateException("Not supported operator "+operator+" in external function expression");	
+				throw new BDPLFilterException("Not supported operator "+operator+" in external function expression");	
 			}
 		}
 		catch(ClassCastException e){
 			e.printStackTrace();
-			throw new ExternalFunctionExpressionEvaluateException("Return value cast exception during evaluation external function expression");
+			throw new BDPLFilterException("Return value cast exception during evaluation external function expression");
 		}
 		
 	}
@@ -218,7 +233,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 	
 	}
 	
-	private Class getOperandsType(Class t1, Class t2) throws ExternalFunctionExpressionEvaluateException{
+	private Class getOperandsType(Class t1, Class t2) throws BDPLFilterException{
 		if(t1 != null){
 			String ts1 = t1.getCanonicalName();
 			if(t2 != null){
@@ -231,7 +246,7 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 						return Double.class;
 					}
 					else{
-						throw new ExternalFunctionExpressionEvaluateException("Different operand types during evaluating external function expression");
+						throw new BDPLFilterException("Different operand types during evaluating external function expression");
 					}
 				}
 			}

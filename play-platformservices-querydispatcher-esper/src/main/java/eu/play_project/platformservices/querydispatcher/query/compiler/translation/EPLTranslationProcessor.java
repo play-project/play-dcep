@@ -52,9 +52,16 @@ import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
 
+
+
+
+
+
+
+
+
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.ArrayFilter;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateUtil;
@@ -67,6 +74,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.Term;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TimeDelayEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TimeDelayTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLFilter;
 
 
 
@@ -87,7 +95,7 @@ public class EPLTranslationProcessor {
 		try {
 			qc.jjtAccept(translator, data);
 			
-			EPLTranslationData ret = new EPLTranslationData(translator.epl, translator.injectParams, translator.arrayFilters);
+			EPLTranslationData ret = new EPLTranslationData(translator.epl, translator.injectParams, translator.injectParaMapping, translator.arrayFilters);
 			
 			return ret;
 			
@@ -143,13 +151,31 @@ public class EPLTranslationProcessor {
 	
 	private static class EPLTranslator extends ASTVisitorBase {
 		
-		private static int MAX_NUM_SEQ_CLAUSE = 24;
+		private int MAX_NUM_SEQ_CLAUSE = 24;
 		
-		String epl = null;
+		/*
+		 * name of end time variable 
+		 * !!! could have conflict with user defined variables
+		 */
+		private String VAR_ENDTIME = "_ET_%s_";
 		
-		List<Integer> injectParams = new ArrayList<Integer>();
+		private int etVarIndex = 0;
 		
-		List<ArrayFilter> arrayFilters = new ArrayList<ArrayFilter>();
+		private String epl = null;
+		
+		private List<Integer> injectParams = new ArrayList<Integer>();
+		
+		/*
+		 * should always be negative
+		 */
+		private int injectAFsIndex = -1;
+		
+		private Map<Integer, Object> injectParaMapping = new HashMap<Integer, Object>();
+		
+		/*
+		 * array filters out of real time event pattern
+		 */
+		private List<IBDPLFilter<Map<String, String[]>>> arrayFilters = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
 		
 		//List<String> matchedPatternSparql = new ArrayList<String>();
 		
@@ -224,7 +250,7 @@ public class EPLTranslationProcessor {
 				
 				List<ASTArrayFilter> afs = node.jjtGetChildren(ASTArrayFilter.class);
 				for(ASTArrayFilter af : afs){
-					arrayFilters.add((ArrayFilter)af.getFilterObject());
+					arrayFilters.add((IBDPLFilter<Map<String, String[]>>)af.getFilterObject());
 				}
 				
 			}catch (EPLTranslateException e) {
@@ -245,7 +271,7 @@ public class EPLTranslationProcessor {
 					ret = (OrClause)child.jjtAccept(this, data);
 				}
 				else if(child instanceof ASTArrayFilter){
-					arrayFilters.add((ArrayFilter)((ASTArrayFilter)child).getFilterObject());
+					arrayFilters.add((IBDPLFilter<Map<String, String[]>>)((ASTArrayFilter)child).getFilterObject());
 				}
 				else{
 					child.jjtAccept(this, data);
@@ -505,8 +531,12 @@ public class EPLTranslationProcessor {
 			/*
 			 * Get the sparql text of this event, !!! pay attention to the grammar  
 			 */
+			
 			ASTEventGraphPattern egp = node.jjtGetChild(ASTEventGraphPattern.class);
 			egp.jjtAccept(this, data);
+			
+			List<ASTArrayFilter> afns = egp.jjtGetChildren(ASTArrayFilter.class);
+			System.out.println("ASTArrayFilters: "+afns.size());
 			
 			String prologText = ((EPLTranslatorData)data).getPrologText();
 			StringBuffer eventClauseText = ((EPLTranslatorData)data).getEventClauseText();
@@ -517,10 +547,15 @@ public class EPLTranslationProcessor {
 			OrClause expression;
 			try{
 				
-				String [] pro = getEventProperties(prologText, eventClauseText.toString());
-				Term term = new Term(pro[0], pro[1]);
-				term.setSparqlText(processSparqlOfEvent(eventClauseText.toString()));
+				String [] prop = getEventProperties(prologText, eventClauseText.toString());
+				String [] sp = processSparqlOfEvent(prop[1], eventClauseText.toString());
+				Term term = new Term(prop[0], prop[1], sp[0]);
+				term.setSparqlText(sp[1]);
 				eventClauseText.delete(0, eventClauseText.length());
+				
+				for(ASTArrayFilter afn : afns){
+					term.getFilters().add((IBDPLFilter<Map<String, String[]>>)afn.getFilterObject());
+				}
 				
 				SeqClause seq = new SeqClause();
 				seq.addTerm(term);
@@ -603,12 +638,27 @@ public class EPLTranslationProcessor {
 			return data;
 		}
 		
-		//TODO
+		
 		/*
-		 * process Sparql query in epl
+		 * process sparql test of an event for in epl
+		 * 
+		 * @return [0]: name of end time variable of this event [1]: processed sparql text of this event
 		 */
-		private String processSparqlOfEvent(String s){
-			String ret = s.replace("\"", "\'");
+		private String[] processSparqlOfEvent(String idVarName, String s){
+			String [] ret = new String[2];
+			
+			ret[0] = String.format(VAR_ENDTIME, etVarIndex++);
+			
+			String temp = s.trim();
+			if(temp.charAt(temp.length()-1) != '.'){
+				temp += EPLConstants.TRIPLEEND+" ";
+			}
+			
+			temp += " ?"+idVarName+" <"+BDPLConstants.URI_ENDTIME+"> ?"+ret[0]+".";
+			// in epl " must be replaced by '
+			temp = temp.replace("\"", "\'");
+			ret[1] = temp;
+			
 			return ret;
 		}
 		
@@ -635,11 +685,12 @@ public class EPLTranslationProcessor {
 					// return the first rdf:type, syntax check is executed by bdpl parser
 					if(sp.getPredicateVar().getValue().equals(RDF.TYPE)){
 						
+						//TODO if subject is not a var
 						Var subject =sp.getSubjectVar();
 						Value object = sp.getObjectVar().getValue();
 						
-						ret[0] = subject.getName();
-						ret[1] = object.stringValue().replaceAll("[^a-zA-Z0-9]", "");
+						ret[0] = object.stringValue().replaceAll("[^a-zA-Z0-9]", "");
+						ret[1] = subject.getName();
 						break;
 					}
 				}
@@ -1742,7 +1793,7 @@ public class EPLTranslationProcessor {
 			IEntry stackTop = null;
 			StringBuffer sparqlText = new StringBuffer();
 			
-			List<String> eventVarNames = new ArrayList<String>();
+			List<String> idVarNames = new ArrayList<String>();
 			
 			/*
 			 * eStart: start number of event tag in this SEQ CLAUSE
@@ -1799,10 +1850,10 @@ public class EPLTranslationProcessor {
 							
 							sparqlText.append(term.getSparqlText());
 							
-							eventVarNames.add(term.getVarName());
-							for(int m = 1; m < eventVarNames.size(); m++){
+							idVarNames.add(term.getIDVarName());
+							for(int m = 1; m < idVarNames.size(); m++){
 								for(int n = 0; n < m; n++){
-									sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, eventVarNames.get(n), eventVarNames.get(m)));
+									sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, idVarNames.get(n), idVarNames.get(m)));
 								}
 							}
 							
@@ -1813,10 +1864,18 @@ public class EPLTranslationProcessor {
 							}
 							eParams.append(EPLConstants.EVENTTAG+k+"}");
 							
+							List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
+							for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+								injectAFs.add(injectAF.copy());
+							}
+							
 							//System.out.print(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(EPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							//matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
 							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RESULT_BINDING, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
+							
+							injectParaMapping.put(injectAFsIndex, injectAFs);
+							injectParams.add(injectAFsIndex--);
 							injectParams.add(EPLTranslationData.INJECT_PARA_REALTIMERESULT_BINDING_DATA);
 							
 							eParams.delete(0, eParams.length());
@@ -1905,10 +1964,10 @@ public class EPLTranslationProcessor {
 						
 						sparqlText.append(term.getSparqlText());
 						
-						eventVarNames.add(term.getVarName());
-						for(int m = 1; m < eventVarNames.size(); m++){
+						idVarNames.add(term.getIDVarName());
+						for(int m = 1; m < idVarNames.size(); m++){
 							for(int n = 0; n < m; n++){
-								sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, eventVarNames.get(n), eventVarNames.get(m)));
+								sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, idVarNames.get(n), idVarNames.get(m)));
 							}
 						}
 						
@@ -1919,15 +1978,24 @@ public class EPLTranslationProcessor {
 						}
 						eParams.append(EPLConstants.EVENTTAG+k+"}");
 						
-						
+						List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
+						for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+							injectAFs.add(injectAF.copy());
+						}
 						
 						if(ltrs.size() > 1){
 							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
+							
+							injectParaMapping.put(injectAFsIndex, injectAFs);
+							injectParams.add(injectAFsIndex--);
 						}
 						else{
 							//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 							//matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
 							ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RESULT_BINDING, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
+							
+							injectParaMapping.put(injectAFsIndex, injectAFs);
+							injectParams.add(injectAFsIndex--);
 							injectParams.add(EPLTranslationData.INJECT_PARA_REALTIMERESULT_BINDING_DATA);
 						}
 						
@@ -1956,6 +2024,8 @@ public class EPLTranslationProcessor {
 					for(int i = 1; i < ltrs.size(); i++){
 						// last term
 						Term lastTerm = term;
+						String lastEndTimeVarName = term.getEndTimeVarName();
+						
 						// term
 						term = ltrs.get(i);
 						
@@ -1998,7 +2068,7 @@ public class EPLTranslationProcessor {
 						/*
 						 * Time delay after last term
 						 * 
-						 * last term -> time:delay
+						 * last term -> time:delay and not
 						 */
 						String interval = null;
 						if(left.size() > 0){
@@ -2020,15 +2090,16 @@ public class EPLTranslationProcessor {
 									sparqlText.append(not.getSparqlText());
 									
 									
-									for(int m = 1; m < eventVarNames.size(); m++){
+									for(int m = 1; m < idVarNames.size(); m++){
 										for(int n = 0; n < m; n++){
-											sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, eventVarNames.get(n), eventVarNames.get(m)));
+											sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, idVarNames.get(n), idVarNames.get(m)));
 										}
 									}
-									for(String evn : eventVarNames){
-										sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, evn, not.getVarName()));
+									for(String evn : idVarNames){
+										sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, evn, not.getIDVarName()));
 									}
 									
+									sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_ENDTIME_EARLER, lastEndTimeVarName, not.getEndTimeVarName()));
 									
 									eParams.append("{");
 									int k = eStart;
@@ -2037,13 +2108,19 @@ public class EPLTranslationProcessor {
 										eParams.append(EPLConstants.EVENTTAG+k+",");
 									}
 									
-									
+									List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
+									for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+										injectAFs.add(injectAF.copy());
+									}
 									
 									interval += ("("+String.format(EPLConstants.FILTER_RDF, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString()+EPLConstants.NOTEVENTTAG+nIndex+"}")+") ");
 									sparqlText.delete(se, sparqlText.length());
 									
 									nIndexs[sIndex] = nIndex;
 									nIndex++;
+									
+									injectParaMapping.put(injectAFsIndex, injectAFs);
+									injectParams.add(injectAFsIndex--);
 									
 									eParams.delete(0, eParams.length());
 									
@@ -2151,12 +2228,14 @@ public class EPLTranslationProcessor {
 							
 							sparqlText.append(term.getSparqlText());
 							
-							eventVarNames.add(term.getVarName());
-							for(int m = 1; m < eventVarNames.size(); m++){
+							idVarNames.add(term.getIDVarName());
+							for(int m = 1; m < idVarNames.size(); m++){
 								for(int n = 0; n < m; n++){
-									sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, eventVarNames.get(n), eventVarNames.get(m)));
+									sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, idVarNames.get(n), idVarNames.get(m)));
 								}
 							}
+							
+							sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_ENDTIME_EARLER, lastEndTimeVarName, term.getEndTimeVarName()));
 							
 							eParams.append("{");
 							int k = eStart;
@@ -2165,14 +2244,24 @@ public class EPLTranslationProcessor {
 							}
 							eParams.append(EPLConstants.EVENTTAG+k+"}");
 							
+							List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
+							for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+								injectAFs.add(injectAF.copy());
+							}
 							
 							if(i < ltrs.size()-1){
 								ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
+								
+								injectParaMapping.put(injectAFsIndex, injectAFs);
+								injectParams.add(injectAFsIndex--);
 							}
 							else{
 								//ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RDF, prologText+String.format(BDPLConstants.SPARQL_ASK_QUERY, sparqlText), eParams.toString())+") ");
 								//matchedPatternSparql.add(prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText));
 								ret.append(term.getName()+"("+String.format(EPLConstants.FILTER_RESULT_BINDING, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlText), eParams.toString())+") ");
+								
+								injectParaMapping.put(injectAFsIndex, injectAFs);
+								injectParams.add(injectAFsIndex--);
 								injectParams.add(EPLTranslationData.INJECT_PARA_REALTIMERESULT_BINDING_DATA);
 							}
 							eParams.delete(0, eParams.length());
@@ -2207,14 +2296,16 @@ public class EPLTranslationProcessor {
 							sparqlTextNOT.append(not.getSparqlText());
 							
 							
-							for(int m = 1; m < eventVarNames.size(); m++){
+							for(int m = 1; m < idVarNames.size(); m++){
 								for(int n = 0; n < m; n++){
-									sparqlTextNOT.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, eventVarNames.get(n), eventVarNames.get(m)));
+									sparqlTextNOT.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, idVarNames.get(n), idVarNames.get(m)));
 								}
 							}
-							for(String evn : eventVarNames){
-								sparqlTextNOT.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, evn, not.getVarName()));
+							for(String evn : idVarNames){
+								sparqlTextNOT.append(" "+String.format(BDPLConstants.SPARQL_FILTER_VAR_NOT_EQUAL, evn, not.getIDVarName()));
 							}
+							
+							sparqlText.append(" "+String.format(BDPLConstants.SPARQL_FILTER_ENDTIME_EARLER, lastEndTimeVarName, term.getEndTimeVarName()));
 							
 							eParams.append("{");
 							int k =eStart;
@@ -2229,12 +2320,19 @@ public class EPLTranslationProcessor {
 								}
 							}
 							
-				
+							List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
+							for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+								injectAFs.add(injectAF.copy());
+							}
+						
 							ret.append("("+String.format(EPLConstants.FILTER_RDF, prologText+" %s "+String.format(BDPLConstants.SPARQL_WHERE_CLAUSE, sparqlTextNOT), eParams.toString()+EPLConstants.NOTEVENTTAG+nIndex+"}")+") ");
 							sparqlTextNOT.delete(se, sparqlTextNOT.length());
 							
 							nIndexs[sIndex] = nIndex;
 							nIndex++;
+							
+							injectParaMapping.put(injectAFsIndex, injectAFs);
+							injectParams.add(injectAFsIndex--);
 							
 							eParams.delete(0, eParams.length());
 						}

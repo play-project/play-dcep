@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTAFA;
 import org.openrdf.query.parser.bdpl.ast.ASTAFB;
@@ -33,15 +32,15 @@ import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 
-
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionCompoundExpression;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionExpressionEvaluateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionSimpleExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionVarExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.VariableBinder;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 
 /**
@@ -71,7 +70,9 @@ public class ExternalFunctionProcessor {
 		private final BDPLArrayTable arrayTable;
 		
 		private VariableBinder varBinder;
-
+		
+		boolean hasVariable = false;
+		
 		ExternalFunctionProcessorData(BDPLArrayTable arrayTable){
 			if(arrayTable == null){
 				throw new IllegalArgumentException();
@@ -153,11 +154,13 @@ public class ExternalFunctionProcessor {
 			// pay attension to grammar file
 			ASTArrayFilterExpression expNode = node.jjtGetChild(ASTArrayFilterExpression.class);
 			try {
-				ArrayFilter arrayFilter = new ArrayFilter(((ExternalFunctionProcessorData)data).getVarBinder(), (IExternalFunctionExpression<VariableBinder>)expNode.jjtAccept(this, data));
+				BDPLArrayFilter arrayFilter = new BDPLArrayFilter(((ExternalFunctionProcessorData)data).getVarBinder(), (IExternalFunctionExpression<VariableBinder>)expNode.jjtAccept(this, data));
+				arrayFilter.setHasVariable(((ExternalFunctionProcessorData)data).hasVariable);
+				((ExternalFunctionProcessorData)data).hasVariable = false;
 				
 				// ASTArrayFilter.setFilterObject() must be called
 				node.setFilterOjbect(arrayFilter);
-			} catch (ExternalFunctionExpressionEvaluateException e) {
+			} catch (BDPLFilterException e) {
 				throw new VisitorException(e.getMessage());
 			}
 			
@@ -239,18 +242,18 @@ public class ExternalFunctionProcessor {
 			if(op1 instanceof ASTPrimitiveValue){
 				try {
 					return new ExternalFunctionSimpleExpression(((ASTPrimitiveValue) op1).getType(), ((ASTPrimitiveValue) op1).getValue());
-				} catch (ExternalFunctionExpressionEvaluateException e) {
+				} catch (BDPLFilterException e) {
 					throw new VisitorException(e.getMessage());
 				}
 			}
 			else if(op1 instanceof ASTVar){
-				
+				((ExternalFunctionProcessorData)data).hasVariable = true;
 				return new ExternalFunctionVarExpression(((ASTVar) op1).getName());
 			}
 			else if(op1 instanceof ASTString){
 				try {
 					return new ExternalFunctionSimpleExpression(ExternalFunctionSimpleExpression.VALUE_TYPE_STR, ((ASTString) op1).getValue());
-				} catch (ExternalFunctionExpressionEvaluateException e) {
+				} catch (BDPLFilterException e) {
 					throw new VisitorException(e.getMessage());
 				}
 			}
@@ -270,7 +273,7 @@ public class ExternalFunctionProcessor {
 				
 				try {
 					exp = new ExternalFunctionFunctionExpression(fName.getValue());
-				} catch (ExternalFunctionExpressionEvaluateException e) {
+				} catch (BDPLFilterException e) {
 					throw new VisitorException(e.getMessage());
 				}
 				
@@ -278,7 +281,7 @@ public class ExternalFunctionProcessor {
 				
 				try {
 					exp.setParameters((List<String[]>)paraDecl.jjtAccept(this, data));
-				} catch (ExternalFunctionExpressionEvaluateException e) {
+				} catch (BDPLFilterException e) {
 					throw new VisitorException(e.getMessage());
 				}
 				

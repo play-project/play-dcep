@@ -118,16 +118,15 @@ public class BDPLCompiler {
 			
 			
 			RealTimeResults realTimeResults = new RealTimeResults();
+			
 			RealTimeResultBindingData rtbData = new RealTimeResultBindingData(varTable.getRealTimeCommonVars(), realTimeResults, subQueryTable.getEntryToSelf());
 			
-			Map<Integer, Object> injectParaMapping = new HashMap<Integer, Object>();
-			injectParaMapping.put(EPLTranslationData.INJECT_PARA_REALTIMERESULT_BINDING_DATA, rtbData);
-			
+			tData.getInjectParameterMapping().put(EPLTranslationData.INJECT_PARA_REALTIMERESULT_BINDING_DATA, rtbData);
 			
 			//UpdateListener listener = new RealTimeResultBindingListener2(varTable.getRealTimeCommonVars(), listenerQuery, subQueryTable.getEntryToSelf());
-			UpdateListener listener = new RealTimeResultListener(realTimeResults, arrayTable, tData.getArrayFilters());
+			UpdateListener listener = new RealTimeResultListener(realTimeResults, arrayTable, tData.getEventPatternFilters());
 			
-			ret = new DefaultBDPLPreparedQuery(tData.getEpl(), injectParaMapping, tData.getInjectParams(), listener, subQueryTable);
+			ret = new DefaultBDPLPreparedQuery(tData.getEpl(), tData.getInjectParameterMapping(), tData.getInjectParams(), listener, subQueryTable);
 			
 		}
 		catch (ParseException e) {

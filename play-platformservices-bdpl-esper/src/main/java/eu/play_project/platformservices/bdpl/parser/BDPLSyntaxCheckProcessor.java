@@ -309,6 +309,7 @@ public class BDPLSyntaxCheckProcessor {
 						}
 						
 					}
+					
 				}
 				
 				if(!hasType){
@@ -317,6 +318,7 @@ public class BDPLSyntaxCheckProcessor {
 				else if(!hasStream){
 					throw new VisitorException("Event clause contains no "+BDPLConstants.URI_STREAM);
 				}
+
 			}
 			catch (ParseException e) {
 				throw new VisitorException(e.getMessage());

@@ -24,6 +24,10 @@ public class VariableBinder {
 		arrayVars = arrayTable;
 	}
 	
+	public BDPLArrayTable getArrayTable(){
+		return arrayVars;
+	}
+	
 	/**
 	 * set variable values for evaluating
 	 * 

@@ -12,8 +12,8 @@ import com.espertech.esper.client.UpdateListener;
 
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResults;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.ArrayFilter;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionExpressionEvaluateException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLFilter;
 
 
 /**
@@ -26,9 +26,9 @@ public class RealTimeResultListener implements UpdateListener{
 	
 	private final BDPLArrayTable arrayTable;
 	
-	private final List<ArrayFilter> arrayFilters;
+	private final List<IBDPLFilter<Map<String, String[]>>> arrayFilters;
 	
-	public RealTimeResultListener(RealTimeResults realTimeResults, BDPLArrayTable arrayTable, List<ArrayFilter> arrayFilters){
+	public RealTimeResultListener(RealTimeResults realTimeResults, BDPLArrayTable arrayTable, List<IBDPLFilter<Map<String, String[]>>> arrayFilters){
 		this.realTimeResults = realTimeResults;
 		this.arrayTable = arrayTable;
 		this.arrayFilters = arrayFilters;
@@ -50,11 +50,11 @@ public class RealTimeResultListener implements UpdateListener{
 				}
 					System.out.println();
 					
-				for(ArrayFilter af : arrayFilters){
-					af.setVariableBinding(result);
+				for(IBDPLFilter<Map<String, String[]>> af : arrayFilters){
+					af.setDataObject(result);
 					try {
 						System.out.println("ArrayFilter: "+af.evaluate());
-					} catch (ExternalFunctionExpressionEvaluateException e) {
+					} catch (BDPLFilterException e) {
 						e.printStackTrace();
 					}
 				}

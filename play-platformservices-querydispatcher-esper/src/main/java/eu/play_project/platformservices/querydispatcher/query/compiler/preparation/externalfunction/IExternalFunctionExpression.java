@@ -3,7 +3,7 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionExpressionEvaluateException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
  * @author ningyuan 
@@ -25,13 +25,15 @@ public interface IExternalFunctionExpression<T> {
 	 * Get the value of this expression
 	 * 
 	 * @return
-	 * @throws ExternalFunctionExpressionEvaluateException
+	 * @throws BDPLFilterException
 	 */
-	public Object getValue() throws ExternalFunctionExpressionEvaluateException;
+	public Object getValue() throws BDPLFilterException;
 	
 	/**
 	 * 
 	 * @return
 	 */
 	public Class getValueType();
+	
+	public IExternalFunctionExpression<T> copy();
 }

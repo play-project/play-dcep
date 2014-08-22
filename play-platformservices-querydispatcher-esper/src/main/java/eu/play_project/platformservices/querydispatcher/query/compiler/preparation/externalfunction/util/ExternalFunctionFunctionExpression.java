@@ -6,6 +6,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.preparat
 import java.util.List;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunction;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionInvocationException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionTable;
@@ -21,24 +22,39 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	public static final String PARA_TYPE_INT = "int", PARA_TYPE_DECIMAL = "decimal", PARA_TYPE_BOOLEAN = "boolean", 
 			PARA_TYPE_STR = "str", PARA_TYPE_VAR = "var", PARA_TYPE_ARRAY = "array";
 	
+	private VariableBinder vb;
+	
 	private Class valueType;
 	
 	private final String fn;
 	
-	private VariableBinder vb;
+	private List<String[]> paras;
 	
 	private final ExFunctionTable ft = ExFunctionTable.getInstance();
 	
-	private List<String[]> paras;
-	
-	public ExternalFunctionFunctionExpression(String functionName) throws ExternalFunctionExpressionEvaluateException{
+
+	public ExternalFunctionFunctionExpression(String functionName) throws BDPLFilterException{
 		ExFunction ef = ft.getFunction(functionName);
 		if(ef == null){
-			throw new ExternalFunctionExpressionEvaluateException("External function \'"+functionName+"\' is not loaded into system");
+			throw new BDPLFilterException("External function \'"+functionName+"\' is not loaded into system");
 		}
 		
 		valueType = ef.getReturnType();
 		fn = functionName;
+	}
+	
+	/*
+	 * used for copy
+	 */
+	private ExternalFunctionFunctionExpression(String functionName, Class vt, List<String[]> paras){
+		fn = functionName;
+		valueType = vt;
+		this.paras = paras;
+	}
+	
+	@Override
+	public IExternalFunctionExpression<VariableBinder> copy(){
+		return new ExternalFunctionFunctionExpression(fn, valueType, paras);
 	}
 	
 	@Override
@@ -47,20 +63,21 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	}
 	
 	/**
+	 * This method must be called before calling getValue()
 	 * 
 	 * @param paras (must not be null)
-	 * @throws ExternalFunctionExpressionEvaluateException 
+	 * @throws BDPLFilterException 
 	 */
-	public void setParameters(List<String[]> paras) throws ExternalFunctionExpressionEvaluateException{
+	public void setParameters(List<String[]> paras) throws BDPLFilterException{
 		ExFunction ef = ft.getFunction(fn);
 		if(ef == null){
-			throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' is not loaded into system");
+			throw new BDPLFilterException("External function \'"+fn+"\' is not loaded into system");
 		}
 		
 		Class[] efpts = ef.getParameterTypes();
 		
 		if(paras.size() != efpts.length){
-			throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter size as loaded function");
+			throw new BDPLFilterException("External function \'"+fn+"\' declared different parameter size as loaded function");
 		}
 		
 		for(int i = 0; i < efpts.length; i++){
@@ -69,7 +86,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 			
 			if(efpt.isArray()){
 				if(!pt.equalsIgnoreCase(PARA_TYPE_ARRAY)){
-					throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
+					throw new BDPLFilterException("External function \'"+fn+"\' declared different parameter type as loaded function");
 				}
 			}
 			else{
@@ -77,26 +94,26 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 				
 				if(pt.equalsIgnoreCase(PARA_TYPE_INT)){
 					if(!efptn.equals("java.lang.Integer") && !efptn.equals("int")){
-						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
+						throw new BDPLFilterException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else if(pt.equalsIgnoreCase(PARA_TYPE_DECIMAL)){
 					if(!efptn.equals("java.lang.Double") && !efptn.equals("double")){
-						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
+						throw new BDPLFilterException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else if(pt.equalsIgnoreCase(PARA_TYPE_BOOLEAN)){
 					if(!efptn.equals("java.lang.Boolean") && !efptn.equals("boolean")){
-						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
+						throw new BDPLFilterException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else if(pt.equalsIgnoreCase(PARA_TYPE_STR)){
 					if(!efptn.equals("java.lang.String")){
-						throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' declared different parameter type as loaded function");
+						throw new BDPLFilterException("External function \'"+fn+"\' declared different parameter type as loaded function");
 					}
 				}
 				else{
-					throw new ExternalFunctionExpressionEvaluateException("Not supported parameter type "+pt+" in external function");
+					throw new BDPLFilterException("Not supported parameter type "+pt+" in external function");
 				}
 			}
 		}
@@ -108,10 +125,10 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression#getValue()
 	 */
 	@Override
-	public Object getValue() throws ExternalFunctionExpressionEvaluateException{
+	public Object getValue() throws BDPLFilterException{
 		ExFunction ef = ft.getFunction(fn);
 		if(ef == null){
-			throw new ExternalFunctionExpressionEvaluateException("External function \'"+fn+"\' is not loaded into system");
+			throw new BDPLFilterException("External function \'"+fn+"\' is not loaded into system");
 		}
 		
 		// paras must not be null. setParameters() must be called before
@@ -126,7 +143,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 					pObjects[i] = o;
 				}
 				else{
-					throw new ExternalFunctionExpressionEvaluateException("Array variable ?"+para[1]+"() could not be found when evaluating external function");
+					throw new BDPLFilterException("Array variable ?"+para[1]+"() could not be found when evaluating external function");
 				}
 			}
 			else if(pt.equalsIgnoreCase(PARA_TYPE_VAR)){
@@ -135,7 +152,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 					pObjects[i] = o;
 				}
 				else{
-					throw new ExternalFunctionExpressionEvaluateException("Variable ?"+para[1]+" could not be binded when evaluating external function");
+					throw new BDPLFilterException("Variable ?"+para[1]+" could not be binded when evaluating external function");
 				}
 			}
 			else {
@@ -147,7 +164,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 		try {
 			ret = ef.invoke(pObjects);
 		} catch (ExFunctionInvocationException e) {
-			throw new ExternalFunctionExpressionEvaluateException(e.getMessage());
+			throw new BDPLFilterException(e.getMessage());
 		}
 		
 		return ret;
@@ -160,7 +177,4 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	public Class getValueType() {
 		return valueType;
 	}
-
-
-
 }
