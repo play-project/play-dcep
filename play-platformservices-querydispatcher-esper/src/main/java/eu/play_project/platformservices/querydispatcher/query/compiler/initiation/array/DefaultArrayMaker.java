@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
@@ -86,8 +87,12 @@ public class DefaultArrayMaker implements IArrayMaker {
 						oneDim.append(c);
 						state = 1;
 					}
+					else if(c == '\''){
+						oneDim.append(c);
+						state = 4;
+					}
 					else if(c == ';'){
-						throw new InitiateException("No element defined in static array.");
+						throw new InitiateException("Empty element in static array declaration.");
 					}
 					else{
 						oneDim.append(c);
@@ -168,7 +173,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 					}
 					break;
 				}
-				// after one dimension
+				// after one dimension 
 				case 3:{
 					if(c == ' '){
 						continue;
@@ -176,6 +181,10 @@ public class DefaultArrayMaker implements IArrayMaker {
 					else if(c == '\"'){
 						oneDim.append(c);
 						state = 1;
+					}
+					else if(c == '\''){
+						oneDim.append(c);
+						state = 4;
 					}
 					else if(c == ';'){
 						if(dimension != 0){
@@ -198,13 +207,38 @@ public class DefaultArrayMaker implements IArrayMaker {
 					}
 					break;
 				}
+				// in one dimension (in label)
+				case 4:{
+					if(c == ' '){
+						oneDim.append(c);
+					}
+					else if(c == '\''){
+						oneDim.append(c);
+						
+						value = new String[2];
+						String s = oneDim.toString();
+						
+						if(s.length() > 2){
+							value[0] = s.substring(1, s.length()-1);
+						}
+						else{
+							value[0] = "";
+						}
+						
+						state = 2;
+					}
+					else{
+						oneDim.append(c);
+					}
+					break;
+				}
 			}
 		}
 		
 		
 		if(oneDim.length() > 0){
 			// label not end
-			if(state == 1){
+			if(state == 1 || state == 4){
 				throw new InitiateException("Illegal RDF literal in static array declaration.");
 			}
 			else{
