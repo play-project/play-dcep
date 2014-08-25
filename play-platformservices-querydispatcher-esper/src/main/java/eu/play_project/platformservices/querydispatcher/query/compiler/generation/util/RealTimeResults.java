@@ -4,6 +4,7 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.generation.util;
 
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -26,10 +27,10 @@ public class RealTimeResults {
     private int length = 0;
     private RealTimeResult head, tail;
 	
-	public Map<String, String[]> get(){
+	public List<Map<String, String[]>> get(){
 		try{
 			r.lock();
-			Map<String, String[]> ret = null;
+			List<Map<String, String[]>> ret = null;
 			if(length > 0){
 				ret = head.getContent();
 				head = head.getNext();
@@ -47,7 +48,7 @@ public class RealTimeResults {
 		}
 	}
 	
-	public void put(Map<String, String[]> content){
+	public void put(List<Map<String, String[]>> content){
 		try{
 			w.lock();
 			if(length < 1){
@@ -70,16 +71,16 @@ public class RealTimeResults {
 	private static class RealTimeResult{
     	private RealTimeResult next = null;
     	
-    	private Map<String, String[]> content;
+    	private List<Map<String, String[]>> content;
     	
-    	public RealTimeResult(Map<String, String[]> content){
+    	public RealTimeResult(List<Map<String, String[]>> content){
     		if(content == null){
     			throw new IllegalArgumentException();
     		}
     		this.content = content;
     	}
     	
-    	public Map<String, String[]> getContent(){
+    	public List<Map<String, String[]>> getContent(){
     		return content;
     	}
 

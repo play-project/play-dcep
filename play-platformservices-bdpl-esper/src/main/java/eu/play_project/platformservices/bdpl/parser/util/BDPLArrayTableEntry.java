@@ -3,10 +3,10 @@
  */
 package eu.play_project.platformservices.bdpl.parser.util;
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayType;
 
 /**
+ * Information of a BDPL array. It is the value of BDPLArrayTable.
+ * 
  * @author ningyuan 
  * 
  * Jun 27, 2014
@@ -14,10 +14,19 @@ import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayType;
  */
 public class BDPLArrayTableEntry {
 	
+	/*
+	 * BDPL array object
+	 */
 	private BDPLArray array;
-
+	
+	/*
+	 * BDPL array type
+	 */
 	private BDPLArrayType type;
 	
+	/*
+	 * declaration text of this BDPL array in query
+	 */
 	private String source;
 	
 	public String getSource() {

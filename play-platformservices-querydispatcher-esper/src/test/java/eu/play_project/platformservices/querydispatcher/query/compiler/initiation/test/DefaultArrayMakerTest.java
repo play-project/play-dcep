@@ -4,21 +4,15 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openrdf.repository.Repository;
-import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
-import org.openrdf.sail.memory.MemoryStore;
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayType;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayType;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.DefaultArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.array.IArrayMaker;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
@@ -120,7 +114,7 @@ public class DefaultArrayMakerTest {
 	@Test
 	public void testEXStatic7() {
 		arrayTableEntry.setType(BDPLArrayType.STATIC_EXPLICITE);
-		arrayTableEntry.setSource(" 1 2 ");
+		arrayTableEntry.setSource(" 1  2 ");
 		
 		try {
 			arrayMaker.make(arrayTableEntry, null);
@@ -136,7 +130,7 @@ public class DefaultArrayMakerTest {
 	@Test
 	public void testEXStatic8() {
 		arrayTableEntry.setType(BDPLArrayType.STATIC_EXPLICITE);
-		arrayTableEntry.setSource(" 1 2 ; 3 4");
+		arrayTableEntry.setSource(" 1  2 ; 3  4");
 		
 		try {
 			arrayMaker.make(arrayTableEntry, null);

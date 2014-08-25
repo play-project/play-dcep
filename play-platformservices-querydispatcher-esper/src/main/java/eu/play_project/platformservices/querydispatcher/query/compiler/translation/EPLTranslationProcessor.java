@@ -54,12 +54,6 @@ import org.openrdf.query.MalformedQueryException;
 
 
 
-
-
-
-
-
-
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLConstants;
@@ -96,7 +90,8 @@ public class EPLTranslationProcessor {
 			qc.jjtAccept(translator, data);
 			
 			EPLTranslationData ret = new EPLTranslationData(translator.epl, translator.injectParams, translator.injectParaMapping, translator.arrayFilters);
-			
+				// for test
+				System.out.println("\nEPLTranslationProcessor epl:\n"+ret.getEpl());
 			return ret;
 			
 		} catch (VisitorException e) {
@@ -536,7 +531,6 @@ public class EPLTranslationProcessor {
 			egp.jjtAccept(this, data);
 			
 			List<ASTArrayFilter> afns = egp.jjtGetChildren(ASTArrayFilter.class);
-			System.out.println("ASTArrayFilters: "+afns.size());
 			
 			String prologText = ((EPLTranslatorData)data).getPrologText();
 			StringBuffer eventClauseText = ((EPLTranslatorData)data).getEventClauseText();
@@ -640,7 +634,8 @@ public class EPLTranslationProcessor {
 		
 		
 		/*
-		 * process sparql test of an event for in epl
+		 * process sparql test of an event for in epl. Add endTime triple in sparql text and
+		 * replace "\"" with "\'"
 		 * 
 		 * @return [0]: name of end time variable of this event [1]: processed sparql text of this event
 		 */

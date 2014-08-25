@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
+
+import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTAFA;
 import org.openrdf.query.parser.bdpl.ast.ASTAFB;
@@ -25,11 +29,15 @@ import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTPrimitiveValue;
 import org.openrdf.query.parser.bdpl.ast.ASTQName;
+import org.openrdf.query.parser.bdpl.ast.ASTRDFLiteral;
 import org.openrdf.query.parser.bdpl.ast.ASTString;
 import org.openrdf.query.parser.bdpl.ast.ASTSubBDPLQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
 import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
+
+
+
 
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
@@ -67,8 +75,6 @@ public class ExternalFunctionProcessor {
 	
 	private static class ExternalFunctionProcessorData{
 		
-		private final BDPLArrayTable arrayTable;
-		
 		private VariableBinder varBinder;
 		
 		boolean hasVariable = false;
@@ -78,7 +84,6 @@ public class ExternalFunctionProcessor {
 				throw new IllegalArgumentException();
 			}
 			
-			this.arrayTable = arrayTable;
 			varBinder = new VariableBinder(arrayTable);
 		}
 		
@@ -88,6 +93,10 @@ public class ExternalFunctionProcessor {
 	}
 	
 	private static class EFProcessor extends ASTVisitorBase {
+		
+		private String PARA_TYPE_INT = "int", PARA_TYPE_DECIMAL = "decimal", PARA_TYPE_BOOLEAN = "boolean", 
+				PARA_TYPE_LIT = "literal", PARA_TYPE_VAR = "var", PARA_TYPE_ARRAY = "array";
+		
 		/*
 		 * skipped nodes
 		 */
@@ -241,7 +250,44 @@ public class ExternalFunctionProcessor {
 			
 			if(op1 instanceof ASTPrimitiveValue){
 				try {
-					return new ExternalFunctionSimpleExpression(((ASTPrimitiveValue) op1).getType(), ((ASTPrimitiveValue) op1).getValue());
+					String t = ((ASTPrimitiveValue) op1).getType();
+					
+					if(t.equalsIgnoreCase(PARA_TYPE_INT)){
+						return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_INT, ((ASTPrimitiveValue) op1).getValue());
+					}
+					else if(t.equalsIgnoreCase(PARA_TYPE_DECIMAL)){
+						return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL, ((ASTPrimitiveValue) op1).getValue());
+					}
+					else if(t.equalsIgnoreCase(PARA_TYPE_BOOLEAN)){
+						return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_BOOLEAN, ((ASTPrimitiveValue) op1).getValue());
+					}
+					else if(t.equalsIgnoreCase(PARA_TYPE_LIT)){
+						ASTRDFLiteral ln = ((ASTPrimitiveValue) op1).jjtGetChild(ASTRDFLiteral.class);
+						ASTString sn = ln.getLabel();
+						ASTIRI in = ln.getDatatype();
+						
+						if(in == null){
+							return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_STR, sn.getValue());
+						}
+						else{
+							String dataType = in.getValue();
+							
+							if(dataType.equals(XMLSchema.INTEGER)){
+								return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_INT, sn.getValue());
+							}
+							else if(dataType.equals(XMLSchema.DECIMAL)){
+								return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL, sn.getValue());
+							}
+							else{
+								return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_STR, sn.getValue());
+							}
+						}
+						
+					}
+					else{
+						throw new VisitorException("ASTAFC has not supported primitive value "+t);
+					}
+					
 				} catch (BDPLFilterException e) {
 					throw new VisitorException(e.getMessage());
 				}
@@ -249,13 +295,6 @@ public class ExternalFunctionProcessor {
 			else if(op1 instanceof ASTVar){
 				((ExternalFunctionProcessorData)data).hasVariable = true;
 				return new ExternalFunctionVarExpression(((ASTVar) op1).getName());
-			}
-			else if(op1 instanceof ASTString){
-				try {
-					return new ExternalFunctionSimpleExpression(ExternalFunctionSimpleExpression.VALUE_TYPE_STR, ((ASTString) op1).getValue());
-				} catch (BDPLFilterException e) {
-					throw new VisitorException(e.getMessage());
-				}
 			}
 			else{
 				return op1.jjtAccept(this, data);
@@ -307,34 +346,53 @@ public class ExternalFunctionProcessor {
 				ret.add(p);
 				
 				if(child instanceof ASTVar){
-					p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_VAR;
+					p[0] = PARA_TYPE_VAR;
 					p[1] = ((ASTVar) child).getName();
 				}
 				else if(child instanceof ASTArrayVar){
-					p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_ARRAY;
+					p[0] = PARA_TYPE_ARRAY;
 					ASTVar cchild = (ASTVar)child.jjtGetChild(0);			
 					p[1] = cchild.getName();
 				}
-				else if(child instanceof ASTString){
-					p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_STR;
-					//TODO check
-					p[1] = ((ASTString) child).getValue();
-				}
 				else if(child instanceof ASTPrimitiveValue){
 					String t = ((ASTPrimitiveValue) child).getType();
-					if(t.equalsIgnoreCase(ExternalFunctionFunctionExpression.PARA_TYPE_INT)){
+					if(t.equalsIgnoreCase(PARA_TYPE_INT)){
 						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_INT;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
-							System.out.println(p[1]);
+							
 					}
-					else if(t.equalsIgnoreCase(ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL)){
+					else if(t.equalsIgnoreCase(PARA_TYPE_DECIMAL)){
 						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
-							System.out.println(p[1]);
+							
 					}
-					else if(t.equalsIgnoreCase(ExternalFunctionFunctionExpression.PARA_TYPE_BOOLEAN)){
+					else if(t.equalsIgnoreCase(PARA_TYPE_BOOLEAN)){
 						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_BOOLEAN;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
+					}
+					else if(t.equalsIgnoreCase(PARA_TYPE_LIT)){
+						ASTRDFLiteral ln = ((ASTPrimitiveValue) child).jjtGetChild(ASTRDFLiteral.class);
+						ASTString sn = ln.getLabel();
+						p[1] = sn.getValue();
+						ASTIRI in = ln.getDatatype();
+						
+						if(in == null){
+							p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_STR;
+						}
+						else{
+							String dataType = in.getValue();
+							
+							if(dataType.equals(XMLSchema.INTEGER)){
+								p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_INT;
+							}
+							else if(dataType.equals(XMLSchema.DECIMAL)){
+								p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL;
+							}
+							else{
+								p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_STR;
+							}
+						}
+						
 					}
 					else{
 						throw new VisitorException("ASTExternalFunctionParameterDecl has not supported primitive value "+t);

@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 
 

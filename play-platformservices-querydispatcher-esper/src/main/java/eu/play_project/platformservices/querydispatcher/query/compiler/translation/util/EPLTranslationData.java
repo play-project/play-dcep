@@ -26,7 +26,7 @@ public class EPLTranslationData {
 	
 	private final Map<Integer, Object> injectParaMapping;
 	
-	public static final int INJECT_PARA_REALTIMERESULT_BINDING_DATA = 0;
+	public final static int INJECT_PARA_REALTIMERESULT_BINDING_DATA = 0;
 	
 	public EPLTranslationData(String epl, List<Integer> injectParas, Map<Integer, Object> injectParaMapping, List<IBDPLFilter<Map<String, String[]>>> eventPatternFilters){
 		this.epl = epl;

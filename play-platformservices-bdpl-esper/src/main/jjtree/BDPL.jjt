@@ -504,14 +504,14 @@ void ProjectionElem() :
 }
 
 
-// ningyuan changed: 1. add ArrayClause() 2. replace WhereClause() with BDPLWhereClause()
+// ningyuan changed: 1. add DynamicArrayDecl() 2. replace WhereClause() with BDPLWhereClause()
 
 void ConstructQuery() :
 {}
 {
 	Construct()
 	( DatasetClause() )*
-	[ArrayClause()]
+	(DynamicArrayDecl())*
 	BDPLWhereClause()
 	SolutionModifier()
 	[BindingsClause()]
@@ -1957,36 +1957,29 @@ void ArrayVar() :
 	(<LPAREN> t=<INTEGER> {jjtThis.setSize(t.image);} <RPAREN> | <NIL>) 
 }
 
-void ArrayClause() :
-{}
-{
-	<ARRAY> <LBRACE>
-    (DynamicArrayDecl())*
-	<RBRACE>
-}
- 
 void DynamicArrayDecl() :
 {}
 {
-	( DynamicArrayDef1() | DynamicArrayDef2())
-	<AS>
+	<INSERT> <INTO>
 	ArrayVar()
-	<DOT>
+	(
+		(<VALUES> DynamicArrayDef1())
+		|
+		DynamicArrayDef2()
+	)
 }
 
 void DynamicArrayDef1() : 
 {}
 {
-	[<CHECKED> {jjtThis.setChecked(true);}] ( Var() )+ 
+	[<CHECKED> {jjtThis.setChecked(true);}] <LPAREN> Var() (<COMMA> Var())* <RPAREN> 
 }
 
 // not used
 void DynamicArrayDef2() : 
 {}
 {
-	<LBRACE>
 	SubBDPLQuery()
-	<RBRACE>
 }
 
 void ArrayElement() :
@@ -1995,7 +1988,15 @@ void ArrayElement() :
 	(	IRIref()
 		|	RDFLiteral()
 		|	NumericLiteral()
-	)+
+	)
+	(
+		<COMMA>
+		(
+			IRIref()
+			|	RDFLiteral()
+			|	NumericLiteral()
+		)
+	)*
 }
 
 void StaticArrayDef1() : 
@@ -2004,7 +2005,8 @@ void StaticArrayDef1() :
 	<LPAREN> 
 	(
 		ArrayElement()
-		(	<SEMICOLON>
+	    (	
+			<SEMICOLON>
 			ArrayElement()
 		)*
 	)
@@ -2177,8 +2179,6 @@ void AFC():
 		|
 		Var()
 		|
-		String()
-		|
 		(<LPAREN> ArrayFilterExpression() <RPAREN>)
 	)
 }
@@ -2194,8 +2194,8 @@ void ExternalFunctionDecl():
 void ExternalFunctionParameterDecl():
 {}
 {
-	[ (LOOKAHEAD(2) ArrayVar() | Var() |  String() | StaticArrayDef1() | PrimitiveValue())]
-	(<COMMA> (LOOKAHEAD(2) ArrayVar() | Var() | String() | StaticArrayDef1() | PrimitiveValue()))*
+	[ (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1())]
+	(<COMMA> (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1()))*
 }
 
 void PrimitiveValue():
@@ -2215,6 +2215,8 @@ void PrimitiveValue():
 		(t=<DECIMAL> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
 		|
 		(t=<DECIMAL_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
+		|
+		(RDFLiteral() {jjtThis.setType("literal");})
 	)
 }
 

@@ -7,6 +7,10 @@ import java.util.HashMap;
 
 
 /**
+ * The underlying event object used in Esper engine. Each MapEvent has a property EVENT_MODEL,
+ * which refers to an EventModel.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Apr 16, 2014

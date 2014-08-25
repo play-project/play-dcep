@@ -4,6 +4,8 @@
 package eu.play_project.platformservices.bdpl.parser.util;
 
 /**
+ * Constants in BDPL
+ * 
  * @author ningyuan 
  * 
  * Jun 30, 2014

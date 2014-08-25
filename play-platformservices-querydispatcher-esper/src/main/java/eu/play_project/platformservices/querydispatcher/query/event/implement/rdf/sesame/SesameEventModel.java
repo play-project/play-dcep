@@ -15,6 +15,9 @@ import org.openrdf.model.impl.URIImpl;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 
 /**
+ * An implementation of EventModel. Sesame event model is chosen to be the 
+ * actual event model. 
+ * 
  * @author ningyuan 
  * 
  * Apr 16, 2014

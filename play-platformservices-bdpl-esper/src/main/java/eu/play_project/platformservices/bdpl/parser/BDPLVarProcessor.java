@@ -35,9 +35,8 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
 
 /**
- * This processor gathers information about variables in construct clause, 
- * and common variables in event pattern of real time query 
- * 
+ * A processor of BDPL grammatic tree. gathers information about variables in construct clause, 
+ * and common variables in event pattern of real time query.
  * 
  * @author ningyuan 
  * 
@@ -55,9 +54,28 @@ public class BDPLVarProcessor {
 		try {
 			qc.jjtAccept(vtCreator, data);
 			
-			//TODO: check common variables contain construct variables
+			BDPLVarTable varTable = data.getVarTable();
+			//TODO check construct variables are contained in real or historical 
 			
-			return data.getVarTable();
+			/*Set<String> rcVs = data.getVarTable().getRealTimeCommonVars();
+			Set<String> cVs = data.getVarTable().getConstructVars();
+			
+			for(String cV : cVs){
+				if(!rcVs.contains(cV)){
+					throw new MalformedQueryException("Construct variable ?"+cV+" dose not appear in common variables of real time event pattern");
+				}
+			}*/
+				// for test
+				System.out.println("\nBDPLVarProcessor construct variables: ");
+				for(String var : varTable.getConstructVars()){
+					System.out.print(var+"   ");
+				}
+				System.out.println("\nBDPLVarProcessor common variables: ");
+				for(String var : varTable.getRealTimeCommonVars()){
+					System.out.print(var+"   ");
+				}
+			
+			return varTable;
 			
 		} catch (VisitorException e) {
 			throw new MalformedQueryException(e.getMessage());
@@ -78,39 +96,39 @@ public class BDPLVarProcessor {
 		
 		private BDPLVarTable varTable = new BDPLVarTable();
 		
+		/*
+		 * temporary container of all names of variable in one event clause
+		 */
 		private Set<String> varInEventClause = new HashSet<String>();
 		
 		
-		public boolean isInTriple() {
+		private boolean isInTriple() {
 			return this.inTriple;
 		}
 
-		public void setInTriple(boolean inTriple) {
+		private void setInTriple(boolean inTriple) {
 			this.inTriple = inTriple;
 		}
 		
-		public void clearVarInEventClause() {
+		private void clearVarInEventClause() {
 			this.varInEventClause = new HashSet<String>();
 		}
 
-		public Set<String> getVarInEventClause() {
+		private Set<String> getVarInEventClause() {
 			return this.varInEventClause;
 		}
 
-		public int getState() {
+		private int getState() {
 			return this.state;
 		}
 
-		public void setState(int state) {
+		private void setState(int state) {
 			this.state = state;
 		}
 
-		
-		public BDPLVarTable getVarTable() {
+		private BDPLVarTable getVarTable() {
 			return this.varTable;
 		}
-		
-		
 	}
 	
 	private static class VarTableCreator extends ASTVisitorBase {

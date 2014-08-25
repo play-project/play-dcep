@@ -9,6 +9,8 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 
 
 /**
+ * Specific MapEvent contains EventModel implemented by Sesame event model. 
+ * 
  * @author ningyuan 
  * 
  * Apr 16, 2014

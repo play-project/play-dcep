@@ -66,6 +66,8 @@ public class SimMain {
 			System.out.println(e.getMessage());
 		}
 		
+		BDPLCompiler compiler = new BDPLCompiler();
+		
 		BufferedReader bin = new BufferedReader(new InputStreamReader(System.in));
 		
 		String cmd;
@@ -278,7 +280,7 @@ public class SimMain {
 						
 						
 						try{
-							IBDPLQuery bdplQuery = BDPLCompiler.compile(query, null);
+							IBDPLQuery bdplQuery = compiler.compile(query, null);
 							
 							synchronized(lock){
 								if(epService != null){

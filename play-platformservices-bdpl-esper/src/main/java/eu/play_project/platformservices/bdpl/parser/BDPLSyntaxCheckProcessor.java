@@ -18,16 +18,12 @@ import org.openrdf.query.parser.bdpl.PrefixDeclProcessor;
 import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
 import org.openrdf.query.parser.bdpl.TupleExprBuilder;
 import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
-import org.openrdf.query.parser.bdpl.ast.ASTArrayFilter;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
-import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventGraphPattern;
 import org.openrdf.query.parser.bdpl.ast.ASTOperationContainer;
 import org.openrdf.query.parser.bdpl.ast.ASTPrefixDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
-import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.ParseException;
-import org.openrdf.query.parser.bdpl.ast.SimpleNode;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
@@ -36,11 +32,8 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 
 
-
-
-
 /**
- * check bdpl specific syntax and parse prolog text
+ * A processor of BDPL grammatic tree. It checks BDPL specific syntax and parse prolog text.
  * 
  * @author ningyuan 
  * 
@@ -61,7 +54,7 @@ public class BDPLSyntaxCheckProcessor {
 			return ((BDPLSyntaxCheckerData)data).getPrologText().toString();
 			
 		} catch (VisitorException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			throw new MalformedQueryException(e.getMessage());
 		}
 	}
@@ -72,15 +65,15 @@ public class BDPLSyntaxCheckProcessor {
 		private StringBuffer prologText = new StringBuffer();
 		
 		/*
-		 * temp variable for saving the Sparql text of each event
+		 * temporary variable saving a sparql text of each event
 		 */
 		private StringBuffer eventClauseText = new StringBuffer();
 		
-		public StringBuffer getEventClauseText(){
+		private StringBuffer getEventClauseText(){
 			return eventClauseText;
 		}
 		
-		public StringBuffer getPrologText(){
+		private StringBuffer getPrologText(){
 			return prologText;
 		}
 	}

@@ -31,7 +31,7 @@ import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.EventType;
 import com.espertech.esper.client.UpdateListener;
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;

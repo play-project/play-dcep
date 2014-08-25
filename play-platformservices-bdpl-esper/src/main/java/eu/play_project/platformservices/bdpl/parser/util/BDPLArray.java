@@ -1,15 +1,20 @@
 /**
  * 
  */
-package eu.play_project.platformservices.bdpl.parser.array;
+package eu.play_project.platformservices.bdpl.parser.util;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
-import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 
 /**
+ * The class of BDPL array. An array is an object of String[length][dimension][2]. 
+ * If an element of array is a RDF literal, then in String[][][0] the label is saved.
+ * In String[][][1] the whole literal. For other cases the element is saved in String[][][0].
+ * 
+ * The read() method is protected by a read-lock, and write() by a write-lock;
+ * 
  * @author ningyuan 
  * 
  * Jun 26, 2014
@@ -21,10 +26,16 @@ public class BDPLArray {
     private final Lock r = rwl.readLock();
     private final Lock w = rwl.writeLock();
     
-    // size: static array -1, dynamic array > 0
+    /*
+     *  size: static array -1 
+     *        dynamic array > 0
+     */
     private int size = -1, length = 0;
     private BDPLArrayElement head, tail;
     
+    /*
+     * dimension of this array
+     */
     private int dimension = 0;
 
 	/**
@@ -119,6 +130,11 @@ public class BDPLArray {
     	return length;
     }
     
+    /**
+     * Read all elements in the array
+     * 
+     * @return all elements in the array. (never be null)
+     */
     public String[][][] read(){
     	
     	try{
@@ -141,8 +157,9 @@ public class BDPLArray {
     }
     
     /**
+     * Write an element into the array.
      * 
-     * @param add 
+     * @param add (must not be null)
      * @throws BDPLArrayException
      */
     public void write(String[][] add) throws BDPLArrayException{
@@ -150,10 +167,11 @@ public class BDPLArray {
     		return;
     	}
     	
+    	// dynamic array
     	if(size > -1){
     		try{
 	    		w.lock();
-	    		// 
+	    		// array is full
 	    		if(length == size){
 	    			if(length > 1){
 	    				head.setContent(add);
@@ -167,6 +185,7 @@ public class BDPLArray {
 	    				head.setContent(add);
 	    			}
 	    		}
+	    		// array is not full
 	    		else if(length < size){
 	    			BDPLArrayElement e = new BDPLArrayElement(add);
 	    			
@@ -193,9 +212,9 @@ public class BDPLArray {
     }
     
     /**
+     * Write many elements into the array.
      * 
-     * 
-     * @param adds 
+     * @param adds (must not be null)
      * @throws BDPLArrayException
      */
     public void write(String [][][] adds) throws BDPLArrayException{
@@ -203,6 +222,7 @@ public class BDPLArray {
     		return;
     	}
     	
+    	// dynamic array
     	if(size > -1){
 	    	
 	    	try{
@@ -242,6 +262,9 @@ public class BDPLArray {
     	}
     }
     
+    /*
+     * Inner wrapper class for bdpl array element
+     */
     private static class BDPLArrayElement{
     	
     	private BDPLArrayElement next = null;
@@ -252,29 +275,29 @@ public class BDPLArray {
     	 */
     	private String[][] content;
     	
-    	public BDPLArrayElement(String[][] content){
+    	private BDPLArrayElement(String[][] content){
     		if(content == null){
     			throw new IllegalArgumentException();
     		}
     		this.content = content;
     	}
     	
-    	public String[][] getContent(){
+    	private String[][] getContent(){
     		return content;
     	}
     	
-    	public void setContent(String[][] content){
+    	private void setContent(String[][] content){
     		if(content == null){
     			throw new IllegalArgumentException();
     		}
     		this.content = content;
     	}
 
-    	public BDPLArrayElement getNext() {
+    	private BDPLArrayElement getNext() {
     		return this.next;
     	}
 
-    	public void setNext(BDPLArrayElement next) {
+    	private void setNext(BDPLArrayElement next) {
     		this.next = next;
     	}
     }

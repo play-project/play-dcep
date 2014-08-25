@@ -28,7 +28,7 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResultBindingData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResults;
@@ -132,6 +132,7 @@ public class RealTimeResultBindingFilter {
 									content.put(name, var);
 								}
 									System.out.println();
+									
 								varBindings.add(content);
 							}
 						}
@@ -143,6 +144,7 @@ public class RealTimeResultBindingFilter {
 								return false;
 							}
 						}
+						
 					}
 				} 
 					System.out.println("RealTimeResultBindingFilter array filter: "+ret);
@@ -180,22 +182,25 @@ public class RealTimeResultBindingFilter {
 									System.out.print(name+": "+var[0]+"   "+var[1]+"   ");
 									
 								content.put(name, var);
+								
 							}
 								System.out.println();
 							varBindings.add(content);
+							
 						}
 					}
 					
-					//TODO insert multiple results, but listener retrieve only one
+					
+					/*
+					 * real time result
+					 */
+					realTimeResults.put(varBindings);
+					
+					/*
+					 * dynamic arrays
+					 */
 					for(Map<String, String[]> varBinding : varBindings){
-						/*
-						 * real time result
-						 */
-						realTimeResults.put(varBinding);
 						
-						/*
-						 * dynamic arrays
-						 */
 						for(SubQueryTableEntry dArrayEntrie : dArrayEntries){
 							BDPLArray array = dArrayEntrie.getArray();
 							String [] sVars = dArrayEntrie.getSelectedVars();

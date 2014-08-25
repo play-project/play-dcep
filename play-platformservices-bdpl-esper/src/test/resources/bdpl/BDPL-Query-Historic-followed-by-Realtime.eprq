@@ -19,4 +19,3 @@ PREFIX :       <http://events.event-processing.org/types/>
    		?e2 :date ?pub_date 
   	}
  }
-  

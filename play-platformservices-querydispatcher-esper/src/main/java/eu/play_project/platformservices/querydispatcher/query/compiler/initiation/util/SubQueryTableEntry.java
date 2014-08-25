@@ -4,7 +4,7 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util;
 
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
 
 /**

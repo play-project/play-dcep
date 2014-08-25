@@ -36,7 +36,8 @@ public class ExternalFunctionSimpleExpression implements IExternalFunctionExpres
 			this.value = Boolean.valueOf(value);
 		}
 		else if(type.equalsIgnoreCase(VALUE_TYPE_STR)){
-			//TODO check
+			valueType = String.class;
+			this.value = value;
 		}
 		else{
 			throw new BDPLFilterException("Not supported value type "+type+" in external function expression");

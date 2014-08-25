@@ -33,17 +33,21 @@ import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilderTreeConstants;
 import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArray;
-import eu.play_project.platformservices.bdpl.parser.array.BDPLArrayType;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayType;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
 
 
 
 /**
- * process all array variables in a bdpl query, create array variable table
+ * A processor of BDPL grammatic tree. It processes array variables in a BDPL query
+ * and create BDPLArrayTable.
+ * 
+ * Before calling this processor, the compiler data structure, BDPLVarTable and text of prolog
+ * must be available.
  * 
  * @author ningyuan 
  * 
@@ -52,6 +56,14 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
  */
 public class BDPLArrayVarProcessor {
 	
+	/**
+	 * 
+	 * @param qc
+	 * @param varTable
+	 * @param prologText
+	 * @return
+	 * @throws MalformedQueryException
+	 */
 	public static BDPLArrayTable process(ASTOperationContainer qc, BDPLVarTable varTable, String prologText)
 			throws MalformedQueryException{
 		ArrayTableCreator atCreator = new ArrayTableCreator(prologText);
@@ -60,7 +72,16 @@ public class BDPLArrayVarProcessor {
 		
 		try {
 			qc.jjtAccept(atCreator, data);
-			return data.getArrayTable();
+			BDPLArrayTable arrayTable = data.getArrayTable();
+				
+				// for test
+				System.out.println("\nBDPLArrayTable arrayTable: ");
+				for(String key : arrayTable.keySet()){
+					BDPLArrayTableEntry arrayEntry = arrayTable.get(key);
+					System.out.println(key+"   "+arrayEntry.getSource());
+				}
+
+			return arrayTable;
 			
 		} catch (VisitorException e) {
 			
@@ -69,8 +90,8 @@ public class BDPLArrayVarProcessor {
 	}
 	
 	private static class ArrayTableCreatorData{
-		
-		int anonymousIndex = 0;
+		// index of anonymous BDPL array
+		private int anonymousIndex = 0;
 		
 		private BDPLArrayTable arrayTable = new BDPLArrayTable();
 		
@@ -80,19 +101,19 @@ public class BDPLArrayVarProcessor {
 		// variables in real time event pattern (the content should not be changed)
 		private final Set<String> realTimeCommonVars;
 		
-		public Set<String> getRealTimeCommonVars() {
+		private Set<String> getRealTimeCommonVars() {
 			return this.realTimeCommonVars;
 		}
 
-		public ArrayTableCreatorData(Set<String> realTimeCommonVars){
+		private ArrayTableCreatorData(Set<String> realTimeCommonVars){
 			this.realTimeCommonVars = realTimeCommonVars;
 		}
 		
-		public StringBuffer getSourceText(){
+		private StringBuffer getSourceText(){
 			return sourceText;
 		}
 		
-		public BDPLArrayTable getArrayTable(){
+		private BDPLArrayTable getArrayTable(){
 			return arrayTable;
 		}
 		
@@ -210,9 +231,9 @@ public class BDPLArrayVarProcessor {
 				throw new VisitorException("A size must be declared for a dynamic array.");
 			}
 			
-			// the 1st child of ASTArrayDecl must be a ArrayDef. !!! Pay attention to grammar file
+			// the 2nd child of ASTArrayDecl must be a ArrayDef. !!! Pay attention to grammar file
 			// a ArrayDef has a 'source' property
-			Node arrayDefNode = node.jjtGetChild(0);
+			Node arrayDefNode = node.jjtGetChild(1);
 			BDPLArrayType arrayType = (BDPLArrayType)arrayDefNode.jjtAccept(this, data);
 		
 			
@@ -243,6 +264,14 @@ public class BDPLArrayVarProcessor {
 			
 			BDPLArrayTable table = ((ArrayTableCreatorData)data).getArrayTable();
 			
+			List<ASTArrayVar> arrayNodes = node.jjtGetChildren(ASTArrayVar.class);
+			for(ASTArrayVar arrayNode : arrayNodes){
+				ASTVar varNode = arrayNode.jjtGetChild(ASTVar.class);
+				if(!table.contain(varNode.getName())){
+					throw new VisitorException("External function contains undefined array variable ?"+varNode.getName()+"()");
+				}
+			}
+			
 			List<ASTStaticArrayDef1> ayArrayNodes = node.jjtGetChildren(ASTStaticArrayDef1.class);
 			
 			StringBuffer arrayName = new StringBuffer();
@@ -264,7 +293,6 @@ public class BDPLArrayVarProcessor {
 				((ArrayTableCreatorData)data).anonymousIndex++;
 				
 				try{
-					
 					table.add(arrayName.toString(), entry);
 				}
 				catch(BDPLArrayException ae){
@@ -283,8 +311,6 @@ public class BDPLArrayVarProcessor {
 				node.jjtReplaceChild(ayArrayNode, repNode);
 			}
 			
-			//TODO check array var nodes
-			
 			return data;
 		}
 		
@@ -292,6 +318,9 @@ public class BDPLArrayVarProcessor {
 		public Object visit(ASTArrayVar node, Object data)
 				throws VisitorException
 		{
+			/*
+			 * in dynamic array declaration
+			 */
 			
 			BDPLArray ret = null;
 			// the 1st child of ASTArrayVariable must be ASTVar !!! Pay attention to grammar file
@@ -316,7 +345,7 @@ public class BDPLArrayVarProcessor {
 				throws VisitorException
 		{
 			/*
-			 *	(checked) ?x ... AS ?x(size) 
+			 *	INSERT INTO ?x(size) VALUES (checked) (?x, ... ?y)
 			 */
 			Set<String> realTimeCommonVars = ((ArrayTableCreatorData)data).getRealTimeCommonVars();
 			
@@ -342,7 +371,7 @@ public class BDPLArrayVarProcessor {
 				throws VisitorException
 		{
 			/*
-			 * 	{ SUB CONSTRUCT QUERY } AS ?x(size)
+			 * 	INSERT INTO ?x(size) SUB CONSTRUCT QUERY 
 			 */
 			
 			StringBuffer sourceText = ((ArrayTableCreatorData)data).getSourceText();
@@ -363,7 +392,7 @@ public class BDPLArrayVarProcessor {
 				sourceText.append(token.image+" ");
 			}
 			
-			node.setSource(sourceText.toString());
+			node.setSource(prologText+" "+sourceText.toString());
 			sourceText.delete(0, sourceText.length());
 			
 			return BDPLArrayType.DYNAMIC_QUERY;
@@ -374,8 +403,8 @@ public class BDPLArrayVarProcessor {
 				throws VisitorException
 		{
 			/*
-			 * 	(1 2 3) AS ?x()
-			 *  (1 2 3) anonymous array _x()
+			 * 	(1, 2, 3;) AS ?x()
+			 *  (1, 2, 3;) anonymous array _x()
 			 */
 			StringBuffer sourceText = ((ArrayTableCreatorData)data).getSourceText();
 			

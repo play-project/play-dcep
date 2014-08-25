@@ -1,9 +1,11 @@
 /**
  * 
  */
-package eu.play_project.platformservices.bdpl.parser.array;
+package eu.play_project.platformservices.bdpl.parser.util;
 
 /**
+ * Type of BDPL array
+ * 
  * @author ningyuan 
  * 
  * Jul 2, 2014
