@@ -20,7 +20,7 @@ Big Data Processing Language (BDPL)
 Benchmark SRBench
 -----------------
 Below is a feature matrix of BDPL. It is based on
-[SRBench: A Streaming RDF/SPARQL Benchmark](http://www.w3.org/wiki/SRBench) (also on [jpcik/srbench](Github) comparing
+[SRBench: A Streaming RDF/SPARQL Benchmark](http://www.w3.org/wiki/SRBench) (see also [jpcik/srbench](https://github.com/jpcik/srbench/) comparing
 previous RDF streamin solutions SPARQLStream, CQELS and C-SPARQL. We used the
 feature benchmark queries defined in SRBench and implemented them in BDPL. The results
 are shown below.
