@@ -8,9 +8,9 @@ import java.util.List;
 
 
 /**
- * An SeqClause is an expression of many Term connected with operator "seq".
- * On a SeqClause a TimeDelayTable may be attached describing all time delays
- * between events.
+ * An SeqClause is an expression of many Terms connected with operator "seq".
+ * On a SeqClause a TimeDelayTable may be attached to describe all time delays
+ * between events in this SeqCluase.
  * 
  * SeqClause := Term ( seq Term )*
  * 

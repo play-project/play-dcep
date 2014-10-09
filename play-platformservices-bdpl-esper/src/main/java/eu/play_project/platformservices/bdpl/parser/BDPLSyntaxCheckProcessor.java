@@ -194,7 +194,7 @@ public class BDPLSyntaxCheckProcessor {
 				switch(state){
 					// before array filter
 					case 0:{
-						if(token.image.equalsIgnoreCase("arrayfilter")){
+						if(token.image.equalsIgnoreCase(BDPLConstants.ARRAY_FILTER)){
 							state = 1;
 						}
 						else{
@@ -231,7 +231,7 @@ public class BDPLSyntaxCheckProcessor {
 						else if(token.image.equalsIgnoreCase(".")){
 							state = 0;
 						}
-						else if(token.image.equalsIgnoreCase("arrayfilter")){
+						else if(token.image.equalsIgnoreCase(BDPLConstants.ARRAY_FILTER)){
 							state = 1;
 						}
 						else{

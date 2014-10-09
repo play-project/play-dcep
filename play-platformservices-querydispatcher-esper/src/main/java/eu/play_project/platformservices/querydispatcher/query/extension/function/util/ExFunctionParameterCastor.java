@@ -4,6 +4,9 @@
 package eu.play_project.platformservices.querydispatcher.query.extension.function.util;
 
 /**
+ * Cast parameters from events to parameters for external functions
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 8, 2014

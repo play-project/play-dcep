@@ -28,4 +28,6 @@ public class BDPLConstants {
 	public static final String SPARQL_FILTER_VAR_NOT_EQUAL = "FILTER (!sameTerm(?%s, ?%s))";
 	
 	public static final String SPARQL_FILTER_ENDTIME_EARLER = "FILTER (?%s < ?%s)";
+	
+	public static final String ARRAY_FILTER = "ARRAYFILTER";
 }

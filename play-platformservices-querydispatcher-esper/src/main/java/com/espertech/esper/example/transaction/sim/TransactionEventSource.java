@@ -11,7 +11,6 @@ package com.espertech.esper.example.transaction.sim;
 
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
-import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameMapEvent;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -67,7 +66,7 @@ public class TransactionEventSource extends EventSource {
     }
 
     protected List<Object> createNextTransaction() {
-    	MapEvent mapEvent;
+    	MapEvent<SesameEventModel> mapEvent;
     	
         List<Object> t = new ArrayList<Object>();
 
@@ -88,7 +87,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event1"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event1 rdf1 = new Event1(m);*/
-        	mapEvent = new SesameMapEvent(new SesameEventModel(m));
+        	mapEvent = new MapEvent<SesameEventModel>(new SesameEventModel(m));
         	
         	MapEventWrapper rdf1 = new MapEventWrapper("rdf1", mapEvent);
         	
@@ -110,7 +109,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event2"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event2 rdf2 = new Event2(m);*/
-        	mapEvent = new SesameMapEvent(new SesameEventModel(m));
+        	mapEvent = new MapEvent<SesameEventModel>(new SesameEventModel(m));
         	
         	MapEventWrapper rdf2 = new MapEventWrapper("rdf2", mapEvent);
         	t.add(rdf2);
@@ -129,7 +128,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event3"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event3 rdf3 = new Event3(m);*/
-        	mapEvent = new SesameMapEvent(new SesameEventModel(m));
+        	mapEvent = new MapEvent<SesameEventModel>(new SesameEventModel(m));
         	
         	MapEventWrapper rdf3 = new MapEventWrapper("rdf3", mapEvent);
         	t.add(rdf3);

@@ -57,7 +57,7 @@ public class ExFunctionManager {
 		Method fm = null;
 		for(Method m : fc.getMethods()){
 			
-			if(m.getName().equals(ExFunction.FUN_NAME)){
+			if(m.getName().equals(ExFunction.METHOD_NAME)){
 				fm = m;
 				break;
 			}
@@ -98,7 +98,7 @@ public class ExFunctionManager {
 		
 		Method fm = null;
 		for(Method m : fc.getMethods()){
-			if(m.getName().equals(ExFunction.FUN_NAME)){
+			if(m.getName().equals(ExFunction.METHOD_NAME)){
 				fm = m;
 				break;
 			}
@@ -137,7 +137,7 @@ public class ExFunctionManager {
 			}
 		}
 		else{
-			throw new ExFunctionLoadException("Could not find \'"+ExFunction.FUN_NAME+"\' method in "+fcName);
+			throw new ExFunctionLoadException("Could not find \'"+ExFunction.METHOD_NAME+"\' method in "+fcName);
 		}
 		
 		return false;

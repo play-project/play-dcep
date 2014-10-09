@@ -3,6 +3,7 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.simulation;
 
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -10,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPException;
@@ -22,10 +23,8 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
-
-
-
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.CoordinateListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
@@ -35,6 +34,9 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionLoadException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionParameterTypeException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia.ArrEventSim;
+import eu.play_project.platformservices.querydispatcher.query.simulation.coordinateUI.CoordinatePanel;
+
 
 
 /**
@@ -51,12 +53,18 @@ public class SimMain {
 	public static void main(String[] args) {
 		Object lock = new Object();
 		
-		TransactionSamplePlugin plugin = null;
+		String engineURI = "TestEspEngine";
 		EPServiceProvider epService = null;
+		TransactionSamplePlugin plugin = null;
+		
+		JFrame frame = null;
+		CoordinatePanel panel = null;
 		
 		int statementCounter = 0;
 		Map<Integer, EPStatementEntry> stmts = new HashMap<Integer, EPStatementEntry>();
 		
+		Map<String, Thread> eFeeders = new HashMap<String, Thread>();
+		eFeeders.put("arr", null);
 		
 		ExFunctionManager fManager = ExFunctionManager.getInstance();
 		
@@ -82,36 +90,82 @@ public class SimMain {
 					String [] as = cmd.split("\\s+");
 					
 					if(as.length > 1){
-						synchronized(lock){
-							if(epService != null){
-								try{
-									int i = Integer.valueOf(as[1]);
-									EPStatementEntry entry = stmts.get(i);
-									if(entry != null){
+						if(as[1].equals("-s")){
+							synchronized(lock){
+								if(epService != null){
+									try{
+										int i = Integer.valueOf(as[2]);
+										EPStatementEntry entry = stmts.get(i);
+										if(entry != null){
 										entry.getStatement().start();
-										System.out.println("[Statement "+as[1]+" is started]");
+										System.out.println("[Statement "+as[2]+" is started]");
 										
+										}
+										else{
+											System.out.println("[No statement with name "+as[2]+"]");
+										
+										}
 									}
-									else{
-										System.out.println("[No statement with name "+as[1]+"]");
-										
+									catch(NumberFormatException e){
+										System.out.println("[No statement with name "+as[2]+"]");
+										continue;
 									}
 								}
-								catch(NumberFormatException e){
-									System.out.println("[No statement with name "+as[1]+"]");
-									continue;
+								else{
+									System.out.println("[Engine is not started]");
+								
+								}
+							}
+						}
+						else if(as[1].equals("-e")){
+							synchronized(lock){
+							if(epService != null){
+								String en = as[2];
+								if(en.equals("default")){
+									plugin = new TransactionSamplePlugin();
+									plugin.postInitialize(engineURI, epService);
+									System.out.println("[Event Feeding is started]");
+								}
+								else if(en.equals("arr")){
+									long interval = Long.valueOf(as[3]);
+									Thread et = eFeeders.get(en);
+									if(et == null){
+										et = new Thread(new ArrEventSim(interval, as[4], epService));
+										eFeeders.put(en, et);
+										et.start();
+										System.out.println("[Arr Event Feeding is started]");
+									}
+									else{
+										System.out.println("[Arr Event Feeding is already started]");
+									}
+								}
+								else{
+									System.out.println("[Unknown Event Feeding]");
 								}
 							}
 							else{
 								System.out.println("[Engine is not started]");
-								
+							}
+							}
+						}
+						else if(as[1].equals("-f")){
+							synchronized(lock){
+								if(frame == null){
+										panel = new CoordinatePanel();
+							            frame = new JFrame("Coordinate System");
+							            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+							            frame.add(panel);
+							            frame.setSize(1020,620);
+							            frame.setResizable(false);
+							            frame.setVisible(true);
+							    }
 							}
 						}
 					}
 					else{
 						synchronized(lock){
 							if(epService == null){
-								String engineURI = "TestEspEngine";
+								
 								
 								 // Configure engine with event names to make the statements more readable.
 						        // This could also be done in a configuration file.
@@ -127,9 +181,16 @@ public class SimMain {
 						        
 						        epService = EPServiceProviderManager.getProvider(engineURI, configuration);
 						        System.out.println("[Engine is started]");
-								plugin = new TransactionSamplePlugin();
-								plugin.postInitialize(engineURI, epService);
-								System.out.println("[Event Feeding is started]");
+								
+						        if(frame == null){
+									panel = new CoordinatePanel();
+						            frame = new JFrame("Coordinate System");
+						            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+						            frame.add(panel);
+						            frame.setSize(1020,620);
+						            frame.setResizable(false);
+						            frame.setVisible(true);
+						        }
 							}
 							else{
 								System.out.println("[Engine is already started]");
@@ -140,25 +201,54 @@ public class SimMain {
 				else if (cmd.startsWith("stop")){
 					String [] as = cmd.split("\\s+");
 					
-					if(as.length > 1){
+					if(as.length > 2){
 						synchronized(lock){
 							if(epService != null){
-								try{
-									int i = Integer.valueOf(as[1]);
-									EPStatementEntry entry = stmts.get(i);
-									if(entry != null){
-										entry.getStatement().stop();
-										System.out.println("[Statement "+as[1]+" is stopped]");
-										
+								
+								if(as[1].equals("-s")){
+									try{
+										int i = Integer.valueOf(as[2]);
+										EPStatementEntry entry = stmts.get(i);
+										if(entry != null){
+											entry.getStatement().stop();
+											System.out.println("[Statement "+as[2]+" is stopped]");
+											
+										}
+										else{
+											System.out.println("[No statement with name "+as[2]+"]");
+											
+										}
 									}
-									else{
-										System.out.println("[No statement with name "+as[1]+"]");
-										
+									catch(NumberFormatException e){
+										System.out.println("[No statement with name "+as[2]+"]");
+										continue;
 									}
 								}
-								catch(NumberFormatException e){
-									System.out.println("[No statement with name "+as[1]+"]");
-									continue;
+								else if(as[1].equals("-e")){
+									String en = as[2];
+									if(en.equals("default")){
+										if(plugin != null){
+											plugin.destroy();
+											plugin = null;
+										}
+										else{
+											System.out.println("[Event Feeding is already stopped]");
+										}
+									}
+									else{
+										Thread et = eFeeders.get(en);
+										if(et != null){
+											et.interrupt();
+											eFeeders.put(en, null);
+											et.join();
+										}
+										else{
+											
+										}
+									}
+								}
+								else{
+									System.out.println("[Unknown stop command]");
 								}
 							}
 							else{
@@ -171,8 +261,20 @@ public class SimMain {
 						synchronized(lock){
 							if(epService != null){
 								stmts.clear();
-								plugin.destroy();
-								plugin = null;
+								if(plugin != null){
+									plugin.destroy();
+									plugin = null;
+								}
+								Set<String> efk = eFeeders.keySet();
+								for(String en : efk){
+									Thread et = eFeeders.get(en);
+									if(et != null){
+										et.interrupt();
+										eFeeders.put(en, null);
+										et.join();
+									}
+								}
+								
 								epService = null;
 								System.out.println("[Engine is stopped]");
 							}
@@ -294,7 +396,14 @@ public class SimMain {
 									}
 									
 									EPStatement testStmt = epService.getEPAdministrator().create(prepared);
-									testStmt.addListener(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
+									//testStmt.addListener(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
+									
+									//XXX coordinate listener
+									CoordinateListener cLis = (CoordinateListener)(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
+									
+									//TODO check panel not null
+									cLis.setPanel(panel);
+									testStmt.addListener(cLis);
 									
 									/*EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getEPL());
 									testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());*/
@@ -336,8 +445,24 @@ public class SimMain {
 					synchronized(lock){
 						if(epService != null){
 							stmts.clear();
-							plugin.destroy();
-							plugin = null;
+							if(plugin != null){
+								plugin.destroy();
+								plugin = null;
+							}
+							Set<String> efk = eFeeders.keySet();
+							for(String en : efk){
+								Thread et = eFeeders.get(en);
+								if(et != null){
+									et.interrupt();
+									eFeeders.put(en, null);
+									et.join();
+								}
+							}
+							
+							if(frame != null){
+								frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+							}
+							
 							epService = null;
 						}
 					}
@@ -441,5 +566,6 @@ public class SimMain {
 		}
 
 	}
-
+	
+	
 }

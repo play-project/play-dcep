@@ -53,7 +53,6 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
 
 
-
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLConstants;
@@ -81,7 +80,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDP
 public class EPLTranslationProcessor {
 	
 	public static EPLTranslationData process(ASTOperationContainer qc, String prologText)
-			throws MalformedQueryException{
+			throws EPLTranslateException{
 		EPLTranslator translator = new EPLTranslator();
 		
 		EPLTranslatorData data = new EPLTranslatorData(prologText);
@@ -95,7 +94,7 @@ public class EPLTranslationProcessor {
 			return ret;
 			
 		} catch (VisitorException e) {
-			throw new MalformedQueryException(e.getMessage());
+			throw new EPLTranslateException(e.getMessage());
 		}
 	}
 	
@@ -146,13 +145,16 @@ public class EPLTranslationProcessor {
 	
 	private static class EPLTranslator extends ASTVisitorBase {
 		
+		/*
+		 * the maximal number of 
+		 */
 		private int MAX_NUM_SEQ_CLAUSE = 24;
 		
 		/*
 		 * name of end time variable 
 		 * !!! could have conflict with user defined variables
 		 */
-		private String VAR_ENDTIME = "_ET_%s_";
+		private String VAR_ENDTIME = "_TimeStamp__%s_";
 		
 		private int etVarIndex = 0;
 		
@@ -577,7 +579,7 @@ public class EPLTranslationProcessor {
 				switch(state){
 					// out of array filter
 					case 0:{
-						if(token.image.equalsIgnoreCase("arrayfilter")){
+						if(token.image.equalsIgnoreCase(BDPLConstants.ARRAY_FILTER)){
 							state = 1;
 						}
 						else{
@@ -614,7 +616,7 @@ public class EPLTranslationProcessor {
 						else if(token.image.equalsIgnoreCase(".")){
 							state = 0;
 						}
-						else if(token.image.equalsIgnoreCase("arrayfilter")){
+						else if(token.image.equalsIgnoreCase(BDPLConstants.ARRAY_FILTER)){
 							state = 1;
 						}
 						else{
@@ -1690,6 +1692,8 @@ public class EPLTranslationProcessor {
 		 * Get EPL from standard expression.
 		 */
 		private String getEPL(OrClause result, EPLTranslatorData data) throws EPLTranslateException{
+			//TODO insert statement
+			
 			StringBuffer epl = new StringBuffer();
 			
 			epl.append(String.format(EPLConstants.SELECT, "*")+" ");

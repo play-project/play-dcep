@@ -15,16 +15,34 @@ import java.lang.reflect.Method;
  *
  */
 public class ExFunction {
-	public static final String FUN_NAME = "execute";
+	/**
+	 * the name of routine method in function class
+	 */
+	public static final String METHOD_NAME = "execute";
 	
+	/*
+	 * canonical name of function class
+	 */
 	private final String className;
 	
+	/*
+	 * class object of function
+	 */
 	private final Class exfunction;
 	
+	/*
+	 * classes of parameter type
+	 */
 	private final Class[] paraTypes;
 	
+	/*
+	 * class of return type
+	 */
 	private final Class retType;
 	
+	/*
+	 * cast types used by caster when casting parameters from events for function calling
+	 */
 	private int[] castTypes;
 	
 	public ExFunction(String cn, Class ef, Class[] pts, Class r) throws ExFunctionParameterTypeException{
@@ -53,11 +71,12 @@ public class ExFunction {
 	}
 	
 	/**
-	 * invoke the actual function with parameters. If parameter is array, please input a String[length][dimension][2],
-	 * if parameter is simple variable, please input a String
+	 * invoke the actual function with parameters from events. If parameter is type array, 
+	 * please pass an object String[length][dimension][2], if parameter is simple variable, 
+	 * please pass an object String
 	 * 
 	 * 
-	 * @param parameters parameters from bdpl query. pass a String[][][] if it is an array
+	 * @param parameters parameters from events. pass a String[][][] if it is an array
 	 * 		  pass a String if it is an simple variable (must not be null)
 	 * 
 	 * @return
@@ -74,7 +93,7 @@ public class ExFunction {
 				paras[i] = ExFunctionParameterCastor.cast(castTypes[i], parameters[i]);
 			}
 			
-			Method m = exfunction.getMethod(FUN_NAME, paraTypes);
+			Method m = exfunction.getMethod(METHOD_NAME, paraTypes);
 			
 			return m.invoke(exfunction.newInstance(), paras);
 		
@@ -121,7 +140,7 @@ public class ExFunction {
 	}
 	
 	/*
-	 * change parameter types to casting types.
+	 * make parameter class types to casting types.
 	 * allowd parameter types are: int, double, String
 	 */
 	private void makeCastType(Class[] pts) throws ExFunctionParameterTypeException{

@@ -20,8 +20,8 @@ public class ArrayInitiator {
 	
 	private final IArrayMaker arrayMaker;
 	
-	public ArrayInitiator(IArrayMaker m){
-		arrayMaker = m;
+	public ArrayInitiator(){
+		arrayMaker = ArrayMakerFactory.getArrayMaker("default");
 	}
 	
 	public SubQueryTable initiate(BDPLArrayTable arrayTable) throws InitiateException{

@@ -3,9 +3,8 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.translation;
 
-import org.openrdf.query.MalformedQueryException;
-
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompilerData;
 
@@ -26,7 +25,7 @@ public class TranslationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
 		try {
 			data.setEplTranslationData(EPLTranslationProcessor.process(data.getQueryContainer(), data.getPrologText()));
 			
-		} catch (MalformedQueryException e) {
+		} catch (EPLTranslateException e) {
 			throw new BDPLCompileException(e.getMessage());
 		}
 	}

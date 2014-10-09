@@ -13,7 +13,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.translat
  * Apr 4, 2014
  *
  */
-public class NotEntry implements IEntry{
+public class NotEntry implements IEntry {
 	
 	private Term notStart;
 	private Term not;
