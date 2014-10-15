@@ -7,9 +7,9 @@ import java.util.List;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunction;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionInvocationException;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionInvocationException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
 
 /**
  * @author ningyuan 
@@ -30,11 +30,11 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	
 	private List<String[]> paras;
 	
-	private final ExFunctionTable ft = ExFunctionTable.getInstance();
+	private final FunctionTable ft = FunctionTable.getInstance();
 	
 
 	public ExternalFunctionFunctionExpression(String functionName) throws BDPLFilterException{
-		ExFunction ef = ft.getFunction(functionName);
+		IFunction ef = ft.getFunction(functionName);
 		if(ef == null){
 			throw new BDPLFilterException("External function \'"+functionName+"\' is not loaded into system");
 		}
@@ -69,7 +69,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	 * @throws BDPLFilterException 
 	 */
 	public void setParameters(List<String[]> paras) throws BDPLFilterException{
-		ExFunction ef = ft.getFunction(fn);
+		IFunction ef = ft.getFunction(fn);
 		if(ef == null){
 			throw new BDPLFilterException("External function \'"+fn+"\' is not loaded into system");
 		}
@@ -126,7 +126,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	 */
 	@Override
 	public Object getValue() throws BDPLFilterException{
-		ExFunction ef = ft.getFunction(fn);
+		IFunction ef = ft.getFunction(fn);
 		if(ef == null){
 			throw new BDPLFilterException("External function \'"+fn+"\' is not loaded into system");
 		}
@@ -163,7 +163,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 		Object ret;
 		try {
 			ret = ef.invoke(pObjects);
-		} catch (ExFunctionInvocationException e) {
+		} catch (FunctionInvocationException e) {
 			throw new BDPLFilterException(e.getMessage());
 		}
 		

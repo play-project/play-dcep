@@ -26,6 +26,11 @@ public class SubQueryTableEntry {
 	private BDPLArray array;
 	
 	/*
+	 * the method used to parse a sparql literal into an array
+	 */
+	private String toArrayMethod = null;
+	
+	/*
 	 * the selected variables of the sub query
 	 */
 	private String[] selectedVars;
@@ -53,4 +58,13 @@ public class SubQueryTableEntry {
 	public void setSelectedVars(String[] selectedVars) {
 		this.selectedVars = selectedVars;
 	}
+	
+	public String getToArrayMethod() {
+		return this.toArrayMethod;
+	}
+
+	public void setToArrayMethod(String toArrayMethod) {
+		this.toArrayMethod = toArrayMethod;
+	}
+
 }

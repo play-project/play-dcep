@@ -17,6 +17,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef1;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef2;
+import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef3;
 import org.openrdf.query.parser.bdpl.ast.ASTExternalFunctionParameterDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTIRI;
 import org.openrdf.query.parser.bdpl.ast.ASTNumericLiteral;
@@ -191,15 +192,15 @@ public class BDPLArrayVarProcessor {
 				// the 1st child of ASTContext must be ASTVar !!! Pay attention to grammar file
 				String arrayName = ((ASTVar)node.jjtGetChild(0)).getName();
 				
-				// the 2nd child of ASTContextClause must be a ArrayDef. !!! Pay attention to grammar file
-				// a ArrayDef has a 'source' property
-				Node arrayDefNode = node.jjtGetChild(1);
-				BDPLArrayType arrayType = (BDPLArrayType)arrayDefNode.jjtAccept(this, data);
+				// the 2nd child of ASTContextClause must be an IArrayDecl. !!! Pay attention to grammar file
+				// an IArrayDecl has a 'source' property
+				Node IarrayDecl = node.jjtGetChild(1);
+				BDPLArrayType arrayType = (BDPLArrayType)IarrayDecl.jjtAccept(this, data);
 				
 				// create new array table entry for static array
 				BDPLArrayTableEntry entry = new BDPLArrayTableEntry();
 				entry.setType(arrayType);
-				entry.setSource(((IArrayDecl)arrayDefNode).getSource());
+				entry.setSource(((IArrayDecl)IarrayDecl).getSource());
 				
 				try{
 					
@@ -231,17 +232,17 @@ public class BDPLArrayVarProcessor {
 				throw new VisitorException("A size must be declared for a dynamic array.");
 			}
 			
-			// the 2nd child of ASTArrayDecl must be a ArrayDef. !!! Pay attention to grammar file
-			// a ArrayDef has a 'source' property
-			Node arrayDefNode = node.jjtGetChild(1);
-			BDPLArrayType arrayType = (BDPLArrayType)arrayDefNode.jjtAccept(this, data);
+			// the 2nd child of ASTArrayDecl must be an IArrayDecl. !!! Pay attention to grammar file
+			// an IArrayDecl has a 'source' property
+			Node IarrayDecl = node.jjtGetChild(1);
+			BDPLArrayType arrayType = (BDPLArrayType)IarrayDecl.jjtAccept(this, data);
 		
 			
 			// create new array table entry for dynamic array
 			BDPLArrayTableEntry entry = new BDPLArrayTableEntry();
 			entry.setArray(array);
 			entry.setType(arrayType);
-			entry.setSource(((IArrayDecl)arrayDefNode).getSource());
+			entry.setSource(((IArrayDecl)IarrayDecl).getSource());
 			
 			try{
 				
@@ -299,6 +300,7 @@ public class BDPLArrayVarProcessor {
 					throw new VisitorException(ae.getMessage());
 				}
 				
+				// replace the node of explicit array with anonymous array variable node
 				ASTArrayVar repNode = new ASTArrayVar(SyntaxTreeBuilderTreeConstants.JJTARRAYVAR);
 				ASTVar varNode = new ASTVar(SyntaxTreeBuilderTreeConstants.JJTVAR);
 				varNode.setName(arrayName.toString());
@@ -366,11 +368,14 @@ public class BDPLArrayVarProcessor {
 			return BDPLArrayType.DYNAMIC_VAR;
 		}
 		
+
 		@Override
 		public Object visit(ASTDynamicArrayDef2 node, Object data)
 				throws VisitorException
 		{
-			/*
+			/* 
+			 *  not used
+			 * 
 			 * 	INSERT INTO ?x(size) SUB CONSTRUCT QUERY 
 			 */
 			
@@ -399,11 +404,40 @@ public class BDPLArrayVarProcessor {
 		}
 		
 		@Override
+		public Object visit(ASTDynamicArrayDef3 node, Object data)
+				throws VisitorException
+		{
+			/*
+			 * 	INSERT INTO ?x(size) VALUES function(?x)
+			 */
+			Set<String> realTimeCommonVars = ((ArrayTableCreatorData)data).getRealTimeCommonVars();
+			
+			StringBuffer sourceText = ((ArrayTableCreatorData)data).getSourceText();
+			
+			String fName = node.jjtGetChild(ASTIRI.class).getValue();
+			sourceText.append(fName+" ");
+			
+			// 2nd child of ASTDynamicArayDef3 must be ASTVar !!! Pay attention to grammar file
+			String var = node.jjtGetChild(ASTVar.class).getName();
+			if(realTimeCommonVars.contains(var)){
+				sourceText.append(var);
+			}
+			else{
+				throw new VisitorException("Selected variable \'"+var+"\' for a dynamic array dose not exist in all possible real time event patterns.");
+			}
+						
+			node.setSource(sourceText.toString());
+			sourceText.delete(0, sourceText.length());
+			
+			return BDPLArrayType.DYNAMIC_VAR_1;
+		}
+		
+		@Override
 		public Object visit(ASTStaticArrayDef1 node, Object data)
 				throws VisitorException
 		{
 			/*
-			 * 	(1, 2, 3;) AS ?x()
+			 * 	CONTEXT ?x { (1, 2, 3;) }
 			 *  (1, 2, 3;) anonymous array _x()
 			 */
 			StringBuffer sourceText = ((ArrayTableCreatorData)data).getSourceText();
@@ -467,7 +501,7 @@ public class BDPLArrayVarProcessor {
 				throws VisitorException
 		{
 			/*
-			 * 	{ SELECT QUERY } AS ?x()
+			 * 	CONTEXT ?x { SELECT QUERY } 
 			 */
 			
 			StringBuffer sourceText = ((ArrayTableCreatorData)data).getSourceText();

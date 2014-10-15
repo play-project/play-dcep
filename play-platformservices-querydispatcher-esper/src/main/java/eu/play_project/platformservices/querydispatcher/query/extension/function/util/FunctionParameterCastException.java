@@ -9,11 +9,11 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
  * Aug 8, 2014
  *
  */
-public class ExFunctionParameterCastException extends Exception {
+public class FunctionParameterCastException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
-	public ExFunctionParameterCastException (String msg){
+	public FunctionParameterCastException (String msg){
 		super(msg);
 	}
 }

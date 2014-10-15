@@ -12,5 +12,5 @@ package eu.play_project.platformservices.bdpl.parser.util;
  *
  */
 public enum BDPLArrayType {
-	STATIC_EXPLICITE, STATIC_QUERY, DYNAMIC_VAR, DYNAMIC_QUERY
+	STATIC_EXPLICITE, STATIC_QUERY, DYNAMIC_VAR, DYNAMIC_VAR_1, DYNAMIC_QUERY
 }

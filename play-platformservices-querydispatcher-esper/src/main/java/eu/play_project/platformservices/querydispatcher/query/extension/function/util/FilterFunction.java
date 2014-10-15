@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * Aug 8, 2014
  *
  */
-public class ExFunction {
+public class FilterFunction implements IFunction{
 	/**
 	 * the name of routine method in function class
 	 */
@@ -45,7 +45,7 @@ public class ExFunction {
 	 */
 	private int[] castTypes;
 	
-	public ExFunction(String cn, Class ef, Class[] pts, Class r) throws ExFunctionParameterTypeException{
+	public FilterFunction(String cn, Class ef, Class[] pts, Class r) throws FunctionParameterTypeException{
 		className = cn;
 		exfunction = ef;
 		
@@ -80,37 +80,38 @@ public class ExFunction {
 	 * 		  pass a String if it is an simple variable (must not be null)
 	 * 
 	 * @return
-	 * @throws ExFunctionInvocationException
+	 * @throws FunctionInvocationException
 	 */
-	public Object invoke(Object ... parameters) throws ExFunctionInvocationException{
+	@Override
+	public Object invoke(Object ... parameters) throws FunctionInvocationException{
 		if(parameters.length != paraTypes.length){
-			throw new ExFunctionInvocationException("Function could not be invocated because of different size of parameters");
+			throw new FunctionInvocationException("Function could not be invocated because of different size of parameters");
 		}
 		
 		try {
 			Object[] paras = new Object[paraTypes.length];
 			for(int i = 0; i < castTypes.length; i++){
-				paras[i] = ExFunctionParameterCastor.cast(castTypes[i], parameters[i]);
+				paras[i] = FilterFunctionParameterCastor.cast(castTypes[i], parameters[i]);
 			}
 			
 			Method m = exfunction.getMethod(METHOD_NAME, paraTypes);
 			
 			return m.invoke(exfunction.newInstance(), paras);
 		
-		}catch (ExFunctionParameterCastException e) {
-			throw new ExFunctionInvocationException(e.getMessage());
+		}catch (FunctionParameterCastException e) {
+			throw new FunctionInvocationException(e.getMessage());
 		} catch (NoSuchMethodException e) {
-			throw new ExFunctionInvocationException(e.getMessage());
+			throw new FunctionInvocationException(e.getMessage());
 		} catch (SecurityException e) {
-			throw new ExFunctionInvocationException(e.getMessage());
+			throw new FunctionInvocationException(e.getMessage());
 		} catch (IllegalAccessException e) {
-			throw new ExFunctionInvocationException(e.getMessage());
+			throw new FunctionInvocationException(e.getMessage());
 		} catch (IllegalArgumentException e) {
-			throw new ExFunctionInvocationException(e.getMessage());
+			throw new FunctionInvocationException(e.getMessage());
 		} catch (InvocationTargetException e) {
-			throw new ExFunctionInvocationException(e.getMessage());
+			throw new FunctionInvocationException(e.getMessage());
 		} catch (InstantiationException e) {
-			throw new ExFunctionInvocationException(e.getMessage());
+			throw new FunctionInvocationException(e.getMessage());
 		} 
 	
 	}
@@ -121,6 +122,7 @@ public class ExFunction {
 	 * @param pts
 	 * @return
 	 */
+	@Override
 	public boolean compareParameterTypes(Class[] pts){
 		if(paraTypes.length == pts.length){
 			for(int i = 0; i < paraTypes.length; i++){
@@ -135,7 +137,8 @@ public class ExFunction {
 		}
 	}
 	
-	String getClassName(){
+	@Override
+	public String getClassName(){
 		return className;
 	}
 	
@@ -143,7 +146,7 @@ public class ExFunction {
 	 * make parameter class types to casting types.
 	 * allowd parameter types are: int, double, String
 	 */
-	private void makeCastType(Class[] pts) throws ExFunctionParameterTypeException{
+	private void makeCastType(Class[] pts) throws FunctionParameterTypeException{
 		castTypes = new int[pts.length];
 		
 		for(int i = 0; i < pts.length; i++){
@@ -159,41 +162,41 @@ public class ExFunction {
 			if(array){
 				
 				if(typeName.equals("java.lang.Double") || typeName.equals("double")){
-					castTypes[i] = ExFunctionParameterCastor.TYPE_ARRAY_DOUBLE;
+					castTypes[i] = FilterFunctionParameterCastor.TYPE_ARRAY_DOUBLE;
 				}
 				else if(typeName.equals("java.lang.Integer") || typeName.equals("int")){
-					castTypes[i] = ExFunctionParameterCastor.TYPE_ARRAY_INT;
+					castTypes[i] = FilterFunctionParameterCastor.TYPE_ARRAY_INT;
 				}
 				else if(typeName.equals("java.lang.String")){
-					castTypes[i] = ExFunctionParameterCastor.TYPE_ARRAY_STR;
+					castTypes[i] = FilterFunctionParameterCastor.TYPE_ARRAY_STR;
 				}
 				else{
-					throw new ExFunctionParameterTypeException("Unsupported parameter type "+typeName+"[]");
+					throw new FunctionParameterTypeException("Unsupported parameter type "+typeName+"[]");
 				}
 				
 			}
 			else{
 				
 				if(typeName.equals("java.lang.Double") || typeName.equals("double")){
-					castTypes[i] = ExFunctionParameterCastor.TYPE_DOUBLE;
+					castTypes[i] = FilterFunctionParameterCastor.TYPE_DOUBLE;
 				}
 				else if(typeName.equals("java.lang.Integer") || typeName.equals("int")){
-					castTypes[i] = ExFunctionParameterCastor.TYPE_INT;
+					castTypes[i] = FilterFunctionParameterCastor.TYPE_INT;
 				}
 				else if(typeName.equals("java.lang.String")){
-					castTypes[i] = ExFunctionParameterCastor.TYPE_STR;
+					castTypes[i] = FilterFunctionParameterCastor.TYPE_STR;
 				}
 				else if(typeName.equals("java.lang.Boolean") || typeName.equals("boolean")){
-					castTypes[i] = ExFunctionParameterCastor.TYPE_BOOLEAN;
+					castTypes[i] = FilterFunctionParameterCastor.TYPE_BOOLEAN;
 				}
 				else{
-					throw new ExFunctionParameterTypeException("Unsupported parameter type "+typeName);
+					throw new FunctionParameterTypeException("Unsupported parameter type "+typeName);
 				}
 			}
 		}
 	}
 	
-	private Class makeReturnType(Class r) throws ExFunctionParameterTypeException{
+	private Class makeReturnType(Class r) throws FunctionParameterTypeException{
 		if(r.isPrimitive()){
 			String retName = r.getCanonicalName();
 			
@@ -207,7 +210,7 @@ public class ExFunction {
 				return Boolean.class;
 			}
 			else{
-				throw new ExFunctionParameterTypeException("Unsupported return type "+retName);
+				throw new FunctionParameterTypeException("Unsupported return type "+retName);
 			}
 		}
 		else{
@@ -215,7 +218,7 @@ public class ExFunction {
 				return String.class;
 			}
 			else{
-				throw new ExFunctionParameterTypeException("Unsupported return type "+r);
+				throw new FunctionParameterTypeException("Unsupported return type "+r);
 			}
 		}
 	}

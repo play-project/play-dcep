@@ -16,11 +16,11 @@ import java.io.InputStream;
  * Aug 6, 2014
  *
  */
-public class ExFunctionClassLoader extends ClassLoader {
+public class FunctionClassLoader extends ClassLoader {
 	
 	private File pathDir;
 	
-	public ExFunctionClassLoader(String path) throws FileNotFoundException{
+	public FunctionClassLoader(String path) throws FileNotFoundException{
 		pathDir = new File(path);
 		
 		if(pathDir == null){

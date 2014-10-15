@@ -227,11 +227,10 @@ public class BDPLArray {
 	    	
 	    	try{
 	    		w.lock();
-	    		if(length + adds.length > size){
-	    			throw new BDPLArrayException("Writing too many elements into  a dynamic BDPL array.");
+	    		if(adds.length > size){
+	    			throw new BDPLArrayException("Writing too many elements into a dynamic BDPL array than its size.");
 	    		}
-	    		else{
-	    			
+	    		else if(length + adds.length <= size){
 		    		BDPLArrayElement e = new BDPLArrayElement(adds[0]);
 		    			
 		    		if(length < 1){
@@ -251,6 +250,20 @@ public class BDPLArray {
 	    				tail = e;
 	    				length++;
 	    			}
+	    		}
+	    		else{
+	    			for(int i = 0; i < adds.length; i++){
+	    				BDPLArrayElement e = new BDPLArrayElement(adds[i]);
+	    				tail.setNext(e);
+	    				tail = e;
+	    			}
+	    			
+	    			int j = length + adds.length - size;
+	    			for(; j > 0; j--){
+	    				head = head.next;
+	    			}
+	    			
+	    			length = size;
 	    		}
 	    	}
 	    	finally{

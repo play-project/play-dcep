@@ -14,8 +14,8 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompilerData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionManager;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionParameterTypeException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.FunctionManager;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionParameterTypeException;
 
 /**
  * @author ningyuan 
@@ -137,11 +137,11 @@ public class BDPLCompiler {
 	
 	
 	public static void main(String[] args) throws IOException{
-		ExFunctionManager fManager = ExFunctionManager.getInstance();
+		FunctionManager fManager = FunctionManager.getInstance();
 		
 		try {
 			fManager.initiateTable();
-		} catch (ExFunctionParameterTypeException e) {
+		} catch (FunctionParameterTypeException e) {
 			System.out.println(e.getMessage());
 		}
 		

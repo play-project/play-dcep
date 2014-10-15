@@ -15,9 +15,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Aug 6, 2014
  *
  */
-public class ExFunctionTable {
+public class FunctionTable {
 	
-	private static ExFunctionTable instance;
+	private static FunctionTable instance;
 	
 	private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     
@@ -25,15 +25,15 @@ public class ExFunctionTable {
     
     private final Lock w = rwl.writeLock();
     
-	private Map<String, ExFunction> table;
+	private Map<String, IFunction> table;
 	
-	private ExFunctionTable(){
-		table = new HashMap<String, ExFunction>();
+	private FunctionTable(){
+		table = new HashMap<String, IFunction>();
 	}
 	
-	public static ExFunctionTable getInstance(){
+	public static FunctionTable getInstance(){
 		if(instance == null){
-			instance = new ExFunctionTable();
+			instance = new FunctionTable();
 			return instance;
 		}
 		else{
@@ -41,10 +41,10 @@ public class ExFunctionTable {
 		}
 	}
 	
-	public ExFunction getFunction(String fn){
+	public IFunction getFunction(String fn){
 		try{
 			r.lock();
-			ExFunction ret = null;
+			IFunction ret = null;
 			ret = table.get(fn);
 			return ret;
 		}
@@ -53,7 +53,7 @@ public class ExFunctionTable {
 		}
 	}
 	
-	public void putFunction(String fn, ExFunction f){
+	public void putFunction(String fn, IFunction f){
 		try{
 			w.lock();
 			table.put(fn, f);

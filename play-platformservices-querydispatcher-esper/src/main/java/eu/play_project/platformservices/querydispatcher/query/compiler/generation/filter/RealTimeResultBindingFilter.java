@@ -35,6 +35,10 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.FunctionManager;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionInvocationException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
 
 
 /**
@@ -158,12 +162,14 @@ public class RealTimeResultBindingFilter {
 						
 						TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(query, "SELECT *")).evaluate();
 						
+						// for each variable binding in SPARQL result
 						while(result.hasNext()){
 								System.out.println("RealTimeResultBindingFilter result: ");
 							BindingSet bs = result.next();
 							
 							Map<String, String[]> content = new HashMap<String, String[]>();
 							
+							// for each variable in a variable binding
 							for(String name : bs.getBindingNames()){
 								String[] var = new String[2];
 
@@ -197,40 +203,74 @@ public class RealTimeResultBindingFilter {
 					/*
 					 * dynamic arrays
 					 */
+					
+					// for each variable binding in SPARQL result
 					for(Map<String, String[]> varBinding : varBindings){
 						
-						for(SubQueryTableEntry dArrayEntrie : dArrayEntries){
-							BDPLArray array = dArrayEntrie.getArray();
-							String [] sVars = dArrayEntrie.getSelectedVars();
-									
+						// for each dynamic array
+						for(SubQueryTableEntry dArrayEntry : dArrayEntries){
+							BDPLArray array = dArrayEntry.getArray();
+							String toArrayM = dArrayEntry.getToArrayMethod();
+							String [] sVars = dArrayEntry.getSelectedVars();
 							
-							String [][] ele = new String [sVars.length][2];
-										
-							int k = 0;
-							for( ; k < sVars.length; k++){
-								String sVar = sVars[k];
-								String[] value = varBinding.get(sVar);
+							// insert variables
+							if(toArrayM == null){
+								
+								String [][] ele = new String [sVars.length][2];
 											
-								if(value == null || value[1].isEmpty()){
-									break;
+								int k = 0;
+								for( ; k < sVars.length; k++){
+									String sVar = sVars[k];
+									String[] value = varBinding.get(sVar);
+												
+									if(value == null || value[1].isEmpty()){
+										continue;
+									}
+									else{
+										ele[k] = value;
+									}
 								}
-								else{
-									ele[k] = value;
+											
+								if(k == sVars.length){
+									try {
+														
+										array.write(ele);
+											
+											System.out.println("RealTimeResultBindingFilter write dynamic array: "+array.length());
+											for(int n = 0; n < ele.length; n++){
+												System.out.print(sVars[n]+": "+ele[n][1]+"   "+ele[n][0]+"   ");
+											}
+											System.out.println();
+												
+									} catch (BDPLArrayException e) {}
 								}
 							}
-										
-							if(k == sVars.length){
-								try {
-													
-									array.write(ele);
-										
-										System.out.println("RealTimeResultBindingFilter dynamic array: "+array.length());
-										for(int n = 0; n < ele.length; n++){
-											System.out.print(sVars[n]+": "+ele[n][1]+"   "+ele[n][0]+"   ");
-										}
-										System.out.println();
-											
-								} catch (BDPLArrayException e) {}
+							// parse array string
+							else {
+								FunctionTable eft = FunctionTable.getInstance();
+								
+								String[] value = varBinding.get(sVars[0]);
+								
+								if(value == null || value[1].isEmpty()){
+									continue;
+								}
+								else{
+									
+									IFunction ef = eft.getFunction(toArrayM);
+									String [][][] eles = null;
+									if(ef != null){
+										try {
+											eles = (String[][][])ef.invoke(value[0]);
+											if(eles != null){
+												array.write(eles);
+													System.out.println("RealTimeResultBindingFilter write dynamic array: "+array.length());
+											}
+										} catch (FunctionInvocationException e) {
+											e.printStackTrace();
+											continue;
+										} catch (BDPLArrayException e) {}
+									}
+								}
 							}
 						}
 					}

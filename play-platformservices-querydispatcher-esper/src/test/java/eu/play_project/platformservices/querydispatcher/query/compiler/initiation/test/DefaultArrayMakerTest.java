@@ -312,4 +312,50 @@ public class DefaultArrayMakerTest {
 		}
 
 	}
+	
+	@Test(expected = InitiateException.class)
+	public void testVDynamic4() throws InitiateException {
+		arrayTableEntry.setType(BDPLArrayType.DYNAMIC_VAR_1);
+		SubQueryTable table = new SubQueryTable();
+		
+		arrayTableEntry.setArray(new BDPLArray(2, null));
+		arrayTableEntry.setSource("   ");
+		
+		
+		arrayMaker.make(arrayTableEntry, table);
+	}
+	
+	@Test(expected = InitiateException.class)
+	public void testVDynamic5() throws InitiateException {
+		arrayTableEntry.setType(BDPLArrayType.DYNAMIC_VAR_1);
+		SubQueryTable table = new SubQueryTable();
+		
+		arrayTableEntry.setArray(new BDPLArray(2, null));
+		arrayTableEntry.setSource("x ");
+		
+		
+		arrayMaker.make(arrayTableEntry, table);
+	}
+	
+	@Test
+	public void testVDynamic6() {
+		arrayTableEntry.setType(BDPLArrayType.DYNAMIC_VAR_1);
+		SubQueryTable table = new SubQueryTable();
+		
+		arrayTableEntry.setArray(new BDPLArray(2, null));
+		arrayTableEntry.setSource(":unmarshal   x ");
+		
+		try {
+			arrayMaker.make(arrayTableEntry, table);
+			String fn = table.getEntryToSelf().get(0).getToArrayMethod();
+			assertTrue(fn.equals(":unmarshal"));
+			String[] result = table.getEntryToSelf().get(0).getSelectedVars();
+			String[] expected = new String[] {"x"};
+			assertArrayEquals(expected, result);
+			
+		} catch (InitiateException e) {
+			e.printStackTrace();
+		}
+
+	}
 }

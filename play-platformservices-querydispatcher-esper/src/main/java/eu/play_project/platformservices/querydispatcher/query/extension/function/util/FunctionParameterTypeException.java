@@ -6,14 +6,14 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
 /**
  * @author ningyuan 
  * 
- * Aug 10, 2014
+ * Aug 8, 2014
  *
  */
-public class ExFunctionInvocationException extends Exception{
+public class FunctionParameterTypeException extends Exception{
 	
 	private static final long serialVersionUID = 1L;
 	
-	public ExFunctionInvocationException (String msg){
+	public FunctionParameterTypeException (String msg){
 		super(msg);
 	}
 }

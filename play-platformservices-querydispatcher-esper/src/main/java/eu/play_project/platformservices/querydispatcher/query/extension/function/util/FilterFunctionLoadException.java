@@ -9,10 +9,10 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
  * Aug 8, 2014
  *
  */
-public class ExFunctionLoadException extends Exception {
+public class FilterFunctionLoadException extends Exception {
 	private static final long serialVersionUID = 1L;
 	
-	public ExFunctionLoadException (String msg){
+	public FilterFunctionLoadException (String msg){
 		super(msg);
 	}
 }

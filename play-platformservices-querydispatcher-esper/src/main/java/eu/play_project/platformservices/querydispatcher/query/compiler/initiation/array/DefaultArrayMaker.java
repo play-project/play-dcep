@@ -40,6 +40,10 @@ public class DefaultArrayMaker implements IArrayMaker {
 				make3(entry, subQueryTable);
 				break;
 			}
+			case DYNAMIC_VAR_1:{
+				make4(entry, subQueryTable);
+				break;
+			}
 			case DYNAMIC_QUERY:{
 				break;
 			}
@@ -384,4 +388,69 @@ public class DefaultArrayMaker implements IArrayMaker {
 		return ret;
 	}
 	
+	/*
+	 * DYNAMIC_VAR_1
+	 */
+	private void make4(BDPLArrayTableEntry entry, SubQueryTable subQueryTable) throws InitiateException{
+		BDPLArray array = entry.getArray();
+		
+		if(array == null){
+			throw new InitiateException("A dynamic array is not created before initiation.");
+		}
+		else{
+			SubQueryTableEntry qEntry = new SubQueryTableEntry();
+			String source = entry.getSource();
+			int i = getStartIndexOftoArrayMethod(source);
+			if(i >= source.length()){
+				throw new InitiateException("A synchronized dynamic array selects no variable from this query.");
+			}
+			else{
+				String fn = source.substring(0, i).trim();
+				String[] svs = getSelectedVarsOfDynamicArray(source.substring(i, source.length()));
+				if(svs.length == 0){
+					throw new InitiateException("A synchronized dynamic array selects no variable from this query.");
+				}
+				array.setDimension(svs.length);
+				qEntry.setArray(array);
+				qEntry.setToArrayMethod(fn);
+				qEntry.setSelectedVars(svs);
+				subQueryTable.add(qEntry);
+			}
+			
+		}
+	}
+	
+	private int getStartIndexOftoArrayMethod(String source){
+		
+		char c;
+		int state = 0;
+		int ret = 0;
+		for(ret = 0; ret < source.length(); ret++){
+			c = source.charAt(ret);
+			
+			switch(state){
+				// start of method
+				case 0:{
+					if(c == ' '){
+						continue;
+					}
+					else{
+						state = 1;
+					}
+					break;
+				}
+				// middle of var
+				case 1:{
+					if(c == ' '){
+						return ret;
+					}
+					else{
+						continue;
+					}
+				}
+			}
+		}
+		
+		return ret;
+	}
 }

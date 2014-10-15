@@ -12,12 +12,12 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
  * Aug 8, 2014
  *
  */
-public class ExFunctionParameterCastor {
+public class FilterFunctionParameterCastor {
 	
 	public static final int TYPE_INT = 0, TYPE_DOUBLE = 1, TYPE_BOOLEAN = 2, TYPE_STR = 3, 
 			TYPE_ARRAY_INT = 10, TYPE_ARRAY_DOUBLE = 11, TYPE_ARRAY_STR = 12;
 	
-	public static Object cast(int type, Object o) throws ExFunctionParameterCastException{
+	public static Object cast(int type, Object o) throws FunctionParameterCastException{
 		switch(type){
 			case TYPE_ARRAY_DOUBLE:{
 				try{
@@ -25,7 +25,7 @@ public class ExFunctionParameterCastor {
 					return castDoubleArray((String[][][])o);
 				}
 				catch(Exception e){
-					throw new ExFunctionParameterCastException(e.getMessage());
+					throw new FunctionParameterCastException(e.getMessage());
 				}
 			}
 			case TYPE_ARRAY_INT:{
@@ -34,7 +34,7 @@ public class ExFunctionParameterCastor {
 					return castIntArray((String[][][])o);
 				}
 				catch(Exception e){
-					throw new ExFunctionParameterCastException(e.getMessage());
+					throw new FunctionParameterCastException(e.getMessage());
 				}
 			}
 			case TYPE_ARRAY_STR:{
@@ -43,7 +43,7 @@ public class ExFunctionParameterCastor {
 					return castStringArray((String[][][])o);
 				}
 				catch(Exception e){
-					throw new ExFunctionParameterCastException(e.getMessage());
+					throw new FunctionParameterCastException(e.getMessage());
 				}
 			}
 			case TYPE_DOUBLE:{
@@ -52,7 +52,7 @@ public class ExFunctionParameterCastor {
 					return Double.valueOf((String)o);
 				}
 				catch(Exception e){
-					throw new ExFunctionParameterCastException(e.getMessage());
+					throw new FunctionParameterCastException(e.getMessage());
 				}
 			}
 			case TYPE_INT:{
@@ -61,7 +61,7 @@ public class ExFunctionParameterCastor {
 					return Integer.valueOf((String)o);
 				}
 				catch(Exception e){
-					throw new ExFunctionParameterCastException(e.getMessage());
+					throw new FunctionParameterCastException(e.getMessage());
 				}
 			}
 			case TYPE_BOOLEAN:{
@@ -70,14 +70,14 @@ public class ExFunctionParameterCastor {
 					return Boolean.valueOf((String)o);
 				}
 				catch(Exception e){
-					throw new ExFunctionParameterCastException(e.getMessage());
+					throw new FunctionParameterCastException(e.getMessage());
 				}
 			}
 			case TYPE_STR:{
 				return o;
 			}
 			default: {
-				throw new ExFunctionParameterCastException("Not supported casting type");
+				throw new FunctionParameterCastException("Not supported casting type");
 			}
 		}
 	}
@@ -87,7 +87,7 @@ public class ExFunctionParameterCastor {
 	 * @param array (must not be null, must not be empty)
 	 * @return (never be null)
 	 */
-	private static Object castDoubleArray(String[][][] array) throws ExFunctionParameterCastException{
+	private static Object castDoubleArray(String[][][] array) throws FunctionParameterCastException{
 	
 		int dimension = array[0].length;
 		
@@ -100,7 +100,7 @@ public class ExFunctionParameterCastor {
 						ret[i][j] = Double.valueOf(array[i][j][0]);
 					}
 					catch(NumberFormatException e){
-						throw new ExFunctionParameterCastException("External function parameter casting exception.");
+						throw new FunctionParameterCastException("External function parameter casting exception.");
 					}
 				}
 			}
@@ -115,7 +115,7 @@ public class ExFunctionParameterCastor {
 					ret[i] = Double.valueOf(array[i][0][0]);
 				}
 				catch(NumberFormatException e){
-					throw new ExFunctionParameterCastException("External function parameter casting exception.");
+					throw new FunctionParameterCastException("External function parameter casting exception.");
 				}
 			}
 			
@@ -129,7 +129,7 @@ public class ExFunctionParameterCastor {
 	 * @param array (must not be null, must not be empty)
 	 * @return (never be null)
 	 */
-	private static Object castStringArray(String[][][] array) throws ExFunctionParameterCastException{
+	private static Object castStringArray(String[][][] array) throws FunctionParameterCastException{
 		int dimension = array[0].length;
 		
 		if(array[0].length > 1){
@@ -158,7 +158,7 @@ public class ExFunctionParameterCastor {
 	 * @param array (must not be null, must not be empty)
 	 * @return (never be null)
 	 */
-	private static Object castIntArray(String[][][] array) throws ExFunctionParameterCastException{
+	private static Object castIntArray(String[][][] array) throws FunctionParameterCastException{
 	
 		int dimension = array[0].length;
 		
@@ -171,7 +171,7 @@ public class ExFunctionParameterCastor {
 						ret[i][j] = Integer.valueOf(array[i][j][0]);
 					}
 					catch(NumberFormatException e){
-						throw new ExFunctionParameterCastException("External function parameter casting exception.");
+						throw new FunctionParameterCastException("External function parameter casting exception.");
 					}
 				}
 			}
@@ -186,7 +186,7 @@ public class ExFunctionParameterCastor {
 					ret[i] = Integer.valueOf(array[i][0][0]);
 				}
 				catch(NumberFormatException e){
-					throw new ExFunctionParameterCastException("External function parameter casting exception.");
+					throw new FunctionParameterCastException("External function parameter casting exception.");
 				}
 			}
 			

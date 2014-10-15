@@ -127,6 +127,7 @@ public class TransactionEventSource extends EventSource {
         	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event3"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event3"));
         	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
+        	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/array"), new LiteralImpl("[1, 2, 3]", new URIImpl("http://json")));
         	/*Event3 rdf3 = new Event3(m);*/
         	mapEvent = new MapEvent<SesameEventModel>(new SesameEventModel(m));
         	

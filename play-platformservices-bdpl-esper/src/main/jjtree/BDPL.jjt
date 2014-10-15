@@ -1963,7 +1963,7 @@ void DynamicArrayDecl() :
 	<INSERT> <INTO>
 	ArrayVar()
 	(
-		(<VALUES> DynamicArrayDef1())
+		(<VALUES> (DynamicArrayDef1() | DynamicArrayDef3()))
 		|
 		DynamicArrayDef2()
 	)
@@ -1980,6 +1980,12 @@ void DynamicArrayDef2() :
 {}
 {
 	SubBDPLQuery()
+}
+
+void DynamicArrayDef3() : 
+{}
+{
+	IRIref() <LPAREN> Var() <RPAREN>
 }
 
 void ArrayElement() :
@@ -2184,9 +2190,7 @@ void AFC():
 }
 
 void ExternalFunctionDecl():
-{
-	Token t;
-}
+{}
 {
 	IRIref() <LPAREN> ExternalFunctionParameterDecl() <RPAREN>
 }

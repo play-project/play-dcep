@@ -3,8 +3,9 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.simulation;
 
-import java.awt.event.WindowEvent;
+import java.awt.event.WindowAdapter;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPException;
@@ -29,11 +29,11 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.ExFunctionManager;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunction;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionLoadException;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionParameterTypeException;
-import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ExFunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.FunctionManager;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FilterFunctionLoadException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionParameterTypeException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
 import eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia.ArrEventSim;
 import eu.play_project.platformservices.querydispatcher.query.simulation.coordinateUI.CoordinatePanel;
 
@@ -45,37 +45,41 @@ import eu.play_project.platformservices.querydispatcher.query.simulation.coordin
  * Apr 30, 2014
  *
  */
-public class SimMain {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Object lock = new Object();
+public class SimMain extends WindowAdapter{
+	
+	private Object lock = new Object();
+	
+	private String engineURI = "TestEspEngine";
+	private EPServiceProvider epService = null;
+	private TransactionSamplePlugin plugin = null;
+	private Map<String, Thread> eFeeders;
+	
+	private static String EVENT_DEFAULT = "default", EVENT_ECG = "ecg";
+	
+	private int statementCounter = 0;
+	private Map<Integer, EPStatementEntry> stmts;
+	
+	private FunctionManager fManager;
+	
+	private BDPLCompiler compiler;
+	
+	private SimMain(){
+		stmts = new HashMap<Integer, EPStatementEntry>();
 		
-		String engineURI = "TestEspEngine";
-		EPServiceProvider epService = null;
-		TransactionSamplePlugin plugin = null;
+		eFeeders = new HashMap<String, Thread>();
+		eFeeders.put(EVENT_ECG, null);
 		
-		JFrame frame = null;
-		CoordinatePanel panel = null;
-		
-		int statementCounter = 0;
-		Map<Integer, EPStatementEntry> stmts = new HashMap<Integer, EPStatementEntry>();
-		
-		Map<String, Thread> eFeeders = new HashMap<String, Thread>();
-		eFeeders.put("arr", null);
-		
-		ExFunctionManager fManager = ExFunctionManager.getInstance();
-		
+		fManager = FunctionManager.getInstance();
 		try {
 			fManager.initiateTable();
-		} catch (ExFunctionParameterTypeException e) {
+		} catch (FunctionParameterTypeException e) {
 			System.out.println(e.getMessage());
 		}
 		
-		BDPLCompiler compiler = new BDPLCompiler();
-		
+		compiler = new BDPLCompiler();
+	}
+	
+	public void startShell(){
 		BufferedReader bin = new BufferedReader(new InputStreamReader(System.in));
 		
 		String cmd;
@@ -97,8 +101,8 @@ public class SimMain {
 										int i = Integer.valueOf(as[2]);
 										EPStatementEntry entry = stmts.get(i);
 										if(entry != null){
-										entry.getStatement().start();
-										System.out.println("[Statement "+as[2]+" is started]");
+											entry.start();
+											System.out.println("[Statement "+as[2]+" is started]");
 										
 										}
 										else{
@@ -121,12 +125,12 @@ public class SimMain {
 							synchronized(lock){
 							if(epService != null){
 								String en = as[2];
-								if(en.equals("default")){
+								if(en.equals(EVENT_DEFAULT)){
 									plugin = new TransactionSamplePlugin();
 									plugin.postInitialize(engineURI, epService);
 									System.out.println("[Event Feeding is started]");
 								}
-								else if(en.equals("arr")){
+								else if(en.equals(EVENT_ECG)){
 									long interval = Long.valueOf(as[3]);
 									Thread et = eFeeders.get(en);
 									if(et == null){
@@ -146,19 +150,6 @@ public class SimMain {
 							else{
 								System.out.println("[Engine is not started]");
 							}
-							}
-						}
-						else if(as[1].equals("-f")){
-							synchronized(lock){
-								if(frame == null){
-										panel = new CoordinatePanel();
-							            frame = new JFrame("Coordinate System");
-							            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
-							            frame.add(panel);
-							            frame.setSize(1020,620);
-							            frame.setResizable(false);
-							            frame.setVisible(true);
-							    }
 							}
 						}
 					}
@@ -182,15 +173,6 @@ public class SimMain {
 						        epService = EPServiceProviderManager.getProvider(engineURI, configuration);
 						        System.out.println("[Engine is started]");
 								
-						        if(frame == null){
-									panel = new CoordinatePanel();
-						            frame = new JFrame("Coordinate System");
-						            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
-						            frame.add(panel);
-						            frame.setSize(1020,620);
-						            frame.setResizable(false);
-						            frame.setVisible(true);
-						        }
 							}
 							else{
 								System.out.println("[Engine is already started]");
@@ -210,7 +192,7 @@ public class SimMain {
 										int i = Integer.valueOf(as[2]);
 										EPStatementEntry entry = stmts.get(i);
 										if(entry != null){
-											entry.getStatement().stop();
+											entry.stop();
 											System.out.println("[Statement "+as[2]+" is stopped]");
 											
 										}
@@ -226,7 +208,7 @@ public class SimMain {
 								}
 								else if(as[1].equals("-e")){
 									String en = as[2];
-									if(en.equals("default")){
+									if(en.equals(EVENT_DEFAULT)){
 										if(plugin != null){
 											plugin.destroy();
 											plugin = null;
@@ -241,9 +223,6 @@ public class SimMain {
 											et.interrupt();
 											eFeeders.put(en, null);
 											et.join();
-										}
-										else{
-											
 										}
 									}
 								}
@@ -260,7 +239,13 @@ public class SimMain {
 					else{
 						synchronized(lock){
 							if(epService != null){
+								Set<Integer> sts = stmts.keySet();
+								for(Integer st : sts){
+									EPStatementEntry en = stmts.get(st);
+									en.destroy();
+								}
 								stmts.clear();
+								
 								if(plugin != null){
 									plugin.destroy();
 									plugin = null;
@@ -275,6 +260,7 @@ public class SimMain {
 									}
 								}
 								
+								epService.destroy();
 								epService = null;
 								System.out.println("[Engine is stopped]");
 							}
@@ -284,7 +270,7 @@ public class SimMain {
 						}
 					}
 				}
-				else if(cmd.equals("add")){
+				else if(cmd.equals("deploy")){
 					System.out.println("[Please input a BDPL ending with 2 enters]");
 					System.out.print("> ");
 					
@@ -312,75 +298,6 @@ public class SimMain {
 					
 					if(query.length() > 0){
 					
-						/*try {
-							ASTQueryContainer qc = SyntaxTreeBuilder.parseQuery(query);
-							StringEscapesProcessor.process(qc);
-							BaseDeclProcessor.process(qc, null);
-							Map<String, String> prefixes = PrefixDeclProcessor.process(qc);
-							WildcardProjectionProcessor.process(qc);
-							BlankNodeVarProcessor.process(qc);
-	
-							if (qc.containsQuery()) {
-	
-								// handle query operation
-								TupleExprBuilder tupleExprBuilder = new TupleExprBuilder(new ValueFactoryImpl());
-								TupleExpr tupleExpr = (TupleExpr)qc.jjtAccept(tupleExprBuilder, null);
-								
-								ParsedQuery pQuery;
-							
-								ASTQuery queryNode = qc.getQuery();
-								if (queryNode instanceof ASTSelectQuery) {
-										
-									pQuery = new ParsedTupleQuery(query, tupleExpr);
-								}
-								else if (queryNode instanceof ASTConstructQuery) {
-									
-									pQuery = new ParsedGraphQuery(query, tupleExpr, prefixes);
-									
-									String prolog = BDPLSyntaxCheckProcessor.process(qc);
-									
-									query = EPLTranslationProcessor.process(qc, prolog).getEpl();
-									//EPLListenerProcessor.process(qc);
-									System.out.println(query+"\n");
-								}
-								else if (queryNode instanceof ASTAskQuery) {
-									
-									pQuery = new ParsedBooleanQuery(query, tupleExpr);
-								}
-								else if (queryNode instanceof ASTDescribeQuery) {
-									
-									pQuery = new ParsedGraphQuery(query, tupleExpr, prefixes);
-								}
-								else {
-									System.out.println("\n[Unexpected query type: " + queryNode.getClass()+"]");
-									continue;
-								}
-	
-								// Handle dataset declaration
-								Dataset dataset = DatasetDeclProcessor.process(qc);
-								if (dataset != null) {
-									pQuery.setDataset(dataset);
-								}
-								
-							}
-							else {
-								System.out.println("\n[Supplied string is not a query operation]");
-							}
-						}
-						catch (ParseException e){
-							System.out.println("\n["+e.getMessage()+"]");
-							continue;	
-						}
-						catch (VisitorException e) {
-							System.out.println("\n["+e.getMessage()+"]");
-							continue;
-						}
-						catch (MalformedQueryException e) {
-							System.out.println("\n["+e.getMessage()+"]");
-							continue;
-						}*/
-						
-						
 						try{
 							IBDPLQuery bdplQuery = compiler.compile(query, null);
 							
@@ -401,14 +318,24 @@ public class SimMain {
 									//XXX coordinate listener
 									CoordinateListener cLis = (CoordinateListener)(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
 									
-									//TODO check panel not null
-									cLis.setPanel(panel);
+									++statementCounter;
+									EPStatementEntry eps = new EPStatementEntry(query, testStmt);
+									JFrame frame = new JFrame("Coordinate System "+statementCounter);
+									CoordinatePanel panel = new CoordinatePanel();
+									frame.add(panel);
+									frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
+									frame.setSize(1020,620);
+							        frame.setResizable(false);
+									eps.setFrame(frame); 
+									frame.setVisible(true);      
+								           
+								    cLis.setPanel(panel);
 									testStmt.addListener(cLis);
 									
 									/*EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getEPL());
 									testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());*/
 									        
-									stmts.put(++statementCounter, new EPStatementEntry(query, testStmt));
+									stmts.put(statementCounter, eps);
 									System.out.println("\n[Statement "+statementCounter+":\n"+query+"\nis started]");
 								}
 								else{
@@ -429,7 +356,11 @@ public class SimMain {
 					if(as.length > 1){
 						try{
 							int i = Integer.valueOf(as[1]);
-							stmts.remove(i);
+							EPStatementEntry en = stmts.get(i);
+							if(en != null){
+								en.destroy();
+								stmts.remove(i);
+							}
 						}
 						catch(NumberFormatException e){
 							System.out.println("[No statement with name "+as[1]+"]");
@@ -444,7 +375,13 @@ public class SimMain {
 					
 					synchronized(lock){
 						if(epService != null){
+							Set<Integer> sts = stmts.keySet();
+							for(Integer st : sts){
+								EPStatementEntry en = stmts.get(st);
+								en.destroy();
+							}
 							stmts.clear();
+							
 							if(plugin != null){
 								plugin.destroy();
 								plugin = null;
@@ -458,11 +395,8 @@ public class SimMain {
 									et.join();
 								}
 							}
-							
-							if(frame != null){
-								frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
-							}
-							
+						
+							epService.destroy();
 							epService = null;
 						}
 					}
@@ -540,7 +474,7 @@ public class SimMain {
 								
 							}
 						}
-						catch(ExFunctionLoadException e){
+						catch(FilterFunctionLoadException e){
 							System.out.println("["+e.getMessage()+"]");
 						}
 					}
@@ -548,8 +482,9 @@ public class SimMain {
 						System.out.println("[load option parameters...]");
 					}
 				}
+				// for test
 				else if(cmd.startsWith("average")){
-					ExFunction ef = ExFunctionTable.getInstance().getFunction("http://events.event-processing.org/function/average");
+					IFunction ef = FunctionTable.getInstance().getFunction("http://events.event-processing.org/function/average");
 					if(ef != null){
 						System.out.println(ef.invoke(new Object[]{new String[][][]{{{"1", "1"}}, {{"2", "2"}}}}));
 					}
@@ -561,11 +496,27 @@ public class SimMain {
 			}
 			catch(Exception e){
 				e.printStackTrace();
-				System.exit(0);
+				break;
 			}
 		}
-
+		
+		if(bin != null){
+			try {
+				bin.close();
+			} catch (IOException e1) {}
+		}
+		System.exit(0);
 	}
 	
 	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		SimMain sm = new SimMain();
+		sm.startShell();
+	}
+	
+	
+
 }
