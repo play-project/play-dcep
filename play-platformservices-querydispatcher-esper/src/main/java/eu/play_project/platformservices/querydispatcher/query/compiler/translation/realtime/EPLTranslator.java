@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.translation;
+package eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,7 +39,7 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.EPLListenerProcessor;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
 
 
 /**
@@ -126,7 +126,7 @@ public class EPLTranslator implements QueryParser{
 		catch (TokenMgrError e) {
 			throw new MalformedQueryException(e.getMessage(), e);
 		}
-		catch (EPLTranslateException e) {
+		catch (TranslateException e) {
 			throw new MalformedQueryException(e.getMessage(), e);
 		}
 	}

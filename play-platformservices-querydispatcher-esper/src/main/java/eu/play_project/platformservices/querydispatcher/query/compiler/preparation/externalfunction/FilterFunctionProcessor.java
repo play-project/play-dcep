@@ -42,10 +42,10 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionCompoundExpression;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionFunctionExpression;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionSimpleExpression;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.ExternalFunctionVarExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionCompoundExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionSimpleExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionVarExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.VariableBinder;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
@@ -57,7 +57,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionProcessor {
+public class FilterFunctionProcessor {
 	
 	public static void process(ASTOperationContainer qc, BDPLArrayTable arrayTable)
 			throws MalformedQueryException{
@@ -163,7 +163,7 @@ public class ExternalFunctionProcessor {
 			// pay attension to grammar file
 			ASTArrayFilterExpression expNode = node.jjtGetChild(ASTArrayFilterExpression.class);
 			try {
-				BDPLArrayFilter arrayFilter = new BDPLArrayFilter(((ExternalFunctionProcessorData)data).getVarBinder(), (IExternalFunctionExpression<VariableBinder>)expNode.jjtAccept(this, data));
+				BDPLArrayFilter arrayFilter = new BDPLArrayFilter(((ExternalFunctionProcessorData)data).getVarBinder(), (IFunctionExpression<VariableBinder>)expNode.jjtAccept(this, data));
 				arrayFilter.setHasVariable(((ExternalFunctionProcessorData)data).hasVariable);
 				((ExternalFunctionProcessorData)data).hasVariable = false;
 				
@@ -184,12 +184,12 @@ public class ExternalFunctionProcessor {
 			// pay attension to grammar file
 			String operator = node.getOperator();
 			if(operator != null){
-				ExternalFunctionCompoundExpression expNode = new ExternalFunctionCompoundExpression(operator);
+				FunctionCompoundExpression expNode = new FunctionCompoundExpression(operator);
 				
 				Node op1 = node.jjtGetChild(0);
-				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
+				expNode.addOperand((IFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
 				Node op2 = node.jjtGetChild(1);
-				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op2.jjtAccept(this, data));
+				expNode.addOperand((IFunctionExpression<VariableBinder>)op2.jjtAccept(this, data));
 				
 				return expNode;
 			}
@@ -206,12 +206,12 @@ public class ExternalFunctionProcessor {
 			// pay attension to grammar file
 			String operator = node.getOperator();
 			if(operator != null){
-				ExternalFunctionCompoundExpression expNode = new ExternalFunctionCompoundExpression(operator);
+				FunctionCompoundExpression expNode = new FunctionCompoundExpression(operator);
 				
 				Node op1 = node.jjtGetChild(0);
-				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
+				expNode.addOperand((IFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
 				Node op2 = node.jjtGetChild(1);
-				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op2.jjtAccept(this, data));
+				expNode.addOperand((IFunctionExpression<VariableBinder>)op2.jjtAccept(this, data));
 				
 				return expNode;
 			}
@@ -228,10 +228,10 @@ public class ExternalFunctionProcessor {
 			// pay attension to grammar file
 			String operator = node.getOperator();
 			if(operator != null){
-				ExternalFunctionCompoundExpression expNode = new ExternalFunctionCompoundExpression(operator);
+				FunctionCompoundExpression expNode = new FunctionCompoundExpression(operator);
 				
 				Node op1 = node.jjtGetChild(0);
-				expNode.addOperand((IExternalFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
+				expNode.addOperand((IFunctionExpression<VariableBinder>)op1.jjtAccept(this, data));
 				
 				return expNode;
 			}
@@ -253,13 +253,13 @@ public class ExternalFunctionProcessor {
 					String t = ((ASTPrimitiveValue) op1).getType();
 					
 					if(t.equalsIgnoreCase(PARA_TYPE_INT)){
-						return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_INT, ((ASTPrimitiveValue) op1).getValue());
+						return new FunctionSimpleExpression(FunctionFunctionExpression.PARA_TYPE_INT, ((ASTPrimitiveValue) op1).getValue());
 					}
 					else if(t.equalsIgnoreCase(PARA_TYPE_DECIMAL)){
-						return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL, ((ASTPrimitiveValue) op1).getValue());
+						return new FunctionSimpleExpression(FunctionFunctionExpression.PARA_TYPE_DECIMAL, ((ASTPrimitiveValue) op1).getValue());
 					}
 					else if(t.equalsIgnoreCase(PARA_TYPE_BOOLEAN)){
-						return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_BOOLEAN, ((ASTPrimitiveValue) op1).getValue());
+						return new FunctionSimpleExpression(FunctionFunctionExpression.PARA_TYPE_BOOLEAN, ((ASTPrimitiveValue) op1).getValue());
 					}
 					else if(t.equalsIgnoreCase(PARA_TYPE_LIT)){
 						ASTRDFLiteral ln = ((ASTPrimitiveValue) op1).jjtGetChild(ASTRDFLiteral.class);
@@ -267,19 +267,19 @@ public class ExternalFunctionProcessor {
 						ASTIRI in = ln.getDatatype();
 						
 						if(in == null){
-							return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_STR, sn.getValue());
+							return new FunctionSimpleExpression(FunctionFunctionExpression.PARA_TYPE_STR, sn.getValue());
 						}
 						else{
 							String dataType = in.getValue();
 							
 							if(dataType.equals(XMLSchema.INTEGER)){
-								return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_INT, sn.getValue());
+								return new FunctionSimpleExpression(FunctionFunctionExpression.PARA_TYPE_INT, sn.getValue());
 							}
 							else if(dataType.equals(XMLSchema.DECIMAL)){
-								return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL, sn.getValue());
+								return new FunctionSimpleExpression(FunctionFunctionExpression.PARA_TYPE_DECIMAL, sn.getValue());
 							}
 							else{
-								return new ExternalFunctionSimpleExpression(ExternalFunctionFunctionExpression.PARA_TYPE_STR, sn.getValue());
+								return new FunctionSimpleExpression(FunctionFunctionExpression.PARA_TYPE_STR, sn.getValue());
 							}
 						}
 						
@@ -294,7 +294,7 @@ public class ExternalFunctionProcessor {
 			}
 			else if(op1 instanceof ASTVar){
 				((ExternalFunctionProcessorData)data).hasVariable = true;
-				return new ExternalFunctionVarExpression(((ASTVar) op1).getName());
+				return new FunctionVarExpression(((ASTVar) op1).getName());
 			}
 			else{
 				return op1.jjtAccept(this, data);
@@ -308,10 +308,10 @@ public class ExternalFunctionProcessor {
 			// pay attension to grammar file
 			ASTIRI fName = node.jjtGetChild(ASTIRI.class);
 			if(fName != null){
-				ExternalFunctionFunctionExpression exp;
+				FunctionFunctionExpression exp;
 				
 				try {
-					exp = new ExternalFunctionFunctionExpression(fName.getValue());
+					exp = new FunctionFunctionExpression(fName.getValue());
 				} catch (BDPLFilterException e) {
 					throw new VisitorException(e.getMessage());
 				}
@@ -357,17 +357,17 @@ public class ExternalFunctionProcessor {
 				else if(child instanceof ASTPrimitiveValue){
 					String t = ((ASTPrimitiveValue) child).getType();
 					if(t.equalsIgnoreCase(PARA_TYPE_INT)){
-						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_INT;
+						p[0] = FunctionFunctionExpression.PARA_TYPE_INT;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
 							
 					}
 					else if(t.equalsIgnoreCase(PARA_TYPE_DECIMAL)){
-						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL;
+						p[0] = FunctionFunctionExpression.PARA_TYPE_DECIMAL;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
 							
 					}
 					else if(t.equalsIgnoreCase(PARA_TYPE_BOOLEAN)){
-						p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_BOOLEAN;
+						p[0] = FunctionFunctionExpression.PARA_TYPE_BOOLEAN;
 						p[1] = ((ASTPrimitiveValue) child).getValue();
 					}
 					else if(t.equalsIgnoreCase(PARA_TYPE_LIT)){
@@ -377,19 +377,19 @@ public class ExternalFunctionProcessor {
 						ASTIRI in = ln.getDatatype();
 						
 						if(in == null){
-							p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_STR;
+							p[0] = FunctionFunctionExpression.PARA_TYPE_STR;
 						}
 						else{
 							String dataType = in.getValue();
 							
 							if(dataType.equals(XMLSchema.INTEGER)){
-								p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_INT;
+								p[0] = FunctionFunctionExpression.PARA_TYPE_INT;
 							}
 							else if(dataType.equals(XMLSchema.DECIMAL)){
-								p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_DECIMAL;
+								p[0] = FunctionFunctionExpression.PARA_TYPE_DECIMAL;
 							}
 							else{
-								p[0] = ExternalFunctionFunctionExpression.PARA_TYPE_STR;
+								p[0] = FunctionFunctionExpression.PARA_TYPE_STR;
 							}
 						}
 						

@@ -6,7 +6,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.preparat
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
@@ -15,16 +15,16 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionCompoundExpression implements IExternalFunctionExpression<VariableBinder> {
+public class FunctionCompoundExpression implements IFunctionExpression<VariableBinder> {
 	
 	private static final String OP_EQ = "=", OP_NE = "!=", OP_GT = ">", OP_LT = "<", OP_GE = ">=", OP_LE = "<=",
 			OP_NOT = "!", OP_AND = "&&", OP_OR = "||";
 	
 	private final String operator;
 	
-	private List<IExternalFunctionExpression<VariableBinder>> operands = new ArrayList<IExternalFunctionExpression<VariableBinder>>();
+	private List<IFunctionExpression<VariableBinder>> operands = new ArrayList<IFunctionExpression<VariableBinder>>();
 	
-	public ExternalFunctionCompoundExpression(String o){
+	public FunctionCompoundExpression(String o){
 		operator = o;
 	}
 	
@@ -32,21 +32,21 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 		return operator;
 	}
 	
-	public void addOperand(IExternalFunctionExpression<VariableBinder> op){
+	public void addOperand(IFunctionExpression<VariableBinder> op){
 		operands.add(op);
 	}
 	
 	@Override
 	public void setDataObject(VariableBinder data) {
-		for(IExternalFunctionExpression<VariableBinder> operand : operands){
+		for(IFunctionExpression<VariableBinder> operand : operands){
 			operand.setDataObject(data);
 		}
 	}
 	
 	@Override
-	public IExternalFunctionExpression<VariableBinder> copy(){
-		ExternalFunctionCompoundExpression ret = new ExternalFunctionCompoundExpression(operator);
-		for(IExternalFunctionExpression<VariableBinder> operand : operands){
+	public IFunctionExpression<VariableBinder> copy(){
+		FunctionCompoundExpression ret = new FunctionCompoundExpression(operator);
+		for(IFunctionExpression<VariableBinder> operand : operands){
 			ret.addOperand(operand.copy());
 		}
 		
@@ -60,8 +60,8 @@ public class ExternalFunctionCompoundExpression implements IExternalFunctionExpr
 	public Object getValue() throws BDPLFilterException{
 		
 		
-		IExternalFunctionExpression<VariableBinder> operand1 = operands.get(0);
-		IExternalFunctionExpression<VariableBinder> operand2 = null;
+		IFunctionExpression<VariableBinder> operand1 = operands.get(0);
+		IFunctionExpression<VariableBinder> operand2 = null;
 			
 		Class ret1 = operand1.getValueType();
 		Class ret2 = null;

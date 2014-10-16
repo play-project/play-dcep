@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.translation.util;
+package eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeFactory;
+
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
 
 /**
  * @author ningyuan 
@@ -20,14 +22,14 @@ public class EPLTranslateUtil {
 	
 	public static final int TERM_EVENT = 0, TERM_TIME = 1;
 	
-	public static long getDurationInSec(String duration) throws EPLTranslateException{
+	public static long getDurationInSec(String duration) throws TranslateException{
 		try{
 			DatatypeFactory dtf = DatatypeFactory.newInstance();
 			long msec = dtf.newDuration(duration).getTimeInMillis(new Date());
 			return msec/1000;
 		}
 		catch(Exception e){
-			throw new EPLTranslateException("Duration data type "+duration+" could not be parsed");
+			throw new TranslateException("Duration data type "+duration+" could not be parsed");
 		}
 	}
 	

@@ -4,7 +4,8 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.translation;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.EPLTranslationProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompilerData;
 
@@ -23,9 +24,9 @@ public class TranslationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
 	protected void process(BDPLCompilerData data) throws BDPLCompileException {
 		
 		try {
-			data.setEplTranslationData(EPLTranslationProcessor.process(data.getQueryContainer(), data.getPrologText()));
+			data.setEPLTranslationData(EPLTranslationProcessor.process(data.getQueryContainer(), data.getPrologText()));
 			
-		} catch (EPLTranslateException e) {
+		} catch (TranslateException e) {
 			throw new BDPLCompileException(e.getMessage());
 		}
 	}

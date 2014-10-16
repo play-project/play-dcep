@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openrdf.query.MalformedQueryException;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.EPLTranslator;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.EPLTranslator;
 
 
 /**

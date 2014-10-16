@@ -28,14 +28,14 @@ public class GenerationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
 		
 		RealTimeResultBindingData rtbData = new RealTimeResultBindingData(data.getVarTable().getRealTimeCommonVars(), realTimeResults, data.getSubQueryTable().getEntryToSelf());
 		
-		data.getEplTranslationData().getInjectParameterMapping().put(data.getEplTranslationData().INJECT_PARA_REALTIMERESULT_BINDING_DATA, rtbData);
+		data.getEPLTranslationData().getInjectParameterMapping().put(data.getEPLTranslationData().INJECT_PARA_REALTIMERESULT_BINDING_DATA, rtbData);
 		
 		//UpdateListener listener = new RealTimeResultListener(realTimeResults, data.getEplTranslationData().getEventPatternFilters());
 		
 		//XXX coordinate listener
-		UpdateListener listener = new CoordinateListener(realTimeResults, data.getEplTranslationData().getEventPatternFilters(), data.getArrayTable());
+		UpdateListener listener = new CoordinateListener(realTimeResults, data.getEPLTranslationData().getEventPatternFilters(), data.getArrayTable());
 		
-		data.setCompiledQuery(new DefaultBDPLPreparedQuery(data.getEplTranslationData().getEpl(), data.getEplTranslationData().getInjectParameterMapping(), data.getEplTranslationData().getInjectParams(), listener, data.getSubQueryTable()));
+		data.setCompiledQuery(new DefaultBDPLPreparedQuery(data.getEPLTranslationData().getEpl(), data.getEPLTranslationData().getInjectParameterMapping(), data.getEPLTranslationData().getInjectParams(), listener, data.getSubQueryTable()));
 		
 	}
 

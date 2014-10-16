@@ -5,7 +5,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.util;
 
 import java.util.Map;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.VariableBinder;
 
 /**
@@ -26,11 +26,11 @@ public class BDPLArrayFilter implements IBDPLFilter<Map<String, String[]>>{
 	/*
 	 * the expression of array filter
 	 */
-	private final IExternalFunctionExpression<VariableBinder> exp;
+	private final IFunctionExpression<VariableBinder> exp;
 	
 	private boolean hasVariable = false;
 	
-	public BDPLArrayFilter(VariableBinder variableBinder, IExternalFunctionExpression<VariableBinder> expression) throws BDPLFilterException{
+	public BDPLArrayFilter(VariableBinder variableBinder, IFunctionExpression<VariableBinder> expression) throws BDPLFilterException{
 		vb = variableBinder;
 		
 		Class ret = expression.getValueType();
@@ -41,7 +41,7 @@ public class BDPLArrayFilter implements IBDPLFilter<Map<String, String[]>>{
 		exp.setDataObject(vb);
 	}
 	
-	private BDPLArrayFilter(boolean hv, VariableBinder variableBinder, IExternalFunctionExpression<VariableBinder> expression){
+	private BDPLArrayFilter(boolean hv, VariableBinder variableBinder, IFunctionExpression<VariableBinder> expression){
 		hasVariable = hv;
 		vb = variableBinder;
 		exp = expression;

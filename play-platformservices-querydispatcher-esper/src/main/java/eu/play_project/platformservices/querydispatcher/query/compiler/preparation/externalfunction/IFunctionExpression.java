@@ -11,7 +11,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
  * Aug 11, 2014
  *
  */
-public interface IExternalFunctionExpression<T> {
+public interface IFunctionExpression<T> {
 	
 	
 	/**
@@ -35,5 +35,5 @@ public interface IExternalFunctionExpression<T> {
 	 */
 	public Class getValueType();
 	
-	public IExternalFunctionExpression<T> copy();
+	public IFunctionExpression<T> copy();
 }

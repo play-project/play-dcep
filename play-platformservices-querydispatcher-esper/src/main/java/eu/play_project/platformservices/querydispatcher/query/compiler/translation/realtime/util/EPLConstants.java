@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.translation.util;
+package eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util;
 
 /**
  * @author ningyuan 

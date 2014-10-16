@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.translation;
+package eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,26 +53,28 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
 
 
+
+
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLConstants;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateException;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslateUtil;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslationData;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.IEntry;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.NotEntry;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.NotTable;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.OrClause;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.SeqClause;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.Term;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TimeDelayEntry;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TimeDelayTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLConstants;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLTranslateUtil;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLTranslationData;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.IEntry;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.NotEntry;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.NotTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.OrClause;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.SeqClause;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.Term;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.TimeDelayEntry;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.TimeDelayTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLFilter;
 
 
 
 /**
- * Processes the part of real time query, and translates it into a EPL for Esper.
+ * Processes the real time part query of a BDPL, and translates it into a EPL for Esper.
  * 
  * @author ningyuan
  *
@@ -80,7 +82,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDP
 public class EPLTranslationProcessor {
 	
 	public static EPLTranslationData process(ASTOperationContainer qc, String prologText)
-			throws EPLTranslateException{
+			throws TranslateException{
 		EPLTranslator translator = new EPLTranslator();
 		
 		EPLTranslatorData data = new EPLTranslatorData(prologText);
@@ -94,7 +96,7 @@ public class EPLTranslationProcessor {
 			return ret;
 			
 		} catch (VisitorException e) {
-			throw new EPLTranslateException(e.getMessage());
+			throw new TranslateException(e.getMessage());
 		}
 	}
 	
@@ -250,7 +252,7 @@ public class EPLTranslationProcessor {
 					arrayFilters.add((IBDPLFilter<Map<String, String[]>>)af.getFilterObject());
 				}
 				
-			}catch (EPLTranslateException e) {
+			}catch (TranslateException e) {
 				throw new VisitorException(e.getMessage());
 			}
 			
@@ -294,7 +296,7 @@ public class EPLTranslationProcessor {
 			
 			try {
 				((EPLTranslatorData)data).setWindowParam(EPLTranslateUtil.getDurationInSec(duration.getValue()), node.getType());
-			} catch (EPLTranslateException e) {
+			} catch (TranslateException e) {
 				throw new VisitorException("Time delay format exception: "+duration.getValue());
 			}
 			
@@ -322,7 +324,7 @@ public class EPLTranslationProcessor {
 				// return the united expression
 				try {
 					return  unionSeqExpression(expressions);
-				} catch (EPLTranslateException e) {
+				} catch (TranslateException e) {
 					throw new VisitorException(e.getMessage());
 				}
 			}
@@ -371,7 +373,7 @@ public class EPLTranslationProcessor {
 				// return the united expression
 				try {
 					return unionAndExpression(expansions);
-				} catch (EPLTranslateException e) {
+				} catch (TranslateException e) {
 					throw new VisitorException(e.getMessage());
 				}
 			}
@@ -506,7 +508,7 @@ public class EPLTranslationProcessor {
 			Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
 			try {
 				term.setDuration(EPLTranslateUtil.getDurationInSec(durationString.getValue()));
-			} catch (EPLTranslateException e) {
+			} catch (TranslateException e) {
 				throw new VisitorException("Time delay format exception: "+durationString.getValue());
 			}
 			
@@ -559,7 +561,7 @@ public class EPLTranslationProcessor {
 				expression = new OrClause();
 				expression.addSeqClause(seq);
 			}
-			catch(EPLTranslateException e){
+			catch(TranslateException e){
 				throw new VisitorException(e.getMessage());
 			}
 			
@@ -662,7 +664,7 @@ public class EPLTranslationProcessor {
 		/*
 		 * 
 		 */
-		private String[] getEventProperties(String prolog, String sparql) throws EPLTranslateException{
+		private String[] getEventProperties(String prolog, String sparql) throws TranslateException{
 			
 			try{
 				String [] ret = new String[2];
@@ -696,16 +698,16 @@ public class EPLTranslationProcessor {
 				
 			}
 			catch (VisitorException e){
-				throw new EPLTranslateException(e.getMessage());
+				throw new TranslateException(e.getMessage());
 			}
 			catch (ParseException e) {
-				throw new EPLTranslateException(e.getMessage());
+				throw new TranslateException(e.getMessage());
 			}
 			catch (TokenMgrError e) {
-				throw new EPLTranslateException(e.getMessage());
+				throw new TranslateException(e.getMessage());
 			}
 			catch (MalformedQueryException e){
-				throw new EPLTranslateException(e.getMessage());
+				throw new TranslateException(e.getMessage());
 			}
 			
 		}
@@ -753,7 +755,7 @@ public class EPLTranslationProcessor {
 		 * @param expressions 
 		 * @return united expression
 		 */
-		private OrClause unionSeqExpression(List<OrClause> expressions) throws EPLTranslateException{
+		private OrClause unionSeqExpression(List<OrClause> expressions) throws TranslateException{
 			
 			return combineSeqClause(expressions, 1);
 		
@@ -764,7 +766,7 @@ public class EPLTranslationProcessor {
 		 * 
 		 * United AND connected expressions into one expression
 		 */
-		private OrClause unionAndExpression(List<OrClause> expansions) throws EPLTranslateException{
+		private OrClause unionAndExpression(List<OrClause> expansions) throws TranslateException{
 			
 			return combineSeqClause(expansions, 2);
 			
@@ -781,7 +783,7 @@ public class EPLTranslationProcessor {
 		 * @param type the operator connecting expressions. 1 SEQ	2 AND
 		 * @return expression in standard form connected by every connection
 		 */
-		private OrClause combineSeqClause(List<OrClause> exps, int type) throws EPLTranslateException{
+		private OrClause combineSeqClause(List<OrClause> exps, int type) throws TranslateException{
 			OrClause ret;
 			
 			int size = exps.size();
@@ -848,7 +850,7 @@ public class EPLTranslationProcessor {
 				return ret;
 			}
 			else{
-				throw new EPLTranslateException("No expressions for combination");
+				throw new TranslateException("No expressions for combination");
 			}
 		}
 		
@@ -861,7 +863,7 @@ public class EPLTranslationProcessor {
 		 * @param combi only used for passing data, the content must not be changed and must not be null
 		 * @param result used for save end expression connected by every expanded combination
 		 */
-		private void expand1(List<SeqClause> combination, OrClause result) throws EPLTranslateException{
+		private void expand1(List<SeqClause> combination, OrClause result) throws TranslateException{
 			
 			// create new result SEQ CLAUSE and its time delay table
 			SeqClause resultSeq = new SeqClause();
@@ -929,7 +931,7 @@ public class EPLTranslationProcessor {
 		/*
 		 *  Exp = (SEQ CLAUSE (and SEQ CLAUSE)*):= combination
 		 */
-		private void expand2(List<SeqClause> combination, OrClause result) throws EPLTranslateException{
+		private void expand2(List<SeqClause> combination, OrClause result) throws TranslateException{
 			
 			// time delay table entries of result
 			List<TimeDelayEntry> resultTDEntries = new ArrayList<TimeDelayEntry>();
@@ -947,12 +949,12 @@ public class EPLTranslationProcessor {
 				
 				
 				if(currentTerms.size() < 1){
-					throw new EPLTranslateException("Time delay should not be an operand of an AND operator");
+					throw new TranslateException("Time delay should not be an operand of an AND operator");
 				}
 				else{
 					for(int j = 0; j < currentTerms.size(); j++){
 						if(EPLTranslateUtil.getTermType(currentTerms.get(j)) == EPLTranslateUtil.TERM_TIME){
-							throw new EPLTranslateException("Time delays connected with AND could not be expanded any more");
+							throw new TranslateException("Time delays connected with AND could not be expanded any more");
 						}
 					}
 					
@@ -988,7 +990,7 @@ public class EPLTranslationProcessor {
 				if(left.size() > 1){
 					List<Term> terms = resultSeq.getTerms();
 					if(left.get(0).getEnd() != terms.get(0)){
-						throw new EPLTranslateException("Fixed Time delay error at start");
+						throw new TranslateException("Fixed Time delay error at start");
 					}
 					else{
 						Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
@@ -1008,7 +1010,7 @@ public class EPLTranslationProcessor {
 				if(right.size() > 1){
 					List<Term> terms = resultSeq.getTerms();
 					if(right.get(right.size()-1).getStart() != terms.get(terms.size()-1)){
-						throw new EPLTranslateException("Fixed Time delay error at end");
+						throw new TranslateException("Fixed Time delay error at end");
 					}
 					else{
 						Term term = new Term(EPLConstants.TIMER_INTERVAL_NAME);
@@ -1049,7 +1051,7 @@ public class EPLTranslationProcessor {
 		 * 
 		 * @param seqcs must not be null
 		 */
-		private List<SequenceOption> transformAndClause(List<SeqClause> combination) throws EPLTranslateException{
+		private List<SequenceOption> transformAndClause(List<SeqClause> combination) throws TranslateException{
 			
 			List<SequenceOption> ret = new ArrayList<SequenceOption>();
 			SeqClause copy = new SeqClause();
@@ -1078,11 +1080,11 @@ public class EPLTranslationProcessor {
 		 * 
 		 * This method is only called by expand1 and expand2, when united AND expressions or united SEQ expressions.
 		 */
-		private void initTimeDelayTable(SeqClause seqc) throws EPLTranslateException{
+		private void initTimeDelayTable(SeqClause seqc) throws TranslateException{
 			List<Term> terms = seqc.getTerms();
 			
 			if(terms.size() != 1){
-				throw new EPLTranslateException("Time delay table can not be initiated");
+				throw new TranslateException("Time delay table can not be initiated");
 			}
 			
 			Term term = terms.get(0);
@@ -1590,7 +1592,7 @@ public class EPLTranslationProcessor {
 		 * @param seq the original sequence into which iseq is inserted
 		 * @param iseq the sequence to be inserted
 		 */
-		private List<SequenceOption> insertSeq(List<SequenceOption> seqs, SeqClause iseq) throws EPLTranslateException{
+		private List<SequenceOption> insertSeq(List<SequenceOption> seqs, SeqClause iseq) throws TranslateException{
 			List<SequenceOption> ret = new ArrayList<SequenceOption>();
 			
 			List<SequenceOption> temp = new ArrayList<SequenceOption>();
@@ -1614,7 +1616,7 @@ public class EPLTranslationProcessor {
 					for(int j = 0; j < temp.size(); j++){
 						
 						if(ret.size() > MAX_NUM_SEQ_CLAUSE){
-							throw new EPLTranslateException("The number of SEQ Clause is larger than "+MAX_NUM_SEQ_CLAUSE);
+							throw new TranslateException("The number of SEQ Clause is larger than "+MAX_NUM_SEQ_CLAUSE);
 						}
 						
 						ret.add(temp.get(j));
@@ -1691,7 +1693,7 @@ public class EPLTranslationProcessor {
 		/*
 		 * Get EPL from standard expression.
 		 */
-		private String getEPL(OrClause result, EPLTranslatorData data) throws EPLTranslateException{
+		private String getEPL(OrClause result, EPLTranslatorData data) throws TranslateException{
 			//TODO insert statement
 			
 			StringBuffer epl = new StringBuffer();
@@ -1709,7 +1711,7 @@ public class EPLTranslationProcessor {
 					epl.append(String.format(EPLConstants.WINDOW_TUMBLING, wDuration));
 				}
 				else{
-					throw new EPLTranslateException("Unsupported window type "+wType);
+					throw new TranslateException("Unsupported window type "+wType);
 				}
 			}
 			
@@ -1719,7 +1721,7 @@ public class EPLTranslationProcessor {
 		/*
 		 * Get EPL of event pattern part. 
 		 */
-		private String getPatternExpression(OrClause result, EPLTranslatorData data) throws EPLTranslateException{
+		private String getPatternExpression(OrClause result, EPLTranslatorData data) throws TranslateException{
 			StringBuffer ret = new StringBuffer();
 			
 			NotTable notTable = data.getNotTable();
@@ -1783,7 +1785,7 @@ public class EPLTranslationProcessor {
 		 * @param eIndexs: the last index of event tag for each SEQ clause in OR clause
 		 * @param nIndexs: the last index of not event tag for each SEQ clause in OR clause
 		 */
-		private String getSeqClauseExpression(SeqClause seqc, NotTable notTable, int sIndex, int [] eIndexs, int [] nIndexs, String prologText) throws EPLTranslateException{
+		private String getSeqClauseExpression(SeqClause seqc, NotTable notTable, int sIndex, int [] eIndexs, int [] nIndexs, String prologText) throws TranslateException{
 			StringBuffer ret = new StringBuffer();
 			List<Term> ltrs = seqc.getTerms();
 			Map<Term, Term> notEventList = new HashMap<Term, Term>();
@@ -1830,7 +1832,7 @@ public class EPLTranslationProcessor {
 				// SEQ CLAUSE never be united by AND or SEQ
 				if(tdTable == null){
 					if(ltrs.size() > 1){
-						throw new EPLTranslateException("One sequence clause has no time delay table");
+						throw new TranslateException("One sequence clause has no time delay table");
 					}
 					else{
 						Term term = ltrs.get(0);
@@ -1935,12 +1937,12 @@ public class EPLTranslationProcessor {
 								firstEvery = "";
 							}
 							else{
-								throw new EPLTranslateException("Time delays are overlapping");
+								throw new TranslateException("Time delays are overlapping");
 							}
 						}
 					}
 					else{
-						throw new EPLTranslateException("Time delays are duplicated at begin");
+						throw new TranslateException("Time delays are duplicated at begin");
 					}
 					
 					
@@ -2141,7 +2143,7 @@ public class EPLTranslationProcessor {
 							TimeDelayEntry temp = right.get(j);
 							if(temp == stackTop){
 								if(notOpenPara){
-									throw new EPLTranslateException("Not time delay can not start from a time delay");
+									throw new TranslateException("Not time delay can not start from a time delay");
 								}
 								
 								flag1 = true;
@@ -2157,7 +2159,7 @@ public class EPLTranslationProcessor {
 								}
 							}
 							else{
-								throw new EPLTranslateException("Time delays are overlapping");
+								throw new TranslateException("Time delays are overlapping");
 							}
 						}
 						
@@ -2269,7 +2271,7 @@ public class EPLTranslationProcessor {
 						//XXX check
 						if(!lastTermTime && !thisTermTime){
 							if(flag1 && flag2){
-								throw new EPLTranslateException("Time delays are overlapping");
+								throw new TranslateException("Time delays are overlapping");
 							}
 						}
 						lastTermTime = thisTermTime;
@@ -2359,7 +2361,7 @@ public class EPLTranslationProcessor {
 									}
 								}
 								else{
-									throw new EPLTranslateException("Time delays are overlapping");
+									throw new TranslateException("Time delays are overlapping");
 								}
 							}
 						}
@@ -2402,7 +2404,7 @@ public class EPLTranslationProcessor {
 						}
 					}
 					else{
-						throw new EPLTranslateException("Time delays are duplicated at end");
+						throw new TranslateException("Time delays are duplicated at end");
 					}
 					
 					
@@ -2420,7 +2422,7 @@ public class EPLTranslationProcessor {
 							}
 						}
 						else{
-							throw new EPLTranslateException("Time delays are overlapping");
+							throw new TranslateException("Time delays are overlapping");
 						}
 					}
 				}
@@ -2428,7 +2430,7 @@ public class EPLTranslationProcessor {
 			// only one connected time delay, must have time delay table
 			else{
 				if(tdTable == null){
-					throw new EPLTranslateException("Null seq clause expession");
+					throw new TranslateException("Null seq clause expession");
 				}
 				else{
 					TimeDelayEntry temp = tdTable.getEntries().get(0);

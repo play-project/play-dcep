@@ -5,7 +5,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.preparat
 
 import java.util.List;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionInvocationException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
@@ -17,7 +17,7 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionFunctionExpression implements IExternalFunctionExpression<VariableBinder> {
+public class FunctionFunctionExpression implements IFunctionExpression<VariableBinder> {
 	
 	public static final String PARA_TYPE_INT = "int", PARA_TYPE_DECIMAL = "decimal", PARA_TYPE_BOOLEAN = "boolean", 
 			PARA_TYPE_STR = "str", PARA_TYPE_VAR = "var", PARA_TYPE_ARRAY = "array";
@@ -33,7 +33,7 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	private final FunctionTable ft = FunctionTable.getInstance();
 	
 
-	public ExternalFunctionFunctionExpression(String functionName) throws BDPLFilterException{
+	public FunctionFunctionExpression(String functionName) throws BDPLFilterException{
 		IFunction ef = ft.getFunction(functionName);
 		if(ef == null){
 			throw new BDPLFilterException("External function \'"+functionName+"\' is not loaded into system");
@@ -46,15 +46,15 @@ public class ExternalFunctionFunctionExpression implements IExternalFunctionExpr
 	/*
 	 * used for copy
 	 */
-	private ExternalFunctionFunctionExpression(String functionName, Class vt, List<String[]> paras){
+	private FunctionFunctionExpression(String functionName, Class vt, List<String[]> paras){
 		fn = functionName;
 		valueType = vt;
 		this.paras = paras;
 	}
 	
 	@Override
-	public IExternalFunctionExpression<VariableBinder> copy(){
-		return new ExternalFunctionFunctionExpression(fn, valueType, paras);
+	public IFunctionExpression<VariableBinder> copy(){
+		return new FunctionFunctionExpression(fn, valueType, paras);
 	}
 	
 	@Override

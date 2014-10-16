@@ -28,7 +28,7 @@ import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLConstants;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLConstants;
 
 /**
  * Not used

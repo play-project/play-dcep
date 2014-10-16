@@ -9,7 +9,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
-import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.EPLTranslationData;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLTranslationData;
 
 /**
  * @author ningyuan 
@@ -46,7 +46,7 @@ public class BDPLCompilerData {
 		return this.baseURI;
 	}
 
-	public String getBdplQuery() {
+	public String getBDPLQuery() {
 		return this.bdplQuery;
 	}
 	
@@ -83,11 +83,11 @@ public class BDPLCompilerData {
 		this.arrayTable = arrayTable;
 	}
 	
-	public EPLTranslationData getEplTranslationData() {
+	public EPLTranslationData getEPLTranslationData() {
 		return this.eplTranslationData;
 	}
 
-	public void setEplTranslationData(EPLTranslationData eplTranslationData) {
+	public void setEPLTranslationData(EPLTranslationData eplTranslationData) {
 		this.eplTranslationData = eplTranslationData;
 	}
 	

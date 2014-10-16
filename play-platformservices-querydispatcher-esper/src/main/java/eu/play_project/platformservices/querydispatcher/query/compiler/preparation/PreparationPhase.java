@@ -18,7 +18,7 @@ import eu.play_project.platformservices.bdpl.parser.BDPLArrayVarProcessor;
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.bdpl.parser.BDPLVarProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.ExternalFunctionProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.FilterFunctionProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompilerData;
 
@@ -37,7 +37,7 @@ public class PreparationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
 	protected void process(BDPLCompilerData data) throws BDPLCompileException {
 		
 		try {
-			data.setQueryContainer(SyntaxTreeBuilder.parseQuery(data.getBdplQuery()));
+			data.setQueryContainer(SyntaxTreeBuilder.parseQuery(data.getBDPLQuery()));
 			StringEscapesProcessor.process(data.getQueryContainer());
 			BaseDeclProcessor.process(data.getQueryContainer(), data.getBaseURI());
 			PrefixDeclProcessor.process(data.getQueryContainer());
@@ -51,7 +51,7 @@ public class PreparationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
 				
 			data.setArrayTable(BDPLArrayVarProcessor.process(data.getQueryContainer(), data.getVarTable(), data.getPrologText()));
 		
-			ExternalFunctionProcessor.process(data.getQueryContainer(), data.getArrayTable());
+			FilterFunctionProcessor.process(data.getQueryContainer(), data.getArrayTable());
 			
 		}
 		catch (MalformedQueryException | TokenMgrError | ParseException e) {

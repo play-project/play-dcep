@@ -7,11 +7,11 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.translat
  * @author ningyuan
  *
  */
-public class EPLTranslateException extends Exception {
+public class TranslateException extends Exception {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public EPLTranslateException (String msg){
+	public TranslateException (String msg){
 		super(msg);
 	}
 }

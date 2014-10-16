@@ -3,7 +3,7 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
@@ -12,7 +12,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionSimpleExpression implements IExternalFunctionExpression<VariableBinder> {
+public class FunctionSimpleExpression implements IFunctionExpression<VariableBinder> {
 	/*
 	 * be identical with grammar file
 	 */
@@ -22,7 +22,7 @@ public class ExternalFunctionSimpleExpression implements IExternalFunctionExpres
 	
 	private Object value;
 	
-	public ExternalFunctionSimpleExpression(String type, String value) throws BDPLFilterException{
+	public FunctionSimpleExpression(String type, String value) throws BDPLFilterException{
 		if(type.equalsIgnoreCase(VALUE_TYPE_INT)){
 			valueType = Integer.class;
 			this.value = Integer.valueOf(value);
@@ -47,14 +47,14 @@ public class ExternalFunctionSimpleExpression implements IExternalFunctionExpres
 	/*
 	 * used for copy
 	 */
-	private ExternalFunctionSimpleExpression(Class vt, Object v){
+	private FunctionSimpleExpression(Class vt, Object v){
 		valueType = vt;
 		value = v;
 	}
 	
 	@Override
-	public IExternalFunctionExpression<VariableBinder> copy(){
-		return new ExternalFunctionSimpleExpression(valueType, value);
+	public IFunctionExpression<VariableBinder> copy(){
+		return new FunctionSimpleExpression(valueType, value);
 	}
 
 	

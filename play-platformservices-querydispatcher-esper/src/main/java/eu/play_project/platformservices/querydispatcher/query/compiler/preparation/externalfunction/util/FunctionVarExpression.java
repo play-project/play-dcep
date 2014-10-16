@@ -3,7 +3,7 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IExternalFunctionExpression;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
@@ -12,19 +12,19 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
  * Aug 11, 2014
  *
  */
-public class ExternalFunctionVarExpression implements IExternalFunctionExpression<VariableBinder> {
+public class FunctionVarExpression implements IFunctionExpression<VariableBinder> {
 	
 	private final String vn;
 	
 	private VariableBinder vb;
 	
-	public ExternalFunctionVarExpression(String varName){
+	public FunctionVarExpression(String varName){
 		vn = varName;
 	}
 	
 	@Override
-	public IExternalFunctionExpression<VariableBinder> copy() {
-		return new ExternalFunctionVarExpression(vn);
+	public IFunctionExpression<VariableBinder> copy() {
+		return new FunctionVarExpression(vn);
 	}
 	
 	/*
