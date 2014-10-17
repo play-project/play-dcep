@@ -6,10 +6,6 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.preparat
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
 import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTAFA;
@@ -18,10 +14,11 @@ import org.openrdf.query.parser.bdpl.ast.ASTAFC;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayFilter;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayFilterExpression;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayVar;
+import org.openrdf.query.parser.bdpl.ast.ASTBDPLConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
-import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
+import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTExternalFunctionDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTExternalFunctionParameterDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTIRI;
@@ -35,6 +32,8 @@ import org.openrdf.query.parser.bdpl.ast.ASTSubBDPLQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTVar;
 import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
+
+
 
 
 
@@ -77,9 +76,9 @@ public class FilterFunctionProcessor {
 		
 		private VariableBinder varBinder;
 		
-		boolean hasVariable = false;
+		private boolean hasVariable = false;
 		
-		ExternalFunctionProcessorData(BDPLArrayTable arrayTable){
+		private ExternalFunctionProcessorData(BDPLArrayTable arrayTable){
 			if(arrayTable == null){
 				throw new IllegalArgumentException();
 			}
@@ -87,7 +86,7 @@ public class FilterFunctionProcessor {
 			varBinder = new VariableBinder(arrayTable);
 		}
 		
-		VariableBinder getVarBinder() {
+		private VariableBinder getVarBinder() {
 			return this.varBinder;
 		}
 	}
@@ -117,7 +116,7 @@ public class FilterFunctionProcessor {
 		}
 		
 		@Override
-		public Object visit(ASTConstruct node, Object data)
+		public Object visit(ASTBDPLConstruct node, Object data)
 				throws VisitorException
 		{
 			return data;
@@ -125,6 +124,13 @@ public class FilterFunctionProcessor {
 		
 		@Override
 		public Object visit(ASTDatasetClause node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		@Override
+		public Object visit(ASTDynamicArrayDecl node, Object data)
 				throws VisitorException
 		{
 			return data;

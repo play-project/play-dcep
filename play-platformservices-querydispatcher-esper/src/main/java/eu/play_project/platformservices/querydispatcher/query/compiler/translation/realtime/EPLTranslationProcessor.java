@@ -25,9 +25,9 @@ import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
 import org.openrdf.query.parser.bdpl.ast.ASTA;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayFilter;
 import org.openrdf.query.parser.bdpl.ast.ASTB;
+import org.openrdf.query.parser.bdpl.ast.ASTBDPLConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
-import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
@@ -51,6 +51,7 @@ import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
+
 
 
 
@@ -115,32 +116,32 @@ public class EPLTranslationProcessor {
 		
 		private String prologText;
 		
-		public EPLTranslatorData(String p){
+		private EPLTranslatorData(String p){
 			prologText = p;
 		}
 		
-		public void setWindowParam(long d, String t){
+		private void setWindowParam(long d, String t){
 			windowDuration = d;
 			windowType = t;
 		}
 		
-		public long getWindowDuration(){
+		private long getWindowDuration(){
 			return windowDuration;
 		}
 		
-		public String getWindowType(){
+		private String getWindowType(){
 			return windowType;
 		}
 		
-		public NotTable getNotTable(){
+		private NotTable getNotTable(){
 			return notTable;
 		}
 		
-		public StringBuffer getEventClauseText(){
+		private StringBuffer getEventClauseText(){
 			return eventClauseText;
 		}
 		
-		public String getPrologText(){
+		private String getPrologText(){
 			return prologText;
 		}
 	}
@@ -198,7 +199,7 @@ public class EPLTranslationProcessor {
 		}
 		
 		@Override
-		public Object visit(ASTConstruct node, Object data)
+		public Object visit(ASTBDPLConstruct node, Object data)
 				throws VisitorException
 		{
 			return data;

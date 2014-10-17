@@ -8,11 +8,11 @@ import java.util.Set;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayVar;
+import org.openrdf.query.parser.bdpl.ast.ASTBDPLConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTArrayElement;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTBindingsClause;
-import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDynamicArrayDef1;
@@ -44,7 +44,7 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
 
 
 /**
- * A processor of BDPL grammatic tree. It processes array variables in a BDPL query
+ * A processor of BDPL grammatic tree. It processes all array variables declared in a BDPL query
  * and create BDPLArrayTable.
  * 
  * Before calling this processor, the compiler data structure, BDPLVarTable and text of prolog
@@ -148,8 +148,9 @@ public class BDPLArrayVarProcessor {
 			return data;
 		}
 		
+		// ignore all array variables in bdpl construct clause
 		@Override
-		public Object visit(ASTConstruct node, Object data)
+		public Object visit(ASTBDPLConstruct node, Object data)
 				throws VisitorException
 		{
 			return data;

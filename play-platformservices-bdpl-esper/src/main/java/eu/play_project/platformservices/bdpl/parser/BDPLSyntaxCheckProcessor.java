@@ -181,6 +181,8 @@ public class BDPLSyntaxCheckProcessor {
 			return data;
 		}*/
 		
+		//TODO check construct syntax
+		
 		@Override
 		public Object visit(ASTEventGraphPattern node, Object data)
 				throws VisitorException

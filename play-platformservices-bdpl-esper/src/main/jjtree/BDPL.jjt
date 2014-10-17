@@ -504,12 +504,12 @@ void ProjectionElem() :
 }
 
 
-// ningyuan changed: 1. add DynamicArrayDecl() 2. replace WhereClause() with BDPLWhereClause()
+// ningyuan changed: 1. add DynamicArrayDecl() 2. replace ConstructClause() 3. replace WhereClause() with BDPLWhereClause()
 
 void ConstructQuery() :
 {}
 {
-	Construct()
+	BDPLConstruct()
 	( DatasetClause() )*
 	(DynamicArrayDecl())*
 	BDPLWhereClause()
@@ -1924,7 +1924,12 @@ void Modify() :
     <WHERE> GroupGraphPattern()
 }
 
-// ningyuan added
+
+/*
+ *********************************
+ * From here added by Ningyuan Pan
+ *********************************
+ */
 
 // not used
 void SubBDPLQuery() : // sub BDPL does not accept sub bdpl query
@@ -1937,18 +1942,93 @@ void SubBDPLQuery() : // sub BDPL does not accept sub bdpl query
 	[BindingsClause()]
 } 
 
-void ContextClause() :
+/*
+ * replace Construct
+ */
+
+void BDPLConstruct() :
 {}
-{
-	<CONTEXT> Var()
-	(  
-		( <NIL> {jjtThis.setStaticArrayDecl(true);} <LBRACE> ( StaticArrayDef1() | StaticArrayDef2() ) <RBRACE> )
-	| 
-		( {jjtThis.setStaticArrayDecl(false);} <LBRACE> TriplesBlock() <RBRACE> )
-	)
+{	
+	<CONSTRUCT> [ LOOKAHEAD(2) BDPLConstructClause() ]
 }
 
-void ArrayVar() :
+void BDPLConstructClause() #void :
+{}
+{
+    // Note: replaced ConstructTriples ref with equivalent TriplesBlock ref
+    <LBRACE> [ BDPLConstructTriplesBlock() ] <RBRACE>
+}
+
+void BDPLConstructTriplesBlock() #void :
+{}
+{
+	// Note: recursive rule rewriten to non-recursive rule, requires lookahead
+	BDPLConstructTriplesSameSubjectPath() ( LOOKAHEAD(2) <DOT> BDPLConstructTriplesSameSubjectPath() )* [<DOT>]
+}
+
+void BDPLConstructTriplesSameSubjectPath() :
+{}
+{
+    BDPLConstructVarOrTerm() BDPLConstructPropertyListPath()
+    |
+    BDPLConstructTriplesNodePath() [BDPLConstructPropertyListPath()]
+}
+
+void BDPLConstructVarOrTerm() #void :
+{}
+{
+(
+	LOOKAHEAD(2)( IRIref() <LPAREN> ArrayVar() <RPAREN> )
+|
+	LOOKAHEAD(2) ArrayVar()
+|
+	Var()
+|
+	GraphTerm()
+)
+}
+
+void BDPLConstructPropertyListPath() :
+{}
+{
+    (VerbPath() | VerbSimple()) BDPLConstructObjectListPath() [<SEMICOLON> [BDPLConstructPropertyListPath()] ]
+}
+
+void BDPLConstructObjectListPath() #BDPLConstructObjectList:
+{}
+{
+	BDPLConstructObjectPath() ( <COMMA> BDPLConstructObjectPath() )*
+}
+
+void BDPLConstructObjectPath() #void :
+{}
+{
+	BDPLConstructGraphNodePath()
+}
+
+void BDPLConstructGraphNodePath() #void :
+{}
+{
+	BDPLConstructVarOrTerm()
+|
+	BDPLConstructTriplesNodePath()
+}
+
+// do not replace CollectionPath() and BlankNodePropertyListPath(), or you have to change class BlankNodeVarProcessor at the same time.
+void BDPLConstructTriplesNodePath() #void :
+{}
+{
+	CollectionPath()
+|
+	BlankNodePropertyListPath()
+}
+
+
+/*
+ * array variable
+ */
+
+ void ArrayVar() :
 {
 	Token t;
 }
@@ -1988,21 +2068,15 @@ void DynamicArrayDef3() :
 	IRIref() <LPAREN> Var() <RPAREN>
 }
 
-void ArrayElement() :
+void ContextClause() :
 {}
 {
-	(	IRIref()
-		|	RDFLiteral()
-		|	NumericLiteral()
+	<CONTEXT> Var()
+	(  
+		( <NIL> {jjtThis.setStaticArrayDecl(true);} <LBRACE> ( StaticArrayDef1() | StaticArrayDef2() ) <RBRACE> )
+	| 
+		( {jjtThis.setStaticArrayDecl(false);} <LBRACE> TriplesBlock() <RBRACE> )
 	)
-	(
-		<COMMA>
-		(
-			IRIref()
-			|	RDFLiteral()
-			|	NumericLiteral()
-		)
-	)*
 }
 
 void StaticArrayDef1() : 
@@ -2024,6 +2098,119 @@ void StaticArrayDef2() :
 {
 	SelectQuery()
 }
+
+void ArrayElement() :
+{}
+{
+	(	IRIref()
+		|	RDFLiteral()
+		|	NumericLiteral()
+	)
+	(
+		<COMMA>
+		(
+			IRIref()
+			|	RDFLiteral()
+			|	NumericLiteral()
+		)
+	)*
+}
+
+
+/*
+ * external function
+ */
+
+void ExternalFunctionDecl():
+{}
+{
+	IRIref() <LPAREN> ExternalFunctionParameterDecl() <RPAREN>
+}
+
+void ExternalFunctionParameterDecl():
+{}
+{
+	[ (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1())]
+	(<COMMA> (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1()))*
+}
+
+void PrimitiveValue():
+{
+	Token t;
+}
+{
+	(
+		(t=<TRUE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
+		|
+		(t=<FALSE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
+		|
+		(t=<INTEGER> {jjtThis.setValue(t.image); jjtThis.setType("int");})
+		|
+		(t=<INTEGER_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("int");})
+		|
+		(t=<DECIMAL> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
+		|
+		(t=<DECIMAL_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
+		|
+		(RDFLiteral() {jjtThis.setType("literal");})
+	)
+} 
+
+
+/*
+ * array filter
+ */
+
+void ArrayFilter():
+{}
+{
+	<ARRAYFILTER> <LPAREN> ArrayFilterExpression() <RPAREN>
+} 
+
+void ArrayFilterExpression():
+{
+	Token t;
+}
+{
+	AFA() [( t=<AND> | t=<OR>){jjtThis.setOperator(t.image);} AFA()]
+}
+
+void AFA():
+{
+	Token t;
+}
+{
+	AFB() [( t=<EQ> | t=<NE> | t=<GT> | t=<LT> | t=<GE> | t=<LE>){jjtThis.setOperator(t.image);} AFB()]
+}
+
+void AFB():
+{
+	Token t;
+}
+{
+	[t=<NOT> {jjtThis.setOperator(t.image);}] AFC()
+}
+
+void AFC():
+{
+	Token t;
+}
+{
+	(
+		ExternalFunctionDecl()
+		|
+		PrimitiveValue()
+		|
+		Var()
+		|
+		(<LPAREN> ArrayFilterExpression() <RPAREN>)
+	)
+}
+ 
+
+/*
+ * replace WhereClause
+ */
 
 void BDPLWhereClause() :
 {}
@@ -2143,87 +2330,8 @@ void TimeBasedEvent(String op):
 	(<INTERVAL> <LPAREN> String() <DT_PREFIX> PrefixedName() <RPAREN>{System.out.print(" timer:interval()");} )
 }
 
-void ArrayFilter():
-{}
-{
-	<ARRAYFILTER> <LPAREN> ArrayFilterExpression() <RPAREN>
-} 
 
-void ArrayFilterExpression():
-{
-	Token t;
-}
-{
-	AFA() [( t=<AND> | t=<OR>){jjtThis.setOperator(t.image);} AFA()]
-}
-
-void AFA():
-{
-	Token t;
-}
-{
-	AFB() [( t=<EQ> | t=<NE> | t=<GT> | t=<LT> | t=<GE> | t=<LE>){jjtThis.setOperator(t.image);} AFB()]
-}
-
-void AFB():
-{
-	Token t;
-}
-{
-	[t=<NOT> {jjtThis.setOperator(t.image);}] AFC()
-}
-
-void AFC():
-{
-	Token t;
-}
-{
-	(
-		ExternalFunctionDecl()
-		|
-		PrimitiveValue()
-		|
-		Var()
-		|
-		(<LPAREN> ArrayFilterExpression() <RPAREN>)
-	)
-}
-
-void ExternalFunctionDecl():
-{}
-{
-	IRIref() <LPAREN> ExternalFunctionParameterDecl() <RPAREN>
-}
-
-void ExternalFunctionParameterDecl():
-{}
-{
-	[ (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1())]
-	(<COMMA> (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1()))*
-}
-
-void PrimitiveValue():
-{
-	Token t;
-}
-{
-	(
-		(t=<TRUE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
-		|
-		(t=<FALSE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
-		|
-		(t=<INTEGER> {jjtThis.setValue(t.image); jjtThis.setType("int");})
-		|
-		(t=<INTEGER_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("int");})
-		|
-		(t=<DECIMAL> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
-		|
-		(t=<DECIMAL_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
-		|
-		(RDFLiteral() {jjtThis.setType("literal");})
-	)
-}
-
+// TODO
 void HistoricalEventQuery():
 {}
 {

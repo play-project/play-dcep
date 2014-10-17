@@ -73,9 +73,9 @@ public class BDPLParser implements QueryParser {
 
 				TupleExpr tupleExpr = buildQueryModel(qc);
 
-				ParsedQuery query;
+				ParsedQuery query = null;
 
-				ASTQuery queryNode = qc.getQuery();
+				/*ASTQuery queryNode = qc.getQuery();
 				if (queryNode instanceof ASTSelectQuery) {
 					query = new ParsedTupleQuery(queryStr, tupleExpr);
 				}
@@ -97,7 +97,7 @@ public class BDPLParser implements QueryParser {
 				Dataset dataset = DatasetDeclProcessor.process(qc);
 				if (dataset != null) {
 					query.setDataset(dataset);
-				}
+				}*/
 				
 				String prologText = BDPLSyntaxCheckProcessor.process(qc);
 				

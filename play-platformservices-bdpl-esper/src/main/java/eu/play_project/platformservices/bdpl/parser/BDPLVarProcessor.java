@@ -10,11 +10,13 @@ import java.util.Set;
 
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.ast.ASTA;
+import org.openrdf.query.parser.bdpl.ast.ASTArrayVar;
 import org.openrdf.query.parser.bdpl.ast.ASTB;
+import org.openrdf.query.parser.bdpl.ast.ASTBDPLConstruct;
+import org.openrdf.query.parser.bdpl.ast.ASTBDPLConstructTriplesSameSubjectPath;
 import org.openrdf.query.parser.bdpl.ast.ASTBaseDecl;
 import org.openrdf.query.parser.bdpl.ast.ASTBindingsClause;
 import org.openrdf.query.parser.bdpl.ast.ASTC;
-import org.openrdf.query.parser.bdpl.ast.ASTConstruct;
 import org.openrdf.query.parser.bdpl.ast.ASTContextClause;
 import org.openrdf.query.parser.bdpl.ast.ASTDatasetClause;
 import org.openrdf.query.parser.bdpl.ast.ASTEventClause;
@@ -89,7 +91,7 @@ public class BDPLVarProcessor {
 		
 		/*
 		 * 0: initiate
-		 * 1: in construct clause
+		 * 1: in bdpl construct clause
 		 * 2: in real time event query (not in bdpl sub query)
 		 */
 		private int state = 0;
@@ -181,9 +183,15 @@ public class BDPLVarProcessor {
 			throw new VisitorException("QNames must be resolved before creating variable table.");
 		}
 		
-		/*
-		 * SubBDPLQuery is skipped ( BDPLWhereClause in SubBDPLQuery )
-		 */
+		// ignore all array variables
+		@Override
+		public Object visit(ASTArrayVar node, Object data)
+				throws VisitorException
+		{
+			return data;
+		}
+		
+		// SubBDPLQuery is skipped ( BDPLWhereClause in SubBDPLQuery )
 		@Override
 		public Object visit(ASTSubBDPLQuery node, Object data)
 				throws VisitorException
@@ -198,7 +206,7 @@ public class BDPLVarProcessor {
 		 * 
 		 */	
 		@Override
-		public Object visit(ASTConstruct node, Object data)
+		public Object visit(ASTBDPLConstruct node, Object data)
 				throws VisitorException
 		{
 			int s = ((VarTableCreatorData)data).state;
@@ -356,6 +364,17 @@ public class BDPLVarProcessor {
 		}
 		
 		@Override
+		public Object visit(ASTBDPLConstructTriplesSameSubjectPath node, Object data)
+				throws VisitorException
+		{
+			((VarTableCreatorData)data).setInTriple(true);
+			node.childrenAccept(this, data);
+			((VarTableCreatorData)data).setInTriple(false);
+			
+			return data;
+		}
+		
+		@Override
 		public Object visit(ASTTriplesSameSubjectPath node, Object data)
 				throws VisitorException
 		{
@@ -375,7 +394,7 @@ public class BDPLVarProcessor {
 				int s = ((VarTableCreatorData)data).getState();
 				
 				switch(s){
-					// var in triple block of construct clause 
+					// var in triple block of bdpl construct clause 
 					case 1:{
 						((VarTableCreatorData)data).getVarTable().getConstructVars().add(node.getName());
 						break;
