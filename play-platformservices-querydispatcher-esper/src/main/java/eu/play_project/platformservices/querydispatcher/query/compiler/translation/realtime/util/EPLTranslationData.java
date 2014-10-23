@@ -7,7 +7,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.translat
 import java.util.List;
 import java.util.Map;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
 
 /**
  *
@@ -22,13 +22,13 @@ public class EPLTranslationData {
 	
 	private final List<Integer> injectParas;
 	
-	private final List<IBDPLFilter<Map<String, String[]>>> eventPatternFilters;
+	private final List<BDPLArrayFilter> eventPatternFilters;
 	
 	private final Map<Integer, Object> injectParaMapping;
 	
 	public final static int INJECT_PARA_REALTIMERESULT_BINDING_DATA = 0;
 	
-	public EPLTranslationData(String epl, List<Integer> injectParas, Map<Integer, Object> injectParaMapping, List<IBDPLFilter<Map<String, String[]>>> eventPatternFilters){
+	public EPLTranslationData(String epl, List<Integer> injectParas, Map<Integer, Object> injectParaMapping, List<BDPLArrayFilter> eventPatternFilters){
 		this.epl = epl;
 		this.injectParas = injectParas;
 		this.eventPatternFilters = eventPatternFilters;
@@ -43,7 +43,7 @@ public class EPLTranslationData {
 		return this.injectParas;
 	}
 	
-	public List<IBDPLFilter<Map<String, String[]>>> getEventPatternFilters(){
+	public List<BDPLArrayFilter> getEventPatternFilters(){
 		return eventPatternFilters;
 	}
 	

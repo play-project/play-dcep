@@ -41,7 +41,7 @@ public class EPLConstants {
 	
 	public static final String FILTER_RDF = "eu.play_project.platformservices.querydispatcher.query.compiler.generation.filter.RDFGraphEventFilter.evaluate(\"%s\", %s, ?)";
 	
-	public static final String FILTER_RESULT_BINDING = "eu.play_project.platformservices.querydispatcher.query.compiler.generation.filter.RealTimeResultBindingFilter.evaluate(\"%s\", %s, ?, ?)";
+	public static final String FILTER_RESULT_BINDING = "eu.play_project.platformservices.querydispatcher.query.compiler.generation.filter.RealTimeSolutionSequenceFilter.evaluate(\"%s\", %s, ?, ?)";
 	
 	public static final String SPARQL_UNION = "UNION";
 }

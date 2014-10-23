@@ -76,11 +76,11 @@ public class EPLTranslator implements QueryParser{
 
 				// handle query operation
 
-				TupleExpr tupleExpr = buildQueryModel(qc);
+				//TupleExpr tupleExpr = buildQueryModel(qc);
 				
-				ParsedQuery query;
+				ParsedQuery query = null;
 			
-				ASTQuery queryNode = qc.getQuery();
+				/*ASTQuery queryNode = qc.getQuery();
 				if (queryNode instanceof ASTSelectQuery) {
 						
 					query = new ParsedTupleQuery(queryStr, tupleExpr);
@@ -112,7 +112,15 @@ public class EPLTranslator implements QueryParser{
 				Dataset dataset = DatasetDeclProcessor.process(qc);
 				if (dataset != null) {
 					query.setDataset(dataset);
-				}
+				}*/
+				
+				
+				String prologText = BDPLSyntaxCheckProcessor.process(qc);
+				
+				System.out.println(EPLTranslationProcessor.process(qc, prologText)+"\n");
+				
+				System.out.println(EPLListenerProcessor.process(qc, prologText)+"\n");
+				
 				
 				return query;
 			}

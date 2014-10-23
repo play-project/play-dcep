@@ -71,7 +71,7 @@ public class BDPLParser implements QueryParser {
 
 				// handle query operation
 
-				TupleExpr tupleExpr = buildQueryModel(qc);
+				//TupleExpr tupleExpr = buildQueryModel(qc);
 
 				ParsedQuery query = null;
 

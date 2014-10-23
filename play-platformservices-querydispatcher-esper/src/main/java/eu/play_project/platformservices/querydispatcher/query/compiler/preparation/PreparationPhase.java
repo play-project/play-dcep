@@ -3,6 +3,8 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.preparation;
 
+import java.util.Set;
+
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
 import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
@@ -42,7 +44,9 @@ public class PreparationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
 			BaseDeclProcessor.process(data.getQueryContainer(), data.getBaseURI());
 			PrefixDeclProcessor.process(data.getQueryContainer());
 			WildcardProjectionProcessor.process(data.getQueryContainer());
-			BlankNodeVarProcessor.process(data.getQueryContainer());
+			// XXX not useful in bdpl, because not use basic graph pattern
+			Set<String> bn = BlankNodeVarProcessor.process(data.getQueryContainer());
+				
 			DatasetDeclProcessor.process(data.getQueryContainer());
 			
 			data.setPrologText(BDPLSyntaxCheckProcessor.process(data.getQueryContainer()));

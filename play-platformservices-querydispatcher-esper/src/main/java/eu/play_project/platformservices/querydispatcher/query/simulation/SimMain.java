@@ -24,7 +24,7 @@ import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.CoordinateListener;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.CoordinateSystemListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
@@ -312,25 +312,30 @@ public class SimMain extends WindowAdapter{
 										prepared.setObject(i+1, injectParaMapping.get(injectParas.get(i)));
 									}
 									
-									EPStatement testStmt = epService.getEPAdministrator().create(prepared);
+									//EPStatement testStmt = epService.getEPAdministrator().create(prepared);
 									//testStmt.addListener(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
 									
-									//XXX coordinate listener
-									CoordinateListener cLis = (CoordinateListener)(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
 									
-									++statementCounter;
-									EPStatementEntry eps = new EPStatementEntry(query, testStmt);
+									
+									//XXX coordinate listener
+									CoordinateSystemListener cLis = (CoordinateSystemListener)(((DefaultBDPLPreparedQuery)bdplQuery).getListener());
+									cLis.setEPServiceProvider(epService);
+									
 									JFrame frame = new JFrame("Coordinate System "+statementCounter);
 									CoordinatePanel panel = new CoordinatePanel();
 									frame.add(panel);
 									frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
 									frame.setSize(1020,620);
-							        frame.setResizable(false);
-									eps.setFrame(frame); 
+							        frame.setResizable(false); 
 									frame.setVisible(true);      
 								           
 								    cLis.setPanel(panel);
+								    EPStatement testStmt = epService.getEPAdministrator().create(prepared);
 									testStmt.addListener(cLis);
+									
+									++statementCounter;
+									EPStatementEntry eps = new EPStatementEntry(query, testStmt);
+									eps.setFrame(frame);
 									
 									/*EPStatement testStmt = epService.getEPAdministrator().createEPL(((DefaultBDPLQuery)bdplQuery).getEPL());
 									testStmt.addListener(((DefaultBDPLQuery)bdplQuery).getListener());*/

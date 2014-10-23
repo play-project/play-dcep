@@ -9,6 +9,7 @@
 package com.espertech.esper.example.transaction.sim;
 
 
+import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
 
@@ -23,6 +24,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openrdf.model.Model;
+import org.openrdf.model.URI;
 import org.openrdf.model.impl.LinkedHashModel;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
@@ -81,11 +83,12 @@ public class TransactionEventSource extends EventSource {
         	count++;
         	
         	Model m = new LinkedHashModel();
-        	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(id)));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/type"), new LiteralImpl(String.valueOf(type)));
-        	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event1"));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event1"));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
+        	URI subject = new URIImpl(":"+count);
+        	m.add(subject, new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(id)));
+        	m.add(subject, new URIImpl("http://ningyuan.com/type"), new LiteralImpl(String.valueOf(type)));
+        	m.add(subject, RDF.TYPE, new LiteralImpl("Event1"));
+        	m.add(subject, new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event1"));
+        	m.add(subject, new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event1 rdf1 = new Event1(m);*/
         	mapEvent = new MapEvent<SesameEventModel>(new SesameEventModel(m));
         	
@@ -103,11 +106,12 @@ public class TransactionEventSource extends EventSource {
         	id2++;
         	count++;
         	Model m = new LinkedHashModel();
-        	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(id2)));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e2Stamp)));
-        	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event2"));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event2"));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
+        	URI subject = new URIImpl(":"+count);
+        	m.add(subject, new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(id2)));
+        	m.add(subject, new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e2Stamp)));
+        	m.add(subject, RDF.TYPE, new LiteralImpl("Event2"));
+        	m.add(subject, new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event2"));
+        	m.add(subject, new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
         	/*Event2 rdf2 = new Event2(m);*/
         	mapEvent = new MapEvent<SesameEventModel>(new SesameEventModel(m));
         	
@@ -123,11 +127,12 @@ public class TransactionEventSource extends EventSource {
             
         	count++;
             Model m = new LinkedHashModel();
-        	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e3Stamp)));
-        	m.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("Event3"));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event3"));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
-        	m.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/array"), new LiteralImpl("[1, 2, 3]", new URIImpl("http://json")));
+            URI subject = new URIImpl(":"+count);
+        	m.add(subject, new URIImpl("http://ningyuan.com/stamp"), new LiteralImpl(String.valueOf(e3Stamp)));
+        	m.add(subject, RDF.TYPE, new LiteralImpl("Event3"));
+        	m.add(subject, new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("Event3"));
+        	m.add(subject, new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(beginningStamp).toString()));
+        	m.add(subject, new URIImpl("http://ningyuan.com/array"), new LiteralImpl("[520, 420, 520, 390, 520, 420]", new URIImpl(BDPLConstants.URI_TYPE_JSON_ARRAY)));
         	/*Event3 rdf3 = new Event3(m);*/
         	mapEvent = new MapEvent<SesameEventModel>(new SesameEventModel(m));
         	
