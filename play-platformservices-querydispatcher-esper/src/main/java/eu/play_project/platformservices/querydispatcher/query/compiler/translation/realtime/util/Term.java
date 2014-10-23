@@ -6,7 +6,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.translat
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
 
 
 
@@ -49,7 +49,7 @@ public class Term {
 	 * list of bdpl filters
 	 * property of simple event
 	 */
-	private List<IBDPLFilter> filters = new ArrayList<IBDPLFilter>();
+	private List<BDPLArrayFilter> filters = new ArrayList<BDPLArrayFilter>();
 	
 	
 	
@@ -106,7 +106,7 @@ public class Term {
 		return this.endTimeVarName;
 	}
 	
-	public List<IBDPLFilter> getFilters() {
+	public List<BDPLArrayFilter> getFilters() {
 		return this.filters;
 	}
 

@@ -16,7 +16,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
  * Aug 12, 2014
  *
  */
-public class BDPLArrayFilter implements IBDPLFilter<Map<String, String[]>>{
+public class BDPLArrayFilter{
 	
 	/*
 	 * get variables or array variables used in expression during evaluating 
@@ -53,9 +53,8 @@ public class BDPLArrayFilter implements IBDPLFilter<Map<String, String[]>>{
 	 * 
 	 * @param binding
 	 */
-	@Override
-	public void setDataObject(Map<String, String[]> binding){
-		vb.bindVariableValues(binding);
+	public void setDataObject(Map<String, String[]> binding, Map<String, String[][][]> dArrays){
+		vb.bindVariableValues(binding, dArrays);
 	}
 	
 	public boolean hasVariable(){
@@ -66,14 +65,12 @@ public class BDPLArrayFilter implements IBDPLFilter<Map<String, String[]>>{
 		hasVariable = b;
 	}
 	
-	@Override
 	public boolean evaluate() throws BDPLFilterException {
 		
 		return Boolean.valueOf(exp.getValue().toString());
 	}
 
-	@Override
-	public IBDPLFilter<Map<String, String[]>> copy() {
+	public BDPLArrayFilter copy() {
 		return new BDPLArrayFilter(hasVariable, new VariableBinder(vb.getArrayTable()), exp.copy());
 	}
 	

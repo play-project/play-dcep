@@ -52,10 +52,6 @@ import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
 
-
-
-
-
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLConstants;
@@ -70,7 +66,8 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.TimeDelayEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.TimeDelayTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
+
 
 
 
@@ -175,7 +172,7 @@ public class EPLTranslationProcessor {
 		/*
 		 * array filters out of real time event pattern
 		 */
-		private List<IBDPLFilter<Map<String, String[]>>> arrayFilters = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
+		private List<BDPLArrayFilter> arrayFilters = new ArrayList<BDPLArrayFilter>();
 		
 		//List<String> matchedPatternSparql = new ArrayList<String>();
 		
@@ -250,7 +247,7 @@ public class EPLTranslationProcessor {
 				
 				List<ASTArrayFilter> afs = node.jjtGetChildren(ASTArrayFilter.class);
 				for(ASTArrayFilter af : afs){
-					arrayFilters.add((IBDPLFilter<Map<String, String[]>>)af.getFilterObject());
+					arrayFilters.add((BDPLArrayFilter)af.getFilterObject());
 				}
 				
 			}catch (TranslateException e) {
@@ -271,7 +268,7 @@ public class EPLTranslationProcessor {
 					ret = (OrClause)child.jjtAccept(this, data);
 				}
 				else if(child instanceof ASTArrayFilter){
-					arrayFilters.add((IBDPLFilter<Map<String, String[]>>)((ASTArrayFilter)child).getFilterObject());
+					arrayFilters.add((BDPLArrayFilter)((ASTArrayFilter)child).getFilterObject());
 				}
 				else{
 					child.jjtAccept(this, data);
@@ -553,7 +550,7 @@ public class EPLTranslationProcessor {
 				eventClauseText.delete(0, eventClauseText.length());
 				
 				for(ASTArrayFilter afn : afns){
-					term.getFilters().add((IBDPLFilter<Map<String, String[]>>)afn.getFilterObject());
+					term.getFilters().add((BDPLArrayFilter)afn.getFilterObject());
 				}
 				
 				SeqClause seq = new SeqClause();
@@ -653,8 +650,11 @@ public class EPLTranslationProcessor {
 			if(temp.charAt(temp.length()-1) != '.'){
 				temp += EPLConstants.TRIPLEEND+" ";
 			}
+			else{
+				temp += " ";
+			}
 			
-			temp += " ?"+idVarName+" <"+BDPLConstants.URI_ENDTIME+"> ?"+ret[0]+".";
+			temp += "?"+idVarName+" <"+BDPLConstants.URI_ENDTIME+"> ?"+ret[0]+".";
 			// in epl " must be replaced by '
 			temp = temp.replace("\"", "\'");
 			ret[1] = temp;
@@ -1866,8 +1866,8 @@ public class EPLTranslationProcessor {
 							}
 							eParams.append(EPLConstants.EVENTTAG+k+"}");
 							
-							List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
-							for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+							List<BDPLArrayFilter> injectAFs = new ArrayList<BDPLArrayFilter>();
+							for(BDPLArrayFilter injectAF : term.getFilters()){
 								injectAFs.add(injectAF.copy());
 							}
 							
@@ -1980,8 +1980,8 @@ public class EPLTranslationProcessor {
 						}
 						eParams.append(EPLConstants.EVENTTAG+k+"}");
 						
-						List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
-						for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+						List<BDPLArrayFilter> injectAFs = new ArrayList<BDPLArrayFilter>();
+						for(BDPLArrayFilter injectAF : term.getFilters()){
 							injectAFs.add(injectAF.copy());
 						}
 						
@@ -2087,6 +2087,9 @@ public class EPLTranslationProcessor {
 									if(temp.length() > 0 && temp.charAt(temp.length()-1) != '.'){
 										sparqlText.append(EPLConstants.TRIPLEEND+" ");
 									}
+									else{
+										sparqlText.append(" ");
+									}
 									
 									int se = sparqlText.length();
 									sparqlText.append(not.getSparqlText());
@@ -2110,8 +2113,8 @@ public class EPLTranslationProcessor {
 										eParams.append(EPLConstants.EVENTTAG+k+",");
 									}
 									
-									List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
-									for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+									List<BDPLArrayFilter> injectAFs = new ArrayList<BDPLArrayFilter>();
+									for(BDPLArrayFilter injectAF : term.getFilters()){
 										injectAFs.add(injectAF.copy());
 									}
 									
@@ -2227,6 +2230,9 @@ public class EPLTranslationProcessor {
 							if(temp.length() > 0 && temp.charAt(temp.length()-1) != '.'){
 								sparqlText.append(EPLConstants.TRIPLEEND+" ");
 							}
+							else{
+								sparqlText.append(" ");
+							}
 							
 							sparqlText.append(term.getSparqlText());
 							
@@ -2246,8 +2252,8 @@ public class EPLTranslationProcessor {
 							}
 							eParams.append(EPLConstants.EVENTTAG+k+"}");
 							
-							List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
-							for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+							List<BDPLArrayFilter> injectAFs = new ArrayList<BDPLArrayFilter>();
+							for(BDPLArrayFilter injectAF : term.getFilters()){
 								injectAFs.add(injectAF.copy());
 							}
 							
@@ -2293,6 +2299,9 @@ public class EPLTranslationProcessor {
 							if(temp.length() > 0 && temp.charAt(temp.length()-1) != '.'){
 								sparqlTextNOT.append(EPLConstants.TRIPLEEND+" ");
 							}
+							else{
+								sparqlTextNOT.append(" ");
+							}
 							
 							int se = sparqlTextNOT.length();
 							sparqlTextNOT.append(not.getSparqlText());
@@ -2322,8 +2331,8 @@ public class EPLTranslationProcessor {
 								}
 							}
 							
-							List<IBDPLFilter<Map<String, String[]>>> injectAFs = new ArrayList<IBDPLFilter<Map<String, String[]>>>();
-							for(IBDPLFilter<Map<String, String[]>> injectAF : term.getFilters()){
+							List<BDPLArrayFilter> injectAFs = new ArrayList<BDPLArrayFilter>();
+							for(BDPLArrayFilter injectAF : term.getFilters()){
 								injectAFs.add(injectAF.copy());
 							}
 						
