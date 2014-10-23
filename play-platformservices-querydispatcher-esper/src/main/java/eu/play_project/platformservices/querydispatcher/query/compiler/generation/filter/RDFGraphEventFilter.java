@@ -129,7 +129,7 @@ public class RDFGraphEventFilter {
 							}
 							
 							for(Map<String, String[]> varBinding : varBindings){
-								arrayFilter.setDataObject(varBinding);
+								arrayFilter.setDataObject(varBinding, null);
 								if(!arrayFilter.evaluate()){
 										System.out.println("RDFGraphEventFilter array filter: false");
 									return false;
