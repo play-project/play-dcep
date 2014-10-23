@@ -97,7 +97,7 @@ public class FilterFunctionParameterCastor {
 			for(int i = 0; i < array.length; i++){
 				for(int j = 0; j < dimension; j++){
 					try{
-						ret[i][j] = Double.valueOf(array[i][j][0]);
+						ret[i][j] = Double.valueOf(array[i][j][1]);
 					}
 					catch(NumberFormatException e){
 						throw new FunctionParameterCastException("External function parameter casting exception.");
@@ -112,7 +112,7 @@ public class FilterFunctionParameterCastor {
 			
 			for(int i = 0; i < array.length; i++){
 				try{
-					ret[i] = Double.valueOf(array[i][0][0]);
+					ret[i] = Double.valueOf(array[i][0][1]);
 				}
 				catch(NumberFormatException e){
 					throw new FunctionParameterCastException("External function parameter casting exception.");
@@ -137,7 +137,7 @@ public class FilterFunctionParameterCastor {
 			
 			for(int i = 0; i < array.length; i++){
 				for(int j = 0; j < dimension; j++){
-					ret[i][j] = array[i][j][0];
+					ret[i][j] = array[i][j][1];
 				}
 			}
 			return ret;
@@ -168,7 +168,7 @@ public class FilterFunctionParameterCastor {
 			for(int i = 0; i < array.length; i++){
 				for(int j = 0; j < dimension; j++){
 					try{
-						ret[i][j] = Integer.valueOf(array[i][j][0]);
+						ret[i][j] = Integer.valueOf(array[i][j][1]);
 					}
 					catch(NumberFormatException e){
 						throw new FunctionParameterCastException("External function parameter casting exception.");
@@ -183,7 +183,7 @@ public class FilterFunctionParameterCastor {
 			
 			for(int i = 0; i < array.length; i++){
 				try{
-					ret[i] = Integer.valueOf(array[i][0][0]);
+					ret[i] = Integer.valueOf(array[i][0][1]);
 				}
 				catch(NumberFormatException e){
 					throw new FunctionParameterCastException("External function parameter casting exception.");

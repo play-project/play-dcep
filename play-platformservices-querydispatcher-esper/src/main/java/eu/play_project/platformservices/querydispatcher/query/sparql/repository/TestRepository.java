@@ -8,8 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -25,6 +27,7 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.memory.MemoryStore;
 
+import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.sparql.ISparqlRepository;
 
 /**
@@ -62,36 +65,50 @@ public class TestRepository implements ISparqlRepository{
 			 */
 			List<String> names = result.getBindingNames();
 				for(int i = 0; i < names.size(); i++){
-					System.out.println("names: "+names.get(i));
+					System.out.print(names.get(i)+" ");
 				}
+				System.out.println();
+				
 			List<String[][]> temp = new ArrayList<String[][]>();
 			
 			while(result.hasNext()){
 				BindingSet bindingSet = result.next();
 				
-				String [][] ele = new String[names.size()][2];
-				temp.add(ele);
+				String [][] ele = new String[names.size()][3];
+				
 				for(int i = 0; i < names.size(); i++){
 					Value v = bindingSet.getBinding(names.get(i)).getValue();
 					
 					if(v instanceof Literal){
-						ele[i][0] = ((Literal) v).getLabel();
+						ele[i][0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+						ele[i][1] = ((Literal) v).getLabel();
+						ele[i][2] = v.toString();
+					}
+					else if(v instanceof URI){
+						ele[i][0] = String.valueOf(BDPLConstants.TYPE_IRI);
+						ele[i][1] = v.toString();
+					}
+					else if(v instanceof BNode){
+						ele[i][0] = String.valueOf(BDPLConstants.TYPE_BN);
+						ele[i][1] = ((BNode) v).getID();
 					}
 					else{
-						ele[i][0] = v.toString();
+						String.valueOf(BDPLConstants.TYPE_UNKNOWN);
+						ele[i][1] = v.toString();
 					}
-					
-					ele[i][1] = v.toString();
 				}
 				
+				temp.add(ele);
 			}
 			
-			ret = new String[temp.size()][names.size()][2];
+			ret = new String[temp.size()][names.size()][3];
 			for(int i = 0; i < temp.size(); i++){
 				ret[i] = temp.get(i);
+					
+					// for test
 					String [][] s = ret[i];
 					for(int j = 0; j < s.length; j++){
-						System.out.print(s[j][0]+"   "+s[j][1]+"   ");
+						System.out.print(s[j][0]+"   "+s[j][1]+"   "+s[j][2]+"   ");
 					}
 					System.out.println();
 			}

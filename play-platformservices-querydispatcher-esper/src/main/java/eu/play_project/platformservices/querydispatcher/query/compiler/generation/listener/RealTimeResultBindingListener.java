@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openrdf.model.BNode;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.BindingSet;
@@ -32,6 +34,7 @@ import com.espertech.esper.client.UpdateListener;
 
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
@@ -102,18 +105,29 @@ public class RealTimeResultBindingListener implements UpdateListener{
 							Map<String, String[]> m = new HashMap<String, String[]>();
 							r.add(m);
 							for(String name : realTimeCommonVars){
-								String[] var = new String[2];
+								String[] var = new String[3];
 								
 								Value v = bs.getBinding(name).getValue();
 								
 								if(v instanceof Literal){
-									var[0] = ((Literal) v).getLabel();
+									var[0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+									var[1] = ((Literal) v).getLabel();
+									var[2] = v.toString();
+								}
+								else if(v instanceof URI){
+									var[0] = String.valueOf(BDPLConstants.TYPE_IRI);
+									var[1] = v.toString();
+								}
+								else if(v instanceof BNode){
+									var[0] = String.valueOf(BDPLConstants.TYPE_BN);
+									var[1] = ((BNode) v).getID();
 								}
 								else{
-									var[0] = v.toString();
+									String.valueOf(BDPLConstants.TYPE_UNKNOWN);
+									var[1] = v.toString();
 								}
-								
-								var[1] = bs.getBinding(name).getValue().toString();
+									
+								System.out.print(name+": "+var[0]+"   "+var[1]+"   "+var[2]+"   ");
 								
 								m.put(name, var);
 							}
@@ -122,11 +136,11 @@ public class RealTimeResultBindingListener implements UpdateListener{
 						
 						//TODO: handel variables
 						for(SubQueryTableEntry subQuery : subQueris){
-							BDPLArray array = subQuery.getArray();
+							BDPLArray array = subQuery.getArrayEntry().getArray();
 							String [] sVars = subQuery.getSelectedVars();
 							
 							for(Map<String, String[]> m : r){
-								String [][] ele = new String [sVars.length][2];
+								String [][] ele = new String [sVars.length][3];
 								
 								int k = 0;
 								for( ; k < sVars.length; k++){
@@ -147,7 +161,7 @@ public class RealTimeResultBindingListener implements UpdateListener{
 										array.write(ele);
 											System.out.println("Add element in dynamic array: "+array.length());
 											for(int n = 0; n < ele.length; n++){
-												System.out.print(sVars[n]+": "+ele[n][0]+"   "+ele[n][1]+"   ");
+												System.out.print(sVars[n]+": "+ele[n][0]+"   "+ele[n][1]+"   "+ele[n][2]+"   ");
 											}
 											System.out.println();
 									} catch (BDPLArrayException e) {}

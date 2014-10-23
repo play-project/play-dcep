@@ -9,9 +9,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 /**
- * The class of BDPL array. An array is an object of String[length][dimension][2]. 
- * If an element of array is a RDF literal, then in String[][][0] the label is saved.
- * In String[][][1] the whole literal. For other cases the element is saved in String[][][0].
+ * The class of BDPL array. An array is an object of String[length][dimension][3]. 
+ * The type is saved in String[][][0], label in String[][][1] and
+ * In String[][][1] the whole literal.
  * 
  * The read() method is protected by a read-lock, and write() by a write-lock;
  * 
@@ -44,6 +44,7 @@ public class BDPLArray {
      * @param content
      */
     public BDPLArray(String[][][] content){
+  
     	if(content != null){
     		if(content.length == 0){
 	    		tail = null;
@@ -114,6 +115,7 @@ public class BDPLArray {
     		tail = null;
     		head = null;
     	}
+    	
     	
     	this.size = size;
     }
@@ -283,8 +285,9 @@ public class BDPLArray {
     	private BDPLArrayElement next = null;
     	
     	/*
-    	 * content[dimension][0] = label value
-    	 * content[dimension][1] = whole value
+    	 * content[dimension][0] = type
+    	 * content[dimension][1] = label
+    	 * content[dimension][2] = whole value
     	 */
     	private String[][] content;
     	

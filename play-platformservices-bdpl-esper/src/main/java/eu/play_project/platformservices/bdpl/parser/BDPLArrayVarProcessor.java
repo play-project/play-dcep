@@ -200,6 +200,7 @@ public class BDPLArrayVarProcessor {
 				
 				// create new array table entry for static array
 				BDPLArrayTableEntry entry = new BDPLArrayTableEntry();
+				entry.setName(arrayName);
 				entry.setType(arrayType);
 				entry.setSource(((IArrayDecl)IarrayDecl).getSource());
 				
@@ -241,6 +242,7 @@ public class BDPLArrayVarProcessor {
 			
 			// create new array table entry for dynamic array
 			BDPLArrayTableEntry entry = new BDPLArrayTableEntry();
+			entry.setName(arrayValNode.getName());
 			entry.setArray(array);
 			entry.setType(arrayType);
 			entry.setSource(((IArrayDecl)IarrayDecl).getSource());
@@ -281,18 +283,19 @@ public class BDPLArrayVarProcessor {
 				
 				
 				BDPLArrayType arrayType = (BDPLArrayType)ayArrayNode.jjtAccept(this, data);
-				
-				// create new array table entry for anonymous static array
-				BDPLArrayTableEntry entry = new BDPLArrayTableEntry();
-				entry.setType(arrayType);
-				entry.setSource(((ASTStaticArrayDef1)ayArrayNode).getSource());
-				
+			
 				arrayName.append("_:");
 				int index = ((ArrayTableCreatorData)data).anonymousIndex;
 				while(table.contain(arrayName.append(index).toString())){
 					arrayName.replace(arrayName.length()-1, arrayName.length(), ":");
 				}
 				((ArrayTableCreatorData)data).anonymousIndex++;
+				
+				// create new array table entry for anonymous static array
+				BDPLArrayTableEntry entry = new BDPLArrayTableEntry();
+				entry.setName(arrayName.toString());
+				entry.setType(arrayType);
+				entry.setSource(((ASTStaticArrayDef1)ayArrayNode).getSource());
 				
 				try{
 					table.add(arrayName.toString(), entry);
@@ -478,12 +481,13 @@ public class BDPLArrayVarProcessor {
 				}
 				else if(child instanceof ASTNumericLiteral){
 					ASTNumericLiteral numLiteral = (ASTNumericLiteral)child;
-					sourceText.append("\""+numLiteral.getValue()+"\"");
+					
 					if(numLiteral.getDatatype() != null){
+						sourceText.append("\""+numLiteral.getValue()+"\"");
 						sourceText.append("^^"+numLiteral.getDatatype()+" ");
 					}
 					else{
-						sourceText.append(" ");
+						sourceText.append(numLiteral.getValue()+" ");
 					}
 				}
 				else if(child instanceof ASTIRI){

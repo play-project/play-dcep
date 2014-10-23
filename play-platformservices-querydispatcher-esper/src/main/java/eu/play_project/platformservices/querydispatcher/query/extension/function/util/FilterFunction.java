@@ -72,7 +72,7 @@ public class FilterFunction implements IFunction{
 	
 	/**
 	 * invoke the actual function with parameters from events. If parameter is type array, 
-	 * please pass an object String[length][dimension][2], if parameter is simple variable, 
+	 * please pass an object String[length][dimension][3], if parameter is simple variable, 
 	 * please pass an object String
 	 * 
 	 * 

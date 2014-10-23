@@ -9,8 +9,10 @@ import java.util.List;
 
 
 
+
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.InitiateException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
@@ -89,17 +91,37 @@ public class DefaultArrayMaker implements IArrayMaker {
 					}
 					else if(c == '\"'){
 						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+						
 						state = 1;
 					}
 					else if(c == '\''){
 						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+						
 						state = 4;
 					}
 					else if(c == ';'){
 						throw new InitiateException("Empty element in static array declaration.");
 					}
+					else if(c == '<'){
+						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_IRI);
+						
+						state = 5;
+					}
 					else{
 						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+						
 						state = 2;
 					}
 					break;
@@ -112,14 +134,12 @@ public class DefaultArrayMaker implements IArrayMaker {
 					else if(c == '\"'){
 						oneDim.append(c);
 						
-						value = new String[2];
 						String s = oneDim.toString();
-						
 						if(s.length() > 2){
-							value[0] = s.substring(1, s.length()-1);
+							value[1] = s.substring(1, s.length()-1);
 						}
 						else{
-							value[0] = "";
+							value[1] = "";
 						}
 						
 						state = 2;
@@ -132,12 +152,11 @@ public class DefaultArrayMaker implements IArrayMaker {
 				// in one dimension (after label)
 				case 2:{
 					if(c == ' '){
-						if(value == null){
-							value = new String[2];
-							value[0] = oneDim.toString();
+						if(value[1] == null){
+							value[1] = oneDim.toString();
 						}
 						
-						value[1] = oneDim.toString();
+						value[2] = oneDim.toString();
 						
 						element.add(value);
 						oneDim.delete(0, oneDim.length());
@@ -146,12 +165,11 @@ public class DefaultArrayMaker implements IArrayMaker {
 						state = 3;
 					}
 					else if(c == ';'){
-						if(value == null){
-							value = new String[2];
-							value[0] = oneDim.toString();
+						if(value[1] == null){
+							value[1] = oneDim.toString();
 						}
 						
-						value[1] = oneDim.toString();
+						value[2] = oneDim.toString();
 						
 						element.add(value);
 						oneDim.delete(0, oneDim.length());
@@ -184,10 +202,18 @@ public class DefaultArrayMaker implements IArrayMaker {
 					}
 					else if(c == '\"'){
 						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+						
 						state = 1;
 					}
 					else if(c == '\''){
 						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+						
 						state = 4;
 					}
 					else if(c == ';'){
@@ -205,8 +231,20 @@ public class DefaultArrayMaker implements IArrayMaker {
 						
 						state = 0;
 					}
+					else if(c == '<'){
+						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_IRI);
+						
+						state = 5;
+					}
 					else{
 						oneDim.append(c);
+						
+						value = new String[3];
+						value[0] = String.valueOf(BDPLConstants.TYPE_LITERAL);
+						
 						state = 2;
 					}
 					break;
@@ -219,17 +257,41 @@ public class DefaultArrayMaker implements IArrayMaker {
 					else if(c == '\''){
 						oneDim.append(c);
 						
-						value = new String[2];
-						String s = oneDim.toString();
 						
+						String s = oneDim.toString();
 						if(s.length() > 2){
-							value[0] = s.substring(1, s.length()-1);
+							value[1] = s.substring(1, s.length()-1);
 						}
 						else{
-							value[0] = "";
+							value[1] = "";
 						}
 						
 						state = 2;
+					}
+					else{
+						oneDim.append(c);
+					}
+					break;
+				}
+				// in one dimension (in iri)
+				case 5:{
+					if(c == '>'){
+						oneDim.append(c);
+						String s = oneDim.toString();
+						
+						if(s.length() > 2){
+							value[1] = s.substring(1, s.length()-1);
+						}
+						else{
+							value[1] = "";
+						}
+						
+						
+						element.add(value);
+						oneDim.delete(0, oneDim.length());
+						value = null;
+						
+						state = 3;
 					}
 					else{
 						oneDim.append(c);
@@ -242,16 +304,16 @@ public class DefaultArrayMaker implements IArrayMaker {
 		
 		if(oneDim.length() > 0){
 			// label not end
-			if(state == 1 || state == 4){
-				throw new InitiateException("Illegal RDF literal in static array declaration.");
+			if(state == 1 || state == 4 || state == 5){
+				throw new InitiateException("Illegal array element in static array declaration.");
 			}
+			// only state 2 possible
 			else{
-				if(value == null){
-					value = new String[2];
-					value[0] = oneDim.toString();
+				if(value[1] == null){
+					value[1] = oneDim.toString();
 				}
 				
-				value[1] = oneDim.toString();
+				value[2] = oneDim.toString();
 				
 				element.add(value);
 				oneDim.delete(0, oneDim.length());
@@ -279,7 +341,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 		
 		String [][][] sContent = new String[content.size()][][];
 		for(int i = 0; i < content.size(); i++){
-			String [][] sElement = new String[content.get(i).size()][2];
+			String [][] sElement = new String[content.get(i).size()][3];
 			content.get(i).toArray(sElement);
 			
 			sContent[i] = sElement;
@@ -332,7 +394,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 				throw new InitiateException("A synchronized dynamic array selects no variable from this query.");
 			}
 			array.setDimension(svs.length);
-			qEntry.setArray(array);
+			qEntry.setArrayEntry(entry);
 			qEntry.setSelectedVars(svs);
 			subQueryTable.add(qEntry);
 		}
@@ -411,7 +473,7 @@ public class DefaultArrayMaker implements IArrayMaker {
 					throw new InitiateException("A synchronized dynamic array selects no variable from this query.");
 				}
 				array.setDimension(svs.length);
-				qEntry.setArray(array);
+				qEntry.setArrayEntry(entry);
 				qEntry.setToArrayMethod(fn);
 				qEntry.setSelectedVars(svs);
 				subQueryTable.add(qEntry);

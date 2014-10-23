@@ -88,7 +88,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"1", "1"}}};
+			String[][][] expected = new String[][][] {{{"1", "1", "1"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -104,7 +104,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"1", "1"}}};
+			String[][][] expected = new String[][][] {{{"1", "1", "1"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -120,7 +120,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"1", "1"}, {"2", "2"}}};
+			String[][][] expected = new String[][][] {{{"1", "1", "1"}, {"1", "2", "2"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -136,7 +136,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"1", "1"}, {"2", "2"}}, {{"3", "3"}, {"4", "4"}}};
+			String[][][] expected = new String[][][] {{{"1", "1", "1"}, {"1", "2", "2"}}, {{"1", "3", "3"}, {"1", "4", "4"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -162,7 +162,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"1", "\"1\""}}};
+			String[][][] expected = new String[][][] {{{"1", "1", "\"1\""}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -178,7 +178,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"t", "\"t\"^^<http://test>"}}};
+			String[][][] expected = new String[][][] {{{"1", "t", "\"t\"^^<http://test>"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -194,7 +194,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"t", "\"t\"@en"}}};
+			String[][][] expected = new String[][][] {{{"1", "t", "\"t\"@en"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -210,7 +210,23 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"t", "\"t\"@en"}}, {{"g", "\"g\"^^<http://test>"}}};
+			String[][][] expected = new String[][][] {{{"1", "t", "\"t\"@en"}}, {{"1", "g", "\"g\"^^<http://test>"}}};
+			assertArrayEquals(expected, result);
+		} catch (InitiateException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testEXStatic14() {
+		arrayTableEntry.setType(BDPLArrayType.STATIC_EXPLICITE);
+		arrayTableEntry.setSource(" <http://test> ");
+		
+		try {
+			arrayMaker.make(arrayTableEntry, null);
+			
+			String[][][] result = arrayTableEntry.getArray().read();
+			String[][][] expected = new String[][][] {{{"0", "http://test", null}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -226,7 +242,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"tom", "\"tom\"@en"}}, {{"jack", "\"jack\"@en"}}, {{"jane", "\"jane\"@en"}}};
+			String[][][] expected = new String[][][] {{{"1", "tom", "\"tom\"@en"}}, {{"1", "jack", "\"jack\"@en"}}, {{"1", "jane", "\"jane\"@en"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -242,7 +258,7 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"tom", "\"tom\"@en"}, {"21", "\"21\"^^<http://www.w3.org/2001/XMLSchema#integer>"}}, {{"jack", "\"jack\"@en"}, {"32", "\"32\"^^<http://www.w3.org/2001/XMLSchema#integer>"}}, {{"jane", "\"jane\"@en"}, {"24", "\"24\"^^<http://www.w3.org/2001/XMLSchema#integer>"}}};
+			String[][][] expected = new String[][][] {{{"1", "tom", "\"tom\"@en"}, {"1", "21", "\"21\"^^<http://www.w3.org/2001/XMLSchema#integer>"}}, {{"1", "jack", "\"jack\"@en"}, {"1", "32", "\"32\"^^<http://www.w3.org/2001/XMLSchema#integer>"}}, {{"1", "jane", "\"jane\"@en"}, {"1", "24", "\"24\"^^<http://www.w3.org/2001/XMLSchema#integer>"}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();
@@ -258,7 +274,23 @@ public class DefaultArrayMakerTest {
 			arrayMaker.make(arrayTableEntry, null);
 			
 			String[][][] result = arrayTableEntry.getArray().read();
-			String[][][] expected = new String[][][] {{{"1.74","\"1.74\"^^<http://double>"}, {"tom", "\"tom\"@en"}}, {{"1.89","\"1.89\"^^<http://double>"}, {"jack", "\"jack\"@en"}}, {{"1.67","\"1.67\"^^<http://double>"}, {"jane", "\"jane\"@en"}}};
+			String[][][] expected = new String[][][] {{{"1", "1.74","\"1.74\"^^<http://double>"}, {"1", "tom", "\"tom\"@en"}}, {{"1", "1.89","\"1.89\"^^<http://double>"}, {"1", "jack", "\"jack\"@en"}}, {{"1", "1.67","\"1.67\"^^<http://double>"}, {"1", "jane", "\"jane\"@en"}}};
+			assertArrayEquals(expected, result);
+		} catch (InitiateException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testQStatic4() {
+		arrayTableEntry.setType(BDPLArrayType.STATIC_QUERY);
+		arrayTableEntry.setSource("PREFIX : <http://events.event-processing.org/types/> PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#> SELECT ?p WHERE { ?id ?p \"tom\"@en }");
+		
+		try {
+			arrayMaker.make(arrayTableEntry, null);
+			
+			String[][][] result = arrayTableEntry.getArray().read();
+			String[][][] expected = new String[][][] {{{"0", "http://events.event-processing.org/types/name", null}}};
 			assertArrayEquals(expected, result);
 		} catch (InitiateException e) {
 			e.printStackTrace();

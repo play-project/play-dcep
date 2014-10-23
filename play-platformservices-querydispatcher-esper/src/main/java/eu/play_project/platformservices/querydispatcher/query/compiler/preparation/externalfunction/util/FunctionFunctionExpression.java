@@ -147,7 +147,7 @@ public class FunctionFunctionExpression implements IFunctionExpression<VariableB
 				}
 			}
 			else if(pt.equalsIgnoreCase(PARA_TYPE_VAR)){
-				String o = vb.getVar(para[1]);
+				String o = vb.getVarValue(para[1]);
 				if(o != null){
 					pObjects[i] = o;
 				}

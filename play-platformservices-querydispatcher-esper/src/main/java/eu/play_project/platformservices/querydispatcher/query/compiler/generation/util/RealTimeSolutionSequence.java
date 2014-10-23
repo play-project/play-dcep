@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Aug 4, 2014
  *
  */
-public class RealTimeResults {
+public class RealTimeSolutionSequence {
 	
 	private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private final Lock r = rwl.readLock();
@@ -25,14 +25,14 @@ public class RealTimeResults {
     
     
     private int length = 0;
-    private RealTimeResult head, tail;
+    private RealTimeSolution head, tail;
 	
-	public List<Map<String, String[]>> get(){
+	public RealTimeSolution get(){
 		try{
 			r.lock();
-			List<Map<String, String[]>> ret = null;
+			RealTimeSolution ret = null;
 			if(length > 0){
-				ret = head.getContent();
+				ret = head;
 				head = head.getNext();
 				length--;
 				
@@ -48,16 +48,15 @@ public class RealTimeResults {
 		}
 	}
 	
-	public void put(List<Map<String, String[]>> content){
+	public void put(RealTimeSolution add){
 		try{
 			w.lock();
 			if(length < 1){
-				head = new RealTimeResult(content);
+				head = add;
 				tail = head;
 				length++;
 			}
 			else{
-				RealTimeResult add = new RealTimeResult(content);
 				tail.setNext(add);
 				tail = tail.getNext();
 				length++;
@@ -68,27 +67,34 @@ public class RealTimeResults {
 		}
 	}
 	
-	private static class RealTimeResult{
-    	private RealTimeResult next = null;
+	public static class RealTimeSolution{
+    	private RealTimeSolution next = null;
     	
-    	private List<Map<String, String[]>> content;
+    	private final List<Map<String, String[]>> varBindings;
     	
-    	public RealTimeResult(List<Map<String, String[]>> content){
-    		if(content == null){
+    	private final Map<String, String[][][]> dynamicArrays;
+    	
+    	public RealTimeSolution(List<Map<String, String[]>> vbs, Map<String, String[][][]> ays){
+    		if(vbs == null || ays == null){
     			throw new IllegalArgumentException();
     		}
-    		this.content = content;
+    		dynamicArrays = ays;
+    		varBindings = vbs;
     	}
     	
-    	public List<Map<String, String[]>> getContent(){
-    		return content;
+    	public List<Map<String, String[]>> getVarBindings(){
+    		return varBindings;
     	}
-
-    	public RealTimeResult getNext() {
+    	
+    	public Map<String, String[][][]> getDynamicArrays(){
+    		return dynamicArrays;
+    	}
+    	
+    	private RealTimeSolution getNext() {
     		return this.next;
     	}
 
-    	public void setNext(RealTimeResult next) {
+    	private void setNext(RealTimeSolution next) {
     		this.next = next;
     	}
     }

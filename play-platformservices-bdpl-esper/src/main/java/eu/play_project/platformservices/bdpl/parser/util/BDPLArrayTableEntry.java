@@ -15,6 +15,11 @@ package eu.play_project.platformservices.bdpl.parser.util;
 public class BDPLArrayTableEntry {
 	
 	/*
+	 * 
+	 */
+	private String name;
+	
+	/*
 	 * BDPL array object
 	 */
 	private BDPLArray array;
@@ -28,6 +33,7 @@ public class BDPLArrayTableEntry {
 	 * declaration text of this BDPL array in query
 	 */
 	private String source;
+	
 	
 	public String getSource() {
 		return this.source;
@@ -52,5 +58,12 @@ public class BDPLArrayTableEntry {
 	public void setType(BDPLArrayType type) {
 		this.type = type;
 	}
-
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 }

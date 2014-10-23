@@ -4,7 +4,7 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util;
 
 
-import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
 
 /**
@@ -23,7 +23,7 @@ public class SubQueryTableEntry {
 	/*
 	 * the array into which the sub query inserts variables
 	 */
-	private BDPLArray array;
+	private BDPLArrayTableEntry arrayEntry;
 	
 	/*
 	 * the method used to parse a sparql literal into an array
@@ -43,12 +43,12 @@ public class SubQueryTableEntry {
 		this.query = query;
 	}
 
-	public BDPLArray getArray() {
-		return this.array;
+	public BDPLArrayTableEntry getArrayEntry() {
+		return this.arrayEntry;
 	}
 
-	public void setArray(BDPLArray array) {
-		this.array = array;
+	public void setArrayEntry(BDPLArrayTableEntry arrayEntry) {
+		this.arrayEntry = arrayEntry;
 	}
 
 	public String[] getSelectedVars() {

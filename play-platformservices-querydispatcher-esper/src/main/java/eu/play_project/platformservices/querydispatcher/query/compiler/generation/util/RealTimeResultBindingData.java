@@ -24,14 +24,14 @@ public class RealTimeResultBindingData {
 	/*
 	 * container of real time results
 	 */
-	private final RealTimeResults results; 
+	private final RealTimeSolutionSequence results; 
 	
 	/*
 	 * dynamic arrays to be fed
 	 */
 	private final List<SubQueryTableEntry> dynamicArrays;
 
-	public RealTimeResultBindingData(Set<String> realTimeCommonVars, RealTimeResults results, List<SubQueryTableEntry> dynamicArrays){
+	public RealTimeResultBindingData(Set<String> realTimeCommonVars, RealTimeSolutionSequence results, List<SubQueryTableEntry> dynamicArrays){
 		this.realTimeCommonVars = realTimeCommonVars;
 		this.results = results;
 		this.dynamicArrays = dynamicArrays;
@@ -41,7 +41,7 @@ public class RealTimeResultBindingData {
 		return this.realTimeCommonVars;
 	}
 
-	public RealTimeResults getResults() {
+	public RealTimeSolutionSequence getResults() {
 		return this.results;
 	}
 

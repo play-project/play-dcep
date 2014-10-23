@@ -41,7 +41,7 @@ public class FunctionVarExpression implements IFunctionExpression<VariableBinder
 	 */
 	@Override
 	public Object getValue() throws BDPLFilterException{
-		Object ret = vb.getVar(vn);
+		Object ret = vb.getVarValue(vn);
 		if(ret != null){
 			return ret;
 		}
