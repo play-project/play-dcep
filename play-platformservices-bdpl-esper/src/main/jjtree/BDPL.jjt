@@ -1969,23 +1969,17 @@ void BDPLConstructTriplesBlock() #void :
 void BDPLConstructTriplesSameSubjectPath() :
 {}
 {
-    BDPLConstructVarOrTerm() BDPLConstructPropertyListPath()
+    VarOrTerm() BDPLConstructPropertyListPath()
     |
-    BDPLConstructTriplesNodePath() [BDPLConstructPropertyListPath()]
+    TriplesNodePath() [BDPLConstructPropertyListPath()]
 }
 
-void BDPLConstructVarOrTerm() #void :
+void BDPLConstructArrayVar():
 {}
 {
-(
-	LOOKAHEAD(2)( IRIref() <LPAREN> ArrayVar() <RPAREN> )
+	IRIref() <LPAREN> ArrayVar() <RPAREN>
 |
-	LOOKAHEAD(2) ArrayVar()
-|
-	Var()
-|
-	GraphTerm()
-)
+	ArrayVar()
 }
 
 void BDPLConstructPropertyListPath() :
@@ -2011,16 +2005,19 @@ void BDPLConstructGraphNodePath() #void :
 {
 	BDPLConstructVarOrTerm()
 |
-	BDPLConstructTriplesNodePath()
+	TriplesNodePath()
 }
 
-// do not replace CollectionPath() and BlankNodePropertyListPath(), or you have to change class BlankNodeVarProcessor at the same time.
-void BDPLConstructTriplesNodePath() #void :
+void BDPLConstructVarOrTerm() #void :
 {}
 {
-	CollectionPath()
+(
+	LOOKAHEAD(2) BDPLConstructArrayVar()
 |
-	BlankNodePropertyListPath()
+	Var()
+|
+	GraphTerm()
+)
 }
 
 

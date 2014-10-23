@@ -13,9 +13,15 @@ package eu.play_project.platformservices.bdpl.parser.util;
  */
 public class BDPLConstants {
 	
+	public static final int TYPE_UNKNOWN = -1, TYPE_IRI = 0, TYPE_LITERAL = 1, TYPE_VAR = 2, TYPE_BN = 3, TYPE_BNL = 4, TYPE_COLLECTION = 5, TYPE_ARRAY = 6;
+	
+	public static final String URI_CONSTRUCT_SUBJECT = "http://events.event-processing.org/types/e";
+	
 	public static final String URI_STREAM = "http://events.event-processing.org/types/stream";
 	
 	public static final String URI_ENDTIME = "http://events.event-processing.org/types/endTime";
+	
+	public static final String URI_TYPE_JSON_ARRAY = "http://json";
 	
 	public static final String SPARQL_ASK_QUERY = "ASK WHERE { %s }";
 	

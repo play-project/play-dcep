@@ -9,6 +9,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.translation.construct.util.ConstructTemplate;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLTranslationData;
 
 /**
@@ -30,6 +31,8 @@ public class BDPLCompilerData {
 	private BDPLVarTable varTable;
 	
 	private BDPLArrayTable arrayTable;
+	
+	private ConstructTemplate constructTemplate;
 	
 	private EPLTranslationData eplTranslationData;
 	
@@ -81,6 +84,14 @@ public class BDPLCompilerData {
 
 	public void setArrayTable(BDPLArrayTable arrayTable) {
 		this.arrayTable = arrayTable;
+	}
+	
+	public ConstructTemplate getConstructTemplate() {
+		return this.constructTemplate;
+	}
+
+	public void setConstructTemplate(ConstructTemplate constructTemplate) {
+		this.constructTemplate = constructTemplate;
 	}
 	
 	public EPLTranslationData getEPLTranslationData() {

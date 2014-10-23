@@ -4,10 +4,12 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.Model;
+import org.openrdf.model.Statement;
 
 import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPRuntime;
@@ -24,21 +26,25 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
-
+import eu.play_project.platformservices.querydispatcher.query.simulation.coordinateUI.CoordinatePanel;
 
 /**
- * @author ningyuan
+ * @author ningyuan 
+ * 
+ * Oct 9, 2014
  *
  */
-public class RealTimeResultListener implements UpdateListener{
+public class CoordinateSystemListener implements UpdateListener{
 	
 	private EPServiceProvider epService;
     
 	private EPRuntime runtime;
-    
+	
 	private final RealTimeSolutionSequence realTimeResults;
 	
 	private final List<BDPLArrayFilter> arrayFilters;
+	
+	private CoordinatePanel panel;
 	
 	private String eventType;
 	
@@ -46,53 +52,68 @@ public class RealTimeResultListener implements UpdateListener{
 	
 	private BDPLArrayTable arrayTable;
 	
-	public RealTimeResultListener(RealTimeSolutionSequence realTimeResults, List<BDPLArrayFilter> arrayFilters, ConstructTemplate constructTemplate, BDPLArrayTable arrayTable){
+	public CoordinateSystemListener(RealTimeSolutionSequence realTimeResults, List<BDPLArrayFilter> arrayFilters, ConstructTemplate constructTemplate, BDPLArrayTable vt){
+		
 		this.realTimeResults = realTimeResults;
-		this.arrayFilters = arrayFilters;
 		this.constructTemplate = constructTemplate;
-		this.arrayTable = arrayTable;
+		this.arrayFilters = arrayFilters;
+		arrayTable = vt;
 	}
 	
 	// must be called before deploy
 	public void setEPServiceProvider(EPServiceProvider epS){
 		epService = epS;
-	    runtime = epS.getEPRuntime();
-	        
-	    if(constructTemplate != null && constructTemplate.getRdfType() != null){
+        runtime = epS.getEPRuntime();
+        
+        if(constructTemplate != null && constructTemplate.getRdfType() != null){
 			Map<String, Object> mapDef = new HashMap<String, Object>();
 			eventType = constructTemplate.getRdfType().replaceAll("[^a-zA-Z0-9]", "");
 			epService.getEPAdministrator().getConfiguration().addEventType(eventType, mapDef);
 		}
 	}
-		
+	
+	public void setPanel(CoordinatePanel p){
+		panel = p;
+	}
+	
 	@Override
 	public void update(EventBean[] newEvents, EventBean[] oldEvents) {
 		
-		System.out.println(Thread.currentThread().getName()+"   RealTimeResultListener: ");
-		
-		
+		System.out.println(Thread.currentThread().getName()+"   CoordinateListener: ");
 		
 		for(int i = 0; i < newEvents.length; i++){
-			System.out.println("RealTimeResultListener result "+i+": ");
+			
+			if(panel != null){
+				panel.repaint();
+				//XXX array var name
+				String[][][] a = arrayTable.get("ecg").getArray().read();
+				String[] l = new String[a.length];
+				for(int j = 0; j < a.length; j++){
+					l[j] = a[j][0][1];
+				}
+				
+				panel.setPoints(l);
+				
+				panel.repaint();
+			}
 			
 			RealTimeSolution result = realTimeResults.get();
 			
 			if(result != null){
 				for(Map<String, String[]> varBinding : result.getVarBindings()){
 						
-						System.out.println("RealTimeResultListener var binding:");
+						/*System.out.println("CoordinateListener var binding:");
 						for(String key : varBinding.keySet()){
 							System.out.print(key+": "+varBinding.get(key)[0]+"   "+varBinding.get(key)[1]+"   ");
 						}
-						System.out.println();
+						System.out.println();*/
 						
 					for(BDPLArrayFilter af : arrayFilters){
 						af.setDataObject(varBinding, result.getDynamicArrays());
 						try {
 							if(!af.evaluate()){
-								return;
+									return;
 							}
-							
 						} catch (BDPLFilterException e) {
 							e.printStackTrace();
 						}
@@ -110,7 +131,11 @@ public class RealTimeResultListener implements UpdateListener{
 					
 					if(model != null){
 		        		try {
-		        				
+		        				Iterator<Statement> it = model.iterator();
+		        				while(it.hasNext()){
+		        					Statement s = it.next();
+		        						System.out.println("CoordinateListener "+eventType+": "+s.getSubject().toString()+"   "+s.getPredicate().toString()+"   "+s.getObject().toString());
+		        				}
 		        			runtime.sendEvent(new MapEvent<SesameEventModel>(new SesameEventModel(model)), eventType);
 		        		} catch (EPException e) {
 		        			e.printStackTrace();
@@ -118,6 +143,8 @@ public class RealTimeResultListener implements UpdateListener{
 					}
 				}
 			}
+			
 		}
+		
 	}
 }
