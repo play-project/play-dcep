@@ -28,6 +28,10 @@ import org.openrdf.query.parser.ParsedUpdate;
 import org.openrdf.query.parser.QueryParser;
 import org.openrdf.query.parser.QueryParserFactory;
 
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
+
 
 
 
@@ -67,11 +71,11 @@ public class BDPLParser implements QueryParser {
 
 				// handle query operation
 
-				TupleExpr tupleExpr = buildQueryModel(qc);
+				//TupleExpr tupleExpr = buildQueryModel(qc);
 
-				ParsedQuery query;
+				ParsedQuery query = null;
 
-				ASTQuery queryNode = qc.getQuery();
+				/*ASTQuery queryNode = qc.getQuery();
 				if (queryNode instanceof ASTSelectQuery) {
 					query = new ParsedTupleQuery(queryStr, tupleExpr);
 				}
@@ -93,7 +97,27 @@ public class BDPLParser implements QueryParser {
 				Dataset dataset = DatasetDeclProcessor.process(qc);
 				if (dataset != null) {
 					query.setDataset(dataset);
-				}
+				}*/
+				
+				String prologText = BDPLSyntaxCheckProcessor.process(qc);
+				
+				BDPLVarTable varTable = BDPLVarProcessor.process(qc);
+					System.out.println("Construct variables: ");
+					for(String var : varTable.getConstructVars()){
+						System.out.print(var+"   ");
+					}
+					System.out.println("\nCommon variables: ");
+					for(String var : varTable.getRealTimeCommonVars()){
+						System.out.print(var+"   ");
+					}
+					
+					
+				BDPLArrayTable arrayTable = BDPLArrayVarProcessor.process(qc, varTable, prologText);
+					System.out.println("\nArrayTable: ");
+					for(String key : arrayTable.keySet()){
+						BDPLArrayTableEntry arrayEntry = arrayTable.get(key);
+						System.out.println(key+"   "+arrayEntry.getSource());
+					}
 				
 				return query;
 			}

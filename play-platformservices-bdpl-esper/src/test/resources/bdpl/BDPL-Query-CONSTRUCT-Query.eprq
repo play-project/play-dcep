@@ -8,8 +8,12 @@ CONSTRUCT{
 :e rdf:type :Temperature .
 }
  WHERE {
-	EVENT ?id{ ?x pl:nice ?name} 
+	EVENT ?id{ ?e1 rdf:type :Temperature .
+   		?e1 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+		?x pl:nice ?name} 
 	SEQ
-	EVENT ?id{ ?x pl:nice ?name}
+	EVENT ?id{ ?e2 rdf:type :Temperature .
+   		?e2 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+		?x pl:nice ?name}
 }
 	

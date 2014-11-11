@@ -1,0 +1,21 @@
+@prefix : <http://events.event-processing.org/types/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+:graph {
+
+:id1
+        :name	"tom"@en;
+        :age	"21"^^xsd:integer;
+        :gender	"m";
+        :tall	"1.74"^^<http://double>.
+:id2
+		:name	"jack"@en;
+		:age	"32"^^xsd:integer;
+		:gender	"m";
+		:tall	"1.89"^^<http://double>.
+:id3	
+		:name	"jane"@en;
+		:age	"24"^^xsd:integer;
+		:gender	"f";
+		:tall	"1.67"^^<http://double>.
+}

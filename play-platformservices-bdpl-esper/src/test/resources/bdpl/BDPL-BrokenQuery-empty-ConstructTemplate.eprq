@@ -1,4 +1,4 @@
-# Simple CONSTRUCT emty ConstructTemplate @expectedException<Encountered " "where" "WHERE "" at line\>.
+# Simple CONSTRUCT emty ConstructTemplate @expectedException<Encountered " <VAR1> "?x "" at line\>.
 PREFIX pl: <http://play-project.eu/bdpl> 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX :   <http://events.event-processing.org/types/>

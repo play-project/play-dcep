@@ -1,0 +1,15 @@
+#Test whether http://events.event-processing.org/types/stream in Event clause @expectedException<Event clause contains no http://events.event-processing.org/types/stream\>. 
+PREFIX dc:	<http://play-project.eu/bdpl>
+PREFIX :	<http://events.event-processing.org/types/>
+PREFIX rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+CONSTRUCT {
+	?e2 ?x ?mbox .
+	:e rdf:type :MailboxEvent .
+}
+WHERE {
+	EVENT ?e1 {
+		?e1 rdf:type :Temperature .
+		?x dc:mbox ?mbox .
+	}
+}

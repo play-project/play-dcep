@@ -97,6 +97,27 @@ public class SyntaxTreeBuilder {
 		return s;
 	}
 	
+	/**
+	 * Transform parameters in PNAME_LN 
+	 */
+	private static String getPNAME_LN(String s){
+		StringBuffer sb = new StringBuffer();
+		char c;
+		for(int i=0; i < s.length(); i++){
+			c = s.charAt(i);
+			if(c == '['){
+				sb.append('#');
+			}
+			else if(c == ']'){
+				
+			}
+			else{
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+	
 	void jjtreeOpenNodeScope( Node node )
 	{
 		((SimpleNode)node).jjtSetFirstToken(getToken(1));
@@ -293,9 +314,12 @@ TOKEN [IGNORE_CASE] :	// SPARQL 1.1 Update-specific tokens
 TOKEN [IGNORE_CASE] :	// BDPL tokens
 {
 	<ARRAY: "array">
+|	<CONTEXT: "context">
+|	<CHECKED: "checked">
 |	<WINDOW: "window">
 |	<EVENT: "event">
 |	<INTERVAL: "interval">
+|	<ARRAYFILTER: "arrayfilter">
 |	<EVENT_UN_OP_1: <EVENT_OP_NOT>>
 |	<EVENT_UN_OP_2: <EVENT_OP_REPEAT>>
 |	<EVENT_BIN_OP_3: <EVENT_OP_AND>>
@@ -321,7 +345,7 @@ TOKEN:
 	<Q_IRI_REF: "<" (~["<", ">", "\"", "{", "}", "|", "^", "`", "\\", "\u0000"-"\u0020"])* ">">
 
 |	<PNAME_NS: (<PN_PREFIX>)? ":">
-|	<PNAME_LN: (<PN_PREFIX>)? ":" <PN_LOCAL>> // Note: PN_LOCAL not optional, case handled by PNAME_NS
+|	<PNAME_LN: (<PN_PREFIX>)? ":" <PN_LOCAL> (<PN_PARAM>)?> // ningyuan changed Note: PN_LOCAL not optional, case handled by PNAME_NS
 |	<BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | <NUM>) ((<PN_CHARS>|".")* <PN_CHARS>)? >
 |	<VAR1: "?" <VARNAME>>
 |	<VAR2: "$" <VARNAME>>
@@ -372,6 +396,7 @@ TOKEN:
 |	<#PERCENT: "%" <HEX> <HEX>>
 |	<#PN_LOCAL_ESC: "\\" [ "_", "~", ".", "-", "!", "$", "&", "\"", "(", ")", "*", "+", ",", ";", "=", "/", "?", "#", "@", "%" ]>
 |	<#VARNAME: (<PN_CHARS_U> | <NUM> ) (<VAR_CHAR>)*>
+|	<#PN_PARAM: <LBRACK> (<ALPHA> | <NUM> | "_")* <RBRACK>> // ningyuan added
 }
 
 
@@ -479,14 +504,14 @@ void ProjectionElem() :
 }
 
 
-// ningyuan changed: 1. add ArrayClause() 2. replace WhereClause() with BDPLWhereClause()
+// ningyuan changed: 1. add DynamicArrayDecl() 2. replace ConstructClause() 3. replace WhereClause() with BDPLWhereClause()
 
 void ConstructQuery() :
 {}
 {
-	Construct()
+	BDPLConstruct()
 	( DatasetClause() )*
-	[ArrayClause()]
+	(DynamicArrayDecl())*
 	BDPLWhereClause()
 	SolutionModifier()
 	[BindingsClause()]
@@ -1737,7 +1762,7 @@ void PrefixedName() #QName :
 { Token t; }
 {
 	(t = <PNAME_LN> | t = <PNAME_NS>)
-	{jjtThis.setValue(t.image);}
+	{jjtThis.setValue(getPNAME_LN(t.image));}
 }
 
 void BlankNode() :
@@ -1899,32 +1924,297 @@ void Modify() :
     <WHERE> GroupGraphPattern()
 }
 
-// ningyuan added
 
-void ArrayClause() :
+/*
+ *********************************
+ * From here added by Ningyuan Pan
+ *********************************
+ */
+
+// not used
+void SubBDPLQuery() : // sub BDPL does not accept sub bdpl query
 {}
 {
-	<ARRAY> <LBRACE>
-    (ArrayDecl())*
-	<RBRACE>
+	Select()
+	( DatasetClause() )*
+	BDPLWhereClause()
+	SolutionModifier()
+	[BindingsClause()]
+} 
+
+/*
+ * replace Construct
+ */
+
+void BDPLConstruct() :
+{}
+{	
+	<CONSTRUCT> [ LOOKAHEAD(2) BDPLConstructClause() ]
 }
- 
-void ArrayDecl() :
+
+void BDPLConstructClause() #void :
+{}
+{
+    // Note: replaced ConstructTriples ref with equivalent TriplesBlock ref
+    <LBRACE> [ BDPLConstructTriplesBlock() ] <RBRACE>
+}
+
+void BDPLConstructTriplesBlock() #void :
+{}
+{
+	// Note: recursive rule rewriten to non-recursive rule, requires lookahead
+	BDPLConstructTriplesSameSubjectPath() ( LOOKAHEAD(2) <DOT> BDPLConstructTriplesSameSubjectPath() )* [<DOT>]
+}
+
+void BDPLConstructTriplesSameSubjectPath() :
+{}
+{
+    VarOrTerm() BDPLConstructPropertyListPath()
+    |
+    TriplesNodePath() [BDPLConstructPropertyListPath()]
+}
+
+void BDPLConstructArrayVar():
+{}
+{
+	IRIref() <LPAREN> ArrayVar() <RPAREN>
+|
+	ArrayVar()
+}
+
+void BDPLConstructPropertyListPath() :
+{}
+{
+    (VerbPath() | VerbSimple()) BDPLConstructObjectListPath() [<SEMICOLON> [BDPLConstructPropertyListPath()] ]
+}
+
+void BDPLConstructObjectListPath() #BDPLConstructObjectList:
+{}
+{
+	BDPLConstructObjectPath() ( <COMMA> BDPLConstructObjectPath() )*
+}
+
+void BDPLConstructObjectPath() #void :
+{}
+{
+	BDPLConstructGraphNodePath()
+}
+
+void BDPLConstructGraphNodePath() #void :
+{}
+{
+	BDPLConstructVarOrTerm()
+|
+	TriplesNodePath()
+}
+
+void BDPLConstructVarOrTerm() #void :
+{}
+{
+(
+	LOOKAHEAD(2) BDPLConstructArrayVar()
+|
+	Var()
+|
+	GraphTerm()
+)
+}
+
+
+/*
+ * array variable
+ */
+
+ void ArrayVar() :
 {
 	Token t;
 }
 {
-	Var() [<LBRACK> t=<INTEGER> <RBRACK> {jjtThis.setSize(t.image);}]
-	<EQ>
-	SelectQuery()
-	<DOT>
+	Var() 
+	(<LPAREN> t=<INTEGER> {jjtThis.setSize(t.image);} <RPAREN> | <NIL>) 
 }
+
+void DynamicArrayDecl() :
+{}
+{
+	<INSERT> <INTO>
+	ArrayVar()
+	(
+		(<VALUES> (DynamicArrayDef1() | DynamicArrayDef3()))
+		|
+		DynamicArrayDef2()
+	)
+}
+
+void DynamicArrayDef1() : 
+{}
+{
+	[<CHECKED> {jjtThis.setChecked(true);}] <LPAREN> Var() (<COMMA> Var())* <RPAREN> 
+}
+
+// not used
+void DynamicArrayDef2() : 
+{}
+{
+	SubBDPLQuery()
+}
+
+void DynamicArrayDef3() : 
+{}
+{
+	IRIref() <LPAREN> Var() <RPAREN>
+}
+
+void ContextClause() :
+{}
+{
+	<CONTEXT> Var()
+	(  
+		( <NIL> {jjtThis.setStaticArrayDecl(true);} <LBRACE> ( StaticArrayDef1() | StaticArrayDef2() ) <RBRACE> )
+	| 
+		( {jjtThis.setStaticArrayDecl(false);} <LBRACE> TriplesBlock() <RBRACE> )
+	)
+}
+
+void StaticArrayDef1() : 
+{}
+{
+	<LPAREN> 
+	(
+		ArrayElement()
+	    (	
+			<SEMICOLON>
+			ArrayElement()
+		)*
+	)
+	<RPAREN>
+}
+
+void StaticArrayDef2() :
+{}
+{
+	SelectQuery()
+}
+
+void ArrayElement() :
+{}
+{
+	(	IRIref()
+		|	RDFLiteral()
+		|	NumericLiteral()
+	)
+	(
+		<COMMA>
+		(
+			IRIref()
+			|	RDFLiteral()
+			|	NumericLiteral()
+		)
+	)*
+}
+
+
+/*
+ * external function
+ */
+
+void ExternalFunctionDecl():
+{}
+{
+	IRIref() <LPAREN> ExternalFunctionParameterDecl() <RPAREN>
+}
+
+void ExternalFunctionParameterDecl():
+{}
+{
+	[ (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1())]
+	(<COMMA> (LOOKAHEAD(2) ArrayVar() | Var() | PrimitiveValue() | StaticArrayDef1()))*
+}
+
+void PrimitiveValue():
+{
+	Token t;
+}
+{
+	(
+		(t=<TRUE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
+		|
+		(t=<FALSE> {jjtThis.setValue(t.image); jjtThis.setType("boolean");})
+		|
+		(t=<INTEGER> {jjtThis.setValue(t.image); jjtThis.setType("int");})
+		|
+		(t=<INTEGER_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("int");})
+		|
+		(t=<DECIMAL> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
+		|
+		(t=<DECIMAL_NEGATIVE> {jjtThis.setValue(t.image); jjtThis.setType("decimal");})
+		|
+		(RDFLiteral() {jjtThis.setType("literal");})
+	)
+} 
+
+
+/*
+ * array filter
+ */
+
+void ArrayFilter():
+{}
+{
+	<ARRAYFILTER> <LPAREN> ArrayFilterExpression() <RPAREN>
+} 
+
+void ArrayFilterExpression():
+{
+	Token t;
+}
+{
+	AFA() [( t=<AND> | t=<OR>){jjtThis.setOperator(t.image);} AFA()]
+}
+
+void AFA():
+{
+	Token t;
+}
+{
+	AFB() [( t=<EQ> | t=<NE> | t=<GT> | t=<LT> | t=<GE> | t=<LE>){jjtThis.setOperator(t.image);} AFB()]
+}
+
+void AFB():
+{
+	Token t;
+}
+{
+	[t=<NOT> {jjtThis.setOperator(t.image);}] AFC()
+}
+
+void AFC():
+{
+	Token t;
+}
+{
+	(
+		ExternalFunctionDecl()
+		|
+		PrimitiveValue()
+		|
+		Var()
+		|
+		(<LPAREN> ArrayFilterExpression() <RPAREN>)
+	)
+}
+ 
+
+/*
+ * replace WhereClause
+ */
 
 void BDPLWhereClause() :
 {}
 {
 	[<WHERE>]
 	<LBRACE>
+	(ContextClause())*
 	RealTimeEventQuery()
 	HistoricalEventQuery()
 	<RBRACE>
@@ -1935,14 +2225,14 @@ void RealTimeEventQuery():
 {
 	WindowClause()
 	|
-	({System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]\n");})
+	({System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]\n");} (ArrayFilter())*)
 }
 
 void WindowClause():
 {}
 {
 	<WINDOW>
-	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]");} <RBRACE>
+	<LBRACE> {System.out.print("pattern [ ");} EventPattern(true) {System.out.print(" ]");} (ArrayFilter())* <RBRACE>
 	WindowDecl()
     (FilterOrBind())*
 }
@@ -2026,7 +2316,7 @@ void EventGraphPattern():
 {}	
 {
 	( [TriplesBlock()] 
-	  ((OptionalGraphPattern() | GroupOrUnionGraphPattern() | Filter()) [<DOT>] [TriplesBlock()])* 
+	  ((OptionalGraphPattern() | GroupOrUnionGraphPattern() | Filter() | ArrayFilter()) [<DOT>] [TriplesBlock()])* 
 	) 
 }
 
@@ -2037,6 +2327,8 @@ void TimeBasedEvent(String op):
 	(<INTERVAL> <LPAREN> String() <DT_PREFIX> PrefixedName() <RPAREN>{System.out.print(" timer:interval()");} )
 }
 
+
+// TODO
 void HistoricalEventQuery():
 {}
 {

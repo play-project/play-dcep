@@ -8,8 +8,14 @@ CONSTRUCT {
 	:e rdf:type :MailboxEvent .
 }
 WHERE {
-	EVENT ?e1 { ?x dc:mbox ?mbox}
+	EVENT ?e1 { ?e1 rdf:type :Temperature .
+		?e1 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+		?x dc:mbox ?mbox}
 	SEQ 
-	EVENT ?e2 { ?x dc:mbox ?mbox }
-	GRAPH ?e3 { ?x dc:mbox ?mbox }
+	EVENT ?e2 { ?e2 rdf:type :Temperature .
+		?e2 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+		?x dc:mbox ?mbox }
+	GRAPH ?e3 { ?e3 rdf:type :Temperature .
+		?e3 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+		?x dc:mbox ?mbox }
 }

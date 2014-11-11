@@ -1,0 +1,21 @@
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xs:       <http://www.w3.org/2001/XMLSchema>
+PREFIX :       <http://events.event-processing.org/types/>
+ CONSTRUCT{
+    :e rdf:type :Temperature .
+    :e :stream <http://streams.event-processing.org/ids/Temperatures#stream> .
+    :e :current    ?temperature .
+    :e :date ?pub_date 
+ }
+ WHERE{
+    NOT{
+		INTERVAL ("PT1S"^^xs:duration)
+		EVENT ?e1 {
+		?e1 rdf:type :Temperature .
+		?e1 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+		?e1 :current ?temperature .
+		?e1 :date ?pub_date 
+		}
+		INTERVAL ("PT2S"^^xs:duration)
+	}
+ }

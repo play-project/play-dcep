@@ -873,15 +873,93 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		 *  Added from Ningyuan 
 		 *
 		 */
+		@Override
+		public Object visit(ASTBDPLConstruct node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
 		
 		@Override
-		public Object visit(ASTArrayClause node, Object data)
+		public Object visit(ASTBDPLConstructTriplesSameSubjectPath node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTBDPLConstructArrayVar node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTBDPLConstructPropertyListPath node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTBDPLConstructObjectList node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTArrayVar node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		
+		@Override
+		public Object visit(ASTArrayElement node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTContextClause node, Object data)
 				throws VisitorException {
 			return node.childrenAccept(this, data);
 		}
 
 		@Override
-		public Object visit(ASTArrayDecl node, Object data)
+		public Object visit(ASTDynamicArrayDef1 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTDynamicArrayDef2 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTDynamicArrayDef3 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTStaticArrayDef1 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTStaticArrayDef2 node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTDynamicArrayDecl node, Object data)
+				throws VisitorException {
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTSubBDPLQuery node, Object data) 
 				throws VisitorException {
 			return node.childrenAccept(this, data);
 		}
@@ -913,53 +991,109 @@ public abstract class ASTVisitorBase implements SyntaxTreeBuilderVisitor {
 		@Override
 		public Object visit(ASTEventPattern node, Object data)
 				throws VisitorException {
-			// TODO Auto-generated method stub
+			
 			return node.childrenAccept(this, data);
 		}
 		
 		@Override
 		public Object visit(ASTC node, Object data) throws VisitorException {
-			// TODO Auto-generated method stub
+			
 			return node.childrenAccept(this, data);
 		}
 
 		@Override
 		public Object visit(ASTB node, Object data) throws VisitorException {
-			// TODO Auto-generated method stub
+			
 			return node.childrenAccept(this, data);
 		}
 		
 		@Override
 		public Object visit(ASTA node, Object data) throws VisitorException {
-			// TODO Auto-generated method stub
+			
 			return node.childrenAccept(this, data);
 		}
 
 		@Override
 		public Object visit(ASTTimeBasedEvent node, Object data)
 				throws VisitorException {
-			// TODO Auto-generated method stub
+			
 			return node.childrenAccept(this, data);
 		}
 
 		@Override
 		public Object visit(ASTNotClause node, Object data)
 				throws VisitorException {
-			// TODO Auto-generated method stub
+			
 			return node.childrenAccept(this, data);
 		}
 		
 		@Override
 		public Object visit(ASTEventClause node, Object data)
 				throws VisitorException {
-			// TODO Auto-generated method stub
+			
 			return node.childrenAccept(this, data);
 		}
 		
 		@Override
 		public Object visit(ASTEventGraphPattern node, Object data)
 				throws VisitorException {
-			// TODO Auto-generated method stub
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTArrayFilter node, Object data)
+				throws VisitorException {
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTArrayFilterExpression node, Object data)
+				throws VisitorException {
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTAFA node, Object data)
+				throws VisitorException {
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTAFB node, Object data)
+				throws VisitorException {
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTAFC node, Object data)
+				throws VisitorException {
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTExternalFunctionDecl node, Object data)
+				throws VisitorException {
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTExternalFunctionParameterDecl node, Object data)
+				throws VisitorException {
+			
+			return node.childrenAccept(this, data);
+		}
+		
+		@Override
+		public Object visit(ASTPrimitiveValue node, Object data)
+				throws VisitorException {
+		
 			return node.childrenAccept(this, data);
 		}
 		

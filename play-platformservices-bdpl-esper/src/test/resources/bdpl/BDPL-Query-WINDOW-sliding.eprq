@@ -1,5 +1,5 @@
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX : <http://play-project.eu/default> 
+PREFIX :       <http://events.event-processing.org/types/>
 
 CONSTRUCT { 
 		:e rdf:type :Finance.
@@ -7,8 +7,12 @@ CONSTRUCT {
 }
 WHERE{
 	WINDOW{
-		EVENT ?id1{ ?company ?hasStockPrice ?price1}
+		EVENT ?id1{  ?e1 rdf:type :Stock .
+				?e1 :stream <http://streams.event-processing.org/ids/Stock#stream> .
+				?company ?hasStockPrice ?price1}
 		SEQ
-		EVENT ?id2{ ?company ?hasStockPrice ?price2}
+		EVENT ?id2{ ?e2 rdf:type :Stock .
+				?e2 :stream <http://streams.event-processing.org/ids/Stock#stream> .
+				?company ?hasStockPrice ?price2}
 	}("PT12M10S"^^xsd:duration, sliding)
 }	

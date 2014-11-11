@@ -10,7 +10,7 @@ PREFIX :       <http://events.event-processing.org/types/>
  WHERE{
  	EVENT ?id1 {
    		?e1 rdf:type :Temperature .
-   		?e1 :stream <http://streams.event-processing.org/ids/Temperature#stream> .
+   		?e1 :stream <http://streams.event-processing.org/ids/FacebookStatus#stream> .
    		?e1 :current ?temperature .
  	}
  	GRAPH ?id {
@@ -19,4 +19,3 @@ PREFIX :       <http://events.event-processing.org/types/>
    		?e2 :date ?pub_date 
   	}
  }
-  

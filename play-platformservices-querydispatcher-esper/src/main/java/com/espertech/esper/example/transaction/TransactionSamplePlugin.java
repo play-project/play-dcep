@@ -19,7 +19,7 @@ public class TransactionSamplePlugin implements PluginLoader
     private TxnGenMain main;
     private Thread simulationThread;
     
-    private EPServiceProvider epService = null;
+    //private EPServiceProvider epService = null;
     
     public void init(PluginLoaderInitContext context)
     {
@@ -55,7 +55,7 @@ public class TransactionSamplePlugin implements PluginLoader
         log.info("Starting Transaction-example for engine URI '" + engineURI + "'.");
         
         this.engineURI = engineURI;
-        epService = epS;
+        EPServiceProvider epService = epS;
         
         try {
             main = new TxnGenMain(1, -1, true, epService);
@@ -81,10 +81,10 @@ public class TransactionSamplePlugin implements PluginLoader
     	    simulationThread.interrupt();
         	simulationThread.join();
             
-            if(epService != null){
+           /* if(epService != null){
             	epService.destroy();
             	System.out.println("[EPService is stoped]");
-            }
+            }*/
         }
         catch (InterruptedException e) {
             log.info("Interrupted", e);

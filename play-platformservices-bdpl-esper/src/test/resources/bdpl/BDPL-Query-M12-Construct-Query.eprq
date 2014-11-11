@@ -15,6 +15,7 @@ WHERE{
         WINDOW{
             EVENT ?id1{
                 ?e1 rdf:type :FacebookStatusFeedEvent.
+				?e1 :stream <http://streams.event-processing.org/ids/FacebookStatus#stream> .
                 ?e1 :status ?about1.
                 ?e1 :name ?friend1.
                 FILTER contains(?about1, "JEANS")
@@ -23,6 +24,7 @@ WHERE{
             SEQ
             EVENT ?id2{
                 ?e2 rdf:type :FacebookStatusFeedEvent.
+				?e2 :stream <http://streams.event-processing.org/ids/FacebookStatus#stream> .
                 ?e2 :status ?about2.
                 ?e2 :name ?friend2.
                 FILTER contains(?about2, "JEANS")
@@ -31,6 +33,7 @@ WHERE{
             SEQ
             EVENT ?id3{
                 ?e3 rdf:type :FacebookStatusFeedEvent.
+				?e3 :stream <http://streams.event-processing.org/ids/FacebookStatus#stream> .
                 ?e3 :status ?about3.
                 ?e3 :name ?friend3.
                 FILTER contains(?about3, "JEANS")

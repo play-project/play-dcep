@@ -70,7 +70,7 @@ public class FeederOutputStream implements OutputStream
         		/*String eventType = ((Model)ew.event.get("model")).filter(null, RDF.TYPE, null).iterator().next().getObject().stringValue();*/
         		try {
         			runtime.sendEvent(ew.event, "Event1");
-        				//System.out.println("Send Event1");
+        			//System.out.println("Send Event1");
         		} catch (EPException e) {
         			log.info("Unknwon event type encountered: " );
         		}
@@ -78,12 +78,12 @@ public class FeederOutputStream implements OutputStream
         	else if(ename.equals("rdf2")){
         		epService.getEPAdministrator().getConfiguration().addEventType("Event2", mapDef);
         		runtime.sendEvent(ew.event, "Event2");
-        			//System.out.println("Send Event2");
+        		//System.out.println("Send Event2");
         	}
         	else{
         		epService.getEPAdministrator().getConfiguration().addEventType("Event3", mapDef);
         		runtime.sendEvent(ew.event, "Event3");
-        			//System.out.println("Send Event3");
+        		//System.out.println("Send Event3");
         	}
         	
             count++;
