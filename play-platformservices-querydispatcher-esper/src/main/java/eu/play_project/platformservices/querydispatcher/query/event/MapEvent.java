@@ -7,12 +7,22 @@ import java.util.HashMap;
 
 
 /**
+<<<<<<< HEAD
  * @author ningyuan
+=======
+ * The underlying event object used in Esper engine. Each MapEvent has a property EVENT_MODEL,
+ * which refers to an EventModel.
+ * 
+ * 
+ * @author ningyuan
+>>>>>>> feature/continuous
  * 
  * Apr 16, 2014
  *
  */
 public class MapEvent <T extends EventModel> extends HashMap<String, T> {
+	
+	private static final long serialVersionUID = 1L;
 	
 	public static final String EVENT_MODEL = "model";
 	

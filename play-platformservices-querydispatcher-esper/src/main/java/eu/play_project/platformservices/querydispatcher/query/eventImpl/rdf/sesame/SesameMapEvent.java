@@ -5,6 +5,7 @@ package eu.play_project.platformservices.querydispatcher.query.eventImpl.rdf.ses
 
 
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
+import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
 
 
 

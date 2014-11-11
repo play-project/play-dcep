@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.eventImpl.rdf.sesame;
+package eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,7 +15,8 @@ import org.openrdf.model.impl.URIImpl;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 
 /**
- * Implement methods needed when filtering events.
+ * An implementation of EventModel. Sesame event model is chosen to be the
+ * actual event model.
  * 
  * @author ningyuan
  * 
