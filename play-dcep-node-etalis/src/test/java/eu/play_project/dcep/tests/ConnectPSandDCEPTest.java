@@ -22,9 +22,9 @@ import org.objectweb.proactive.api.PAActiveObject;
 import org.objectweb.proactive.core.node.NodeException;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
+import eu.play_project.dcep.node.api.DcepNodeApi;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
@@ -35,7 +35,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 public class ConnectPSandDCEPTest implements Serializable {
 	private static final long serialVersionUID = 100L;
 	public static QueryDispatchApi queryDispatchApi;
-	public static DcepTestApi testApi;
+	public static DcepNodeApi<CompoundEvent> testApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;
@@ -253,7 +253,7 @@ public class ConnectPSandDCEPTest implements Serializable {
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root
 				.getFcInterface(QueryDispatchApi.class.getSimpleName()));
-		testApi = ((DcepTestApi) root.getFcInterface(DcepTestApi.class.getSimpleName()));
+		testApi = ((DcepNodeApi<CompoundEvent>) root.getFcInterface(DcepNodeApi.class.getSimpleName()));
 	}
 	
 	private String getSparqlQueries(String queryFile){

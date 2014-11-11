@@ -1,9 +1,8 @@
 package eu.play_project.dcep.api;
 
-import fr.inria.eventcloud.api.CompoundEvent;
 
-public interface SimplePublishApi {
+public interface SimplePublishApi<EventType> {
 
-	public void publish(CompoundEvent event);
+	public void publish(EventType event);
 	
 }

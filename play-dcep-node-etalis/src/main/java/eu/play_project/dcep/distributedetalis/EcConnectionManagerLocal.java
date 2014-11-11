@@ -22,11 +22,11 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QueryParseException;
 
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
-import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.dcep.node.api.EcConnectionManager;
+import eu.play_project.dcep.node.api.EcConnectionmanagerException;
+import eu.play_project.dcep.node.api.SelectResults;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -37,7 +37,7 @@ import fr.inria.eventcloud.api.wrappers.ResultSetWrapper;
  * 
  * @author Stefan Obermeier
  */
-public class EcConnectionManagerLocal implements Serializable, EcConnectionManager {
+public class EcConnectionManagerLocal implements Serializable, EcConnectionManager<CompoundEvent> {
 
 	private static final long serialVersionUID = 100L;
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManagerLocal.class);

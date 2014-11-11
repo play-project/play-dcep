@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import eu.play_project.dcep.api.SimplePublishApi;
 import fr.inria.eventcloud.api.CompoundEvent;
 
-public class PublishApiSubscriber implements SimplePublishApi, Serializable {
+public class PublishApiSubscriber implements SimplePublishApi<CompoundEvent>, Serializable {
 
 	private static final long serialVersionUID = 100L;
 	ArrayList<CompoundEvent> complexEvents = new ArrayList<CompoundEvent>();

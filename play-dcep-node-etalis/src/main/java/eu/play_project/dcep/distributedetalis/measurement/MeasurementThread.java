@@ -12,7 +12,7 @@ import eu.play_project.dcep.api.measurement.MeasurementResult;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.api.measurement.PatternMeasuringResult;
 import eu.play_project.dcep.distributedetalis.PlayJplEngineWrapper;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.dcep.node.api.DcepNodeException;
 
 public class MeasurementThread implements Callable<MeasurementResult> {
 	private final Logger logger;
@@ -84,7 +84,7 @@ public class MeasurementThread implements Callable<MeasurementResult> {
 		
 		try {
 			resultFromProlog = ctx.execute(comand.toString());
-		} catch (DistributedEtalisException e) {
+		} catch (DcepNodeException e) {
 			logger.warn("Problem occurred while getting eventCounter: {}", e.getMessage());
 		}
 

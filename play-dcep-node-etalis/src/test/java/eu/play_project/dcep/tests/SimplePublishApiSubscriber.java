@@ -13,7 +13,7 @@ import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 
-public class SimplePublishApiSubscriber implements SimplePublishApi, Serializable {
+public class SimplePublishApiSubscriber implements SimplePublishApi<CompoundEvent>, Serializable {
 
 	private static final long serialVersionUID = 100L;
 	ArrayList<CompoundEvent> complexEvents = new ArrayList<CompoundEvent>();

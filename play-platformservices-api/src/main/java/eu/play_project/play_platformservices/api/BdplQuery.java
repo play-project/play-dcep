@@ -9,7 +9,7 @@ public class BdplQuery implements Serializable {
 
 	private final QueryDetails queryDetails;
 	private final String bdplQuery;
-	private final String eleQuery;
+	private final String targetQuery;
 	private final QueryTemplate constructTemplate;
 	private final List<HistoricalQuery> historicalQueries;
 	
@@ -17,7 +17,7 @@ public class BdplQuery implements Serializable {
 	public BdplQuery(Builder builder) {
 		this.queryDetails = builder.queryDetails;
 		this.bdplQuery = builder.bdplQuery;
-		this.eleQuery = builder.eleQuery;
+		this.targetQuery = builder.targetQuery;
 		this.constructTemplate = builder.constructTemplate;
 		this.historicalQueries = builder.historicalQueries;
 	}
@@ -29,12 +29,8 @@ public class BdplQuery implements Serializable {
 	/**
 	 * This builder can be made to build a {@linkplain BdplQuery} <b>without</b>
 	 * checking consistency. This means that there is no checking whether all
-	 * setters were invoked (with not null values) before building. Useful e.g.
+	 * setters were invoked (with not {@code null} values) before building. Useful e.g.
 	 * in UnitTests where inconsistent {@linkplain BdplQuery} are acceptable.
-	 * 
-	 * @param validating
-	 *            whether to check all setters were called (with not null
-	 *            values) before building
 	 */
 	public static Builder nonValidatingBuilder() {
 		return new Builder(false);
@@ -44,14 +40,23 @@ public class BdplQuery implements Serializable {
 		return queryDetails;
 	}
 	
+	/**
+	 * The BDPL query.
+	 */
 	public String getBdpl() {
 		return bdplQuery;
 	}
 	
-	public String getEleQuery() {
-		return eleQuery;
+	/**
+	 * The target query generated from BDPL for the underlying event processing engine.
+	 */
+	public String getTargetQuery() {
+		return targetQuery;
 	}
 
+	/**
+	 * The CONSTRUCT template to be instantiated with results from the query.
+	 */
 	public QueryTemplate getConstructTemplate() {
 		if(constructTemplate == null){
 			throw new RuntimeException("No construct template found.");
@@ -60,6 +65,9 @@ public class BdplQuery implements Serializable {
 		}
 	}
 	
+	/**
+	 * The historical queries to be invoked once the real-time query is fulfilled.
+	 */
 	public List<HistoricalQuery> getHistoricalQueries() {
 		return historicalQueries;
 	}
@@ -83,7 +91,7 @@ public class BdplQuery implements Serializable {
 		
 		private QueryDetails queryDetails;
 		private String bdplQuery;
-		private String eleQuery;
+		private String targetQuery;
 		private QueryTemplate constructTemplate;
 		private List<HistoricalQuery> historicalQueries;
 
@@ -102,8 +110,8 @@ public class BdplQuery implements Serializable {
 			return this;
 		}
 		
-		public Builder ele(String eleQuery) {
-			this.eleQuery = eleQuery;
+		public Builder target(String targetQuery) {
+			this.targetQuery = targetQuery;
 			return this;
 		}
 
@@ -129,8 +137,8 @@ public class BdplQuery implements Serializable {
 			if (bdplQuery == null) {
 				throw new IllegalStateException("bdplQuery was not set on builder.");
 			}
-			if (eleQuery == null) {
-				throw new IllegalStateException("eleQuery was not set on builder.");
+			if (targetQuery == null) {
+				throw new IllegalStateException("targetQuery was not set on builder.");
 			}
 			if (constructTemplate == null) {
 				throw new IllegalStateException("constructTemplate was not set on builder.");

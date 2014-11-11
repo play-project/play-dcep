@@ -20,12 +20,12 @@ import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
-import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import eu.play_project.dcep.node.api.DcepNodeConfiguringApi;
 import eu.play_project.play_platformservices.api.BdplQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -33,6 +33,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.histor
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.ComplexTypeFinder;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.WindowVisitor;
+import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
  * Connect to a DistributedEtalis instance and use the api(s).
@@ -41,9 +42,9 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
  */
 public class SingleDistributedEtalisInstancePublisher {
 
-	private static List<DcepTestApi> testApis =  new LinkedList<DcepTestApi>();
+	private static List<DcepNodeApi<CompoundEvent>> testApis =  new LinkedList<DcepNodeApi<CompoundEvent>>();
 	private static List<DcepManagmentApi> managementApis =  new LinkedList<DcepManagmentApi>();
-	private static List<ConfigApi> configApis =   new LinkedList<ConfigApi>();
+	private static List<DcepNodeConfiguringApi<CompoundEvent>> configApis =   new LinkedList<DcepNodeConfiguringApi<CompoundEvent>>();
 	static int patternIdCounter = 0;
 	private static Logger logger;
 	
@@ -55,9 +56,9 @@ public class SingleDistributedEtalisInstancePublisher {
 		for (int i = 1; i < args.length; i++) {
 			// Connect to DistributedEtalis instance 1.
 			PAComponentRepresentative root1 = Fractive.lookup((URIBuilder.buildURI(args[i], "dEtalis", "pnp", Integer.parseInt(DcepConstants.getProperties().getProperty("dcep.proactive.pnp.port"))).toString()));
-			configApis.add(i-1, ((eu.play_project.dcep.api.ConfigApi) root1.getFcInterface(ConfigApi.class.getSimpleName())));
+			configApis.add(i-1, ((DcepNodeConfiguringApi<CompoundEvent>) root1.getFcInterface(DcepNodeConfiguringApi.class.getSimpleName())));
 			configApis.get(i-1).setConfigLocal("play-epsparql-clic2call-historical-data.trig");
-			testApis.add(i-1, ((eu.play_project.dcep.api.DcepTestApi) root1.getFcInterface(DcepTestApi.class.getSimpleName())));
+			testApis.add(i-1, ((DcepNodeApi<CompoundEvent>) root1.getFcInterface(DcepNodeApi.class.getSimpleName())));
 			managementApis.add(i-1, ((eu.play_project.dcep.api.DcepManagmentApi) root1.getFcInterface(DcepManagmentApi.class.getSimpleName())));
 		}
 
@@ -102,12 +103,12 @@ public class SingleDistributedEtalisInstancePublisher {
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails
-		QueryDetails qd = createQueryDetails(queryId, q);
+		QueryDetailsEtalis qd = createQueryDetails(queryId, q);
 		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
 		
 		BdplQuery bdpl = BdplQuery.builder()
 				.details(qd)
-				.ele(eleGenerator.getEle())
+				.target(eleGenerator.getEle())
 				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
 				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
 				.bdpl(query)
@@ -116,10 +117,10 @@ public class SingleDistributedEtalisInstancePublisher {
 		return bdpl;
 	}
 	
-	private static QueryDetails createQueryDetails(String queryId, Query query) throws QueryDispatchException {
+	private static QueryDetailsEtalis createQueryDetails(String queryId, Query query) throws QueryDispatchException {
 		
 		
-		QueryDetails qd = new QueryDetails(queryId);
+		QueryDetailsEtalis qd = new QueryDetailsEtalis(queryId);
 
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);

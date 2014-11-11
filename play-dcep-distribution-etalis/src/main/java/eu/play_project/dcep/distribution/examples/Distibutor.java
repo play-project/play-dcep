@@ -13,9 +13,10 @@ import org.objectweb.proactive.extensions.gcmdeployment.PAGCMDeployment;
 import org.objectweb.proactive.gcmdeployment.GCMApplication;
 import org.objectweb.proactive.gcmdeployment.GCMVirtualNode;
 
-import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
+import eu.play_project.dcep.node.api.DcepNodeConfiguringApi;
+import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.PublishApi;
 
 public class Distibutor {
@@ -48,7 +49,7 @@ public class Distibutor {
 		dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
 				.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
-		ConfigApi configApi = ((ConfigApi) root.getFcInterface(ConfigApi.class.getSimpleName()));
+		DcepNodeConfiguringApi<CompoundEvent> configApi = ((DcepNodeConfiguringApi<CompoundEvent>) root.getFcInterface(DcepNodeConfiguringApi.class.getSimpleName()));
 		configApi.setConfigLocal("play-epsparql-clic2call-historical-data.trig");
 
 		// Register apis

@@ -24,22 +24,22 @@ import com.hp.hpl.jena.graph.NodeFactory;
 
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.api.SimplePublishApi;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
+import eu.play_project.dcep.node.api.DcepNodeApi;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class DcepTest implements Serializable {
 
 	private static final long serialVersionUID = 100L;
-	public static SimplePublishApi dcepPublishApi;
+	public static SimplePublishApi<CompoundEvent> dcepPublishApi;
 	public static eu.play_project.dcep.api.DcepManagmentApi dcepManagmentApi;
-	public static DcepTestApi dcepTestApi;
+	public static DcepNodeApi<CompoundEvent> dcepTestApi;
 
 
 	@Test
@@ -68,13 +68,11 @@ public class DcepTest implements Serializable {
 
 	}
 
-
-
 	
 	@Test
 	public void pushEvents() throws DcepManagementException {
 
-		PublishApiSubscriber subscriber =null;
+		PublishApiSubscriber subscriber = null;
 		try {
 			subscriber = PAActiveObject.newActive(PublishApiSubscriber.class, new Object[] {});
 		} catch (ActiveObjectCreationException e1) {
@@ -89,8 +87,8 @@ public class DcepTest implements Serializable {
 		//dcepTestApi.setEcConnectionManager(new EcConnectionMangerLocal());
 
 		BdplQuery bdplQuery = BdplQuery.builder()
-			.details(new QueryDetails("queryId42"))
-			.ele("complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))")
+			.details(new QueryDetailsEtalis("queryId42"))
+			.target("complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1))")
 			.bdpl("")
 			.constructTemplate(new QueryTemplateImpl())
 			.historicalQueries(new LinkedList<HistoricalQuery>())
@@ -140,14 +138,14 @@ public class DcepTest implements Serializable {
 		Component root =ProActiveHelpers.newComponent("StandAloneDCEP");
 		GCM.getGCMLifeCycleController(root).startFc();
 
-		dcepPublishApi = ((SimplePublishApi) root
+		dcepPublishApi = ((SimplePublishApi<CompoundEvent>) root
 				.getFcInterface(SimplePublishApi.class.getSimpleName()));
 
 		dcepManagmentApi = ((DcepManagmentApi) root
 				.getFcInterface(DcepManagmentApi.class.getSimpleName()));
 
-		dcepTestApi = ((DcepTestApi) root
-				.getFcInterface(DcepTestApi.class.getSimpleName()));
+		dcepTestApi = ((DcepNodeApi<CompoundEvent>) root
+				.getFcInterface(DcepNodeApi.class.getSimpleName()));
 
 	}
 

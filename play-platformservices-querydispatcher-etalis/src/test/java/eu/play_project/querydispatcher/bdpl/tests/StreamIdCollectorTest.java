@@ -1,6 +1,8 @@
 package eu.play_project.querydispatcher.bdpl.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -13,7 +15,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 
 import eu.play_project.play_commons.constants.Stream;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 
 public class StreamIdCollectorTest {
@@ -32,7 +34,7 @@ public class StreamIdCollectorTest {
 		
 		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 		
-		QueryDetails qd = new QueryDetails();
+		QueryDetailsEtalis qd = new QueryDetailsEtalis();
 		qd.setQueryId(queryId);
 
 
@@ -62,7 +64,7 @@ public class StreamIdCollectorTest {
 		
 		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		QueryDetails qd = new QueryDetails();
+		QueryDetailsEtalis qd = new QueryDetailsEtalis();
 		qd.setQueryId(queryId);
 
 		StreamIdCollector streamIdCollector = new StreamIdCollector();
@@ -94,7 +96,7 @@ public class StreamIdCollectorTest {
 
 		Query q = QueryFactory.create(queryString, com.hp.hpl.jena.query.Syntax.syntaxBDPL);
 
-		QueryDetails qd = new QueryDetails();
+		QueryDetailsEtalis qd = new QueryDetailsEtalis();
 		qd.setQueryId(queryId);
 
 		StreamIdCollector streamIdCollector = new StreamIdCollector();

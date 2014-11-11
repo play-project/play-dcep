@@ -18,8 +18,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>fr.inria.eventcloud</groupId>
-			<artifactId>eventcloud-api</artifactId>
+			<groupId>org.semweb4j</groupId>
+			<artifactId>rdf2go.api</artifactId>
 		</dependency>
 	</dependencies>
 </project>

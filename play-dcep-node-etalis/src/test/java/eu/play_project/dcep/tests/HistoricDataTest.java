@@ -3,10 +3,8 @@ package eu.play_project.dcep.tests;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -19,11 +17,12 @@ import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
-import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
+import eu.play_project.dcep.node.api.VariableBindings;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
 
 public class HistoricDataTest {
@@ -47,11 +46,11 @@ public class HistoricDataTest {
 
 
 		// Add queryDetails
-		QueryDetails qd = new QueryDetails(queryId);
+		QueryDetails qd = new QueryDetailsEtalis(queryId);
 		BdplQuery bdpl = BdplQuery.builder()
 				.details(qd)
 				.bdpl(query)
-				.ele("")
+				.target("")
 				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
 				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
 				.build();

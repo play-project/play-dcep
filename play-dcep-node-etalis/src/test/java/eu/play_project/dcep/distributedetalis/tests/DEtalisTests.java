@@ -22,37 +22,37 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
-import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
-import eu.play_project.dcep.api.DcepTestApi;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import eu.play_project.dcep.node.api.DcepNodeConfiguringApi;
+import eu.play_project.dcep.node.api.DcepNodeException;
 import eu.play_project.play_platformservices.api.BdplQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
 public class DEtalisTests implements Serializable {
 
 	private static final long serialVersionUID = 100L;
-	private static DcepTestApi dcepTestApi;
+	private static DcepNodeApi<CompoundEvent> dcepNode;
 	private static DcepManagmentApi dcepManagmentApi = null;
 	private static PublishApiSubscriber subscriber = null;
-	private static ConfigApi configApi = null;
+	private static DcepNodeConfiguringApi<CompoundEvent> configApi = null;
 	static Component root;
 	private final Logger logger = LoggerFactory.getLogger(DEtalisTests.class);
 	DcepMonitoringApi dEtalis;
 
 
 	@Test
-	public void basicDetalisComponentTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DistributedEtalisException, InterruptedException, DcepManagementException {
+	public void basicDetalisComponentTest() throws IllegalLifeCycleException, NoSuchInterfaceException, ADLException, DcepNodeException, InterruptedException, DcepManagementException {
 		
 		/*
 		 *  Check if you get a reference to PublishApi and ManagementApi:
 		 */
-		if (dcepTestApi == null || dcepManagmentApi == null) {
+		if (dcepNode == null || dcepManagmentApi == null) {
 			fail("No DCEP Component");
 		}
 
@@ -61,12 +61,12 @@ public class DEtalisTests implements Serializable {
 		 */
 		logger.info("Register pattern.");
 		
-		QueryDetails qd = new QueryDetails("queryId42");
+		QueryDetailsEtalis qd = new QueryDetailsEtalis("queryId42");
 		qd.setRdfDbQueries(new ArrayList<String>());
 		
 		BdplQuery bdpl = BdplQuery.nonValidatingBuilder()
 				.details(qd)
-				.ele("complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1), (xpath(element(sparqlFilter, [keyWord=O], []), //sparqlFilter(contains(@keyWord,'42')), _)))")
+				.target("complex(ID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1), (xpath(element(sparqlFilter, [keyWord=O], []), //sparqlFilter(contains(@keyWord,'42')), _)))")
 				//.ele("complex(CEID1, queryId42) do (generateConstructResult([S], ['http://play-project.eu/is/CepResult'], [O], ID)) <- 'http://events.event-processing.org/types/Event'(ID1) where (rdf(S, P, O, ID1),random(1000000, 9000000, CEID1))")
 				.bdpl("")
 				.build();
@@ -87,7 +87,7 @@ public class DEtalisTests implements Serializable {
 		CompoundEvent ce = new CompoundEvent(list);
 		logger.info("SENT: ====================================\n{}", ce);
 
-		dcepTestApi.publish(ce);
+		dcepNode.publish(ce);
 
 		Thread.sleep(30000);
 
@@ -131,7 +131,7 @@ public class DEtalisTests implements Serializable {
 	@Before
 	public void instantiateDcepComponent()
 			throws IllegalLifeCycleException, NoSuchInterfaceException,
-			ADLException, DistributedEtalisException, DcepManagementException {
+			ADLException, DcepNodeException, DcepManagementException {
 
 		// GCMApplication gcma = PAGCMDeployment.loadApplicationDescriptor(
 		// new
@@ -144,10 +144,10 @@ public class DEtalisTests implements Serializable {
 		root = ProActiveHelpers.newComponent("DistributedEtalis");
 		GCM.getGCMLifeCycleController(root).startFc();
 
-		dcepTestApi = ((eu.play_project.dcep.api.DcepTestApi) root
-				.getFcInterface(DcepTestApi.class.getSimpleName()));
+		dcepNode = ((DcepNodeApi<CompoundEvent>) root
+				.getFcInterface(DcepNodeApi.class.getSimpleName()));
 
-		configApi = ((ConfigApi) root.getFcInterface(ConfigApi.class.getSimpleName()));
+		configApi = ((DcepNodeConfiguringApi<CompoundEvent>) root.getFcInterface(DcepNodeConfiguringApi.class.getSimpleName()));
 		configApi.setConfigLocal("play-epsparql-clic2call-plus-tweet-historical-data.trig");
 
 		dcepManagmentApi = ((DcepManagmentApi) root.getFcInterface(DcepManagmentApi.class.getSimpleName()));
@@ -164,6 +164,6 @@ public class DEtalisTests implements Serializable {
 			e.printStackTrace();
 		}
 
-		dcepTestApi.attach(subscriber);
+		dcepNode.attach(subscriber);
 	}
 }

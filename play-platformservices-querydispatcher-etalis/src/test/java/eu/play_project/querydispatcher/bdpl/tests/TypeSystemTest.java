@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
@@ -89,7 +90,7 @@ public class TypeSystemTest {
 
 		QueryTemplateGenerator queryTemplateGenerator = new QueryTemplateGenerator();
 		
-		QueryTemplate queryTemplate = queryTemplateGenerator.createQueryTemplate(query);
+		QueryTemplate<Quadruple, Quadruple, Node> queryTemplate = queryTemplateGenerator.createQueryTemplate(query);
 		
 		HistoricalData historicalData = new HistoricalData();
 		List<String> values = new LinkedList<String>();

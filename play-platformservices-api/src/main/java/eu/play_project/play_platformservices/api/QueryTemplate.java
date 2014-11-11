@@ -2,22 +2,26 @@ package eu.play_project.play_platformservices.api;
 
 import java.util.List;
 
-import com.hp.hpl.jena.graph.Node;
-
-import fr.inria.eventcloud.api.Quadruple;
 
 /**
- * The QueryTemplate is used to represent quadruples with  a mixture of fixed values and variables.
+ * The QueryTemplate is used to represent quadruples with a mixture of fixed values and variables to be replaced later.
  * 
- * @author sobermeier
- *
+ * @author Stefan Obermeier
+ * @author Roland Stühmer
  */
-public interface QueryTemplate {
-	public void appendLine(Quadruple line);
-	public void appendLine(Node graph, Node subject, Node predicate, Node object);
+public interface QueryTemplate<QuadrupleType, QuadruplePatternType, UriType> {
+	
+	/**
+	 * Add a new line to the template containing fixed RDF values or variables.
+	 */
+	public void appendLine(QuadruplePatternType templateLine);
 
 	/**
-	 * @param historicalData Variable name followed by a list with values.
+	 * Instantiate the template by replacing all variables in the template with
+	 * the values from the supplied map of "historical" data.
+	 * 
+	 * @param historicalData
+	 *            Variable name followed by a list with values.
 	 */
-	public List<Quadruple> fillTemplate(HistoricalData historicalData, Node graph, Node eventId);
+	public List<QuadrupleType> fillTemplate(HistoricalData historicalData, UriType graph, UriType eventId);
 }

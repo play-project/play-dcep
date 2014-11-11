@@ -23,16 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
-import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerNet;
-import eu.play_project.dcep.distributedetalis.persistence.Persistence;
-import eu.play_project.dcep.distributedetalis.persistence.PersistenceException;
-import eu.play_project.dcep.distributedetalis.persistence.Sqlite;
-import eu.play_project.dcep.distributedetalis.persistence.Sqlite.SubscriptionPerCloud;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.dcep.node.api.EcConnectionManager;
+import eu.play_project.dcep.node.api.EcConnectionmanagerException;
+import eu.play_project.dcep.node.api.SelectResults;
+import eu.play_project.dcep.node.persistence.Persistence;
+import eu.play_project.dcep.node.persistence.PersistenceException;
+import eu.play_project.dcep.node.persistence.Sqlite;
+import eu.play_project.dcep.node.persistence.Sqlite.SubscriptionPerCloud;
 import eu.play_project.play_commons.constants.Event;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_platformservices.api.BdplQuery;
@@ -68,7 +68,7 @@ import fr.inria.eventcloud.factories.ProxyFactory;
  * @author Stefan Obermeier
  * @author Roland Stühmer
  */
-public class EcConnectionManagerNet implements Serializable, EcConnectionManager {
+public class EcConnectionManagerNet implements Serializable, EcConnectionManager<CompoundEvent> {
 
 	private static final long serialVersionUID = 100L;
 

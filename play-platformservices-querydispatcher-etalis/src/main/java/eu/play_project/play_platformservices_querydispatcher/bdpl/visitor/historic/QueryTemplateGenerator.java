@@ -13,14 +13,14 @@ import fr.inria.eventcloud.api.Quadruple;
 
 public class QueryTemplateGenerator {
 
-	QueryTemplate queryTemplate;
+	QueryTemplate<Quadruple, Quadruple, Node> queryTemplate;
 	
 	/**
 	 * Add all triples with variables shared between construct and historic part.
 	 * @param inputQuery Parsed jena query.
 	 * @return QueryTemplate with triples.
 	 */
-	public QueryTemplate createQueryTemplate(Query inputQuery) {
+	public QueryTemplate<Quadruple, Quadruple, Node> createQueryTemplate(Query inputQuery) {
 		Node graph = NodeFactory.createURI("urn:placeholder");
 		queryTemplate = new QueryTemplateImpl();
 		

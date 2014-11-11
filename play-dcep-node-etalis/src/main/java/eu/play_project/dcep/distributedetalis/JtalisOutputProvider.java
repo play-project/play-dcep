@@ -29,11 +29,11 @@ import com.jtalis.core.event.JtalisOutputEventProvider;
 
 import eu.play_project.dcep.api.SimplePublishApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
-import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
-import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
+import eu.play_project.dcep.node.api.EcConnectionManager;
+import eu.play_project.dcep.node.api.HistoricalDataEngine;
+import eu.play_project.dcep.node.api.VariableBindings;
 import eu.play_project.play_commons.constants.Source;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.BdplQuery;
@@ -52,7 +52,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	boolean shutdownEtalis = false; // If true ETALIS will shutdown.
 
 	private final PlayJplEngineWrapper engine;
-	private final Set<SimplePublishApi> recipients;
+	private final Set<SimplePublishApi<CompoundEvent>> recipients;
 	private final Map<String, BdplQuery> registeredQueries;
 	private final HistoricalDataEngine historicData;
 	
@@ -63,7 +63,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 	
 	private final static String PATTERN_BASE_URI = DcepConstants.getProperties().getProperty("platfomservices.querydispatchapi.rest");
 
-	public JtalisOutputProvider(Set<SimplePublishApi> recipients, Map<String, BdplQuery> registeredQueries, EcConnectionManager ecConnectionManager, MeasurementUnit measurementUnit) {
+	public JtalisOutputProvider(Set<SimplePublishApi<CompoundEvent>> recipients, Map<String, BdplQuery> registeredQueries, EcConnectionManager<CompoundEvent> ecConnectionManager, MeasurementUnit measurementUnit) {
 		this.engine = PlayJplEngineWrapper.getPlayJplEngineWrapper();
 		this.recipients = recipients;
 		this.registeredQueries = registeredQueries;
@@ -95,7 +95,7 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 				logger.warn(LOG_DCEP_FAILED_EXIT + "No recipients for complex events.");
 			}
 			
-			for (SimplePublishApi recipient : recipients) {
+			for (SimplePublishApi<CompoundEvent> recipient : recipients) {
 				recipient.publish(result);
 			}
 		} catch (RetractEventException e) {
@@ -174,12 +174,6 @@ public class JtalisOutputProvider implements JtalisOutputEventProvider, Serializ
 					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
 					NodeFactory.createURI(predicate),
 	                objectNode));
-			Quadruple q = new Quadruple(
-					GRAPHNAME,
-					// Replace dummy event id placeholder with actual unique id for complex event:
-					(subject.equals(EVENT_ID_PLACEHOLDER) ? EVENTID : NodeFactory.createURI(subject)),
-					NodeFactory.createURI(predicate),
-	                objectNode);
 		}
 
 		logger.debug("(2/3) static quads, prolog quads:\n{}", quadruples);

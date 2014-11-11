@@ -1,5 +1,11 @@
 package eu.play_project.dcep.distributedetalis;
 
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_EXIT;
+import static eu.play_project.dcep.constants.DcepConstants.LOG_DCEP_FAILED_EXIT;
+
+import java.io.ByteArrayOutputStream;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -9,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
 import org.ontoware.rdf2go.RDF2Go;
 import org.ontoware.rdf2go.impl.jena.TypeConversion;
 import org.ontoware.rdf2go.model.QueryResultTable;
@@ -16,11 +24,20 @@ import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
+import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory;
+
 import eu.play_project.dcep.distributedetalis.join.ResultRegistry;
-import eu.play_project.dcep.distributedetalis.join.SelectResults;
+import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerRest;
+import eu.play_project.dcep.distributedetalis.listeners.EcConnectionListenerWsn;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.dcep.node.api.EcConnectionmanagerException;
+import eu.play_project.dcep.node.api.SelectResults;
+import eu.play_project.dcep.node.connections.AbstractConnectionManagerWsn;
+import eu.play_project.play_commons.constants.Event;
+import eu.play_project.play_eventadapter.AbstractReceiverRest;
 import fr.inria.eventcloud.api.CompoundEvent;
+import fr.inria.eventcloud.api.PublishSubscribeConstants;
 import fr.inria.eventcloud.api.Quadruple;
 
 /**
@@ -29,7 +46,7 @@ import fr.inria.eventcloud.api.Quadruple;
  * 
  * @author Roland Stühmer
  */
-public class EcConnectionManager4store extends EcConnectionManagerWsn {
+public class EcConnectionManager4store extends AbstractConnectionManagerWsn<CompoundEvent> {
 	private final Logger logger = LoggerFactory.getLogger(EcConnectionManager4store.class);
 	private Client fourStoreClient;
 	private final String FOURSTORE_REST_URI;
@@ -58,9 +75,9 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		init();
 	}
 
-	@Override
 	public void init() throws EcConnectionmanagerException {
-		super.init();
+		AbstractReceiverRest receiver = new AbstractReceiverRest() {};
+		super.init(new EcConnectionListenerWsn(receiver), new EcConnectionListenerRest(receiver));
 
 		fourStoreClient = ClientBuilder.newClient();
 		
@@ -188,5 +205,57 @@ public class EcConnectionManager4store extends EcConnectionManagerWsn {
 		QueryResultTable sparqlResults = RDF2Go.getModelFactory().sparqlSelect(sparqlEndpoint.getUri().toString(), query);
 
 		return ResultRegistry.makeResult(sparqlResults);
+	}
+
+	@Override
+	public void publish(CompoundEvent event) {
+		if (!init) {
+			throw new IllegalStateException(this.getClass().getSimpleName() + " has not been initialized.");
+		}
+		
+		String cloudId = EventCloudHelpers.getCloudId(event);
+	    
+		if (!cloudId.isEmpty()) {
+			// Send event to DSB:
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			RDFDataMgr.write(out, quadruplesToDatasetGraph(event), RDFFormat.TRIG_BLOCKS);
+	
+			// Do not remove this line, needed for logs. :stuehmer
+			logger.info(LOG_DCEP_EXIT + event.getGraph() + " " + EventCloudHelpers.getMembers(event));
+			if (logger.isDebugEnabled()) {
+				logger.debug(LOG_DCEP + "Complex Event:\n{}", event.toString());
+			}
+			
+			this.getRdfSender().notify(new String(out.toByteArray()), cloudId);
+			
+			// Store event in Triple Store:
+			this.putDataInCloud(event, cloudId);
+		}
+		else {
+			logger.warn(LOG_DCEP_FAILED_EXIT + "Got empty cloud ID from event '{}', don't know which cloud to publish to. Discarding complex event.", event.getGraph() + Event.EVENT_ID_SUFFIX);
+		}
+	}
+
+	/**
+	 * A private method to convert a collection of quadruples into the
+	 * corresponding data set graph to be used in the event format writers
+	 * 
+	 * @author ialshaba
+	 * 
+	 * @param quads
+	 *            the collection of the quadruples
+	 * @return the corresponding data set graph
+	 */
+	private static DatasetGraph quadruplesToDatasetGraph(CompoundEvent quads) {
+	    DatasetGraph dsg = DatasetGraphFactory.createMem();
+	    for (Quadruple q : quads) {
+	        if (q.getPredicate() != PublishSubscribeConstants.EVENT_NB_QUADRUPLES_NODE) {
+	            dsg.add(
+	                    q.getGraph(), q.getSubject(), q.getPredicate(),
+	                    q.getObject());
+	        }
+	    }
+	
+	    return dsg;
 	}
 }

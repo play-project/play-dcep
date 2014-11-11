@@ -1,7 +1,7 @@
 package eu.play_project.play_platformservices.api;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -21,18 +21,26 @@ public class QueryDetails implements Serializable {
 	private Set<String> inputStreams;
 	private String outputStream;
 	private Set<String> historicStreams;
-	private String etalisProperty;
-	private String tumblingWindow;
-	private List<String> rdfDbQueries;
-	private String complexType;  //Type name of the complex event.
 	
 	public QueryDetails(){} // JAXB needs this
 	
-	public QueryDetails(String queryId){
+	/**
+	 * @deprecated Use the builder instead from {@link #builder()}.
+	 */
+	@Deprecated
+	public QueryDetails(String queryId) {
 		this.queryId = queryId;
-		// Init with valid values which have no functional effect.
-		this.etalisProperty = "";
-		this.tumblingWindow = "true";
+	}
+	
+	public QueryDetails(Builder builder) {
+		this.queryId = builder.queryId;
+		this.inputStreams = builder.inputStreams;
+		this.outputStream = builder.outputStream;
+		this.historicStreams = builder.historicStreams;
+	}
+	
+	public static Builder builder() {
+		return new Builder();
 	}
 	
 	public String getQueryId() {
@@ -93,38 +101,55 @@ public class QueryDetails implements Serializable {
         sb.append("}");
 		return sb.toString();
 	}
-
-	public String getEtalisProperty() {
-		return etalisProperty;
-	}
-
-	public void setEtalisProperty(String etalisProperty) {
-		this.etalisProperty = etalisProperty;
-	}
-
-	public String getTumblingWindow() {
-		return tumblingWindow;
-	}
-
-	public void setTumblingWindow(String tumblingWindow) {
-		this.tumblingWindow = tumblingWindow;
-	}
-
-	public List<String> getRdfDbQueries() {
-		return rdfDbQueries;
-	}
-
-	public void setRdfDbQueries(List<String> rdfDbQueries) {
-		this.rdfDbQueries = rdfDbQueries;
-	}
-
-	public String getComplexType() {
-		return complexType;
-	}
-
-	public void setComplexType(String complexType) {
-		this.complexType = complexType;
-	}
 	
-	// TODO stuehmer: add a builder for QueryDetails to validate a few mandatory settings upon build()
+	public static class Builder {
+		private String queryId;
+		private Set<String> inputStreams;
+		private String outputStream;
+		private Set<String> historicStreams;
+		
+		public Builder() {
+		}
+		
+		public Builder id(String queryId) {
+			this.queryId = queryId;
+			return this;
+		}
+		
+		public Builder inputStreams(Set<String> inputStreams) {
+			this.inputStreams = inputStreams;
+			return this;
+		}
+
+		public Builder outputStream(String outputStream) {
+			this.outputStream = outputStream;
+			return this;
+		}
+
+		public Builder historicStreams(Set<String> historicStreams) {
+			this.historicStreams = historicStreams;
+			return this;
+		}
+		
+		public QueryDetails build() {
+			validate();
+			return new QueryDetails(this);
+		}
+		
+		private void validate() {
+			if (queryId == null) {
+				throw new IllegalStateException("queryId was not set on builder.");
+			}
+			if (inputStreams == null) {
+				throw new IllegalStateException("inputStreams was not set on builder.");
+			}
+			if (outputStream == null) {
+				throw new IllegalStateException("outputStream was not set on builder.");
+			}
+			if (historicStreams == null) {
+				historicStreams = new HashSet<String>();
+			}
+		}
+
+	}
 }

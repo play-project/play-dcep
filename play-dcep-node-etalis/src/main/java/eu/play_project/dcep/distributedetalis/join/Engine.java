@@ -11,10 +11,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
-import eu.play_project.dcep.distributedetalis.api.HistoricalDataEngine;
-import eu.play_project.dcep.distributedetalis.api.VariableBindings;
+import eu.play_project.dcep.node.api.EcConnectionManager;
+import eu.play_project.dcep.node.api.EcConnectionmanagerException;
+import eu.play_project.dcep.node.api.HistoricalDataEngine;
+import eu.play_project.dcep.node.api.SelectResults;
+import eu.play_project.dcep.node.api.VariableBindings;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
 import eu.play_project.play_platformservices.api.VariableNames;
@@ -98,9 +99,9 @@ public class Engine implements HistoricalDataEngine {
 		else{
 			VariableNames vars = variableNames.get(stream);
 			for(String var : vars){
-				SelectVariable sv = svs.get(var);
+				SelectVariable<?> sv = svs.get(var);
 				if(sv == null){
-					sv = new SelectVariable();
+					sv = new SelectVariable<Object>();
 					svs.put(var, sv);
 				}
 				sv.addRelResult(rr);

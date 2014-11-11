@@ -9,7 +9,7 @@ import eu.play_project.dcep.api.SimplePublishApi;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
-public class ComplexEventSubscriber implements SimplePublishApi, Serializable{
+public class ComplexEventSubscriber implements SimplePublishApi<CompoundEvent>, Serializable{
 	private static final long serialVersionUID = 100L;
 	private int eventCounter = 0;
 

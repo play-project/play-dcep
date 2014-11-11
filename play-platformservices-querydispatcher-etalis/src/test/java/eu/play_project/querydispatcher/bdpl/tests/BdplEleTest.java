@@ -28,7 +28,7 @@ import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.EventIterator;
@@ -85,14 +85,14 @@ public class BdplEleTest {
 		String etalisPattern = visitor1.getEle();
 
 		// Add query details.
-		QueryDetails details = new QueryDetails(patternId);
+		QueryDetailsEtalis details = new QueryDetailsEtalis(patternId);
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);
 		details.setRdfDbQueries(visitor1.getRdfDbQueries());
 
 		BdplQuery bdplQuery = BdplQuery.builder()
-				.ele(etalisPattern)
+				.target(etalisPattern)
 				.details(details)
 				.bdpl("")
 				.constructTemplate(new QueryTemplateImpl())
@@ -190,7 +190,7 @@ public class BdplEleTest {
 		String etalisPattern = visitor1.getEle();
 
 		// Add query details.
-		QueryDetails details = new QueryDetails(patternId);
+		QueryDetailsEtalis details = new QueryDetailsEtalis(patternId);
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(details);
 		query.getWindow().accept(windowVisitor);

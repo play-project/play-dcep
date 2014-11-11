@@ -9,13 +9,15 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 
 
 /**
- * @author ningyuan 
+ * @author ningyuan
  * 
  * Apr 16, 2014
  *
  */
 public class SesameMapEvent extends MapEvent<SesameEventModel>{
 	
+	private static final long serialVersionUID = 6601641969543197526L;
+
 	public SesameMapEvent(SesameEventModel model){
 		super(model);
 	}

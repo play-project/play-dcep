@@ -2,6 +2,7 @@ package eu.play_project.dcep.distributedetalis.api;
 
 import com.jtalis.core.JtalisContextImpl;
 
+import eu.play_project.dcep.node.api.DcepNodeException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
@@ -14,7 +15,7 @@ public interface UsePrologSemWebLib {
 	/**
 	 * Load SWI libraries.
 	 */
-	public void init(JtalisContextImpl ctx) throws DistributedEtalisException;
+	public void init(JtalisContextImpl ctx) throws DcepNodeException;
 	
 	/**
 	 * Put data in RDF Triple Store.

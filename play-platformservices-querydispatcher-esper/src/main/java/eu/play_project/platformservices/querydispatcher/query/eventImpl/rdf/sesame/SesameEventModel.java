@@ -15,14 +15,16 @@ import org.openrdf.model.impl.URIImpl;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 
 /**
- * @author ningyuan 
+ * Implement methods needed when filtering events.
+ * 
+ * @author ningyuan
  * 
  * Apr 16, 2014
  *
  */
 public class SesameEventModel extends EventModel<Model> {
 	
-	private Map<Integer, Boolean> match = new HashMap<Integer, Boolean>();
+	private final Map<Integer, Boolean> match = new HashMap<Integer, Boolean>();
 	
 	public SesameEventModel(Model model) {
 		super(model);
@@ -89,7 +91,7 @@ public class SesameEventModel extends EventModel<Model> {
 			}
 		}
 		
-			System.out.println("RDFModel.isPropertyEquals("+property+", "+value+"): false");
+		System.out.println("RDFModel.isPropertyEquals("+property+", "+value+"): false");
 		return false;
 	}
 

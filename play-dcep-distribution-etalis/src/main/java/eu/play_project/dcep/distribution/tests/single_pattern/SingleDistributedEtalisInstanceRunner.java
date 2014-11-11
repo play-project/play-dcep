@@ -17,9 +17,10 @@ import org.objectweb.proactive.extensions.pnp.PNPConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distribution.tests.srbench.performance.ComplexEventSubscriber;
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import fr.inria.eventcloud.api.CompoundEvent;
 
 
 /**
@@ -29,7 +30,7 @@ import eu.play_project.dcep.distribution.tests.srbench.performance.ComplexEventS
  */
 public class SingleDistributedEtalisInstanceRunner {
 	private static ComplexEventSubscriber subscriber = null;
-	private static DcepTestApi testApi;
+	private static DcepNodeApi<CompoundEvent> testApi;
 	
 	private static Logger logger = LoggerFactory.getLogger(SingleDistributedEtalisInstanceRunner.class);
 	private static boolean running;

@@ -19,26 +19,20 @@ import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryTemplate;
 import fr.inria.eventcloud.api.Quadruple;
 
-public class QueryTemplateImpl implements QueryTemplate, Serializable {
+public class QueryTemplateImpl implements QueryTemplate<Quadruple, Quadruple, Node>, Serializable {
 
 	private final Logger logger = LoggerFactory.getLogger(QueryTemplateImpl.class);
 	private static final long serialVersionUID = 100L;
 	List<Quadruple> templateQuads = new LinkedList<Quadruple>();
-	
-	@Override
-	public void appendLine(Node graph, Node subject, Node predicate, Node object) {
-		Quadruple line = new Quadruple(graph, subject, predicate, object);
-
-		appendLine(line);
-	}
 
 	@Override
-	public void appendLine(Quadruple line) {
-		logger.debug("Adding template line: {}", line);
+	public void appendLine(Quadruple templateLine) {
+		logger.debug("Adding template line: {}", templateLine);
 		
-		templateQuads.add(line);
+		templateQuads.add(templateLine);
 	}
 
+	
 	@Override
 	public List<Quadruple> fillTemplate(HistoricalData historicalData, Node graph, Node eventId) {
 		

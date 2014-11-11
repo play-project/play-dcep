@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.jtalis.core.event.EtalisEvent;
 import com.jtalis.core.event.JtalisInputEventProvider;
 
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.dcep.node.api.DcepNodeException;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
@@ -56,7 +56,7 @@ public class JtalisInputProvider implements JtalisInputEventProvider,
 			events.put(new EtalisEvent(quoteForProlog(eventType), eventId));
 		} catch (InterruptedException e) {
 			logger.error(LOG_DCEP_FAILED_ENTRY + "Error adding event to Jtalis queue.", e);
-		} catch (DistributedEtalisException e) {
+		} catch (DcepNodeException e) {
 			logger.error(LOG_DCEP_FAILED_ENTRY + "Error on new event. ", e);
 		}
 	}

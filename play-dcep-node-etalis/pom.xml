@@ -19,57 +19,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
+			<artifactId>play-dcep-node-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.ow2.play</groupId>
 			<artifactId>play-platformservices-querydispatcher-etalis</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxws</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http</artifactId>
-			<version>${cxf.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>spring-web</artifactId>
-					<groupId>org.springframework</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-transports-http-jetty</artifactId>
-			<version>${cxf.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlet</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-jsp</artifactId>
-			<version>${jetty.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.core</groupId>
-			<artifactId>jersey-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.containers</groupId>
-			<artifactId>jersey-container-servlet-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfreceiver-rest</artifactId>
-			<version>${play.eventadapter.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-eventadapter-abstractrdfsender-rest</artifactId>
-			<version>${play.eventadapter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>jtalis</groupId>
@@ -77,43 +33,9 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-collections4</artifactId>
-			<version>4.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-commons-eventtypes</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>slf4j-log4j12</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jena-arq</artifactId>
-					<groupId>org.apache.jena</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.play</groupId>
-			<artifactId>play-dcep-node-core</artifactId>
-			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>cxf-bundle</artifactId>
-					<groupId>org.apache.cxf</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>		
+		</dependency>	
 		<dependency>
 			<groupId>fr.inria.eventcloud</groupId>
 			<artifactId>eventcloud-core</artifactId>
@@ -175,17 +97,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.ow2.petals.dsb</groupId>
-			<artifactId>dsb-notification-service</artifactId>
-			<version>1.0.0</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>cxf-bundle-minimal</artifactId>
-					<groupId>org.apache.cxf</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>com.openlinksw</groupId>
 			<artifactId>virtjdbc4</artifactId>
 			<version>1.0</version>
@@ -206,35 +117,10 @@
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.xerial</groupId>
-			<artifactId>sqlite-jdbc</artifactId>
-			<version>3.7.2</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>3.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>backbonejs</artifactId>
-			<version>1.1.2-1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>webjars-locator</artifactId>
-			<version>0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery-tmpl</artifactId>
-			<version>beta1.0.0-1</version>
-		</dependency>		
 	</dependencies>
 
 	<repositories>
@@ -289,18 +175,5 @@
 			</testResource>
 		</testResources>
 	</build>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-server</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-security</artifactId>
-				<version>${jetty.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+
 </project>

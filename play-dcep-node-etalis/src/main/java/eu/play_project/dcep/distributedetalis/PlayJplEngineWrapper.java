@@ -15,8 +15,8 @@ import com.jtalis.core.plengine.EngineOutputListener;
 import com.jtalis.core.plengine.JPLEngineWrapper;
 import com.jtalis.core.plengine.PrologEngineWrapper;
 
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.PrologEngineWrapperPlayExtensions;
+import eu.play_project.dcep.node.api.DcepNodeException;
 
 /**
  * To synchronize acces to JPL TODO synchronize it.
@@ -45,14 +45,14 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized Hashtable<String, Object>[] execute(String command) throws DistributedEtalisException {
+	public synchronized Hashtable<String, Object>[] execute(String command) throws DcepNodeException {
 		try {
 			// Get data from triplestore
 			Query q = new Query(command);
 			return q.allSolutions();
 		} catch (PrologException e) {
 			logger.error("Error executing Prolog goal. {}", e.getMessage());
-			throw new DistributedEtalisException(String.format("Error executing Prolog goal. %s", e.getMessage()), e);
+			throw new DcepNodeException(String.format("Error executing Prolog goal. %s", e.getMessage()), e);
 		}
 	}
 
@@ -122,7 +122,7 @@ public class PlayJplEngineWrapper implements PrologEngineWrapper<Object>, Prolog
 		} catch (PrologException e) {
 			logger.error("Error getting data from Prolog. {}", e.getMessage());
 			result = new Hashtable[0];
-		} catch (DistributedEtalisException e) {
+		} catch (DcepNodeException e) {
 			logger.error("Error getting data from Prolog. {}", e.getMessage());
 			result = new Hashtable[0];
 		} finally {

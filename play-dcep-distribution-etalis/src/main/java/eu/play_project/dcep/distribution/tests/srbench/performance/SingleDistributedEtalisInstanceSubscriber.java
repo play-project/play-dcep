@@ -14,19 +14,19 @@ import org.objectweb.proactive.core.component.representative.PAComponentRepresen
 import org.objectweb.proactive.core.util.URIBuilder;
 
 import eu.play_project.dcep.api.DcepManagementException;
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distribution.tests.srbench.performance.ComplexEventSubscriber;
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import eu.play_project.dcep.node.api.DcepNodeException;
+import fr.inria.eventcloud.api.CompoundEvent;
 
 public class SingleDistributedEtalisInstanceSubscriber {
 
 	private static ComplexEventSubscriber subscriber = null;
-	private static DcepTestApi testApiI1;
+	private static DcepNodeApi<CompoundEvent> testApiI1;
 
 	public static void main(String[] args) throws ADLException,
 			IllegalLifeCycleException, NoSuchInterfaceException,
-			ProActiveException, DistributedEtalisException, IOException, NamingException, DcepManagementException {
+			ProActiveException, DcepNodeException, IOException, NamingException, DcepManagementException {
 
 		// Connect to DistributedEtalis instance.
 		connectToCepEngine("dEtalis", args[0]);
@@ -41,7 +41,7 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		System.in.read();
 	}
 	
-	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DistributedEtalisException{
+	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DcepNodeException{
 
 		/* COMPONENT_ALIAS = "Dispatcher" */
 		PAComponentRepresentative root = null;
@@ -55,9 +55,7 @@ public class SingleDistributedEtalisInstanceSubscriber {
 		}
 
 		try {
-			 testApiI1 = ((eu.play_project.dcep.api.DcepTestApi) root
-					.getFcInterface(DcepTestApi.class.getSimpleName()));
-
+			 testApiI1 = ((DcepNodeApi<CompoundEvent>) root.getFcInterface(DcepNodeApi.class.getSimpleName()));
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();
 		}

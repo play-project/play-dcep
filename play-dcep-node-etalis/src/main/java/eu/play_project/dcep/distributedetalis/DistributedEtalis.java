@@ -23,26 +23,26 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.jtalis.core.JtalisContextImpl;
 
-import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.api.DcepMonitoringApi;
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.api.SimplePublishApi;
 import eu.play_project.dcep.api.measurement.MeasurementConfig;
 import eu.play_project.dcep.api.measurement.NodeMeasurementResult;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DEtalisConfigApi;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionManager;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
+import eu.play_project.dcep.distributedetalis.api.DetalisConfiguringApi;
 import eu.play_project.dcep.distributedetalis.configurations.DetailsConfigLocalJena;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfig4store;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigLocal;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigNet;
 import eu.play_project.dcep.distributedetalis.configurations.DetalisConfigVirtuoso;
 import eu.play_project.dcep.distributedetalis.measurement.MeasurementUnit;
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import eu.play_project.dcep.node.api.DcepNodeException;
+import eu.play_project.dcep.node.api.EcConnectionManager;
+import eu.play_project.dcep.node.api.EcConnectionmanagerException;
 import eu.play_project.play_platformservices.api.BdplQuery;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import fr.inria.eventcloud.api.CompoundEvent;
 
 /**
@@ -54,8 +54,8 @@ import fr.inria.eventcloud.api.CompoundEvent;
  * @author Roland Stühmer
  */
 public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
-		DcepTestApi, ComponentInitActive, ComponentEndActive,
-		ConfigApi, DEtalisConfigApi, Serializable {
+		DcepNodeApi<CompoundEvent>, ComponentInitActive, ComponentEndActive,
+		DetalisConfiguringApi, Serializable {
 
 	private static final long serialVersionUID = 100L;
 	private String name;
@@ -63,13 +63,13 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	private JtalisOutputProvider eventOutputProvider;
 	private JtalisInputProvider eventInputProvider;
 	private final Logger logger = LoggerFactory.getLogger(DistributedEtalis.class);
-	private Map<String, BdplQuery> registeredQueries = Collections.synchronizedMap(new HashMap<String, BdplQuery>());
-	private EcConnectionManager ecConnectionManager;
+	private final Map<String, BdplQuery> registeredQueries = Collections.synchronizedMap(new HashMap<String, BdplQuery>());
+	private EcConnectionManager<CompoundEvent> ecConnectionManager;
 	private MeasurementUnit measurementUnit;
 	private PrologSemWebLib semWebLib;
 	private boolean init = false;
-	private final Set<SimplePublishApi> eventSinks = Collections
-			.synchronizedSet(new HashSet<SimplePublishApi>());
+	private final Set<SimplePublishApi<CompoundEvent>> eventSinks = Collections
+			.synchronizedSet(new HashSet<SimplePublishApi<CompoundEvent>>());
 
 	Service service;
 
@@ -124,7 +124,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 		logger.info("New event pattern is being registered at {} with queryId = {}",
 				this.getClass().getSimpleName(), bdplQuery
 				.getDetails().getQueryId());
-		logger.debug("ELE: {}", bdplQuery.getEleQuery());
+		logger.debug("ELE: {}", bdplQuery.getTargetQuery());
 
 		if(this.registeredQueries.containsKey(bdplQuery.getDetails().getQueryId())) {
 			String error = "Pattern ID already exists: " + bdplQuery.getDetails().getQueryId();
@@ -132,37 +132,39 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 			throw new DcepManagementException(error);
 		}
 		
+		QueryDetailsEtalis qd = (QueryDetailsEtalis)bdplQuery.getDetails();
 		try {
-			this.registeredQueries.put(bdplQuery.getDetails().getQueryId(), bdplQuery);
-		
-			logger.debug("Register query: {}", bdplQuery.getEleQuery());
 			
-			etalis.addDynamicRuleWithId(quoteForProlog(bdplQuery.getDetails().getQueryId()) + bdplQuery.getDetails().getEtalisProperty(), bdplQuery.getEleQuery());
+			this.registeredQueries.put(qd.getQueryId(), bdplQuery);
+		
+			logger.debug("Register query: {}", bdplQuery.getTargetQuery());
+			
+			etalis.addDynamicRuleWithId(quoteForProlog(qd.getQueryId()) + qd.getEtalisProperty(), bdplQuery.getTargetQuery());
 			// Start tumbling window. (If a tumbling window was defined.)
-			if (!etalis.getEngineWrapper().executeGoal(bdplQuery.getDetails().getTumblingWindow())) {
-				throw new DistributedEtalisException("Error registering tumbling window for queryId " + bdplQuery.getDetails().getQueryId());
+			if (!etalis.getEngineWrapper().executeGoal(qd.getTumblingWindow())) {
+				throw new DcepNodeException("Error registering tumbling window for queryId " + qd.getQueryId());
 			}
 			
 			//Register db queries.
-			for (String dbQuery : bdplQuery.getDetails().getRdfDbQueries()) {
+			for (String dbQuery : qd.getRdfDbQueries()) {
 				if (!etalis.getEngineWrapper().executeGoal("assert(" + dbQuery + ")")) {
-					throw new DistributedEtalisException("Error registering RdfDbQueries for queryId " + bdplQuery.getDetails().getQueryId());
+					throw new DcepNodeException("Error registering RdfDbQueries for queryId " + qd.getQueryId());
 				}
 			}
 			
 			// Configure ETALIS to inform output listener if complex event of new type appeared.
-			etalis.addEventTrigger(bdplQuery.getDetails().getComplexType() + "/_");
+			etalis.addEventTrigger(qd.getComplexType() + "/_");
 		
 			// Make subscriptions.
 			this.ecConnectionManager.registerEventPattern(bdplQuery);
 		} catch (PrologException e) {
-			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
+			this.unregisterEventPattern(qd.getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		} catch (EcConnectionmanagerException e) {
-			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
+			this.unregisterEventPattern(qd.getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		} catch (Exception e) {
-			this.unregisterEventPattern(bdplQuery.getDetails().getQueryId());
+			this.unregisterEventPattern(qd.getQueryId());
 			throw new DcepManagementException(e.getMessage());
 		}
 	}
@@ -239,7 +241,7 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 					}
 					new DetalisConfigLocal(historicDataFileNames).configure(this);
 				}
-				else if(middleware.equals("local.jean")) {
+				else if(middleware.equals("local.jena")) {
 					//Read historic data filenames.
 					List<String> historicDataFileNames = new ArrayList<String>();
 					for (String historicDataFileName : DcepConstants.getProperties().getProperty("dcep.local.historicdata.source", "historical-data/play-bdpl-telco-recom-tweets-historic-data.trig").split(",")) {
@@ -261,16 +263,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 							"Specified middleware is not implemented: %s.", middleware));
 				}
 				init = true;
-			} catch (DistributedEtalisException e) {
+			} catch (DcepNodeException e) {
 				throw new DcepManagementException(e.getMessage());
 			}
 		} else {
 			logger.warn("DistributedEtalis is already configured");
 		}
-	}
-
-	@Override
-	public void setConfigLocal(String rdf) throws DcepManagementException {
 	}
 
 	public String getName() {
@@ -305,18 +303,18 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void attach(SimplePublishApi subscriber) {
+	public void attach(SimplePublishApi<CompoundEvent> subscriber) {
 		logger.debug("New subscriber.");
 		this.eventSinks.add(subscriber);
 	}
 
 	@Override
-	public void detach(SimplePublishApi subscriber) {
+	public void detach(SimplePublishApi<CompoundEvent> subscriber) {
 		this.eventSinks.remove(subscriber);
 	}
 
 	@Override
-	public void setEcConnectionManager(EcConnectionManager ecConnectionManager) {
+	public void setEcConnectionManager(EcConnectionManager<CompoundEvent> ecConnectionManager) {
 		this.ecConnectionManager = ecConnectionManager;
 	}
 
@@ -351,17 +349,12 @@ public class DistributedEtalis implements DcepMonitoringApi, DcepManagmentApi,
 	}
 
 	@Override
-	public void setRegisteredQueries(Map<String, BdplQuery> registeredQueries) {
-		this.registeredQueries = registeredQueries;
-	}
-
-	@Override
-	public EcConnectionManager getEcConnectionManager() {
+	public EcConnectionManager<CompoundEvent> getEcConnectionManager() {
 		return ecConnectionManager;
 	}
 
 	@Override
-	public Set<SimplePublishApi> getEventSinks() {
+	public Set<SimplePublishApi<CompoundEvent>> getEventSinks() {
 		return eventSinks;
 	}
 

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 
+import eu.play_project.dcep.node.api.SelectResults;
+
 /**
  * This is a data structure that is used to represent a query result.
  * 

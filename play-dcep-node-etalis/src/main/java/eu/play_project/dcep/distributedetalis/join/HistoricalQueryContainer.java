@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_URI;
 
-import eu.play_project.dcep.distributedetalis.api.VariableBindings;
+import eu.play_project.dcep.node.api.VariableBindings;
 
 /**
  * @author Ningyuan Pan

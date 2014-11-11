@@ -17,19 +17,20 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
 import eu.play_project.dcep.distributedetalis.utils.PrologHelpers;
+import eu.play_project.dcep.node.api.DcepNodeApi;
 import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
+import fr.inria.eventcloud.api.CompoundEvent;
 
 public class RegisterQueriesTest {
 	public static QueryDispatchApi queryDispatchApi;
-	public static DcepTestApi testApi;
+	public static DcepNodeApi<CompoundEvent> testApi;
 	boolean start = false;
 	static Component root;
 	public static boolean test;
@@ -77,7 +78,7 @@ public class RegisterQueriesTest {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = ((eu.play_project.play_platformservices.api.QueryDispatchApi) root.getFcInterface(QueryDispatchApi.class.getSimpleName()));
-		testApi = (DcepTestApi) root.getFcInterface(DcepTestApi.class.getSimpleName());
+		testApi = (DcepNodeApi<CompoundEvent>) root.getFcInterface(DcepNodeApi.class.getSimpleName());
 		
 		try {
 			Thread.sleep(20000);

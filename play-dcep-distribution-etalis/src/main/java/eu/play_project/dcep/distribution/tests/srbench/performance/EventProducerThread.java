@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.NodeFactory;
 
-import eu.play_project.dcep.api.DcepTestApi;
+import eu.play_project.dcep.node.api.DcepNodeApi;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -20,10 +20,10 @@ import fr.inria.eventcloud.api.Quadruple;
  */
 public class EventProducerThread implements Runnable {
 	private final Thread thisThread;
-	private final List<DcepTestApi> testApi;
+	private final List<DcepNodeApi<CompoundEvent>> testApi;
 	private final MeasurementUnit meausrementUnit;
 	private final int numberOfEvents;
-	private int delay;
+	private final int delay;
 	double id;
 
 	/**
@@ -34,7 +34,7 @@ public class EventProducerThread implements Runnable {
 	 * @param delay
 	 *            Delay between two events. Given in ms.
 	 */
-	public EventProducerThread(int numberOfEvents, int delay, List<DcepTestApi> testApi) {
+	public EventProducerThread(int numberOfEvents, int delay, List<DcepNodeApi<CompoundEvent>> testApi) {
 		this.testApi = testApi;
 		this.numberOfEvents = numberOfEvents;
 		this.delay =  delay;
@@ -59,7 +59,7 @@ public class EventProducerThread implements Runnable {
 		for (int i = 0; i < (numberOfEvents / testApi.size()); i++) {
 
 			// Distribute events in Round-robin fashion to all CEP-Engines.
-			for (DcepTestApi api : testApi) {
+			for (DcepNodeApi<CompoundEvent> api : testApi) {
 				api.publish(createEvent("http://example.com/eventId/" + hostname + "_" + i ));
 			
 				// Some statistics

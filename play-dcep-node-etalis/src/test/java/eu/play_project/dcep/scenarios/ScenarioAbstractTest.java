@@ -18,10 +18,11 @@ import org.ontoware.rdf2go.model.Syntax;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
+import eu.play_project.dcep.node.api.DcepNodeApi;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
+import fr.inria.eventcloud.api.CompoundEvent;
 
 
 /**
@@ -31,7 +32,7 @@ import eu.play_project.play_platformservices.api.QueryDispatchApi;
  */
 public class ScenarioAbstractTest {
 	public static QueryDispatchApi queryDispatchApi;
-	public static DcepTestApi testApi;
+	public static DcepNodeApi<CompoundEvent> testApi;
 	boolean start = false;
 	public static Component root;
 	public static boolean test;
@@ -46,7 +47,7 @@ public class ScenarioAbstractTest {
 		GCM.getGCMLifeCycleController(root).startFc();
 
 		queryDispatchApi = (QueryDispatchApi) root.getFcInterface(QueryDispatchApi.class.getSimpleName());
-		testApi = (DcepTestApi) root.getFcInterface(DcepTestApi.class.getSimpleName());
+		testApi = (DcepNodeApi<CompoundEvent>) root.getFcInterface(DcepNodeApi.class.getSimpleName());
 		
 		try {
 			Thread.sleep(10000);

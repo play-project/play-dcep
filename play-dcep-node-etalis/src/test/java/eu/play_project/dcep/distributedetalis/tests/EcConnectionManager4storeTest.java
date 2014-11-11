@@ -42,9 +42,9 @@ import org.slf4j.LoggerFactory;
 
 import eu.play_project.dcep.distributedetalis.DistributedEtalis;
 import eu.play_project.dcep.distributedetalis.EcConnectionManager4store;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
-import eu.play_project.dcep.distributedetalis.join.SelectResults;
 import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
+import eu.play_project.dcep.node.api.EcConnectionmanagerException;
+import eu.play_project.dcep.node.api.SelectResults;
 import eu.play_project.play_commons.constants.Stream;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_commons.eventtypes.eventvalidation.InvalidEventException;

@@ -10,10 +10,10 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
 import eu.play_project.dcep.distributedetalis.join.HistoricalQueryContainer;
 import eu.play_project.dcep.distributedetalis.join.SelectVariable;
+import eu.play_project.dcep.node.api.VariableBindings;
 
 
 

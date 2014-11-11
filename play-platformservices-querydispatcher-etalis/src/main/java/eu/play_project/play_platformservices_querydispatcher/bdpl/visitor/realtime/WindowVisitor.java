@@ -5,12 +5,12 @@ import eu.play_platform.platformservices.bdpl.syntax.windows.types.DummyWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.SlidingWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.types.TumblingWindow;
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 
 public class WindowVisitor implements ElementWindowVisitor {
-	QueryDetails qd;
+	QueryDetailsEtalis qd;
 	
-	public WindowVisitor(QueryDetails qd){
+	public WindowVisitor(QueryDetailsEtalis qd){
 		if(qd.getQueryId() == null || qd.getQueryId().equals("")){
 			throw new IllegalArgumentException("Value for queryId is needet.");
 		}

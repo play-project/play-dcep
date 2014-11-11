@@ -13,11 +13,13 @@ import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import eu.play_project.dcep.node.listeners.DuplicateCheckingListener;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.SubscriptionId;
 import fr.inria.eventcloud.api.listeners.CompoundEventNotificationListener;
 
-public class EcConnectionListenerNet extends CompoundEventNotificationListener implements Serializable, DuplicateCheckingListener {
+public class EcConnectionListenerNet extends CompoundEventNotificationListener implements Serializable, DuplicateCheckingListener<CompoundEvent> {
 	private static final long serialVersionUID = 100L;
 	private BlockingQueue<CompoundEvent> eventInputQueue;
 	/** Maintain a circular buffer of recent event IDs which have been seen to detect duplicate events arriving. */
@@ -70,5 +72,14 @@ public class EcConnectionListenerNet extends CompoundEventNotificationListener i
 			duplicatesCache.add(eventId);
 			return false;
 		}
+	}
+
+	@Override
+	public void setDcepNode(DcepNodeApi<CompoundEvent> dEtalis) {
+	}
+
+	@Override
+	public DcepNodeApi<CompoundEvent> getDcepNode() {
+		return null;
 	}
 }

@@ -33,6 +33,7 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import eu.play_project.play_commons.constants.Pattern;
 import eu.play_project.play_platformservices.PlayPlatformservicesRest;
 import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices.api.QueryDispatchApi;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices.jaxb.Query;
@@ -169,7 +170,7 @@ public class PlatformservicesRestTest {
 		@Override
 		public QueryDetails analyseQuery(String queryId, String query)
 				throws QueryDispatchException {
-			return new QueryDetails(queryId);
+			return new QueryDetailsEtalis(queryId);
 		}
 
 		@Override

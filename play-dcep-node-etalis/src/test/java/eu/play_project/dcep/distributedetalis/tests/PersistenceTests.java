@@ -9,9 +9,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import eu.play_project.dcep.distributedetalis.persistence.Persistence;
-import eu.play_project.dcep.distributedetalis.persistence.PersistenceException;
-import eu.play_project.dcep.distributedetalis.persistence.Sqlite;
+import eu.play_project.dcep.node.persistence.Persistence;
+import eu.play_project.dcep.node.persistence.PersistenceException;
+import eu.play_project.dcep.node.persistence.Sqlite;
 import eu.play_project.play_commons.constants.Stream;
 import fr.inria.eventcloud.utils.UniqueId;
 

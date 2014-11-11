@@ -9,6 +9,14 @@
 package com.espertech.esper.example.transaction.sim;
 
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPRuntime;
 import com.espertech.esper.client.EPServiceProvider;
@@ -17,28 +25,18 @@ import com.espertech.esper.example.transaction.FindMissingEventStmt;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.io.IOException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openrdf.model.Model;
-import org.openrdf.model.vocabulary.RDF;
-
 
 public class FeederOutputStream implements OutputStream
 {
 	
 	private final EPServiceProvider epService;
-    private EPRuntime runtime;
+    private final EPRuntime runtime;
     private final long startTimeMSec;
 
     // We keep increasing the current time to simulate a 30 minute window
     private long currentTimeMSec;
     
-    private Map<String, Object> mapDef = new HashMap<String, Object>();
+    private final Map<String, Object> mapDef = new HashMap<String, Object>();
     
     public FeederOutputStream(EPServiceProvider epS)
     {
@@ -50,7 +48,8 @@ public class FeederOutputStream implements OutputStream
         mapDef.put(MapEvent.EVENT_MODEL, EventModel.class);
     }
 
-    public void output(List<Object> bucket) throws IOException
+    @Override
+	public void output(List<Object> bucket) throws IOException
     {
         log.info(".output Feeding " + bucket.size() + " events");
 
@@ -70,7 +69,6 @@ public class FeederOutputStream implements OutputStream
         		epService.getEPAdministrator().getConfiguration().addEventType("Event1", mapDef);
         		/*String eventType = ((Model)ew.event.get("model")).filter(null, RDF.TYPE, null).iterator().next().getObject().stringValue();*/
         		try {
-        			((MapEvent)ew.event).setTimeStamp(System.currentTimeMillis());
         			runtime.sendEvent(ew.event, "Event1");
         				//System.out.println("Send Event1");
         		} catch (EPException e) {
@@ -79,18 +77,14 @@ public class FeederOutputStream implements OutputStream
         	}
         	else if(ename.equals("rdf2")){
         		epService.getEPAdministrator().getConfiguration().addEventType("Event2", mapDef);
-        		
-        		((MapEvent)ew.event).setTimeStamp(System.currentTimeMillis());
         		runtime.sendEvent(ew.event, "Event2");
         			//System.out.println("Send Event2");
         	}
         	else{
         		epService.getEPAdministrator().getConfiguration().addEventType("Event3", mapDef);
-        		
-        		((MapEvent)ew.event).setTimeStamp(System.currentTimeMillis());
         		runtime.sendEvent(ew.event, "Event3");
         			//System.out.println("Send Event3");
-        	}	
+        	}
         	
             count++;
             total++;

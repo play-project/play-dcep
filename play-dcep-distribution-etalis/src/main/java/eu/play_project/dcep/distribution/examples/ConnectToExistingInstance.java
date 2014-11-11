@@ -21,16 +21,16 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
-import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.utils.PrologHelpers;
 import eu.play_project.dcep.distribution.tests.single_pattern.SingleDistributedEtalisInstancePublisher;
+import eu.play_project.dcep.node.api.DcepNodeConfiguringApi;
+import eu.play_project.dcep.node.api.DcepNodeException;
 import eu.play_project.play_commons.constants.Namespace;
 import eu.play_project.play_platformservices.api.BdplQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.historic.QueryTemplateGenerator;
@@ -41,13 +41,13 @@ import fr.inria.eventcloud.api.Quadruple;
 public class ConnectToExistingInstance {
 	static PublishApi dcepPublishApi;
 	static DcepManagmentApi dcepManagmentApi;
-	static ConfigApi configApi;
+	static DcepNodeConfiguringApi<CompoundEvent> configApi;
 	static int startTime = 0;
 	static Timer timer;
 	boolean timeUp = false;
 	public static int sendetEvents = 0;
 
-	public static void main(String[] args) throws DcepManagementException, IOException, NamingException, DistributedEtalisException {
+	public static void main(String[] args) throws DcepManagementException, IOException, NamingException, DcepNodeException {
 		//CentralPAPropertyRepository.PA_NET_INTERFACE.setValue("");
 		//CentralPAPropertyRepository.PA_NET_USE_IP_ADDRESS.internalSetValue("141.3.196.15");
 	
@@ -55,7 +55,7 @@ public class ConnectToExistingInstance {
 		connectToCepEngine("dEtalis", "141.52.218.16");
 	}
 
-	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DistributedEtalisException{
+	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DcepNodeException{
 
 		/* COMPONENT_ALIAS = "Dispatcher" */
 		PAComponentRepresentative root = null;
@@ -71,8 +71,8 @@ public class ConnectToExistingInstance {
 		try {
 			dcepManagmentApi = ((eu.play_project.dcep.api.DcepManagmentApi) root
 					.getFcInterface(DcepManagmentApi.class.getSimpleName()));
-			configApi = ((eu.play_project.dcep.api.ConfigApi) root
-					.getFcInterface(ConfigApi.class.getSimpleName()));
+			configApi = ((DcepNodeConfiguringApi<CompoundEvent>) root
+					.getFcInterface(DcepNodeConfiguringApi.class.getSimpleName()));
 		} catch (NoSuchInterfaceException e) {
 			e.printStackTrace();
 		}
@@ -170,8 +170,8 @@ public class ConnectToExistingInstance {
 		}
 
 		BdplQuery bdplQuery = BdplQuery.builder()
-				.ele(etalisPattern)
-				.details(new QueryDetails(patternId))
+				.target(etalisPattern)
+				.details(new QueryDetailsEtalis(patternId))
 				.bdpl(queryString)
 				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
 				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))

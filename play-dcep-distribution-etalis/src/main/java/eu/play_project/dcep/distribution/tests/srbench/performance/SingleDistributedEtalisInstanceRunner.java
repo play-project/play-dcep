@@ -12,11 +12,12 @@ import org.objectweb.fractal.api.control.IllegalLifeCycleException;
 import org.objectweb.proactive.core.ProActiveException;
 import org.objectweb.proactive.core.component.Fractive;
 
-import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
-import eu.play_project.dcep.api.DcepTestApi;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import eu.play_project.dcep.node.api.DcepNodeConfiguringApi;
+import eu.play_project.dcep.node.api.DcepNodeException;
+import fr.inria.eventcloud.api.CompoundEvent;
 
 
 /**
@@ -26,9 +27,9 @@ import eu.play_project.dcep.distributedetalis.utils.ProActiveHelpers;
  */
 public class SingleDistributedEtalisInstanceRunner {
 	private static ComplexEventSubscriber subscriber = null;
-	private static DcepTestApi testApi;
+	private static DcepNodeApi<CompoundEvent> testApi;
 	
-	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, ProActiveException, DistributedEtalisException, IOException, DcepManagementException {
+	public static void main(String[] args) throws ADLException, IllegalLifeCycleException, NoSuchInterfaceException, ProActiveException, DcepNodeException, IOException, DcepManagementException {
 		
 		//Start component.
 		Component root = ProActiveHelpers.newComponent("DistributedEtalis");
@@ -39,7 +40,7 @@ public class SingleDistributedEtalisInstanceRunner {
 		Fractive.registerByName(root, "dEtalis");
 		
 		//Configure component.
-		ConfigApi configApi = ((ConfigApi)root.getFcInterface(ConfigApi.class.getSimpleName()));
+		DcepNodeConfiguringApi<CompoundEvent> configApi = ((DcepNodeConfiguringApi<CompoundEvent>)root.getFcInterface(DcepNodeConfiguringApi.class.getSimpleName()));
 		configApi.setConfig("play-epsparql-clic2call-historical-data.trig");
 		
 		

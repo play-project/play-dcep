@@ -24,10 +24,10 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
 
 import eu.play_project.dcep.distributedetalis.EcConnectionManagerLocal;
-import eu.play_project.dcep.distributedetalis.api.EcConnectionmanagerException;
-import eu.play_project.dcep.distributedetalis.api.VariableBindings;
 import eu.play_project.dcep.distributedetalis.join.Engine;
-import eu.play_project.dcep.distributedetalis.join.SelectResults;
+import eu.play_project.dcep.node.api.EcConnectionmanagerException;
+import eu.play_project.dcep.node.api.SelectResults;
+import eu.play_project.dcep.node.api.VariableBindings;
 import eu.play_project.play_commons.eventtypes.EventHelpers;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.HistoricalQuery;

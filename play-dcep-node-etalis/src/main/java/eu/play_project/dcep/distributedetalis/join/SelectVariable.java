@@ -8,6 +8,8 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eu.play_project.dcep.node.api.SelectResults;
+
 /**
  * This is a data structure that is used to represent a selected variable in queries. It's attribute
  * relIndex indicates how many queries have selected this variable and in relRes all these relevant

@@ -8,8 +8,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.hp.hpl.jena.graph.NodeFactory;
@@ -23,6 +22,7 @@ import eu.play_project.play_platformservices.QueryTemplateImpl;
 import eu.play_project.play_platformservices.api.BdplQuery;
 import eu.play_project.play_platformservices.api.HistoricalData;
 import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.StreamIdCollector;
 import fr.inria.eventcloud.api.CompoundEvent;
@@ -33,9 +33,9 @@ public class QueryTemplateImplTest {
 	@Test
 	public void testQueryTemplateImpl() {
 		QueryTemplateImpl qt = new QueryTemplateImpl();
-		qt.appendLine(NodeFactory.createURI("urn:1"), NodeFactory.createVariable("alice"), NodeFactory.createVariable("bob"), NodeFactory.createLiteral("100"));
-		qt.appendLine(NodeFactory.createURI("urn:1"), NodeFactory.createURI(EVENT_ID_PLACEHOLDER), NodeFactory.createURI("urn:someuri"), NodeFactory.createLiteral("120"));
-		qt.appendLine(NodeFactory.createURI("urn:2"), NodeFactory.createVariable("a"), NodeFactory.createVariable("b"), NodeFactory.createVariable("c"));
+		qt.appendLine(new Quadruple(NodeFactory.createURI("urn:1"), NodeFactory.createVariable("alice"), NodeFactory.createVariable("bob"), NodeFactory.createLiteral("100")));
+		qt.appendLine(new Quadruple(NodeFactory.createURI("urn:1"), NodeFactory.createURI(EVENT_ID_PLACEHOLDER), NodeFactory.createURI("urn:someuri"), NodeFactory.createLiteral("120")));
+		qt.appendLine(new Quadruple(NodeFactory.createURI("urn:2"), NodeFactory.createVariable("a"), NodeFactory.createVariable("b"), NodeFactory.createVariable("c")));
 		
 		HistoricalData hd = new HistoricalData();
 		
@@ -92,7 +92,7 @@ public class QueryTemplateImplTest {
 		BdplQuery bdpl = BdplQuery.builder()
 				.details(qd)
 				.bdpl(queryString)
-				.ele(eleGenerator.getEle())
+				.target(eleGenerator.getEle())
 				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
 				.constructTemplate(eleGenerator.getQueryTemplate())
 				.build();
@@ -101,7 +101,7 @@ public class QueryTemplateImplTest {
 	
 	private QueryDetails createQueryDetails(String queryId, Query query) {
 
-		QueryDetails qd = new QueryDetails();
+		QueryDetailsEtalis qd = new QueryDetailsEtalis();
 		qd.setQueryId(queryId);
 
 		StreamIdCollector streamIdCollector = new StreamIdCollector();

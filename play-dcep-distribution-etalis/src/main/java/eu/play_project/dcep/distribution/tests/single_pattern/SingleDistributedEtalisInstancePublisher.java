@@ -23,14 +23,14 @@ import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.sparql.serializer.PlaySerializer;
 
 import eu.play_platform.platformservices.bdpl.syntax.windows.visitor.ElementWindowVisitor;
-import eu.play_project.dcep.api.ConfigApi;
 import eu.play_project.dcep.api.DcepManagementException;
 import eu.play_project.dcep.api.DcepManagmentApi;
-import eu.play_project.dcep.api.DcepTestApi;
 import eu.play_project.dcep.constants.DcepConstants;
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
+import eu.play_project.dcep.node.api.DcepNodeApi;
+import eu.play_project.dcep.node.api.DcepNodeConfiguringApi;
+import eu.play_project.dcep.node.api.DcepNodeException;
 import eu.play_project.play_platformservices.api.BdplQuery;
-import eu.play_project.play_platformservices.api.QueryDetails;
+import eu.play_project.play_platformservices.api.QueryDetailsEtalis;
 import eu.play_project.play_platformservices.api.QueryDispatchException;
 import eu.play_project.play_platformservices_querydispatcher.api.EleGenerator;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.code_generator.realtime.EleGeneratorForConstructQuery;
@@ -48,14 +48,14 @@ import fr.inria.eventcloud.api.Quadruple;
  */
 public class SingleDistributedEtalisInstancePublisher {
 
-	private static DcepTestApi testApiI1;
+	private static DcepNodeApi<CompoundEvent> testApiI1;
 	private static DcepManagmentApi managementApiI1;
-	private static ConfigApi configApi = null;
+	private static DcepNodeConfiguringApi<CompoundEvent> configApi = null;
 
 	public SingleDistributedEtalisInstancePublisher(){}
 	
 	
-	public static void main(String[] args) throws IOException, NamingException, DcepManagementException, DistributedEtalisException, QueryDispatchException {
+	public static void main(String[] args) throws IOException, NamingException, DcepManagementException, DcepNodeException, QueryDispatchException {
 
 		// Connect to DistributedEtalis instance 1.
 		connectToCepEngine("dEtalis", "141.52.218.16");
@@ -89,7 +89,7 @@ public class SingleDistributedEtalisInstancePublisher {
 		}
 	}
 	
-	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DistributedEtalisException{
+	private static void connectToCepEngine(String name, String host) throws IOException, NamingException, DcepManagementException, DcepNodeException{
 
 		/* COMPONENT_ALIAS = "Dispatcher" */
 		PAComponentRepresentative root = null;
@@ -104,8 +104,7 @@ public class SingleDistributedEtalisInstancePublisher {
 
 
 		try {
-			 testApiI1 = ((eu.play_project.dcep.api.DcepTestApi) root
-					.getFcInterface(DcepTestApi.class.getSimpleName()));
+			 testApiI1 = ((DcepNodeApi<CompoundEvent>) root.getFcInterface(DcepNodeApi.class.getSimpleName()));
 			
 			managementApiI1 = ((eu.play_project.dcep.api.DcepManagmentApi) root
 					.getFcInterface(DcepManagmentApi.class.getSimpleName()));
@@ -131,12 +130,12 @@ public class SingleDistributedEtalisInstancePublisher {
 		eleGenerator.generateQuery(q);
 
 		// Add queryDetails
-		QueryDetails qd = createQueryDetails(queryId, q);
+		QueryDetailsEtalis qd = createQueryDetails(queryId, q);
 		qd.setRdfDbQueries(eleGenerator.getRdfDbQueries());
 		
 		BdplQuery bdpl = BdplQuery.builder()
 				.details(qd)
-				.ele(eleGenerator.getEle())
+				.target(eleGenerator.getEle())
 				.historicalQueries(PlaySerializer.serializeToMultipleSelectQueries(q))
 				.constructTemplate(new QueryTemplateGenerator().createQueryTemplate(q))
 				.bdpl(query)
@@ -146,10 +145,10 @@ public class SingleDistributedEtalisInstancePublisher {
 	}
 	
 	
-	private static QueryDetails createQueryDetails(String queryId, Query query) throws QueryDispatchException {
+	private static QueryDetailsEtalis createQueryDetails(String queryId, Query query) throws QueryDispatchException {
 		
 		
-		QueryDetails qd = new QueryDetails(queryId);
+		QueryDetailsEtalis qd = new QueryDetailsEtalis(queryId);
 
 		// Set properties for windows in QueryDetails
 		ElementWindowVisitor windowVisitor = new WindowVisitor(qd);

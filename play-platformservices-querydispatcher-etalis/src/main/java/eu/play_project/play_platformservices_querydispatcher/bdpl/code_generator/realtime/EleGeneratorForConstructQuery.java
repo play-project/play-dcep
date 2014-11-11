@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sparql.expr.Expr;
@@ -33,6 +34,7 @@ import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realti
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.TriplestoreQueryVisitor;
 import eu.play_project.play_platformservices_querydispatcher.bdpl.visitor.realtime.UniqueNameManager;
 import eu.play_project.play_platformservices_querydispatcher.types.VariableTypeManager;
+import fr.inria.eventcloud.api.Quadruple;
 
 
 /**
@@ -67,7 +69,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	private String patternId;
 	
 	//Helper methods.
-	private QueryTemplate queryTemplate;
+	private QueryTemplate<Quadruple, Quadruple, Node> queryTemplate;
 
 	@Override
 	public void generateQuery(Query inQuery) {
@@ -198,7 +200,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 		for (String var : members.getMembersRepresentative(inputQuery)) {
 			code += staticCode + "," + var + ", " + uniqueNameManager.getCeid() + ")";
 		}
-		return code; 
+		return code;
 	}
 	
 	private boolean containsSharedVariablesTest(Triple triple){
@@ -376,7 +378,7 @@ public class EleGeneratorForConstructQuery implements EleGenerator {
 	}
 
 	@Override
-	public QueryTemplate getQueryTemplate() {
+	public QueryTemplate<Quadruple, Quadruple, Node> getQueryTemplate() {
 		return this.queryTemplate;
 	}
 	

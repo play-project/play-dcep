@@ -2,6 +2,8 @@ package eu.play_project.dcep.distributedetalis.api;
 
 import java.util.Hashtable;
 
+import eu.play_project.dcep.node.api.DcepNodeException;
+
 public interface PrologEngineWrapperPlayExtensions {
 	
 	public Hashtable[] getTriplestoreData(String TriplestoreID);
@@ -13,5 +15,5 @@ public interface PrologEngineWrapperPlayExtensions {
 	 */
 	public boolean consult(String file);
 	public boolean assertFromFile(String file);
-	public Hashtable<String, Object>[] execute(String command) throws DistributedEtalisException;
+	public Hashtable<String, Object>[] execute(String command) throws DcepNodeException;
 }

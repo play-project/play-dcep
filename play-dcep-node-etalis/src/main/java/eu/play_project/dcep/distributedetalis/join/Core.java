@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import eu.play_project.dcep.node.api.SelectResults;
+
 /**
  * @author Ningyuan Pan
  *
@@ -30,7 +32,7 @@ public class Core {
 			// remove min2 in all relevant variables and add min1
 			List<String> min2v = min2.getVariables();
 			for(int i = 0; i < min2v.size(); i++){
-				SelectVariable sv = variables.get(min2v.get(i));
+				SelectVariable<?> sv = variables.get(min2v.get(i));
 				boolean b1 = sv.removeRelResult(min2);
 				
 				boolean b2 = sv.addRelResult(min1);

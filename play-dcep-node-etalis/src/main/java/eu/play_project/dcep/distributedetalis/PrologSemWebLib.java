@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.jtalis.core.JtalisContextImpl;
 
-import eu.play_project.dcep.distributedetalis.api.DistributedEtalisException;
 import eu.play_project.dcep.distributedetalis.api.UsePrologSemWebLib;
+import eu.play_project.dcep.node.api.DcepNodeException;
 import fr.inria.eventcloud.api.CompoundEvent;
 import fr.inria.eventcloud.api.Quadruple;
 
@@ -22,7 +22,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 	private static Logger logger = LoggerFactory.getLogger(PrologSemWebLib.class);
 
 	@Override
-	public void init(JtalisContextImpl ctx) throws DistributedEtalisException {
+	public void init(JtalisContextImpl ctx) throws DcepNodeException {
 		logger.debug("Initializing {}", PrologSemWebLib.class.getSimpleName());
 		
 		PrologSemWebLib.ctx = ctx;
@@ -39,13 +39,13 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 			ctx.setEtalisFlags("garbage_control","general");
 			ctx.setEtalisFlags("save_ruleId", "on");
 		} catch (PrologException e) {
-			throw new DistributedEtalisException("Error loading SWI-Prolog libraries: " + e.getMessage());
+			throw new DcepNodeException("Error loading SWI-Prolog libraries: " + e.getMessage());
 		}
 	}
 
 	@Override
 	public Boolean addEvent(CompoundEvent event)
-			throws DistributedEtalisException {
+			throws DcepNodeException {
 		Boolean dataAddedToTriplestore = true;
 		Boolean gcDataAdded = true;
 		StringBuilder prologString = new StringBuilder();
@@ -80,7 +80,7 @@ public class PrologSemWebLib implements UsePrologSemWebLib {
 						+ "2147483647" + ", -1))");
 
 		if (!gcDataAdded) {
-			throw new DistributedEtalisException(
+			throw new DcepNodeException(
 					"Failed to insert garbage collection information in Prolog.");
 		}
 
