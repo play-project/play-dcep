@@ -92,7 +92,7 @@ public class ArrayFunction implements IFunction {
 		try {
 			Object[] paras = new Object[paraTypes.length];
 			for(int i = 0; i < castTypes.length; i++){
-				paras[i] = FilterFunctionParameterCastor.cast(castTypes[i], parameters[i]);
+				paras[i] = FunctionParameterCastor.cast(castTypes[i], parameters[i]);
 			}
 			
 			Method m = exfunction.getMethod(METHOD_NAME, paraTypes);
@@ -162,13 +162,13 @@ public class ArrayFunction implements IFunction {
 			if(array){
 				
 				if(typeName.equals("java.lang.Double") || typeName.equals("double")){
-					castTypes[i] = FilterFunctionParameterCastor.TYPE_ARRAY_DOUBLE;
+					castTypes[i] = FunctionParameterCastor.TYPE_ARRAY_DOUBLE;
 				}
 				else if(typeName.equals("java.lang.Integer") || typeName.equals("int")){
-					castTypes[i] = FilterFunctionParameterCastor.TYPE_ARRAY_INT;
+					castTypes[i] = FunctionParameterCastor.TYPE_ARRAY_INT;
 				}
 				else if(typeName.equals("java.lang.String")){
-					castTypes[i] = FilterFunctionParameterCastor.TYPE_ARRAY_STR;
+					castTypes[i] = FunctionParameterCastor.TYPE_ARRAY_STR;
 				}
 				else{
 					throw new FunctionParameterTypeException("Unsupported parameter type "+typeName+"[]");
@@ -178,16 +178,16 @@ public class ArrayFunction implements IFunction {
 			else{
 				
 				if(typeName.equals("java.lang.Double") || typeName.equals("double")){
-					castTypes[i] = FilterFunctionParameterCastor.TYPE_DOUBLE;
+					castTypes[i] = FunctionParameterCastor.TYPE_DOUBLE;
 				}
 				else if(typeName.equals("java.lang.Integer") || typeName.equals("int")){
-					castTypes[i] = FilterFunctionParameterCastor.TYPE_INT;
+					castTypes[i] = FunctionParameterCastor.TYPE_INT;
 				}
 				else if(typeName.equals("java.lang.String")){
-					castTypes[i] = FilterFunctionParameterCastor.TYPE_STR;
+					castTypes[i] = FunctionParameterCastor.TYPE_STR;
 				}
 				else if(typeName.equals("java.lang.Boolean") || typeName.equals("boolean")){
-					castTypes[i] = FilterFunctionParameterCastor.TYPE_BOOLEAN;
+					castTypes[i] = FunctionParameterCastor.TYPE_BOOLEAN;
 				}
 				else{
 					throw new FunctionParameterTypeException("Unsupported parameter type "+typeName);

@@ -30,7 +30,7 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
  * @author ningyuan
  *
  */
-public class RealTimeResultListener implements UpdateListener{
+public class RealTimeSolutionSequenceListener implements UpdateListener{
 	
 	private EPServiceProvider epService;
     
@@ -44,9 +44,12 @@ public class RealTimeResultListener implements UpdateListener{
 	
 	private ConstructTemplate constructTemplate;
 	
+	/*
+	 * mainly for static arrays
+	 */
 	private BDPLArrayTable arrayTable;
 	
-	public RealTimeResultListener(RealTimeSolutionSequence realTimeResults, List<BDPLArrayFilter> arrayFilters, ConstructTemplate constructTemplate, BDPLArrayTable arrayTable){
+	public RealTimeSolutionSequenceListener(RealTimeSolutionSequence realTimeResults, List<BDPLArrayFilter> arrayFilters, ConstructTemplate constructTemplate, BDPLArrayTable arrayTable){
 		this.realTimeResults = realTimeResults;
 		this.arrayFilters = arrayFilters;
 		this.constructTemplate = constructTemplate;

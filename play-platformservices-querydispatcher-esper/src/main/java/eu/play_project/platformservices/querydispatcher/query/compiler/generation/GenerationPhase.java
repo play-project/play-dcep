@@ -5,13 +5,13 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.generati
 
 import com.espertech.esper.client.UpdateListener;
 
+import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.CoordinateSystemListener;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeResultListener;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeSolutionSequenceListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResultBindingData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompilerData;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLCompilerData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 
 /**
@@ -20,10 +20,10 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.Defa
  * Aug 25, 2014
  *
  */
-public class GenerationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
+public class GenerationPhase extends BDPLCompilerPhase<DefaultBDPLCompilerData> {
 
 	@Override
-	protected void process(BDPLCompilerData data) throws BDPLCompileException {
+	protected void process(DefaultBDPLCompilerData data) throws BDPLCompilerException {
 		RealTimeSolutionSequence realTimeResults = new RealTimeSolutionSequence();
 		
 		RealTimeResultBindingData rtbData = new RealTimeResultBindingData(data.getVarTable().getRealTimeCommonVars(), realTimeResults, data.getSubQueryTable().getEntryToSelf());

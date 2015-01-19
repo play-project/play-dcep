@@ -12,7 +12,7 @@ package eu.play_project.platformservices.querydispatcher.query.extension.functio
  * Aug 8, 2014
  *
  */
-public class FilterFunctionParameterCastor {
+public class FunctionParameterCastor {
 	
 	public static final int TYPE_INT = 0, TYPE_DOUBLE = 1, TYPE_BOOLEAN = 2, TYPE_STR = 3, 
 			TYPE_ARRAY_INT = 10, TYPE_ARRAY_DOUBLE = 11, TYPE_ARRAY_STR = 12;
