@@ -77,7 +77,7 @@ public class SimMain extends WindowAdapter{
 			System.out.println(e.getMessage());
 		}
 		
-		compiler = new BDPLCompiler();
+		compiler = new BDPLCompiler("default");
 	}
 	
 	public void startShell(){

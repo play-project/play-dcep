@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import eu.play_project.platformservices.querydispatcher.query.compiler.IBDPLQuery;
+
 /**
  * @author ningyuan 
  * 

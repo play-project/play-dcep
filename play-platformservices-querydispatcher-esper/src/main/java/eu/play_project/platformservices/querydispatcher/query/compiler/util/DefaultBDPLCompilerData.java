@@ -8,6 +8,7 @@ import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
 
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLVarTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.construct.util.ConstructTemplate;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLTranslationData;
@@ -18,11 +19,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
  * Aug 25, 2014
  *
  */
-public class BDPLCompilerData {
-	
-	private final String baseURI;
-
-	private final String bdplQuery;
+public class DefaultBDPLCompilerData extends BDPLCompilerData{
 	
 	private ASTQueryContainer queryContainer;
 	
@@ -38,19 +35,8 @@ public class BDPLCompilerData {
 	
 	private SubQueryTable subQueryTable;
 	
-	private IBDPLQuery compiledQuery;
-	
-	public BDPLCompilerData(String baseURI, String bdplQuery){
-		this.baseURI = baseURI;
-		this.bdplQuery = bdplQuery;
-	}
-	
-	public String getBaseURI() {
-		return this.baseURI;
-	}
-
-	public String getBDPLQuery() {
-		return this.bdplQuery;
+	public DefaultBDPLCompilerData(String baseURI, String bdplQuery){
+		super(baseURI, bdplQuery);
 	}
 	
 	public ASTQueryContainer getQueryContainer() {
@@ -110,11 +96,4 @@ public class BDPLCompilerData {
 		this.subQueryTable = subQueryTable;
 	}
 	
-	public IBDPLQuery getCompiledQuery() {
-		return this.compiledQuery;
-	}
-
-	public void setCompiledQuery(IBDPLQuery compiledQuery) {
-		this.compiledQuery = compiledQuery;
-	}
 }

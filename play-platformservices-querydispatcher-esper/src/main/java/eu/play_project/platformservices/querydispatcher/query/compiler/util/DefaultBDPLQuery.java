@@ -5,6 +5,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.util;
 
 import com.espertech.esper.client.UpdateListener;
 
+import eu.play_project.platformservices.querydispatcher.query.compiler.IBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 
 /**

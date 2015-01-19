@@ -19,10 +19,10 @@ import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import eu.play_project.platformservices.bdpl.parser.BDPLArrayVarProcessor;
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.bdpl.parser.BDPLVarProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.FilterFunctionProcessor;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompilerData;
+import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLCompilerData;
 
 /**
  * @author ningyuan 
@@ -30,13 +30,13 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPL
  * Aug 25, 2014
  *
  */
-public class PreparationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
+public class PreparationPhase extends BDPLCompilerPhase<DefaultBDPLCompilerData> {
 	
 	/* (non-Javadoc)
 	 * @see eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase#process()
 	 */
 	@Override
-	protected void process(BDPLCompilerData data) throws BDPLCompileException {
+	protected void process(DefaultBDPLCompilerData data) throws BDPLCompilerException {
 		
 		try {
 			data.setQueryContainer(SyntaxTreeBuilder.parseQuery(data.getBDPLQuery()));
@@ -59,7 +59,7 @@ public class PreparationPhase extends BDPLCompilerPhase<BDPLCompilerData> {
 			
 		}
 		catch (MalformedQueryException | TokenMgrError | ParseException e) {
-			throw new BDPLCompileException(e.getMessage());
+			throw new BDPLCompilerException(e.getMessage());
 		}
 	}
 
