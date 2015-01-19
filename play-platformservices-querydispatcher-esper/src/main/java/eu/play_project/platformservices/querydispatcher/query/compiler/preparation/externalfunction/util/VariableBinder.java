@@ -33,7 +33,7 @@ public class VariableBinder {
 	/**
 	 * set variable values for evaluating
 	 * 
-	 * @param vars
+	 * @param vars (must not be null)
 	 */
 	public void bindVariableValues(Map<String, String[]> vars, Map<String, String[][][]> dArrays) {
 		this.vars = vars;

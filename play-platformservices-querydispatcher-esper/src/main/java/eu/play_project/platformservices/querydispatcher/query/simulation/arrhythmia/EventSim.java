@@ -13,16 +13,19 @@ import com.espertech.esper.client.EPServiceProvider;
  * Oct 1, 2014
  *
  */
-public class ArrEventSim implements Runnable{
+public class EventSim implements Runnable{
 	
 	private long interval = 1000;
-	private ArrEventGreator eg;
-	private ArrEventOutput output;
+	private EventCreator eg;
+	private EventOutput output;
 	
-	public ArrEventSim(long i, String f, EPServiceProvider epS){
+	public EventSim(long i, String f, EPServiceProvider epS){
 		interval = i;
-		eg = new ArrEventGreator(f);
-		output = new ArrEventOutput(epS);
+		//eg = new ECGEventCreator(f);
+		//eg = new ECGEventCreator1(f);
+		eg = new MITECGEventCreator1(f);
+		//eg = new RREventCreator(f);
+		output = new EventOutput(epS, eg.getEventType());
 	}
 	
 	@Override

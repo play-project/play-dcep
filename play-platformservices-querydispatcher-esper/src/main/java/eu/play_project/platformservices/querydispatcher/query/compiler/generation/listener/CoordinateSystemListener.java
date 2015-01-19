@@ -18,6 +18,7 @@ import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
+import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.construct.ConstructTemplateFiller;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence.RealTimeSolution;
@@ -50,6 +51,9 @@ public class CoordinateSystemListener implements UpdateListener{
 	
 	private ConstructTemplate constructTemplate;
 	
+	/*
+	 * mainly for static arrays
+	 */
 	private BDPLArrayTable arrayTable;
 	
 	public CoordinateSystemListener(RealTimeSolutionSequence realTimeResults, List<BDPLArrayFilter> arrayFilters, ConstructTemplate constructTemplate, BDPLArrayTable vt){
@@ -68,6 +72,7 @@ public class CoordinateSystemListener implements UpdateListener{
         if(constructTemplate != null && constructTemplate.getRdfType() != null){
 			Map<String, Object> mapDef = new HashMap<String, Object>();
 			eventType = constructTemplate.getRdfType().replaceAll("[^a-zA-Z0-9]", "");
+				
 			epService.getEPAdministrator().getConfiguration().addEventType(eventType, mapDef);
 		}
 	}
@@ -79,22 +84,25 @@ public class CoordinateSystemListener implements UpdateListener{
 	@Override
 	public void update(EventBean[] newEvents, EventBean[] oldEvents) {
 		
-		System.out.println(Thread.currentThread().getName()+"   CoordinateListener: ");
+		//System.out.println(Thread.currentThread().getName()+"   CoordinateListener: ");
 		
 		for(int i = 0; i < newEvents.length; i++){
 			
 			if(panel != null){
 				panel.repaint();
 				//XXX array var name
-				String[][][] a = arrayTable.get("ecg").getArray().read();
-				String[] l = new String[a.length];
-				for(int j = 0; j < a.length; j++){
-					l[j] = a[j][0][1];
+				BDPLArrayTableEntry bate = arrayTable.get("coordinate");
+				if(bate != null){
+					String[][][] a = bate.getArray().read();
+					String[] l = new String[a.length];
+					for(int j = 0; j < a.length; j++){
+						l[j] = a[j][0][1];
+					}
+					
+					panel.setPoints(l);
+					
+					panel.repaint();
 				}
-				
-				panel.setPoints(l);
-				
-				panel.repaint();
 			}
 			
 			RealTimeSolution result = realTimeResults.get();
@@ -124,18 +132,20 @@ public class CoordinateSystemListener implements UpdateListener{
 				 * construct
 				 */
 				if(constructTemplate != null && eventType != null){
+					
 					ConstructTemplateFiller ctf = new ConstructTemplateFiller(result.getVarBindings(), result.getDynamicArrays(), arrayTable);
 					constructTemplate.accept(ctf);
 					
 					Model model = ctf.getModel();
-					
+						
 					if(model != null){
 		        		try {
 		        				Iterator<Statement> it = model.iterator();
 		        				while(it.hasNext()){
 		        					Statement s = it.next();
-		        						System.out.println("CoordinateListener "+eventType+": "+s.getSubject().toString()+"   "+s.getPredicate().toString()+"   "+s.getObject().toString());
+		        						System.out.println("CoordinateListener ["+eventType+"]: "+s.getSubject().toString()+"   "+s.getPredicate().toString()+"   "+s.getObject().toString());
 		        				}
+		        				//System.out.println("CoordinateSystemListener [Construct event type]: "+eventType);
 		        			runtime.sendEvent(new MapEvent<SesameEventModel>(new SesameEventModel(model)), eventType);
 		        		} catch (EPException e) {
 		        			e.printStackTrace();

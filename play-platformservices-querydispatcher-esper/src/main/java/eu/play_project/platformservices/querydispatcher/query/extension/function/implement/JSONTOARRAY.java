@@ -63,11 +63,11 @@ public class JSONTOARRAY {
 							ret[i][j][1] = mArray[i][j];
 						}
 						
-							System.out.print(ret[i][j][1]+" ");
+							//System.out.print(ret[i][j][1]+" ");
 					}
-						System.out.println();
+						//System.out.println();
 				}
-					System.out.println();
+					//System.out.println();
 			}
 		}
 		else{
@@ -105,9 +105,9 @@ public class JSONTOARRAY {
 							ret[i][0][0] = String.valueOf(BDPLConstants.TYPE_UNKNOWN);
 							ret[i][0][1] = array[i];
 						}
-							System.out.print(ret[i][0][1]+" ");
+							//System.out.print(ret[i][0][1]+" ");
 					}
-						System.out.println();
+						//System.out.println();
 				}
 			}
 		}

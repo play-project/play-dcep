@@ -30,13 +30,11 @@ public class FunctionClassLoader extends ClassLoader {
 	
 	@Override
 	protected Class<?> findClass(String name) throws ClassNotFoundException {  
-		/*	
-		 *  version problem???
-		 * 
-		    if(this.findLoadedClass(name) != null){
+		 //XXX version
+		 if(this.findLoadedClass(name) != null){
 				throw new ClassNotFoundException("Class "+name+" has been loaded before.");
-			}
-		 */
+		 }
+		 
 		
 		 byte[] classData = getClassData(name);   
          if (classData == null) {  

@@ -526,6 +526,7 @@ public class ConstructTranslationProcessor {
 							obj.getContent().add(iri);
 							objs.add(obj);
 							
+							// type and stream only be uri.
 							if(((ConstructTranslatorData)data).flagType == 1){
 								((ConstructTranslatorData)data).setRDFType(iri);
 							}

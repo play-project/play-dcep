@@ -8,8 +8,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.play_project.platformservices.querydispatcher.query.extension.function.implement.ArrhythmiaRRClassifier;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.implement.SofThresholdingDB4;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.implement.DefaultExFunction;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.implement.JSONTOARRAY;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.implement.QRSDDerivate;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.ArrayFunction;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FilterFunction;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FilterFunctionLoadException;
@@ -75,20 +78,77 @@ public class FunctionManager {
 		/*
 		 * function unmarshal json array
 		 */
-		Class<JSONTOARRAY> fc1 = JSONTOARRAY.class;
+		Class<JSONTOARRAY> afc = JSONTOARRAY.class;
 		
 		fm = null;
-		for(Method m : fc1.getMethods()){
+		for(Method m : afc.getMethods()){
 			
-			if(m.getName().equals(FilterFunction.METHOD_NAME)){
+			if(m.getName().equals(ArrayFunction.METHOD_NAME)){
 				fm = m;
 				break;
 			}
 		}
 		
 		if(fm != null){
-			ArrayFunction ef = new ArrayFunction(fc1.getCanonicalName(), fc1, fm.getParameterTypes(), fm.getReturnType());
+			ArrayFunction ef = new ArrayFunction(afc.getCanonicalName(), afc, fm.getParameterTypes(), fm.getReturnType());
 			fTable.putFunction("http://events.event-processing.org/function/"+"unmarshal", ef);
+		}
+		
+		/*
+		 * function detect qrs
+		 */
+		Class<QRSDDerivate> afc1 = QRSDDerivate.class;
+		
+		fm = null;
+		for(Method m : afc1.getMethods()){
+			
+			if(m.getName().equals(ArrayFunction.METHOD_NAME)){
+				fm = m;
+				break;
+			}
+		}
+		
+		if(fm != null){
+			ArrayFunction ef = new ArrayFunction(afc1.getCanonicalName(), afc1, fm.getParameterTypes(), fm.getReturnType());
+			fTable.putFunction("http://events.event-processing.org/function/"+"qrsde", ef);
+		}
+		
+		/*
+		 * function classify rr
+		 */
+		Class<ArrhythmiaRRClassifier> afc2 = ArrhythmiaRRClassifier.class;
+		
+		fm = null;
+		for(Method m : afc2.getMethods()){
+			
+			if(m.getName().equals(ArrayFunction.METHOD_NAME)){
+				fm = m;
+				break;
+			}
+		}
+		
+		if(fm != null){
+			ArrayFunction ef = new ArrayFunction(afc2.getCanonicalName(), afc2, fm.getParameterTypes(), fm.getReturnType());
+			fTable.putFunction("http://events.event-processing.org/function/"+"arrclass", ef);
+		}
+		
+		/*
+		 * function DWT db4 wavelet
+		 */
+		Class<SofThresholdingDB4> afc3 = SofThresholdingDB4.class;
+		
+		fm = null;
+		for(Method m : afc3.getMethods()){
+			
+			if(m.getName().equals(ArrayFunction.METHOD_NAME)){
+				fm = m;
+				break;
+			}
+		}
+		
+		if(fm != null){
+			ArrayFunction ef = new ArrayFunction(afc3.getCanonicalName(), afc3, fm.getParameterTypes(), fm.getReturnType());
+			fTable.putFunction("http://events.event-processing.org/function/"+"DWTdb4", ef);
 		}
 	}
 	
@@ -116,6 +176,7 @@ public class FunctionManager {
 		
 		Class fc = null;
 		try {
+			// XXX fc will be always loaded, no matter if fc has proper parameters.
 			fc = fLoader.loadClass(fcName);
 		} catch (ClassNotFoundException e) {
 			throw new FilterFunctionLoadException(e.getMessage());
@@ -184,6 +245,10 @@ public class FunctionManager {
 	}
 	
 	private String parseFunctionDeclaration(String s, List<Boolean> paraTypes) throws FilterFunctionLoadException{
+		
+		/*
+		 * ( [] . ) 
+		 */
 		
 		char c;
 		int state = 0;

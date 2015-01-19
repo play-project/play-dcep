@@ -5,6 +5,7 @@ package eu.play_project.platformservices.querydispatcher.query.simulation.coordi
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,8 @@ public class CoordinatePanel extends JPanel{
 	 
 	 private String[] points = new String[0];
 	 
+	 private DecimalFormat df = new DecimalFormat("0.000");
+	 
 	 public void setPoints(String[] p){
 		 points = p;
 	 }
@@ -32,16 +35,21 @@ public class CoordinatePanel extends JPanel{
 	 
 	 private void drawPoints(Graphics g){
 		 
-		 for(int i = 0; i < points.length && i < 1000; i++){
-			 int y = Integer.valueOf(points[i]);
+		 for(int i = 0; i < points.length; i++){
+			 //XXX parameters must be changed for different signal
+			 
+			 Double p = Double.valueOf(points[i]);
+			 //int y = Double.valueOf(p).intValue();
+			 int y = Double.valueOf(p*1000).intValue();
+			 	//System.out.print("!!!!  y "+y+" ");
 			 int x = 10+i;
-			 if(y > 600){
+			 if(y > 450){
 				 g.setColor(Color.RED);
 				 g.drawLine(x, 10, x, 10);
 			 }
 			 else{
-				 g.setColor(Color.BLACK);
-				 g.drawLine(x, 810-y, x, 810-y);
+				 g.setColor(Color.RED);
+				 g.drawLine(x, 450-y, x, 450-y);
 			 }
 			 	
 		 }

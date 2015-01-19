@@ -28,15 +28,19 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
  * Oct 1, 2014
  *
  */
-public class ArrEventGreator {
+public class ECGEventCreator extends EventCreator{
 	
+
 	private File records;
 	private BufferedReader in;
 	private long count = 0;
 	private DatatypeFactory dtf;
 	private StringBuffer sb = new StringBuffer();
 	
-	public ArrEventGreator(String fn){
+	private QRSDetector ecgFilter = new QRSDetector();
+	
+	public ECGEventCreator(String fn){
+		super("ECGEvent");
 		
 		records = new File("D:/Neo/Downloads/simdata/out/"+fn);
 
@@ -53,7 +57,12 @@ public class ArrEventGreator {
 		}
 	}
 	
+	@Override
+	public String getEventType(){
+		return eventType;
+	}
 	
+	@Override
 	public MapEvent next(){
 		String record = null;
 		try {
@@ -75,6 +84,7 @@ public class ArrEventGreator {
 		}
 	}
 	
+	@Override
 	public void close(){
 		if(in != null){
 			try {
@@ -112,17 +122,19 @@ public class ArrEventGreator {
 			}
 		}
 		ecg = sb.toString();
+		//int ecgInt = ecgFilter.QRSFilter(Integer.valueOf(ecg), false);
+		int ecgInt = ecgFilter.QRSDet(Integer.valueOf(ecg), false);
 		sb.delete(0, sb.length());
 		
 		ret = new LinkedHashModel();
 		ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(count)));
-		ret.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl("ArrEvent"));
-		ret.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl("ArrEvent"));
+		ret.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl(eventType));
+		ret.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl(eventType));
 		ret.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(System.currentTimeMillis()).toString()));
 		ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/timestampe"), new LiteralImpl(timestampe));
-		ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/ecg"), new NumericLiteralImpl(Integer.valueOf(ecg)));
+		ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/ecg"), new NumericLiteralImpl(ecgInt));
 		
-			//System.out.println("ArrEvent"+count+": "+timestampe+" "+ecg);
+			//System.out.println(eventType+count+": "+timestampe+" "+ecg);
 		count++;
 		return ret;
 	}

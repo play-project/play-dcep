@@ -19,25 +19,27 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
  * Oct 1, 2014
  *
  */
-public class ArrEventOutput {
+public class EventOutput {
 	
 	private final EPServiceProvider epService;
     private EPRuntime runtime;
     private Map<String, Object> mapDef = new HashMap<String, Object>();
+    private final String eType;
     
-    public ArrEventOutput(EPServiceProvider epS)
+    public EventOutput(EPServiceProvider epS, String et)
     {
     	this.epService = epS;
         this.runtime = epS.getEPRuntime();
+        eType = et;
         mapDef.put(MapEvent.EVENT_MODEL, EventModel.class);
+        epService.getEPAdministrator().getConfiguration().addEventType(eType, mapDef);
     }
     
     public void output(Map event){
-    	epService.getEPAdministrator().getConfiguration().addEventType("ArrEvent", mapDef);
-		
+    	
 		try {
 			
-			runtime.sendEvent(event, "ArrEvent");
+			runtime.sendEvent(event, eType);
 				
 		} catch (EPException e) {
 			

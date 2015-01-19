@@ -3,6 +3,7 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.simulation;
 
+import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,18 +24,18 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventType;
 import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
+import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
+import eu.play_project.platformservices.querydispatcher.query.compiler.IBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.CoordinateSystemListener;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLCompileException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLQuery;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.IBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.FunctionManager;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FilterFunctionLoadException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionParameterTypeException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
-import eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia.ArrEventSim;
+import eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia.EventSim;
 import eu.play_project.platformservices.querydispatcher.query.simulation.coordinateUI.CoordinatePanel;
 
 
@@ -131,16 +132,22 @@ public class SimMain extends WindowAdapter{
 									System.out.println("[Event Feeding is started]");
 								}
 								else if(en.equals(EVENT_ECG)){
-									long interval = Long.valueOf(as[3]);
-									Thread et = eFeeders.get(en);
-									if(et == null){
-										et = new Thread(new ArrEventSim(interval, as[4], epService));
-										eFeeders.put(en, et);
-										et.start();
-										System.out.println("[Arr Event Feeding is started]");
+									try{
+										long interval = Long.valueOf(as[3]);
+										Thread et = eFeeders.get(en);
+										if(et == null){
+											et = new Thread(new EventSim(interval, as[4], epService));
+											eFeeders.put(en, et);
+											et.start();
+											System.out.println("[Arr Event Feeding is started]");
+										}
+										else{
+											System.out.println("[Arr Event Feeding is already started]");
+										}
 									}
-									else{
-										System.out.println("[Arr Event Feeding is already started]");
+									catch(NumberFormatException e){
+										e.printStackTrace();
+										continue;
 									}
 								}
 								else{
@@ -323,9 +330,10 @@ public class SimMain extends WindowAdapter{
 									
 									JFrame frame = new JFrame("Coordinate System "+statementCounter);
 									CoordinatePanel panel = new CoordinatePanel();
+									panel.setBackground(Color.WHITE);
 									frame.add(panel);
 									frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
-									frame.setSize(1020,620);
+									frame.setSize(1520,620);
 							        frame.setResizable(false); 
 									frame.setVisible(true);      
 								           
@@ -349,7 +357,7 @@ public class SimMain extends WindowAdapter{
 							}
 							
 						}
-						catch(BDPLCompileException e){
+						catch(BDPLCompilerException e){
 							System.out.println("\n["+e.getMessage()+"]");
 							continue;	
 						}

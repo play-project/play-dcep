@@ -3,6 +3,7 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.generation.construct;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,9 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.construct.util.TripleObject;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.construct.util.TriplePredicate;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.construct.util.TripleSubject;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionInvocationException;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
+import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
 
 /**
  * @author ningyuan 
@@ -259,7 +263,120 @@ public class ConstructTemplateFiller extends ConstructTemplateVisitor{
 			case BDPLConstants.TYPE_ARRAY :{
 				List<String> con = obj.getContent();
 				if(con.get(0) != null){
-					//TODO function
+					
+					FunctionTable eft = FunctionTable.getInstance();
+					IFunction ef = eft.getFunction(con.get(0));
+					
+					if(ef != null){
+						Class rtype = ef.getReturnType();
+						
+						if(rtype.isArray()){
+							rtype = rtype.getComponentType();
+							if(rtype.isPrimitive() || rtype.getCanonicalName().equals("java.lang.String")){
+								String [][][] a = dArrays.get(con.get(1));
+								
+								if(a == null){
+									BDPLArrayTableEntry ate = arrayTable.get(con.get(1));
+									if(ate != null){
+										a = ate.getArray().read();
+									}
+								}
+								
+								if(a != null && a.length > 0){
+									Object [] pObjects = new Object[]{a}; 
+									try {
+										Object value = ef.invoke(pObjects);
+										
+										int dimension = 0;
+										Class vType = value.getClass();
+										while(vType.isArray()){
+											dimension ++;
+											vType = vType.getComponentType();
+										}
+										
+										int length = Array.getLength(value);
+											
+										Gson gson = new Gson();
+										String json;
+										
+										if(dimension < 2){
+											String [] temp = new String[length];
+											
+											for(int i = 0; i < length; i++){
+												temp[i] = Array.get(value, i).toString();
+											}
+											
+											json = gson.toJson(temp);
+												//System.out.println("Json: "+json.toString());
+										}
+										else{
+											//TODO real multi-dimensional 
+											String [][] temp = new String[length][];
+											
+											json = gson.toJson(temp);
+											
+										}
+											
+										ret.add(new LiteralImpl(json, new URIImpl(BDPLConstants.URI_TYPE_JSON_ARRAY)));
+										
+									} catch (FunctionInvocationException e) {
+										System.out.println("ConstructTemplateFiller : function invocation exception "+e.getMessage());
+									}
+								}
+							}
+							else{
+								System.out.println("ConstructTemplateFiller : function return object "+con.get(0));
+							}
+						}
+						else{
+							if(rtype.isPrimitive()){
+								String [][][] a = dArrays.get(con.get(1));
+								if(a == null){
+									BDPLArrayTableEntry ate = arrayTable.get(con.get(1));
+									if(ate != null){
+										a = ate.getArray().read();
+									}
+								}
+								
+								if(a != null && a.length > 0){
+									Object [] pObjects = new Object[]{a}; 
+									try {
+										Object value = ef.invoke(pObjects);
+										ret.add(new LiteralImpl(value.toString()));
+										
+									} catch (FunctionInvocationException e) {
+										System.out.println("ConstructTemplateFiller : function invocation exception "+e.getMessage());
+									}
+								}
+							}
+							else if(rtype.getCanonicalName().equals("java.lang.String")){
+								String [][][] a = dArrays.get(con.get(1));
+								if(a == null){
+									BDPLArrayTableEntry ate = arrayTable.get(con.get(1));
+									if(ate != null){
+										a = ate.getArray().read();
+									}
+								}
+								
+								if(a != null && a.length > 0){
+									
+									try {
+										Object value = ef.invoke((Object)a);
+										ret.add(new LiteralImpl(value.toString()));
+										
+									} catch (FunctionInvocationException e) {
+										System.out.println("ConstructTemplateFiller : function invocation exception "+e.getMessage());
+									}
+								}
+							}
+							else{
+								System.out.println("ConstructTemplateFiller : function return object "+con.get(0));
+							}
+						}
+					}
+					else{
+						System.out.println("ConstructTemplateFiller : unknown function "+con.get(0));
+					}
 				}
 				else{
 					String [][][] a = dArrays.get(con.get(1));
@@ -290,6 +407,7 @@ public class ConstructTemplateFiller extends ConstructTemplateVisitor{
 							json = gson.toJson(temp);
 						}
 						else{
+							//TODO here is only 2 dimensional 
 							String [][] temp = new String[a.length][a[0].length];
 							for(int i = 0; i < a.length; i++){
 								for(int j = 0; j < a[0].length; j++){
