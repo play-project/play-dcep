@@ -10,8 +10,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * The class of BDPL array. An array is an object of String[length][dimension][3]. 
- * The type is saved in String[][][0], label in String[][][1] and
- * In String[][][1] the whole literal.
+ * The type is saved in String[][][0], label in String[][][1] and in String[][][2] 
+ * the whole literal.
  * 
  * The read() method is protected by a read-lock, and write() by a write-lock;
  * 
@@ -21,6 +21,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  */
 public class BDPLArray {
+	
+	//TODO real multi-dimensional ?? String[][][] is 2 dimensional
+	
 	
 	private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private final Lock r = rwl.readLock();

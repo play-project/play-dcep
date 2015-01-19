@@ -59,7 +59,7 @@ public class RDFGraphEventFilter {
 				Resource context = new URIImpl("context://");
 				
 				for(int i = 0; i < events.length; i++){
-						System.out.println("RDFGraphEventFilter matched event: "+i);
+						System.out.println("RDFGraphEventFilter [matched event]: "+i);
 					
 					MapEvent<EventModel<Model>> event = (MapEvent<EventModel<Model>>)events[i];
 					if(event != null){
@@ -90,7 +90,7 @@ public class RDFGraphEventFilter {
 					for(BDPLArrayFilter arrayFilter : arrayFilters){
 						if(!arrayFilter.hasVariable()){
 							if(!arrayFilter.evaluate()){
-									System.out.println("RDFGraphEventFilter array filter: false");
+									System.out.println("RDFGraphEventFilter [array filter]: false");
 								return false;
 							}
 						}
@@ -101,7 +101,7 @@ public class RDFGraphEventFilter {
 								TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(query, "SELECT *")).evaluate();
 								
 								while(result.hasNext()){
-										System.out.println("RDFGraphEventFilter var binding: ");
+										System.out.println("RDFGraphEventFilter [solution]: ");
 									BindingSet bs = result.next();
 									
 									Map<String, String[]> content = new HashMap<String, String[]>();
@@ -128,17 +128,37 @@ public class RDFGraphEventFilter {
 								}
 							}
 							
-							for(Map<String, String[]> varBinding : varBindings){
+							// remove solutions which do not pass the array filter
+							List<Map<String, String[]>> rVarBindings = new ArrayList<Map<String, String[]>>();
+							for(int i = 0; i < varBindings.size(); i++){
+								Map<String, String[]> varBinding = varBindings.get(i);
 								arrayFilter.setDataObject(varBinding, null);
+								
 								if(!arrayFilter.evaluate()){
-										System.out.println("RDFGraphEventFilter array filter: false");
-									return false;
+									rVarBindings.add(varBinding);
 								}
 							}
+							for(Map<String, String[]> rVarBinding : rVarBindings){
+								varBindings.remove(rVarBinding);
+							}
 						}
-					} 
-						System.out.println("RDFGraphEventFilter array filter: "+ret);
-					return ret;
+					}
+					
+					if(varBindings != null){
+						if(varBindings.size() > 0){
+								System.out.println("RDFGraphEventFilter [array filter]: true");
+							return true;
+						}
+						else{
+								System.out.println("RDFGraphEventFilter [array filter]: false");
+							return false;
+						}
+					}
+					else{
+							System.out.println("RDFGraphEventFilter [array filter]: true");
+						return true;
+					}
+					
 				}
 				else{
 						System.out.println("RDFGraphEventFilter: "+ret);
