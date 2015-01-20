@@ -34,24 +34,31 @@ import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 
+
+
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLArrayFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionCompoundExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionFunctionExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionSimpleExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.FunctionVarExpression;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.VariableBinder;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 
 /**
+ * This processor travels the syntax tree of a bdpl query, extracts 
+ * all array filters in the query and creates corresponding objects
+ * under syntax nodes.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 11, 2014
  *
  */
-public class FilterFunctionProcessor {
+public class ArrayFilterProcessor {
 	
 	public static void process(ASTOperationContainer qc, BDPLArrayTable arrayTable)
 			throws MalformedQueryException{
@@ -88,6 +95,9 @@ public class FilterFunctionProcessor {
 	
 	private static class EFProcessor extends ASTVisitorBase {
 		
+		/*
+		 * types of parameters in array filter functions
+		 */
 		private String PARA_TYPE_INT = "int", PARA_TYPE_DECIMAL = "decimal", PARA_TYPE_BOOLEAN = "boolean", 
 				PARA_TYPE_LIT = "literal", PARA_TYPE_VAR = "var", PARA_TYPE_ARRAY = "array";
 		

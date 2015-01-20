@@ -4,7 +4,6 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
  * @author ningyuan 

@@ -16,7 +16,7 @@ public class BDPLCompilerFactory {
 	/*
 	 * the concrete aggregator class for build compiler phase chain and compiler data
 	 */
-	private final IBDPLCompilerAggregator compilerAggregator;
+	private final BDPLCompilerAggregator compilerAggregator;
 	
 	public BDPLCompilerFactory(String aggregator){
 		//XXX use aggregator name to initiate different compiler

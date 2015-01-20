@@ -25,8 +25,8 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLArrayFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 

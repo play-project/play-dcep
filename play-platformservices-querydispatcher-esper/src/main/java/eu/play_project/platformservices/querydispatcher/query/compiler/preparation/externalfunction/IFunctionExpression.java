@@ -3,9 +3,11 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLFilterException;
 
 /**
+ * The interface of expression.
+ * 
  * @author ningyuan 
  * 
  * Aug 11, 2014
@@ -22,7 +24,7 @@ public interface IFunctionExpression<T> {
 	public void setDataObject(T data);
 	
 	/**
-	 * Get the value of this expression
+	 * Get the value of this expression, may recursively calculate sub expressions.
 	 * 
 	 * @return
 	 * @throws BDPLFilterException
@@ -35,5 +37,10 @@ public interface IFunctionExpression<T> {
 	 */
 	public Class getValueType();
 	
+	/**
+	 * Deep copy the object of this expression, may recursively copy objects of sub expressions.
+	 * 
+	 * @return
+	 */
 	public IFunctionExpression<T> copy();
 }

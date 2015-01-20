@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.compiler.util;
+package eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util;
 
 /**
  * @author ningyuan 

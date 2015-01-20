@@ -19,9 +19,9 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.construct.ConstructTemplateFiller;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence.RealTimeSolution;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLArrayFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.construct.util.ConstructTemplate;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
 

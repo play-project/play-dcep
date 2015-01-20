@@ -54,6 +54,7 @@ import org.openrdf.query.MalformedQueryException;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLArrayFilter;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLTranslateUtil;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.EPLTranslationData;
@@ -66,7 +67,6 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.TimeDelayEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util.TimeDelayTable;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
 
 
 

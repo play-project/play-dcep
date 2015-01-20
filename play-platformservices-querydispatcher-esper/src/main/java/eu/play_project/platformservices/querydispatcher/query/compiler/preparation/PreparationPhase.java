@@ -21,10 +21,12 @@ import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.bdpl.parser.BDPLVarProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
-import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.FilterFunctionProcessor;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.ArrayFilterProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLCompilerData;
 
 /**
+ * The preparation phase of the BDPL compiler.
+ * 
  * @author ningyuan 
  * 
  * Aug 25, 2014
@@ -49,13 +51,17 @@ public class PreparationPhase extends BDPLCompilerPhase<DefaultBDPLCompilerData>
 				
 			DatasetDeclProcessor.process(data.getQueryContainer());
 			
+			// check specific bdpl syntax and get prolog text
 			data.setPrologText(BDPLSyntaxCheckProcessor.process(data.getQueryContainer()));
 			
+			// process simple variables
 			data.setVarTable(BDPLVarProcessor.process(data.getQueryContainer()));
-				
+			
+			// process array variables
 			data.setArrayTable(BDPLArrayVarProcessor.process(data.getQueryContainer(), data.getVarTable(), data.getPrologText()));
-		
-			FilterFunctionProcessor.process(data.getQueryContainer(), data.getArrayTable());
+			
+			// process array filters
+			ArrayFilterProcessor.process(data.getQueryContainer(), data.getArrayTable());
 			
 		}
 		catch (MalformedQueryException | TokenMgrError | ParseException e) {

@@ -37,8 +37,8 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.generatio
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence.RealTimeSolution;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLArrayFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionInvocationException;

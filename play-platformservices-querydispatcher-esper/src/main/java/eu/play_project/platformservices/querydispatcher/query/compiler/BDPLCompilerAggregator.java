@@ -13,19 +13,22 @@ package eu.play_project.platformservices.querydispatcher.query.compiler;
  * Jan 19, 2015
  *
  */
-public interface IBDPLCompilerAggregator {
+abstract public class BDPLCompilerAggregator<T extends BDPLCompilerData> {
 	
-	/**
-	 * Build the compiler phase chain.
-	 */
-	public void aggregate();
+	protected BDPLCompilerPhase<T> phase;
+	
+	public BDPLCompilerAggregator(){
+		aggregate();
+	}
 	
 	/**
 	 * Get the first phase of the chain.
 	 * 
 	 * @return
 	 */
-	public BDPLCompilerPhase getPhaseChain();
+	final public BDPLCompilerPhase<T> getPhaseChain(){
+		return phase;
+	}
 	
 	/**
 	 * Create a new compiler data.
@@ -34,5 +37,10 @@ public interface IBDPLCompilerAggregator {
 	 * @param bdplQuery
 	 * @return
 	 */
-	public BDPLCompilerData createCompilerData(String baseURI, String bdplQuery);
+	abstract public T createCompilerData(String baseURI, String bdplQuery);
+	
+	/**
+	 * Build the compiler phase chain.
+	 */
+	abstract public void aggregate();
 }

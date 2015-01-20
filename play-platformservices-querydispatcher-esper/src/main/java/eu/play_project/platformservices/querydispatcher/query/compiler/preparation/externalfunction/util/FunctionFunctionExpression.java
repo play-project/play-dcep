@@ -6,7 +6,6 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.preparat
 import java.util.List;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionInvocationException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;

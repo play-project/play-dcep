@@ -9,6 +9,10 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 
 /**
+ * The data holder of all variables used for evaluation with 
+ * real-time query data.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 12, 2014
@@ -16,10 +20,19 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
  */
 public class VariableBinder {
 	
+	/*
+	 * simple variables in query 
+	 */
 	private Map<String, String[]> vars;
 	
+	/*
+	 * dynamic array in query
+	 */
 	private Map<String, String[][][]> dArrays;
 	
+	/*
+	 * static array in query
+	 */
 	private final BDPLArrayTable arrayVars;
 	
 	public VariableBinder(BDPLArrayTable arrayTable){

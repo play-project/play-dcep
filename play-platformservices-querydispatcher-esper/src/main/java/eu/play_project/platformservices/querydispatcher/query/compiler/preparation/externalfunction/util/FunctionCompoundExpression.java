@@ -7,9 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLFilterException;
 
 /**
+ * This expression is composed of other expressions.
+ * 
  * @author ningyuan 
  * 
  * Aug 11, 2014

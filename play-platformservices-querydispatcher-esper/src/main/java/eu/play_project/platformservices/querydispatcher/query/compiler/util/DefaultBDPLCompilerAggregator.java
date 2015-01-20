@@ -3,9 +3,8 @@
  */
 package eu.play_project.platformservices.querydispatcher.query.compiler.util;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerData;
+import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerAggregator;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
-import eu.play_project.platformservices.querydispatcher.query.compiler.IBDPLCompilerAggregator;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.GenerationPhase;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.InitiationPhase;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.PreparationPhase;
@@ -17,13 +16,9 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
  * Jan 19, 2015
  *
  */
-public class DefaultBDPLCompilerAggregator implements IBDPLCompilerAggregator{
+public class DefaultBDPLCompilerAggregator extends BDPLCompilerAggregator<DefaultBDPLCompilerData>{
 	
-	private BDPLCompilerPhase<DefaultBDPLCompilerData> phase;
 	
-	public DefaultBDPLCompilerAggregator(){
-		aggregate();
-	}
 	
 	@Override
 	public void aggregate() {
@@ -39,13 +34,9 @@ public class DefaultBDPLCompilerAggregator implements IBDPLCompilerAggregator{
 		temp.setNextPhase(next);
 	}
 
-	@Override
-	public BDPLCompilerPhase getPhaseChain() {
-		return phase;
-	}
 
 	@Override
-	public BDPLCompilerData createCompilerData(String baseURI, String bdplQuery) {
+	public DefaultBDPLCompilerData createCompilerData(String baseURI, String bdplQuery) {
 		return new DefaultBDPLCompilerData(baseURI, bdplQuery);
 	}
 

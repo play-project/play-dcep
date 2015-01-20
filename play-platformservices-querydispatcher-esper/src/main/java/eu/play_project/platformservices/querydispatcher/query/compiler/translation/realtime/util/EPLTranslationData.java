@@ -7,7 +7,7 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.translat
 import java.util.List;
 import java.util.Map;
 
-import eu.play_project.platformservices.querydispatcher.query.compiler.util.BDPLArrayFilter;
+import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLArrayFilter;
 
 /**
  *
