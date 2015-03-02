@@ -50,7 +50,7 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
 /**
  * This processor travels the syntax tree of a bdpl query, extracts 
  * all array filters in the query and creates corresponding objects
- * under syntax nodes.
+ * with syntax nodes.
  * 
  * 
  * @author ningyuan 
@@ -96,7 +96,7 @@ public class ArrayFilterProcessor {
 	private static class EFProcessor extends ASTVisitorBase {
 		
 		/*
-		 * types of parameters in array filter functions
+		 * types of parameters used by array filter functions
 		 */
 		private String PARA_TYPE_INT = "int", PARA_TYPE_DECIMAL = "decimal", PARA_TYPE_BOOLEAN = "boolean", 
 				PARA_TYPE_LIT = "literal", PARA_TYPE_VAR = "var", PARA_TYPE_ARRAY = "array";

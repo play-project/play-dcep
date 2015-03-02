@@ -8,7 +8,12 @@ import java.util.Map;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 
 /**
- * The data structure for an array filter in bdpl
+ * The data structure for an array filter in bdpl. An array filter
+ * is composed of an function expression which represents the actual
+ * array filter and a variable binder which binds the latest values
+ * of all variables used in the array filter.
+ * 
+ * 
  * 
  * @author ningyuan 
  * 
@@ -45,7 +50,7 @@ public class BDPLArrayFilter{
 	}
 	
 	/*
-	 * this constructor is used when copy
+	 * this constructor is used when copy this array filter object
 	 */
 	private BDPLArrayFilter(boolean hv, VariableBinder variableBinder, IFunctionExpression<VariableBinder> expression){
 		hasVariable = hv;
@@ -63,10 +68,20 @@ public class BDPLArrayFilter{
 		vb.bindVariableValues(binding, dArrays);
 	}
 	
+	/**
+	 * Test whether the array filter contains any variable.
+	 * 
+	 * @return
+	 */
 	public boolean hasVariable(){
 		return hasVariable;
 	}
 	
+	/**
+	 * Set the flag indicating whether the array filter contains any variable.
+	 * 
+	 * @param b
+	 */
 	public void setHasVariable(boolean b){
 		hasVariable = b;
 	}

@@ -9,8 +9,10 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTable;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 
 /**
- * The data holder of all variables used for evaluation with 
- * real-time query data.
+ * The data holder for the latest values of variables used in  
+ * real-time query. Because the value of a variable may change 
+ * while evaluating a real-time query, it is necessary to create 
+ * a class for saving and binding variables.
  * 
  * 
  * @author ningyuan 
@@ -21,19 +23,21 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 public class VariableBinder {
 	
 	/*
-	 * simple variables in query 
+	 * values of simple variables in query 
 	 */
 	private Map<String, String[]> vars;
 	
 	/*
-	 * dynamic array in query
+	 * values of dynamic arrays in query
 	 */
 	private Map<String, String[][][]> dArrays;
 	
 	/*
-	 * static array in query
+	 * values of static arrays in query
 	 */
 	private final BDPLArrayTable arrayVars;
+	
+	
 	
 	public VariableBinder(BDPLArrayTable arrayTable){
 		arrayVars = arrayTable;

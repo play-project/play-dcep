@@ -6,6 +6,10 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.preparat
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 
 /**
+ * A concrete external function expression. This expression represents a
+ * simple valid value. For instance, an integer or a decimal.
+ *
+ *
  * @author ningyuan 
  * 
  * Aug 11, 2014

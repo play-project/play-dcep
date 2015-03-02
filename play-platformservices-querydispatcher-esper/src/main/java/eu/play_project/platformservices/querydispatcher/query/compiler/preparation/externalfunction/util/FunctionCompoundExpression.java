@@ -9,7 +9,8 @@ import java.util.List;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.IFunctionExpression;
 
 /**
- * This expression is composed of other expressions.
+ * A concrete external function expression. This expression is composed of other expressions.
+ * 
  * 
  * @author ningyuan 
  * 

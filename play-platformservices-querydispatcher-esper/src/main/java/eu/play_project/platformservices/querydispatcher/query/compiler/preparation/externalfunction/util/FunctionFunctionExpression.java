@@ -11,6 +11,10 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
 
 /**
+ * A concrete external function expression. This expression represents a
+ * simple function with its name and parameter declaration.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 11, 2014

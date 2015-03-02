@@ -6,7 +6,10 @@ package eu.play_project.platformservices.querydispatcher.query.compiler.preparat
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLFilterException;
 
 /**
- * The interface of expression.
+ * The interface of an external function expression. An external function expression
+ * can be composed of multiple function expressions. Concrete external function 
+ * expression can be found under the util package.
+ * 
  * 
  * @author ningyuan 
  * 
