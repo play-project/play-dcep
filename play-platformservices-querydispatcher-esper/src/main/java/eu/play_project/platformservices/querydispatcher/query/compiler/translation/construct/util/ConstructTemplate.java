@@ -9,6 +9,11 @@ import java.util.List;
 
 
 /**
+ * The class of the construct template. This is a neutral representation of
+ * the construct clause of a bdpl query. According to the construct template,
+ * response events can be build correctly.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Oct 20, 2014
@@ -16,10 +21,13 @@ import java.util.List;
  */
 public class ConstructTemplate {
 	
+	// compulsory predicate of a construct template. The rdf type of the created event.
 	private String rdfType;
-
+	
+	// compulsory predicate of a construct template. The stream name of the created event.
 	private String streamName;
 	
+	// list of subjects of all triples in the construct template.
 	private List<TripleSubject> subjects = new ArrayList<TripleSubject>();
 	
 	public volatile int count = 0;

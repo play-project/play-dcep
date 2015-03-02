@@ -46,6 +46,11 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
 
 /**
+ * This processor travels the syntax tree of a bdpl query, translates 
+ * the construct clause of the query into a construct template used for
+ * creating response events.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Oct 16, 2014
@@ -79,15 +84,22 @@ public class ConstructTranslationProcessor {
 	
 	private static class ConstructTranslatorData{
 		
+		// the array table of this query
 		private BDPLArrayTable arrayTable;
 		
+		// the subject of currently parsed triple
 		private TripleSubject currentSub;
 		
+		// created construct template
 		private ConstructTemplate constructTemplate = new ConstructTemplate();
 		
-		// -1: wrong subject 0: wrong predicate, 1: wrong object
+		/* -1: wrong subject 
+		 *  0: wrong predicate
+		 *  1: wrong object
+		 */
 		private int flagType = -1;
 		
+		// flag indicating whether the construct clause has "stream" predicate.
 		private int flagStream = -1;
 		
 		private ConstructTranslatorData(BDPLArrayTable at){
@@ -191,6 +203,10 @@ public class ConstructTranslationProcessor {
 			
 			if(snode instanceof ASTVar){
 				sub = new TripleSubject(BDPLConstants.TYPE_VAR);
+				/*
+				 * variable
+				 * content[0]: variable name
+				 */
 				sub.getContent().add(((ASTVar) snode).getName());
 				((ConstructTranslatorData)data).setCurrentSubject(sub);
 			}
@@ -202,6 +218,10 @@ public class ConstructTranslationProcessor {
 				}
 				
 				sub = new TripleSubject(BDPLConstants.TYPE_IRI);
+				/*
+				 * iri
+				 * content[0]: iri
+				 */
 				sub.getContent().add(iri);
 				((ConstructTranslatorData)data).setCurrentSubject(sub);
 			}
@@ -252,7 +272,7 @@ public class ConstructTranslationProcessor {
 			((ConstructTranslatorData)data).flagStream = -1;
 			
 				//for test
-				System.out.println("ConstructTranslationProcessor add subject:");
+				/*System.out.println("ConstructTranslationProcessor add subject:");
 				List<String> co = sub.getContent();
 				for(int i = 0; i < co.size(); i++){
 					System.out.print(co.get(i)+" ");
@@ -279,7 +299,7 @@ public class ConstructTranslationProcessor {
 						}
 						System.out.println();
 					}
-				}
+				}*/
 				
 				
 			return data;
@@ -291,7 +311,7 @@ public class ConstructTranslationProcessor {
 				throws VisitorException
 		{
 			/*
-			 * array var
+			 * array variable
 			 * content[0]: function iri
 			 * content[1]: array name
 			 * content[2]: array index
@@ -420,6 +440,10 @@ public class ConstructTranslationProcessor {
 				
 				if(fNode instanceof ASTVar){
 					TriplePredicate pre = new TriplePredicate(BDPLConstants.TYPE_VAR);
+					/*
+					 * variable
+					 * content[0]: variable name
+					 */
 					pre.getContent().add(((ASTVar) fNode).getName());
 					pres.add(pre);
 				}
@@ -437,6 +461,10 @@ public class ConstructTranslationProcessor {
 									
 									if(inode instanceof ASTIRI){
 										String iri = ((ASTIRI) inode).getValue();
+										/*
+										 * iri
+										 * content[0]: iri
+										 */
 										pre.getContent().add(iri);
 										pres.add(pre);
 											
@@ -517,12 +545,21 @@ public class ConstructTranslationProcessor {
 						}
 						else if(fNode instanceof ASTVar){
 							TripleObject obj = new TripleObject(BDPLConstants.TYPE_VAR);
+							
+							/* 
+							 * variable
+							 * content[0]: variable name
+							 */ 
 							obj.getContent().add(((ASTVar) fNode).getName());
 							objs.add(obj);
 						}
 						else if(fNode instanceof ASTIRI){
 							String iri = ((ASTIRI) fNode).getValue();
 							TripleObject obj = new TripleObject(BDPLConstants.TYPE_IRI);
+							/*
+							 * iri
+							 * content[0]: iri
+							 */
 							obj.getContent().add(iri);
 							objs.add(obj);
 							

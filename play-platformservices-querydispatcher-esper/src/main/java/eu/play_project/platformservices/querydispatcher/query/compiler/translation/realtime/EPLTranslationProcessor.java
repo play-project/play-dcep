@@ -160,13 +160,19 @@ public class EPLTranslationProcessor {
 		
 		private String epl = null;
 		
+		/*
+		 * the names of injected parameters according to the parameter sequence
+		 */
 		private List<Integer> injectParams = new ArrayList<Integer>();
 		
 		/*
-		 * should always be negative
+		 * the index of injected array filters. Should always be negative
 		 */
 		private int injectAFsIndex = -1;
 		
+		/*
+		 * the mapping between the name of injected parameter and its concrete object
+		 */
 		private Map<Integer, Object> injectParaMapping = new HashMap<Integer, Object>();
 		
 		/*
@@ -174,7 +180,6 @@ public class EPLTranslationProcessor {
 		 */
 		private List<BDPLArrayFilter> arrayFilters = new ArrayList<BDPLArrayFilter>();
 		
-		//List<String> matchedPatternSparql = new ArrayList<String>();
 		
 		/*
 		 * skipped nodes

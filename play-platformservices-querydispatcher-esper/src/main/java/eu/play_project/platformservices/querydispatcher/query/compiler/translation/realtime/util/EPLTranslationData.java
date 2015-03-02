@@ -18,14 +18,26 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.preparati
  */
 public class EPLTranslationData {
 	
+	/*
+	 * the text of prepared epl 
+	 */
 	private final String epl;
 	
+	/*
+	 * the names of injected parameters according to the parameter sequence
+	 */
 	private final List<Integer> injectParas;
 	
 	private final List<BDPLArrayFilter> eventPatternFilters;
 	
+	/*
+	 * the mapping between the name of injected parameter and its concrete object
+	 */
 	private final Map<Integer, Object> injectParaMapping;
 	
+	/*
+	 * the name of injected parameter "real-time result binding data"
+	 */
 	public final static int INJECT_PARA_REALTIMERESULT_BINDING_DATA = 0;
 	
 	public EPLTranslationData(String epl, List<Integer> injectParas, Map<Integer, Object> injectParaMapping, List<BDPLArrayFilter> eventPatternFilters){

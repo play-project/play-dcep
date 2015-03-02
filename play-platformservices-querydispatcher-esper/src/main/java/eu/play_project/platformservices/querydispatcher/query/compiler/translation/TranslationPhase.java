@@ -11,6 +11,9 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLCompilerData;
 
 /**
+ * The translation phase of the BDPL compiler.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 25, 2014
@@ -25,7 +28,9 @@ public class TranslationPhase extends BDPLCompilerPhase<DefaultBDPLCompilerData>
 	protected void process(DefaultBDPLCompilerData data) throws BDPLCompilerException {
 		
 		try {
+			// translate construct clause
 			data.setConstructTemplate(ConstructTranslationProcessor.process(data.getQueryContainer(), data.getArrayTable()));
+			// translate query
 			data.setEPLTranslationData(EPLTranslationProcessor.process(data.getQueryContainer(), data.getPrologText()));
 			
 		} catch (TranslateException e) {

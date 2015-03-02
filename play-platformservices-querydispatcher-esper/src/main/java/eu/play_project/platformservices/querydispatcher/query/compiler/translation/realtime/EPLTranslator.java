@@ -7,35 +7,20 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Map;
 
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.query.Dataset;
 import org.openrdf.query.IncompatibleOperationException;
 import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.algebra.TupleExpr;
-import org.openrdf.query.parser.ParsedBooleanQuery;
-import org.openrdf.query.parser.ParsedGraphQuery;
 import org.openrdf.query.parser.ParsedQuery;
-import org.openrdf.query.parser.ParsedTupleQuery;
 import org.openrdf.query.parser.ParsedUpdate;
 import org.openrdf.query.parser.QueryParser;
 import org.openrdf.query.parser.bdpl.BaseDeclProcessor;
 import org.openrdf.query.parser.bdpl.BlankNodeVarProcessor;
-import org.openrdf.query.parser.bdpl.DatasetDeclProcessor;
 import org.openrdf.query.parser.bdpl.PrefixDeclProcessor;
 import org.openrdf.query.parser.bdpl.StringEscapesProcessor;
-import org.openrdf.query.parser.bdpl.TupleExprBuilder;
 import org.openrdf.query.parser.bdpl.WildcardProjectionProcessor;
-import org.openrdf.query.parser.bdpl.ast.ASTAskQuery;
-import org.openrdf.query.parser.bdpl.ast.ASTConstructQuery;
-import org.openrdf.query.parser.bdpl.ast.ASTDescribeQuery;
-import org.openrdf.query.parser.bdpl.ast.ASTQuery;
 import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
-import org.openrdf.query.parser.bdpl.ast.ASTSelectQuery;
-import org.openrdf.query.parser.bdpl.ast.Node;
 import org.openrdf.query.parser.bdpl.ast.ParseException;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
-import org.openrdf.query.parser.bdpl.ast.VisitorException;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.EPLListenerProcessor;
@@ -75,46 +60,9 @@ public class EPLTranslator implements QueryParser{
 			if (qc.containsQuery()) {
 
 				// handle query operation
-
-				//TupleExpr tupleExpr = buildQueryModel(qc);
 				
 				ParsedQuery query = null;
 			
-				/*ASTQuery queryNode = qc.getQuery();
-				if (queryNode instanceof ASTSelectQuery) {
-						
-					query = new ParsedTupleQuery(queryStr, tupleExpr);
-				}
-				else if (queryNode instanceof ASTConstructQuery) {
-					
-					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
-					
-					String prologText = BDPLSyntaxCheckProcessor.process(qc);
-					
-				
-					System.out.println(EPLTranslationProcessor.process(qc, prologText)+"\n");
-					
-					System.out.println(EPLListenerProcessor.process(qc, prologText)+"\n");
-				}
-				else if (queryNode instanceof ASTAskQuery) {
-					
-					query = new ParsedBooleanQuery(queryStr, tupleExpr);
-				}
-				else if (queryNode instanceof ASTDescribeQuery) {
-					
-					query = new ParsedGraphQuery(queryStr, tupleExpr, prefixes);
-				}
-				else {
-					throw new RuntimeException("Unexpected query type: " + queryNode.getClass());
-				}
-
-				// Handle dataset declaration
-				Dataset dataset = DatasetDeclProcessor.process(qc);
-				if (dataset != null) {
-					query.setDataset(dataset);
-				}*/
-				
-				
 				String prologText = BDPLSyntaxCheckProcessor.process(qc);
 				
 				System.out.println(EPLTranslationProcessor.process(qc, prologText)+"\n");
@@ -138,18 +86,6 @@ public class EPLTranslator implements QueryParser{
 			throw new MalformedQueryException(e.getMessage(), e);
 		}
 	}
-	
-	private TupleExpr buildQueryModel(Node qc)
-			throws MalformedQueryException
-		{
-			TupleExprBuilder tupleExprBuilder = new TupleExprBuilder(new ValueFactoryImpl());
-			try {
-				return (TupleExpr)qc.jjtAccept(tupleExprBuilder, null);
-			}
-			catch (VisitorException e) {
-				throw new MalformedQueryException(e.getMessage(), e);
-			}
-		}
 	
 	public static void main(String[] args)
 			throws java.io.IOException

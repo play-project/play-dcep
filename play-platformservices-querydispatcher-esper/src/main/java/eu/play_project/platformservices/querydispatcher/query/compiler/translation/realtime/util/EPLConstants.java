@@ -4,6 +4,9 @@
 package eu.play_project.platformservices.querydispatcher.query.compiler.translation.realtime.util;
 
 /**
+ * The constants used for EPL.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Apr 15, 2014

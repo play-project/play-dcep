@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The neutral representation of the predicate of an RDF triple.
+ * 
  * @author ningyuan 
  * 
  * Oct 17, 2014
@@ -16,7 +18,16 @@ public class TriplePredicate {
 	
 	private final int type;
 	
-	// content must at least have one element
+	/* the content of the predicate. The content must at least have one element.
+	 * 
+	 * variable
+	 * content[0]: variable name
+	 * 
+	 * 
+	 * iri
+	 * content[0]: iri
+	 * 
+	 */
 	private List<String> content = new ArrayList<String>();
 	
 	private List<TripleObject> objects = new ArrayList<TripleObject>();
