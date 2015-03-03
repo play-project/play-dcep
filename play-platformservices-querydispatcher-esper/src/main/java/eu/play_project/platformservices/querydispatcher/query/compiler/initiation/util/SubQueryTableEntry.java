@@ -8,6 +8,10 @@ import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayTableEntry;
 import eu.play_project.platformservices.querydispatcher.query.compiler.IBDPLQuery;
 
 /**
+ * The collection data of a sub-query.
+ * 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 3, 2014

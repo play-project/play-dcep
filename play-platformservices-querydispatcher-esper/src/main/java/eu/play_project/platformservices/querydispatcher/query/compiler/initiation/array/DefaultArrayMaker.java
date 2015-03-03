@@ -20,6 +20,9 @@ import eu.play_project.platformservices.querydispatcher.query.sparql.ISparqlRepo
 import eu.play_project.platformservices.querydispatcher.query.sparql.repository.TestRepository;
 
 /**
+ * The default array maker which parses and creates array objects in queries.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 3, 2014

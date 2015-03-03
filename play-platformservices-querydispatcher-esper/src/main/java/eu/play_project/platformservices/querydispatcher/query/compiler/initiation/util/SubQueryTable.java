@@ -8,6 +8,11 @@ import java.util.List;
 
 
 /**
+ * The sub-query table is the data structure which keeps all 
+ * sub-queries used for updating arrays of one bdpl query.
+ * 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 1, 2014

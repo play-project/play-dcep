@@ -8,6 +8,12 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.initiatio
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTable;
 
 /**
+ * The interface of a array maker. An array maker is responsible for
+ * create array objects used in a query. Because there could be different
+ * types of array and different formats of array declarations in a query,
+ * the interface defines only the common operations of an array maker. 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 3, 2014
