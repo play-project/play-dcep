@@ -32,6 +32,14 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 
 
 /**
+ * The filter class of EPL pattern. This filter class is responsible of
+ * checking the content relation of RDF events from a pattern and array
+ * filter conditions. Because this filter is not applied to the last event
+ * of a pattern, it dose not need to create real-time solution as real-time
+ * data of the query.
+ * 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Apr 16, 2014
@@ -40,7 +48,8 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 public class RDFGraphEventFilter {
 	
 	/**
-	 * 
+	 * The static filter method called when filtering the pattern.
+	 *
 	 * @param query (must not be null)
 	 * @param events (must not be null)
 	 * @param arrayFilters (must not be null)

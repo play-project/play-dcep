@@ -34,6 +34,11 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
 
 /**
+ * This class is a concrete construct template visitor. It is used
+ * to create response event objects according to a construct template
+ * for this specific system.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Oct 20, 2014

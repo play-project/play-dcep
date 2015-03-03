@@ -27,6 +27,12 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
 
 
 /**
+ * The listener class of the EPL statement. It receives the real-time data from
+ * a bdpl query, tries to join the real-time data with historic data and creates
+ * response event using a construct template.
+ * 
+ * 
+ * 
  * @author ningyuan
  *
  */
@@ -101,6 +107,9 @@ public class RealTimeSolutionSequenceListener implements UpdateListener{
 						}
 					}
 				}
+				
+				
+				//TODO join with historic data
 				
 				/*
 				 * construct

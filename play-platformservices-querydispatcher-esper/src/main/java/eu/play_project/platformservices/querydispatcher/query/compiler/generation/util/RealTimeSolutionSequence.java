@@ -12,6 +12,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 /**
+ * The class of real-time solution sequence of a bdpl query. A real time solution
+ * contains all real-time variable bindings and all dynamic arrays. While executing
+ * a query, a real-time solution may be created by a filter at the end of the pattern
+ * matching and be consumed by a listener before joining the real-time data with 
+ * historic data.
+ * 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 4, 2014
@@ -27,6 +35,11 @@ public class RealTimeSolutionSequence {
     private int length = 0;
     private RealTimeSolution head, tail;
 	
+    /**
+     * Get and remove the real time solution on the head of the solution sequence.
+     * 
+     * @return
+     */
 	public RealTimeSolution get(){
 		try{
 			r.lock();
@@ -48,6 +61,11 @@ public class RealTimeSolutionSequence {
 		}
 	}
 	
+	/**
+	 * Add a new real time solution to the tail of the solution sequence.
+	 * 
+	 * @param add
+	 */
 	public void put(RealTimeSolution add){
 		try{
 			w.lock();
@@ -67,6 +85,9 @@ public class RealTimeSolutionSequence {
 		}
 	}
 	
+	/*
+	 * the content of real time solution. All variable bindings and all dynamic arrays
+	 */
 	public static class RealTimeSolution{
     	private RealTimeSolution next = null;
     	

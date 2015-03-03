@@ -33,7 +33,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResultBindingData;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionBindingData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence.RealTimeSolution;
 import eu.play_project.platformservices.querydispatcher.query.compiler.initiation.util.SubQueryTableEntry;
@@ -47,6 +47,14 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
 
 
 /**
+ * The filter class of EPL pattern. This filter class is responsible of
+ * checking the content relation of RDF events from a pattern and array
+ * filter conditions. Because this filter is applied to the last event
+ * of a pattern, it need to create real-time solution as real-time
+ * data of the query.
+ * 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Jul 25, 2014
@@ -54,7 +62,7 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
  */
 public class RealTimeSolutionSequenceFilter {
 	
-	static public boolean evaluate(String query,  Map[] events, List<BDPLArrayFilter> arrayFilters, RealTimeResultBindingData rtbData){
+	static public boolean evaluate(String query,  Map[] events, List<BDPLArrayFilter> arrayFilters, RealTimeSolutionBindingData rtbData){
 		boolean ret = false;
 		
 		Set<String> realTimeCommonVars = rtbData.getRealTimeCommonVars();

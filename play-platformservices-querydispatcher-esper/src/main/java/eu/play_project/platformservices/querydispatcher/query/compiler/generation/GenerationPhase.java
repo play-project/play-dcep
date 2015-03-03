@@ -8,13 +8,15 @@ import com.espertech.esper.client.UpdateListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerPhase;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.CoordinateSystemListener;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.RealTimeSolutionSequenceListener;
-import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeResultBindingData;
+import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionBindingData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.util.RealTimeSolutionSequence;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLCompilerData;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
 
 /**
+ * The generation phase of the BDPL compiler.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 25, 2014
@@ -26,7 +28,7 @@ public class GenerationPhase extends BDPLCompilerPhase<DefaultBDPLCompilerData> 
 	protected void process(DefaultBDPLCompilerData data) throws BDPLCompilerException {
 		RealTimeSolutionSequence realTimeResults = new RealTimeSolutionSequence();
 		
-		RealTimeResultBindingData rtbData = new RealTimeResultBindingData(data.getVarTable().getRealTimeCommonVars(), realTimeResults, data.getSubQueryTable().getEntryToSelf());
+		RealTimeSolutionBindingData rtbData = new RealTimeSolutionBindingData(data.getVarTable().getRealTimeCommonVars(), realTimeResults, data.getSubQueryTable().getEntryToSelf());
 		
 		data.getEPLTranslationData().getInjectParameterMapping().put(data.getEPLTranslationData().INJECT_PARA_REALTIMERESULT_BINDING_DATA, rtbData);
 		

@@ -30,6 +30,13 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
 import eu.play_project.platformservices.querydispatcher.query.simulation.coordinateUI.CoordinatePanel;
 
 /**
+ * The listener class of the EPL statement. It receives the real-time data from
+ * a bdpl query, tries to draw data in array "coordinate" on a coordinate system,
+ * tries to join the real-time data with historic data and creates
+ * response event using a construct template.
+ * 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Oct 9, 2014
@@ -127,6 +134,10 @@ public class CoordinateSystemListener implements UpdateListener{
 						}
 					}
 				}
+				
+				
+				//TODO join with historic data
+				
 				
 				/*
 				 * construct
