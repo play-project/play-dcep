@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
+import eu.play_project.platformservices.querydispatcher.query.simulation.EventCreator;
 
 /**
  * @author ningyuan 
@@ -40,22 +41,9 @@ public class ECGEventCreator1 extends EventCreator{
 	
 	private QRSDetector ecgFilter = new QRSDetector();
 	
-	public ECGEventCreator1(String fn){
+	public ECGEventCreator1(){
 		super("ECGEvent");
 		
-		records = new File("D:/Neo/Downloads/simdata/out/"+fn);
-
-		try {
-			in = new BufferedReader(new FileReader(records));
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("Source file of ArrEvent dose not exist");
-		}
-		
-		try {
-			dtf = DatatypeFactory.newInstance();
-		} catch (DatatypeConfigurationException e) {
-			throw new IllegalArgumentException("DatatypeFactory exception");
-		}
 	}
 	
 	@Override
@@ -65,40 +53,45 @@ public class ECGEventCreator1 extends EventCreator{
 	
 	@Override
 	public MapEvent next(){
-		String record = null;
-		int num = 32;
-		double [] ecg = new double[num];
-		
-		for(int i = 0; i < num; i++){
-			try {
-				record = in.readLine();
-			} catch (IOException e) {
-				close();
-				return null;
-			} 
-			if(record == null){
-				return null;
+		if(ready){
+			String record = null;
+			int num = 32;
+			double [] ecg = new double[num];
+			
+			for(int i = 0; i < num; i++){
+				try {
+					record = in.readLine();
+				} catch (IOException e) {
+					close();
+					return null;
+				} 
+				if(record == null){
+					return null;
+				}
+				else{
+					ecg[i] = parseRecord(record);
+				}
 			}
-			else{
-				ecg[i] = parseRecord(record);
-			}
+			
+			Gson gson = new Gson();
+			String json;
+			
+			json = gson.toJson(ecg);
+			
+			Model ret = new LinkedHashModel();
+			
+			ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(count)));
+			ret.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl(eventType));
+			ret.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl(eventType));
+			ret.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(System.currentTimeMillis()).toString()));
+			ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/ecg"), new LiteralImpl(json, new URIImpl(BDPLConstants.URI_TYPE_JSON_ARRAY)));
+			
+			count++;
+			return new MapEvent(new SesameEventModel(ret));
 		}
-		
-		Gson gson = new Gson();
-		String json;
-		
-		json = gson.toJson(ecg);
-		
-		Model ret = new LinkedHashModel();
-		
-		ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/id"), new LiteralImpl(String.valueOf(count)));
-		ret.add(new URIImpl(":"+count), RDF.TYPE, new LiteralImpl(eventType));
-		ret.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/stream"), new LiteralImpl(eventType));
-		ret.add(new URIImpl(":"+count), new URIImpl("http://events.event-processing.org/types/endTime"), new LiteralImpl(dtf.newDuration(System.currentTimeMillis()).toString()));
-		ret.add(new URIImpl(":"+count), new URIImpl("http://ningyuan.com/ecg"), new LiteralImpl(json, new URIImpl(BDPLConstants.URI_TYPE_JSON_ARRAY)));
-		
-		count++;
-		return new MapEvent(new SesameEventModel(ret));
+		else{
+			return null;
+		}
 	}
 	
 	@Override
@@ -142,5 +135,26 @@ public class ECGEventCreator1 extends EventCreator{
 		sb.delete(0, sb.length());
 		
 		return Double.valueOf(ecg);
+	}
+
+	@Override
+	public void initiate(Object... paras) {
+		if(paras != null && paras.length > 0){
+			records = new File("D:/Neo/Downloads/simdata/out/"+(String)paras[0]);
+	
+			try {
+				in = new BufferedReader(new FileReader(records));
+			} catch (FileNotFoundException e) {
+				throw new IllegalArgumentException("Source file of ArrEvent dose not exist");
+			}
+			
+			try {
+				dtf = DatatypeFactory.newInstance();
+			} catch (DatatypeConfigurationException e) {
+				throw new IllegalArgumentException("DatatypeFactory exception");
+			}
+			
+			ready = true;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia;
+package eu.play_project.platformservices.querydispatcher.query.simulation;
 
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 
@@ -15,6 +15,8 @@ public abstract class EventCreator {
 	
 	protected final String eventType;
 	
+	protected boolean ready = false;
+	
 	public EventCreator(String eventType){
 		this.eventType = eventType;
 	}
@@ -24,6 +26,8 @@ public abstract class EventCreator {
 	}
 	
 	abstract public MapEvent next();
+	
+	abstract public void initiate(Object ... paras);
 	
 	abstract public void close();
 }

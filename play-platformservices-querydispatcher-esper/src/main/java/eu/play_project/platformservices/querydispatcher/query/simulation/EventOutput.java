@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia;
+package eu.play_project.platformservices.querydispatcher.query.simulation;
 
 import java.util.HashMap;
 import java.util.Map;

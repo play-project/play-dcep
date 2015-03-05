@@ -21,6 +21,7 @@ import org.openrdf.model.vocabulary.RDF;
 
 import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
 import eu.play_project.platformservices.querydispatcher.query.event.implement.rdf.sesame.SesameEventModel;
+import eu.play_project.platformservices.querydispatcher.query.simulation.EventCreator;
 
 /**
  * @author ningyuan 
@@ -38,22 +39,8 @@ public class RREventCreator extends EventCreator{
 	private StringBuffer sb = new StringBuffer();
 	
 	
-	public RREventCreator(String fn){
+	public RREventCreator(){
 		super("RREvent");
-		
-		records = new File("D:/Neo/Downloads/simdata/rr/"+fn+".txt");
-
-		try {
-			in = new BufferedReader(new FileReader(records));
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("Source file of ArrEvent dose not exist");
-		}
-		
-		try {
-			dtf = DatatypeFactory.newInstance();
-		} catch (DatatypeConfigurationException e) {
-			throw new IllegalArgumentException("DatatypeFactory exception");
-		}
 	}
 	
 	@Override
@@ -63,23 +50,28 @@ public class RREventCreator extends EventCreator{
 	
 	@Override
 	public MapEvent next(){
-		String record = null;
-		try {
-			record = in.readLine();
-		} catch (IOException e) {
-			close();
-		} 
-		if(record == null){
-			return null;
-		}
-		else{
-			Model m = parseRecord(record);
-			if(m == null){
+		if(ready){
+			String record = null;
+			try {
+				record = in.readLine();
+			} catch (IOException e) {
+				close();
+			} 
+			if(record == null){
 				return null;
 			}
 			else{
-				return new MapEvent(new SesameEventModel(m));
+				Model m = parseRecord(record);
+				if(m == null){
+					return null;
+				}
+				else{
+					return new MapEvent(new SesameEventModel(m));
+				}
 			}
+		}
+		else{
+			return null;
 		}
 	}
 	
@@ -194,5 +186,26 @@ public class RREventCreator extends EventCreator{
 			//System.out.println(eventType+count+": "+timestampe+" "+rr);
 		count++;
 		return ret;
+	}
+
+	@Override
+	public void initiate(Object... paras) {
+		if(paras != null && paras.length > 0){
+			records = new File("D:/Neo/Downloads/simdata/rr/"+(String)paras[0]+".txt");
+	
+			try {
+				in = new BufferedReader(new FileReader(records));
+			} catch (FileNotFoundException e) {
+				throw new IllegalArgumentException("Source file of ArrEvent dose not exist");
+			}
+			
+			try {
+				dtf = DatatypeFactory.newInstance();
+			} catch (DatatypeConfigurationException e) {
+				throw new IllegalArgumentException("DatatypeFactory exception");
+			}
+			
+			ready = true;
+		}
 	}
 }

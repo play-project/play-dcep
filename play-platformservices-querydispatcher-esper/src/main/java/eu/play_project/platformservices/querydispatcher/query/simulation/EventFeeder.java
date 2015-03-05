@@ -1,11 +1,12 @@
 /**
  * 
  */
-package eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia;
+package eu.play_project.platformservices.querydispatcher.query.simulation;
 
 import java.util.Map;
 
 import com.espertech.esper.client.EPServiceProvider;
+
 
 /**
  * @author ningyuan 
@@ -13,18 +14,22 @@ import com.espertech.esper.client.EPServiceProvider;
  * Oct 1, 2014
  *
  */
-public class EventSim implements Runnable{
+public class EventFeeder implements Runnable{
 	
 	private long interval = 1000;
 	private EventCreator eg;
 	private EventOutput output;
 	
-	public EventSim(long i, String f, EPServiceProvider epS){
+	
+	public EventFeeder(long i, String t, String f, EPServiceProvider epS){
 		interval = i;
-		//eg = new ECGEventCreator(f);
-		//eg = new ECGEventCreator1(f);
-		eg = new MITECGEventCreator1(f);
-		//eg = new RREventCreator(f);
+		
+		eg = EventCreatorFactory.getEventCreator(t);
+		if(eg == null || epS == null){
+			throw new IllegalArgumentException();
+		}
+		
+		eg.initiate(f);
 		output = new EventOutput(epS, eg.getEventType());
 	}
 	
@@ -45,7 +50,7 @@ public class EventSim implements Runnable{
 			
 		}finally{
 			eg.close();
-			System.out.println("[ArrEvent Feeding is stoped]");
+			System.out.println("[Event Feeder is stoped]");
 		}
 	}
 

@@ -26,6 +26,7 @@ import com.espertech.esper.example.transaction.TransactionSamplePlugin;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerException;
 import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompiler;
+import eu.play_project.platformservices.querydispatcher.query.compiler.BDPLCompilerFactory;
 import eu.play_project.platformservices.querydispatcher.query.compiler.IBDPLQuery;
 import eu.play_project.platformservices.querydispatcher.query.compiler.generation.listener.CoordinateSystemListener;
 import eu.play_project.platformservices.querydispatcher.query.compiler.util.DefaultBDPLPreparedQuery;
@@ -35,7 +36,6 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionParameterTypeException;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.FunctionTable;
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
-import eu.play_project.platformservices.querydispatcher.query.simulation.arrhythmia.EventSim;
 import eu.play_project.platformservices.querydispatcher.query.simulation.coordinateUI.CoordinatePanel;
 
 
@@ -55,7 +55,7 @@ public class SimMain extends WindowAdapter{
 	private TransactionSamplePlugin plugin = null;
 	private Map<String, Thread> eFeeders;
 	
-	private static String EVENT_DEFAULT = "default", EVENT_ECG = "ecg";
+	private static String EVENT_SIM_DEFAULT = "default", EVENT_SIM_ECG = "ecg", EVENT_SIM_RR = "rr";
 	
 	private int statementCounter = 0;
 	private Map<Integer, EPStatementEntry> stmts;
@@ -68,7 +68,6 @@ public class SimMain extends WindowAdapter{
 		stmts = new HashMap<Integer, EPStatementEntry>();
 		
 		eFeeders = new HashMap<String, Thread>();
-		eFeeders.put(EVENT_ECG, null);
 		
 		fManager = FunctionManager.getInstance();
 		try {
@@ -77,7 +76,7 @@ public class SimMain extends WindowAdapter{
 			System.out.println(e.getMessage());
 		}
 		
-		compiler = new BDPLCompiler("default");
+		compiler = new BDPLCompiler(BDPLCompilerFactory.TYPE_DEFAULT);
 	}
 	
 	public void startShell(){
@@ -91,6 +90,11 @@ public class SimMain extends WindowAdapter{
 				System.out.print("> ");
 				cmd = bin.readLine().trim();
 				
+				/*
+				 * start : start engine
+				 * start -s num : start the statement with number
+				 * start -e eventname [interval] [filename] : start event feeder with its name and other parameters
+				 */
 				if(cmd.startsWith("start")){
 					String [] as = cmd.split("\\s+");
 					
@@ -118,46 +122,72 @@ public class SimMain extends WindowAdapter{
 								}
 								else{
 									System.out.println("[Engine is not started]");
-								
 								}
 							}
 						}
 						else if(as[1].equals("-e")){
 							synchronized(lock){
-							if(epService != null){
-								String en = as[2];
-								if(en.equals(EVENT_DEFAULT)){
-									plugin = new TransactionSamplePlugin();
-									plugin.postInitialize(engineURI, epService);
-									System.out.println("[Event Feeding is started]");
-								}
-								else if(en.equals(EVENT_ECG)){
-									try{
-										long interval = Long.valueOf(as[3]);
-										Thread et = eFeeders.get(en);
-										if(et == null){
-											et = new Thread(new EventSim(interval, as[4], epService));
-											eFeeders.put(en, et);
-											et.start();
-											System.out.println("[Arr Event Feeding is started]");
+								if(epService != null){
+									String en = as[2];
+									if(en.equals(EVENT_SIM_DEFAULT)){
+										if(plugin == null){
+											plugin = new TransactionSamplePlugin();
+											plugin.postInitialize(engineURI, epService);
+											System.out.println("[Default Event Feeder is started]");
 										}
 										else{
-											System.out.println("[Arr Event Feeding is already started]");
+											System.out.println("[Default Event Feeder is already started]");
 										}
 									}
-									catch(NumberFormatException e){
-										e.printStackTrace();
-										continue;
+									else if(en.equals(EVENT_SIM_ECG)){
+										try{
+											long interval = Long.valueOf(as[3]);
+											Thread et = eFeeders.get(EVENT_SIM_ECG);
+											if(et == null){
+												et = new Thread(new EventFeeder(interval, EVENT_SIM_ECG, as[4], epService));
+												eFeeders.put(EVENT_SIM_ECG, et);
+												et.start();
+												System.out.println("[ECG Event Feeder is started]");
+											}
+											else{
+												System.out.println("[ECG Event Feeder is already started]");
+											}
+										}
+										catch(NumberFormatException e){
+											e.printStackTrace();
+											continue;
+										}
+									}
+									else if(en.equals(EVENT_SIM_RR)){
+										try{
+											long interval = Long.valueOf(as[3]);
+											Thread et = eFeeders.get(EVENT_SIM_RR);
+											if(et == null){
+												et = new Thread(new EventFeeder(interval, EVENT_SIM_RR, as[4], epService));
+												eFeeders.put(EVENT_SIM_RR, et);
+												et.start();
+												System.out.println("[RR Event Feeder is started]");
+											}
+											else{
+												System.out.println("[RR Event Feeder is already started]");
+											}
+										}
+										catch(NumberFormatException e){
+											e.printStackTrace();
+											continue;
+										}
+									}
+									else{
+										System.out.println("[Unknown Event Feeder]");
 									}
 								}
 								else{
-									System.out.println("[Unknown Event Feeding]");
+									System.out.println("[Engine is not started]");
 								}
 							}
-							else{
-								System.out.println("[Engine is not started]");
-							}
-							}
+						}
+						else{
+							System.out.println("[Unknown start option "+as[1]+"]");
 						}
 					}
 					else{
@@ -187,10 +217,15 @@ public class SimMain extends WindowAdapter{
 						}
 					}
 				}
+				/*
+				 * stop : stop engine and event feeders
+				 * stop -s num :
+				 * stop -e eventname :
+				 */
 				else if (cmd.startsWith("stop")){
 					String [] as = cmd.split("\\s+");
 					
-					if(as.length > 2){
+					if(as.length > 1){
 						synchronized(lock){
 							if(epService != null){
 								
@@ -215,13 +250,13 @@ public class SimMain extends WindowAdapter{
 								}
 								else if(as[1].equals("-e")){
 									String en = as[2];
-									if(en.equals(EVENT_DEFAULT)){
+									if(en.equals(EVENT_SIM_DEFAULT)){
 										if(plugin != null){
 											plugin.destroy();
 											plugin = null;
 										}
 										else{
-											System.out.println("[Event Feeding is already stopped]");
+											System.out.println("[Event Feeder is already stopped]");
 										}
 									}
 									else{
@@ -234,7 +269,7 @@ public class SimMain extends WindowAdapter{
 									}
 								}
 								else{
-									System.out.println("[Unknown stop command]");
+									System.out.println("[Unknown stop option "+as[1]+"]");
 								}
 							}
 							else{
@@ -277,8 +312,11 @@ public class SimMain extends WindowAdapter{
 						}
 					}
 				}
+				/*
+				 * deploy : deploy bdpl query
+				 */
 				else if(cmd.equals("deploy")){
-					System.out.println("[Please input a BDPL ending with 2 enters]");
+					System.out.println("[Please input a BDPL query ending with 2 enters]");
 					System.out.print("> ");
 					
 					String query="";
@@ -363,6 +401,9 @@ public class SimMain extends WindowAdapter{
 						}
 					}
 				}
+				/*
+				 * rem num : remove statement with number
+				 */
 				else if(cmd.startsWith("rem")){
 					String [] as = cmd.split("\\s+");
 					
@@ -384,6 +425,9 @@ public class SimMain extends WindowAdapter{
 						System.out.println("[No statement name]");
 					}
 				}
+				/*
+				 * exit :
+				 */
 				else if(cmd.equals("exit")){
 					
 					synchronized(lock){
@@ -416,6 +460,12 @@ public class SimMain extends WindowAdapter{
 					
 					break;
 				}
+				/*
+				 * ls 
+				 * ls -s num : list statement with number
+				 * ls -e : list registered event types
+				 * ls -f : list external functions
+				 */
 				else if(cmd.startsWith("ls")){
 					String [] as = cmd.split("\\s+");
 					
@@ -469,6 +519,9 @@ public class SimMain extends WindowAdapter{
 						System.out.println("[:D]");
 					}
 				}
+				/*
+				 * load -f 
+				 */
 				else if(cmd.startsWith("load")){
 					String [] as = cmd.split("\\s+");
 					
@@ -513,11 +566,45 @@ public class SimMain extends WindowAdapter{
 			}
 		}
 		
+		
+		// exit routine
+		synchronized(lock){
+			if(epService != null){
+				Set<Integer> sts = stmts.keySet();
+				for(Integer st : sts){
+					EPStatementEntry en = stmts.get(st);
+					en.destroy();
+				}
+				stmts.clear();
+				
+				if(plugin != null){
+					plugin.destroy();
+					plugin = null;
+				}
+				Set<String> efk = eFeeders.keySet();
+				for(String en : efk){
+					Thread et = eFeeders.get(en);
+					if(et != null){
+						et.interrupt();
+						eFeeders.put(en, null);
+						try {
+							et.join();
+						} catch (InterruptedException e) {}
+					}
+				}
+			
+				epService.destroy();
+				epService = null;
+			}
+		}
+		
 		if(bin != null){
 			try {
 				bin.close();
-			} catch (IOException e1) {}
+			} 
+			catch (IOException e1) {}
 		}
+		
 		System.exit(0);
 	}
 	
