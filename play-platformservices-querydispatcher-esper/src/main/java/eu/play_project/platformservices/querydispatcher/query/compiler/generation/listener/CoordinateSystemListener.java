@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.openrdf.model.Model;
 import org.openrdf.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPRuntime;
@@ -43,6 +45,8 @@ import eu.play_project.platformservices.querydispatcher.query.simulation.coordin
  *
  */
 public class CoordinateSystemListener implements UpdateListener{
+	
+	private final Logger logger = LoggerFactory.getLogger(CoordinateSystemListener.class);
 	
 	private EPServiceProvider epService;
     
@@ -91,8 +95,6 @@ public class CoordinateSystemListener implements UpdateListener{
 	@Override
 	public void update(EventBean[] newEvents, EventBean[] oldEvents) {
 		
-		//System.out.println(Thread.currentThread().getName()+"   CoordinateListener: ");
-		
 		for(int i = 0; i < newEvents.length; i++){
 			
 			if(panel != null){
@@ -117,11 +119,11 @@ public class CoordinateSystemListener implements UpdateListener{
 			if(result != null){
 				for(Map<String, String[]> varBinding : result.getVarBindings()){
 						
-						/*System.out.println("CoordinateListener var binding:");
+						/*logger.debug("CoordinateListener var binding:");
 						for(String key : varBinding.keySet()){
-							System.out.print(key+": "+varBinding.get(key)[0]+"   "+varBinding.get(key)[1]+"   ");
+							logger.debug(key+": "+varBinding.get(key)[0]+"   "+varBinding.get(key)[1]+"   ");
 						}
-						System.out.println();*/
+						logger.debug("\n");*/
 						
 					for(BDPLArrayFilter af : arrayFilters){
 						af.setDataObject(varBinding, result.getDynamicArrays());
@@ -154,9 +156,9 @@ public class CoordinateSystemListener implements UpdateListener{
 		        				Iterator<Statement> it = model.iterator();
 		        				while(it.hasNext()){
 		        					Statement s = it.next();
-		        						System.out.println("CoordinateListener ["+eventType+"]: "+s.getSubject().toString()+"   "+s.getPredicate().toString()+"   "+s.getObject().toString());
+		        					logger.debug("["+eventType+"]: "+s.getSubject().toString()+"   "+s.getPredicate().toString()+"   "+s.getObject().toString());
 		        				}
-		        				//System.out.println("CoordinateSystemListener [Construct event type]: "+eventType);
+		        				//logger.debug("CoordinateSystemListener [Construct event type]: "+eventType);
 		        			runtime.sendEvent(new MapEvent<SesameEventModel>(new SesameEventModel(model)), eventType);
 		        		} catch (EPException e) {
 		        			e.printStackTrace();

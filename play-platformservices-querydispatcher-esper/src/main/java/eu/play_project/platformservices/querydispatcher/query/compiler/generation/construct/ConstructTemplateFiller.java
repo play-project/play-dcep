@@ -18,6 +18,8 @@ import org.openrdf.model.Value;
 import org.openrdf.model.impl.LinkedHashModel;
 import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.URIImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
@@ -45,6 +47,8 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
  *
  */
 public class ConstructTemplateFiller extends ConstructTemplateVisitor{
+	
+	private final Logger logger = LoggerFactory.getLogger(ConstructTemplateFiller.class);
 	
 	private Model model; 
 	
@@ -312,7 +316,7 @@ public class ConstructTemplateFiller extends ConstructTemplateVisitor{
 											}
 											
 											json = gson.toJson(temp);
-												//System.out.println("Json: "+json.toString());
+												//logger.debug("Json: "+json.toString());
 										}
 										else{
 											//TODO real multi-dimensional 
@@ -325,12 +329,12 @@ public class ConstructTemplateFiller extends ConstructTemplateVisitor{
 										ret.add(new LiteralImpl(json, new URIImpl(BDPLConstants.URI_TYPE_JSON_ARRAY)));
 										
 									} catch (FunctionInvocationException e) {
-										System.out.println("ConstructTemplateFiller : function invocation exception "+e.getMessage());
+										logger.error("function invocation exception "+e.getMessage());
 									}
 								}
 							}
 							else{
-								System.out.println("ConstructTemplateFiller : function return object "+con.get(0));
+								logger.error("function return object "+con.get(0));
 							}
 						}
 						else{
@@ -350,7 +354,7 @@ public class ConstructTemplateFiller extends ConstructTemplateVisitor{
 										ret.add(new LiteralImpl(value.toString()));
 										
 									} catch (FunctionInvocationException e) {
-										System.out.println("ConstructTemplateFiller : function invocation exception "+e.getMessage());
+										logger.error("function invocation exception "+e.getMessage());
 									}
 								}
 							}
@@ -370,17 +374,17 @@ public class ConstructTemplateFiller extends ConstructTemplateVisitor{
 										ret.add(new LiteralImpl(value.toString()));
 										
 									} catch (FunctionInvocationException e) {
-										System.out.println("ConstructTemplateFiller : function invocation exception "+e.getMessage());
+										logger.error("function invocation exception "+e.getMessage());
 									}
 								}
 							}
 							else{
-								System.out.println("ConstructTemplateFiller : function return object "+con.get(0));
+								logger.error("function return object "+con.get(0));
 							}
 						}
 					}
 					else{
-						System.out.println("ConstructTemplateFiller : unknown function "+con.get(0));
+						logger.error("unknown function "+con.get(0));
 					}
 				}
 				else{

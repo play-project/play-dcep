@@ -11,6 +11,8 @@ import org.openrdf.model.Model;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.URIImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
 
@@ -24,6 +26,8 @@ import eu.play_project.platformservices.querydispatcher.query.event.EventModel;
  *
  */
 public class SesameEventModel extends EventModel<Model> {
+	
+	private final Logger logger = LoggerFactory.getLogger(SesameEventModel.class);
 	
 	private Map<Integer, Boolean> match = new HashMap<Integer, Boolean>();
 	
@@ -42,28 +46,28 @@ public class SesameEventModel extends EventModel<Model> {
 	
 		Model result = super.model.filter(null, new URIImpl(property), null);
 		
-			System.out.print("RDFModel.getProperties("+property+"):");
+		logger.debug("RDFModel.getProperties("+property+"):");
 		if(result.size() > 0){
 			int i = 0;
 			ret = new Object[result.size()];
 			Iterator<Statement> it = result.iterator();
 			while(it.hasNext()){
 				ret[i] = it.next().getObject();
-					System.out.print(" "+ret[i]);
+					logger.debug(" "+ret[i]);
 				i++;
 			}
 		}
-			System.out.println();
+		logger.debug("\n");
 		
 		return ret;
 	}
 
 	@Override
 	public boolean isPropertyEquals(String property, String value, int level) {
-			System.out.println("Thread: "+Thread.currentThread().getId()+ " Level: "+level);
+		logger.debug("level: "+level);
 		Model r = super.model.filter(null, new URIImpl("<http://ningyuan.com/>"), null);
 		if(r.size() > 0){
-			System.out.print("RDFModel.id: "+r.objectValue().toString()+"   ");
+			logger.debug("RDFModel.id: "+r.objectValue().toString()+"   ");
 		}
 		
 		Model result = super.model.filter(null, new URIImpl(property), null);
@@ -78,13 +82,13 @@ public class SesameEventModel extends EventModel<Model> {
 					Boolean m = match.get(level);
 					
 					if(m == null || !m.booleanValue()){
-						System.out.println("RDFModel.isPropertyEquals("+property+", "+value+"): true [Mathched]");
+						logger.debug("RDFModel.isPropertyEquals("+property+", "+value+"): true [Mathched]");
 						
 						match.put(level, true);
 						return true;
 					}
 					else{
-						System.out.println("RDFModel.isPropertyEquals("+property+", "+value+"): true ");
+						logger.debug("RDFModel.isPropertyEquals("+property+", "+value+"): true ");
 						
 						return false;
 					}
@@ -92,7 +96,7 @@ public class SesameEventModel extends EventModel<Model> {
 			}
 		}
 		
-			System.out.println("RDFModel.isPropertyEquals("+property+", "+value+"): false");
+		logger.debug("RDFModel.isPropertyEquals("+property+", "+value+"): false");
 		return false;
 	}
 
@@ -100,7 +104,7 @@ public class SesameEventModel extends EventModel<Model> {
 	public boolean isPropertyEquals(String property, String value) {
 		Model r = super.model.filter(null, new URIImpl("<http://ningyuan.com/>"), null);
 		if(r.size() > 0){
-			System.out.print("RDFModel.id: "+r.objectValue().toString()+"   ");
+			logger.debug("RDFModel.id: "+r.objectValue().toString()+"   ");
 		}
 		
 		Model result = super.model.filter(null, new URIImpl(property), null);
@@ -113,7 +117,7 @@ public class SesameEventModel extends EventModel<Model> {
 		
 				if(v.toString().equals("\""+value+"\"")){
 					
-						System.out.println("RDFModel.isPropertyEquals("+property+", "+value+"): true ");
+						logger.debug("RDFModel.isPropertyEquals("+property+", "+value+"): true ");
 						
 						return true;
 					
@@ -121,7 +125,7 @@ public class SesameEventModel extends EventModel<Model> {
 			}
 		}
 		
-			System.out.println("RDFModel.isPropertyEquals("+property+", "+value+"): false");
+			logger.debug("RDFModel.isPropertyEquals("+property+", "+value+"): false");
 		return false;
 	}
 }

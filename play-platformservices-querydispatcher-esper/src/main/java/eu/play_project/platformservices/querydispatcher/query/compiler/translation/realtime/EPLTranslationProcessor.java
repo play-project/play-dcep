@@ -51,6 +51,8 @@ import org.openrdf.query.parser.bdpl.ast.Token;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
 import org.openrdf.query.parser.bdpl.ast.VisitorException;
 import org.openrdf.query.MalformedQueryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.play_project.platformservices.bdpl.parser.ASTVisitorBase;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
@@ -79,6 +81,8 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
  */
 public class EPLTranslationProcessor {
 	
+	private static final Logger logger = LoggerFactory.getLogger(EPLTranslationProcessor.class);
+	
 	public static EPLTranslationData process(ASTOperationContainer qc, String prologText)
 			throws TranslateException{
 		EPLTranslator translator = new EPLTranslator();
@@ -90,7 +94,7 @@ public class EPLTranslationProcessor {
 			
 			EPLTranslationData ret = new EPLTranslationData(translator.epl, translator.injectParams, translator.injectParaMapping, translator.arrayFilters);
 				// for test
-				System.out.println("\nEPLTranslationProcessor epl:\n"+ret.getEpl());
+				logger.debug("epl:\n"+ret.getEpl());
 			return ret;
 			
 		} catch (VisitorException e) {
@@ -903,7 +907,7 @@ public class EPLTranslationProcessor {
 					
 					
 					// for test
-					System.out.println("\nSEQ Connected");
+					/*System.out.println("\nSEQ Connected");
 					for(int j = 0; j < resultTerms.size(); j++){
 						System.out.print(resultTerms.get(j).getName()+" ");
 					}
@@ -911,13 +915,13 @@ public class EPLTranslationProcessor {
 					for(int j = 0; j < currentTerms.size(); j++){
 						System.out.print(currentTerms.get(j).getName()+" ");
 					}
-					System.out.println();
+					System.out.println();*/
 				
 				sequenceSeqClauses(endEvent, resultTerms, resultTDTable, currentTerms, currentTDTable);
 					
 					
 					// for test
-					List<TimeDelayEntry> temp = resultTDTable.getEntries();
+					/*List<TimeDelayEntry> temp = resultTDTable.getEntries();
 					for(int j = 0; j < temp.size(); j++){
 						TimeDelayEntry en = temp.get(j);
 						String s = "null", e = "null";
@@ -926,7 +930,7 @@ public class EPLTranslationProcessor {
 						if(en.getEnd() != null)
 							e = en.getEnd().getName();
 						System.out.println(s+" "+en.getDuration()+" "+e);
-					}
+					}*/
 			}
 				
 			
@@ -1028,7 +1032,7 @@ public class EPLTranslationProcessor {
 				}
 				
 					// for test
-					System.out.println("\nAND Connected");
+					/*System.out.println("\nAND Connected");
 					List<Term> terms = resultSeq.getTerms();
 					for(int j = 0; j < terms.size(); j++){
 						System.out.print(terms.get(j).getName()+" + ");
@@ -1044,7 +1048,7 @@ public class EPLTranslationProcessor {
 						if(en.getEnd() != null)
 							e = en.getEnd().getName();
 						System.out.println(s+" "+en.getDuration()+" "+e);
-					}
+					}*/
 					
 				resultSeq.setTdTable(resultTDTable);
 				result.addSeqClause(resultSeq);
@@ -1739,7 +1743,7 @@ public class EPLTranslationProcessor {
 			if(seqcs.size() > 0){
 					
 					//for test
-					System.out.println("\nTotal SEQ CLAUSE size: "+seqcs.size());
+					/*System.out.println("\nTotal SEQ CLAUSE size: "+seqcs.size());
 				
 					for(int i = 0; i < seqcs.size(); i++){
 						SeqClause seq = seqcs.get(i);
@@ -1764,7 +1768,7 @@ public class EPLTranslationProcessor {
 							}
 						}
 					}
-					System.out.println();
+					System.out.println();*/
 				
 				/*
 				 * eIndex[i]: the last event tag number of the ith SEQ CLAUSE

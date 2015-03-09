@@ -24,6 +24,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLArrayFilter;
 import eu.play_project.platformservices.querydispatcher.query.compiler.preparation.externalfunction.util.BDPLFilterException;
@@ -47,6 +49,8 @@ import eu.play_project.platformservices.querydispatcher.query.event.MapEvent;
  */
 public class RDFGraphEventFilter {
 	
+	private final static Logger logger = LoggerFactory.getLogger(RDFGraphEventFilter.class);
+	
 	/**
 	 * The static filter method called when filtering the pattern.
 	 *
@@ -68,7 +72,7 @@ public class RDFGraphEventFilter {
 				Resource context = new URIImpl("context://");
 				
 				for(int i = 0; i < events.length; i++){
-						System.out.println("RDFGraphEventFilter [matched event]: "+i);
+					logger.debug("[matched event]: "+i);
 					
 					MapEvent<EventModel<Model>> event = (MapEvent<EventModel<Model>>)events[i];
 					if(event != null){
@@ -84,13 +88,13 @@ public class RDFGraphEventFilter {
 								Statement st = itr.next();
 								//XXX deep copy statement, so that events are not effected???
 								con.add(st, context);
-									System.out.println(st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
+									logger.debug(st.getSubject().stringValue()+" "+st.getPredicate().stringValue()+" "+st.getObject().stringValue());
 							}*/
 							
 						}
 					}
 				}
-					System.out.println("RDFGraphEventFilter : "+String.format(query, "ASK"));
+				logger.debug("[ASK query] : "+String.format(query, "ASK"));
 				ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(query, "ASK")).evaluate();
 					
 				if(ret && arrayFilters.size() > 0){
@@ -99,7 +103,7 @@ public class RDFGraphEventFilter {
 					for(BDPLArrayFilter arrayFilter : arrayFilters){
 						if(!arrayFilter.hasVariable()){
 							if(!arrayFilter.evaluate()){
-									System.out.println("RDFGraphEventFilter [array filter]: false");
+									logger.debug("[array filter]: false");
 								return false;
 							}
 						}
@@ -110,7 +114,7 @@ public class RDFGraphEventFilter {
 								TupleQueryResult result = con.prepareTupleQuery(QueryLanguage.SPARQL, String.format(query, "SELECT *")).evaluate();
 								
 								while(result.hasNext()){
-										System.out.println("RDFGraphEventFilter [solution]: ");
+									logger.debug("[solution]: ");
 									BindingSet bs = result.next();
 									
 									Map<String, String[]> content = new HashMap<String, String[]>();
@@ -128,11 +132,11 @@ public class RDFGraphEventFilter {
 										}
 											
 										var[1] = v.toString();
-											System.out.print(name+": "+var[0]+"   "+var[1]+"   ");
+										logger.debug(name+": "+var[0]+"   "+var[1]+"   ");
 											
 										content.put(name, var);
 									}
-										System.out.println();
+									logger.debug("\n");
 									varBindings.add(content);
 								}
 							}
@@ -155,22 +159,22 @@ public class RDFGraphEventFilter {
 					
 					if(varBindings != null){
 						if(varBindings.size() > 0){
-								System.out.println("RDFGraphEventFilter [array filter]: true");
+							logger.debug("[array filter]: true");
 							return true;
 						}
 						else{
-								System.out.println("RDFGraphEventFilter [array filter]: false");
+							logger.debug("[array filter]: false");
 							return false;
 						}
 					}
 					else{
-							System.out.println("RDFGraphEventFilter [array filter]: true");
+						logger.debug("[array filter]: true");
 						return true;
 					}
 					
 				}
 				else{
-						System.out.println("RDFGraphEventFilter: "+ret);
+					logger.debug(""+ret);
 					return ret;
 				}
 				

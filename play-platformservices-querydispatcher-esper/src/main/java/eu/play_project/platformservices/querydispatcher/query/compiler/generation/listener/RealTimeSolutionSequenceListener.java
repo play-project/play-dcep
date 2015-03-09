@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.openrdf.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.espertech.esper.client.EPException;
 import com.espertech.esper.client.EPRuntime;
@@ -37,6 +39,8 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
  *
  */
 public class RealTimeSolutionSequenceListener implements UpdateListener{
+	
+	private final Logger logger = LoggerFactory.getLogger(RealTimeSolutionSequenceListener.class);
 	
 	private EPServiceProvider epService;
     
@@ -77,23 +81,19 @@ public class RealTimeSolutionSequenceListener implements UpdateListener{
 	@Override
 	public void update(EventBean[] newEvents, EventBean[] oldEvents) {
 		
-		System.out.println(Thread.currentThread().getName()+"   RealTimeResultListener: ");
-		
-		
-		
 		for(int i = 0; i < newEvents.length; i++){
-			System.out.println("RealTimeResultListener result "+i+": ");
+			logger.debug("[result] "+i+": ");
 			
 			RealTimeSolution result = realTimeResults.get();
 			
 			if(result != null){
 				for(Map<String, String[]> varBinding : result.getVarBindings()){
 						
-						System.out.println("RealTimeResultListener var binding:");
+						/*logger.debug("RealTimeResultListener var binding:");
 						for(String key : varBinding.keySet()){
-							System.out.print(key+": "+varBinding.get(key)[0]+"   "+varBinding.get(key)[1]+"   ");
+							logger.debug(key+": "+varBinding.get(key)[0]+"   "+varBinding.get(key)[1]+"   ");
 						}
-						System.out.println();
+						logger.debug("\n");*/
 						
 					for(BDPLArrayFilter af : arrayFilters){
 						af.setDataObject(varBinding, result.getDynamicArrays());

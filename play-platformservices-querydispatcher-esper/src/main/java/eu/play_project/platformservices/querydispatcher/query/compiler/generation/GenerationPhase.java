@@ -32,6 +32,7 @@ public class GenerationPhase extends BDPLCompilerPhase<DefaultBDPLCompilerData> 
 		
 		data.getEPLTranslationData().getInjectParameterMapping().put(data.getEPLTranslationData().INJECT_PARA_REALTIMERESULT_BINDING_DATA, rtbData);
 		
+		//XXX common listener
 		//UpdateListener listener = new RealTimeResultListener(realTimeResults, data.getEplTranslationData().getEventPatternFilters(), data.getConstructTemplate(), data.getArrayTable());
 		
 		//XXX coordinate listener

@@ -55,7 +55,7 @@ public class BDPLCompiler {
 			System.out.println(e.getMessage());
 		}
 		
-		BDPLCompiler compiler = new BDPLCompiler("default");
+		BDPLCompiler compiler = new BDPLCompiler(BDPLCompilerFactory.TYPE_DEFAULT);
 		
 		System.out.println("Your BDPL query:");
 		

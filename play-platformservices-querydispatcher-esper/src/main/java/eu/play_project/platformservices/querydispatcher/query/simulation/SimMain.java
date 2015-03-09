@@ -41,6 +41,9 @@ import eu.play_project.platformservices.querydispatcher.query.simulation.coordin
 
 
 /**
+ * Simulation command shell.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Apr 30, 2014

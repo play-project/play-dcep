@@ -13,15 +13,27 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.util.Defa
  */
 public class BDPLCompilerFactory {
 	
+	public static final String TYPE_DEFAULT = "default";
+	
 	/*
 	 * the concrete aggregator class for build compiler phase chain and compiler data
 	 */
 	private final BDPLCompilerAggregator compilerAggregator;
 	
 	public BDPLCompilerFactory(String aggregator){
-		//XXX use aggregator name to initiate different compiler
 		
-		compilerAggregator = new DefaultBDPLCompilerAggregator();
+		if(aggregator != null){
+			if(aggregator.equals(TYPE_DEFAULT)){
+				compilerAggregator = new DefaultBDPLCompilerAggregator();
+			}
+			//TODO other aggregators
+			else{
+				compilerAggregator = new DefaultBDPLCompilerAggregator();
+			}
+		}
+		else{
+			compilerAggregator = new DefaultBDPLCompilerAggregator();
+		}
 		
 	}
 	

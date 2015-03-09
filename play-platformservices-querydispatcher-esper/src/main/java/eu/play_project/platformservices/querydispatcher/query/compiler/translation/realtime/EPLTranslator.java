@@ -21,6 +21,8 @@ import org.openrdf.query.parser.bdpl.ast.ASTQueryContainer;
 import org.openrdf.query.parser.bdpl.ast.ParseException;
 import org.openrdf.query.parser.bdpl.ast.SyntaxTreeBuilder;
 import org.openrdf.query.parser.bdpl.ast.TokenMgrError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.play_project.platformservices.bdpl.parser.BDPLSyntaxCheckProcessor;
 import eu.play_project.platformservices.querydispatcher.query.compiler.translation.util.TranslateException;
@@ -31,6 +33,8 @@ import eu.play_project.platformservices.querydispatcher.query.compiler.translati
  *
  */
 public class EPLTranslator implements QueryParser{
+	
+	private static final Logger logger = LoggerFactory.getLogger(EPLTranslator.class);
 	
 	/* (non-Javadoc)
 	 * @see org.openrdf.query.parser.QueryParser#parseUpdate(java.lang.String, java.lang.String)
@@ -64,7 +68,7 @@ public class EPLTranslator implements QueryParser{
 			
 				String prologText = BDPLSyntaxCheckProcessor.process(qc);
 				
-				System.out.println(EPLTranslationProcessor.process(qc, prologText)+"\n");
+				logger.debug(EPLTranslationProcessor.process(qc, prologText)+"\n");
 				
 				return query;
 			}

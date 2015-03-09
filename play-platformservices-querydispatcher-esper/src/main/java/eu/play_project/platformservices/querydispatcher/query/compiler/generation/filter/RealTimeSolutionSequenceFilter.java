@@ -29,6 +29,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.sail.memory.MemoryStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArray;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLArrayException;
@@ -62,6 +64,8 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
  */
 public class RealTimeSolutionSequenceFilter {
 	
+	private final static Logger logger = LoggerFactory.getLogger(RealTimeSolutionSequenceFilter.class);
+
 	static public boolean evaluate(String query,  Map[] events, List<BDPLArrayFilter> arrayFilters, RealTimeSolutionBindingData rtbData){
 		boolean ret = false;
 		
@@ -83,14 +87,15 @@ public class RealTimeSolutionSequenceFilter {
 			Resource context = new URIImpl("context://");
 			
 			for(int i = 0; i < events.length; i++){
-					System.out.println("RealTimeSolutionSequenceFilter [matched event]: "+i);
+				
+				logger.debug("[matched event]: "+i);
 				
 				MapEvent<EventModel<Model>> event = (MapEvent<EventModel<Model>>)events[i];
 				if(event != null){
 					EventModel<Model> eventModel = event.get(MapEvent.EVENT_MODEL);
 					Model model = eventModel.getModel();
 					if(model != null){
-							eventModel.getProperties("http://ningyuan.com/id");
+							//eventModel.getProperties("http://ningyuan.com/id");
 						con.add(model, context);
 						
 						Iterator<Statement> itr = model.iterator();
@@ -98,7 +103,7 @@ public class RealTimeSolutionSequenceFilter {
 							Statement st = itr.next();
 							//XXX deep copy statement, so that events are not effected???
 							con.add(st, context);
-								System.out.println(st.getSubject().toString()+" "+st.getPredicate().toString()+" "+st.getObject().toString());
+							logger.debug(st.getSubject().toString()+" "+st.getPredicate().toString()+" "+st.getObject().toString());
 						}
 					}
 				}
@@ -107,7 +112,7 @@ public class RealTimeSolutionSequenceFilter {
 			/*
 			 * filter event rdf graph
 			 */
-				System.out.println("RealTimeSolutionSequenceFilter [ASK query]: "+String.format(query, "ASK"));
+			logger.debug("[ASK query]: "+String.format(query, "ASK"));
 			ret = con.prepareBooleanQuery(QueryLanguage.SPARQL, String.format(query, "ASK")).evaluate();
 			
 			List<Map<String, String[]>> varBindings = null;
@@ -137,7 +142,7 @@ public class RealTimeSolutionSequenceFilter {
 						// array filter dose not have variable
 						if(!arrayFilter.hasVariable()){
 							if(!arrayFilter.evaluate()){
-									System.out.println("RealTimeSolutionSequenceFilter [array filter]: false");
+								logger.debug("[array filter]: false");
 								return false;
 							}
 						}
@@ -151,7 +156,7 @@ public class RealTimeSolutionSequenceFilter {
 								
 								// for each solution
 								while(result.hasNext()){
-										System.out.println("RealTimeSolutionSequenceFilter [solution]: ");
+									logger.debug("[solution]: ");
 									BindingSet bs = result.next();
 									
 									Map<String, String[]> varBinding = new HashMap<String, String[]>();
@@ -180,11 +185,11 @@ public class RealTimeSolutionSequenceFilter {
 											var[1] = v.toString();
 										}
 											
-											System.out.print(name+": "+var[0]+"   "+var[1]+"   "+var[2]+"   ");
+										logger.debug(name+": "+var[0]+"   "+var[1]+"   "+var[2]+"   ");
 											
 										varBinding.put(name, var);
 									}
-										System.out.println();
+									logger.debug("\n");
 										
 									varBindings.add(varBinding);
 								}
@@ -207,7 +212,7 @@ public class RealTimeSolutionSequenceFilter {
 					}
 					
 					if(varBindings != null && varBindings.size() == 0){
-							System.out.println("RealTimeSolutionSequenceFilter [array filter]: false");
+						logger.debug("[array filter]: false");
 						return false;
 					}
 				}
@@ -224,7 +229,7 @@ public class RealTimeSolutionSequenceFilter {
 						
 					// for each solution
 					while(result.hasNext()){
-							System.out.println("RealTimeSolutionSequenceFilter [solution]: ");
+						logger.debug("[solution]: ");
 						BindingSet bs = result.next();
 							
 						Map<String, String[]> varBinding = new HashMap<String, String[]>();
@@ -253,12 +258,12 @@ public class RealTimeSolutionSequenceFilter {
 								var[1] = v.toString();
 							}
 									
-								System.out.print(name+": "+var[0]+"   "+var[1]+"   "+var[2]+"   ");
+							logger.debug(name+": "+var[0]+"   "+var[1]+"   "+var[2]+"   ");
 									
 							varBinding.put(name, var);
 								
 						}
-							System.out.println();
+						logger.debug("\n");
 						varBindings.add(varBinding);
 					}
 				}
@@ -301,11 +306,11 @@ public class RealTimeSolutionSequenceFilter {
 									array.write(ele);
 											
 										// for test
-										System.out.println("RealTimeSolutionSequenceFilter [update dynamic array]: "+array.length());
+										logger.debug("[update dynamic array]: "+array.length());
 										for(int n = 0; n < ele.length; n++){
-											System.out.print(sVars[n]+": "+ele[n][0]+"   "+ele[n][1]+"   "+ele[n][2]+"   ");
+											logger.debug(sVars[n]+": "+ele[n][0]+"   "+ele[n][1]+"   "+ele[n][2]+"   ");
 										}
-										System.out.println();
+										logger.debug("\n");
 												
 								} catch (BDPLArrayException e) {}
 							}
@@ -329,7 +334,7 @@ public class RealTimeSolutionSequenceFilter {
 										eles = (String[][][])ef.invoke(value[1]);
 										if(eles != null){
 											array.write(eles);
-												System.out.println("RealTimeSolutionSequenceFilter [update dynamic array]: "+array.length());
+											logger.debug("[update dynamic array]: "+array.length());
 										}
 									} catch (FunctionInvocationException e) {
 										e.printStackTrace();
@@ -337,7 +342,7 @@ public class RealTimeSolutionSequenceFilter {
 									} catch (BDPLArrayException e) {}
 								}
 								else{
-									System.out.println("RealTimeSolutionSequenceFilter [update dynamic array]: unknown function "+toArrayM);
+									logger.debug("[update dynamic array]: unknown function "+toArrayM);
 								}
 							}
 						}
@@ -351,12 +356,12 @@ public class RealTimeSolutionSequenceFilter {
 				RealTimeSolution rts = new RealTimeSolution(varBindings, daSnapshot);
 				realTimeResults.put(rts);
 					
-					System.out.println("RealTimeSolutionSequenceFilter: "+ret);
+				logger.debug(""+ret);
 				return ret;
 			}
 			// ask query failed
 			else{
-					System.out.println("RealTimeSolutionSequenceFilter: "+ret);
+				logger.debug(""+ret);
 				return ret;
 			}
 			
