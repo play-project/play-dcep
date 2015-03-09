@@ -4,6 +4,9 @@
 package eu.play_project.platformservices.querydispatcher.query.extension.function.implement;
 
 /**
+ * The implementation of algorithm of arrhythmia detection with RR interval.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Nov 20, 2014

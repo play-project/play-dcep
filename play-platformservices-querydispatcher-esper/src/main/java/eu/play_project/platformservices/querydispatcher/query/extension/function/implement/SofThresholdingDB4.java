@@ -8,9 +8,11 @@ import java.util.Arrays;
 import math.jwave.Transform;
 import math.jwave.transforms.FastWaveletTransform;
 import math.jwave.transforms.wavelets.daubechies.Daubechies4;
-import math.jwave.transforms.wavelets.daubechies.Daubechies6;
 
 /**
+ * The implementation of algorithm of ECG denoising using soft thresholding with DWT.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Dec 14, 2014

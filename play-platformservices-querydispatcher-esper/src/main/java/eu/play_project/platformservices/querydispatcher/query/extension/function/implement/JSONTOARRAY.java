@@ -16,6 +16,9 @@ import com.google.gson.JsonSyntaxException;
 import eu.play_project.platformservices.bdpl.parser.util.BDPLConstants;
 
 /**
+ * Transformer of JSON array syntaxes into variable array variables.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Oct 15, 2014

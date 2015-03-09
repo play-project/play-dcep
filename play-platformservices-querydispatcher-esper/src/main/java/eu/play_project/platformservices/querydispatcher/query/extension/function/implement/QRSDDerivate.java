@@ -4,6 +4,9 @@
 package eu.play_project.platformservices.querydispatcher.query.extension.function.implement;
 
 /**
+ * The implementation of algorithm of QRS detection using derivation.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Nov 11, 2014

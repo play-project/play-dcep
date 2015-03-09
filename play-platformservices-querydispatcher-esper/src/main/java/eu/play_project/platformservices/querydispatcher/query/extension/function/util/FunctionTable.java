@@ -10,6 +10,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 /**
+ * The data structure keeping tha mapping information about the names of external functions
+ * and their implementation objects.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 6, 2014

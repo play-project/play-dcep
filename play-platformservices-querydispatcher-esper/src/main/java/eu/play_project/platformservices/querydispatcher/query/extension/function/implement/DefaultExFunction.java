@@ -4,6 +4,9 @@
 package eu.play_project.platformservices.querydispatcher.query.extension.function.implement;
 
 /**
+ * Dummy external function.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 6, 2014

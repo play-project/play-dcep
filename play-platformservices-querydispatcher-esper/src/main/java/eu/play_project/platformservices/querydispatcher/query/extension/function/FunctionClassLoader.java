@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * The class loader for loading the classes related to the implementation
+ * of external functions.
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 6, 2014

@@ -21,6 +21,11 @@ import eu.play_project.platformservices.querydispatcher.query.extension.function
 import eu.play_project.platformservices.querydispatcher.query.extension.function.util.IFunction;
 
 /**
+ * The function manager is responsible for initiating external function table and
+ * load external functions during the run time.
+ * 
+ * 
+ * 
  * @author ningyuan 
  * 
  * Aug 6, 2014
