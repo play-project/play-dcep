@@ -24,6 +24,9 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
 import eu.play_project.platformservices.querydispatcher.query.simulation.EventCreator;
 
 /**
+ * Read test raw ecg data from Nenard (Not used).
+ * 
+ * 
  * @author ningyuan 
  * 
  * Oct 1, 2014

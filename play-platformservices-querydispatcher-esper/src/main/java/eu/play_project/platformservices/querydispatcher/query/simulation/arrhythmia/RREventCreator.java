@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -24,6 +25,10 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
 import eu.play_project.platformservices.querydispatcher.query.simulation.EventCreator;
 
 /**
+ * Read test rr interval data from MIT BIH database.
+ * http://www.physionet.org/cgi-bin/atm/ATM
+ * 
+ * 
  * @author ningyuan 
  * 
  * Nov 20, 2014
@@ -191,7 +196,9 @@ public class RREventCreator extends EventCreator{
 	@Override
 	public void initiate(Object... paras) {
 		if(paras != null && paras.length > 0){
-			records = new File("D:/Neo/Downloads/simdata/rr/"+(String)paras[0]+".txt");
+			URL location = RREventCreator.class.getResource("/simdata/rr/"+(String)paras[0]+".txt"); 
+			
+			records = new File(location.getPath());
 	
 			try {
 				in = new BufferedReader(new FileReader(records));

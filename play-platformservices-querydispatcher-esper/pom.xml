@@ -14,7 +14,8 @@
 
 	<name>play-platformservices-querydispatcher-esper</name>
 	<description>The PLAY Query Dispatch service.</description>
-
+	
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.ow2.play</groupId>
@@ -69,6 +70,16 @@
     		<artifactId>gson</artifactId>
     		<version>2.3</version>
 		</dependency>
+		
+		<!-- jwave only for simulation ECG denosing using DWT-->
+		<dependency>
+			<groupId>math.jwave</groupId>
+    		<artifactId>jwave</artifactId>
+    		<version>0.1</version>
+    		<scope>system</scope>
+    		<systemPath>${project.basedir}/src/main/resources/lib/jwave.jar</systemPath>
+    	</dependency>
+    
 	</dependencies>
 	
 	<repositories>
@@ -144,4 +155,5 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
 </project>

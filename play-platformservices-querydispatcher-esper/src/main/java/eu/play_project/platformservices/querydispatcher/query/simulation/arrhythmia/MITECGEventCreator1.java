@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -26,6 +27,10 @@ import eu.play_project.platformservices.querydispatcher.query.event.implement.rd
 import eu.play_project.platformservices.querydispatcher.query.simulation.EventCreator;
 
 /**
+ * Read test ecg data from MIT BIH database.
+ * http://www.physionet.org/cgi-bin/atm/ATM
+ * 
+ * 
  * @author ningyuan 
  * 
  * Dec 14, 2014
@@ -33,7 +38,7 @@ import eu.play_project.platformservices.querydispatcher.query.simulation.EventCr
  */
 public class MITECGEventCreator1 extends EventCreator{
 	
-
+	
 	private File records;
 	private BufferedReader in;
 	private long count = 0;
@@ -206,7 +211,9 @@ public class MITECGEventCreator1 extends EventCreator{
 	@Override
 	public void initiate(Object... paras) {
 		if(paras != null && paras.length > 0){
-			records = new File("D:/Neo/Downloads/simdata/mitecg/"+(String)paras[0]+".txt");
+			URL location = MITECGEventCreator1.class.getResource("/simdata/mitecg/"+(String)paras[0]+".txt"); 
+			
+			records = new File(location.getPath());
 	
 			try {
 				in = new BufferedReader(new FileReader(records));
